@@ -36,13 +36,13 @@ const Library: React.FC = () => {
 
   return (
     <div>
-      <h2>Resource Library</h2>
+      <h2 className="text-h1 uppercase mb-8 border-b-4 border-ink pb-4">Resource Library</h2>
 
       {/* Category Filter */}
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <div className="mb-8 flex gap-4 flex-wrap">
         <button
           onClick={() => handleCategoryChange('All')}
-          style={{ fontWeight: activeCategory === 'All' ? 'bold' : 'normal', padding: '0.5rem 1rem' }}
+          className={`min-h-[44px] px-4 py-2 font-bold border-2 border-ink focus-visible:outline-accent-yellow ${activeCategory === 'All' ? 'bg-ink text-paper' : 'bg-paper text-ink hover:bg-surface'}`}
         >
           All
         </button>
@@ -50,7 +50,7 @@ const Library: React.FC = () => {
           <button
             key={category}
             onClick={() => handleCategoryChange(category)}
-            style={{ fontWeight: activeCategory === category ? 'bold' : 'normal', padding: '0.5rem 1rem' }}
+            className={`min-h-[44px] px-4 py-2 font-bold border-2 border-ink focus-visible:outline-accent-yellow ${activeCategory === category ? 'bg-ink text-paper' : 'bg-paper text-ink hover:bg-surface'}`}
           >
             {category}
           </button>
@@ -59,21 +59,23 @@ const Library: React.FC = () => {
 
       {/* Resource Grid */}
       {filteredResources.length === 0 ? (
-        <p>No resources found for this category.</p>
+        <div className="border-2 border-dashed border-ink p-8 text-center bg-paper">
+          <p className="font-bold text-body1">No resources found for this category.</p>
+        </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
           {filteredResources.map(resource => (
-            <div key={resource.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px' }}>
-              <div style={{ height: '120px', backgroundColor: '#e0e0e0', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ color: '#666' }}>[Thumbnail Placeholder]</span>
+            <div key={resource.id} className="border-2 border-ink p-4 rounded-md bg-paper shadow-elevated flex flex-col">
+              <div className="h-32 bg-ink text-paper mb-4 flex items-center justify-center font-bold font-mono">
+                [Thumbnail Placeholder]
               </div>
-              <h4 style={{ margin: '0 0 0.5rem 0' }}>{resource.title}</h4>
-              <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: '#555' }}>{resource.description}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8rem', backgroundColor: '#eee', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+              <h4 className="text-h2 font-bold mb-2">{resource.title}</h4>
+              <p className="mb-4 text-caption flex-1">{resource.description}</p>
+              <div className="flex justify-between items-center mt-auto border-t-2 border-ink pt-4">
+                <span className="text-caption font-bold border-2 border-ink p-1 bg-surface inline-block">
                   {resource.category}
                 </span>
-                <Link to={`/resource/${resource.id}`}>View Details</Link>
+                <Link to={`/resource/${resource.id}`} className="inline-block p-2 font-bold underline decoration-2 underline-offset-4 hover:bg-accent-yellow">View Details</Link>
               </div>
             </div>
           ))}
