@@ -8,7 +8,12 @@ const ResourceDetails: React.FC = () => {
   const resource = mockResources.find(r => r.id === id);
 
   if (!resource) {
-    return <div><h2>Resource not found</h2><Link to="/library">Back to Library</Link></div>;
+    return (
+      <div className="text-center p-8 border-2 border-ink bg-paper shadow-elevated">
+        <h2 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h2>
+        <Link to="/library" className="btn btn-filled">Back to Library</Link>
+      </div>
+    );
   }
 
   // Find related resources based on the same category
@@ -18,48 +23,58 @@ const ResourceDetails: React.FC = () => {
 
   return (
     <div>
-      <Link to="/library" style={{ display: 'inline-block', marginBottom: '1rem' }}>&larr; Back to Library</Link>
+      <Link to="/library" className="inline-block p-2 mb-4 font-bold border-b-2 border-ink hover:bg-accent-yellow transition-colors focus-visible:outline-accent-yellow">
+        &larr; Back to Library
+      </Link>
 
-      <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+      <div className="flex gap-8 flex-wrap">
 
         {/* Main Content Area */}
-        <div style={{ flex: 3, minWidth: '300px' }}>
-          <h2>{resource.title}</h2>
-          <p>{resource.description}</p>
+        <div className="flex-[3] min-w-[300px]">
+          <h2 className="text-h1 uppercase mb-2">{resource.title}</h2>
+          <p className="text-body1 font-bold mb-8">{resource.description}</p>
 
-          <div style={{ margin: '2rem 0', padding: '1rem', border: '1px solid #ccc', backgroundColor: '#fafafa' }}>
-            <div style={{ height: '400px', backgroundColor: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '1.2rem', color: '#666' }}>[ PDF Viewer Placeholder ]</span>
+          <div className="border-2 border-ink bg-paper p-4 shadow-elevated">
+            <div className="h-96 bg-ink text-paper flex flex-col items-center justify-center mb-6 border-2 border-ink">
+              <span className="text-h2 font-bold font-mono">[ PDF Viewer Placeholder ]</span>
             </div>
-            <button style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
+            <button className="btn btn-filled w-full">
               Download PDF
             </button>
           </div>
         </div>
 
         {/* Sidebar / Metadata */}
-        <aside style={{ flex: 1, minWidth: '250px' }}>
-          <section style={{ border: '1px solid #ddd', padding: '1rem', marginBottom: '2rem' }}>
-            <h3>Resource Details</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li style={{ marginBottom: '0.5rem' }}><strong>Category:</strong> {resource.category}</li>
-              <li style={{ marginBottom: '0.5rem' }}><strong>Uploaded:</strong> {new Date(resource.uploadDate).toLocaleDateString()}</li>
-              <li style={{ marginBottom: '0.5rem' }}><strong>ID:</strong> {resource.id}</li>
+        <aside className="flex-1 min-w-[250px]">
+          <section className="border-2 border-ink p-4 mb-8 bg-surface shadow-elevated">
+            <h3 className="text-h2 uppercase mb-4 border-b-2 border-ink pb-2">Details</h3>
+            <ul className="list-none p-0 m-0 text-body1">
+              <li className="mb-2 pb-2 border-b-2 border-ink flex justify-between">
+                <strong>Category:</strong> <span>{resource.category}</span>
+              </li>
+              <li className="mb-2 pb-2 border-b-2 border-ink flex justify-between">
+                <strong>Uploaded:</strong> <span>{new Date(resource.uploadDate).toLocaleDateString()}</span>
+              </li>
+              <li className="flex justify-between">
+                <strong>ID:</strong> <span className="font-mono bg-paper p-1 border-2 border-ink text-caption">{resource.id}</span>
+              </li>
             </ul>
           </section>
 
-          <section style={{ border: '1px solid #ddd', padding: '1rem' }}>
-            <h3>Related Resources</h3>
+          <section className="border-2 border-ink p-4 bg-paper shadow-elevated">
+            <h3 className="text-h2 font-bold uppercase mb-4 border-b-2 border-ink pb-2">Related</h3>
             {relatedResources.length > 0 ? (
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {relatedResources.map(related => (
-                  <li key={related.id} style={{ marginBottom: '1rem' }}>
-                    <Link to={`/resource/${related.id}`}>{related.title}</Link>
+              <ul className="list-none p-0 m-0">
+                {relatedResources.map((related, index) => (
+                  <li key={related.id} className={`mb-4 pb-2 ${index !== relatedResources.length - 1 ? 'border-b-2 border-ink' : ''}`}>
+                    <Link to={`/resource/${related.id}`} className="inline-block p-2 font-bold underline decoration-2 underline-offset-4 hover:bg-accent-yellow block">
+                      {related.title}
+                    </Link>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p>No related resources found.</p>
+              <p className="font-bold text-caption">No related resources found.</p>
             )}
           </section>
         </aside>
