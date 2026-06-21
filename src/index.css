@@ -13,8 +13,8 @@
 
     --shadow-elevated: 4px 4px 0px 0px var(--color-ink);
 
-    --font-display: system-ui, -apple-system, sans-serif; /* Placeholder if custom fonts are added */
-    --font-body: system-ui, -apple-system, sans-serif;
+    --font-display: "Spectral", serif;
+    --font-body: "Spectral", serif;
   }
 
   body {
