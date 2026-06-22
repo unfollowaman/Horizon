@@ -9,7 +9,7 @@
     --color-accent-yellow: #FFFF00;
     --color-ink: #000000;
     --color-paper: #FFFFFF;
-    --color-surface: #F5F5F0;
+    --color-surface: #F0F1F5;
 
     --shadow-elevated: 4px 4px 0px 0px var(--color-ink);
 
@@ -18,7 +18,7 @@
   }
 
   body {
-    background-color: var(--color-surface);
+    background-color: #F0F1F5;
     color: var(--color-ink);
     font-family: var(--font-body);
     font-size: 16px;
