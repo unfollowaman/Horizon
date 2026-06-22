@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type React from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { mockResources, mockCategories } from '../../data/mock';
 import type { Category, Resource } from '../../types';
@@ -12,16 +13,20 @@ const Library: React.FC = () => {
 
   useEffect(() => {
     if (categoryQuery && mockCategories.includes(categoryQuery)) {
+
       setActiveCategory(categoryQuery);
     } else {
+
       setActiveCategory('All');
     }
   }, [categoryQuery]);
 
   useEffect(() => {
     if (activeCategory === 'All') {
+
       setFilteredResources(mockResources);
     } else {
+
       setFilteredResources(mockResources.filter(r => r.category === activeCategory));
     }
   }, [activeCategory]);
