@@ -1,24 +1,24 @@
-import type React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => (
   <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-    <div className="flex items-center justify-between w-full max-w-5xl px-6 py-3 bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100">
+    <div className="flex items-center justify-between w-full max-w-5xl px-6 py-3 bg-white rounded-[2rem] shadow-nav border border-gray-100">
       <div className="flex items-center">
-        <Link to="/" className="text-2xl font-bold tracking-tight text-black">Horizon</Link>
+        <Link to="/" className="text-2xl font-bold tracking-tight text-black focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Horizon</Link>
       </div>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex items-center gap-8">
-        <Link to="/" className="text-sm font-medium text-black transition-colors">Home</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Library</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Notes</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Previous Papers</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Announcements</Link>
+        <Link to="/" className="text-sm font-medium text-black hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Home</Link>
+        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Library</Link>
+        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Notes</Link>
+        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Previous Papers</Link>
+        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Announcements</Link>
       </nav>
 
       <div className="hidden md:flex items-center">
-        <Link to="/" className="px-6 py-3 text-sm font-bold text-white bg-black rounded-full hover:bg-gray-800 hover:shadow-lg transition-all active:scale-95">Explore Library</Link>
+        <Link to="/" className="px-6 py-3 text-sm font-bold text-white bg-black rounded-full hover:bg-[#E11584] hover:shadow-lg transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Get Started</Link>
       </div>
 
       {/* Mobile Menu Icon */}
@@ -38,33 +38,34 @@ const HeroSection = () => (
         Horizon provides students with curated educational resources, well-structured notes, and practice materials designed for success.
       </p>
       <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-black rounded-full hover:shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all active:scale-95">Explore Library</button>
-        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-black bg-white rounded-full border border-gray-200 shadow-sm hover:shadow-[0_8px_20px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 transition-all active:scale-95">Browse Notes</button>
+        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-black rounded-full hover:bg-[#E11584] hover:shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Explore Library</button>
+        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-black bg-white rounded-full border border-gray-200 shadow-sm hover:border-[#E11584] hover:text-[#E11584] hover:shadow-[0_8px_20px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Browse Notes</button>
       </div>
     </div>
 
     <div className="flex-1 w-full max-w-lg md:max-w-none mt-12 md:mt-0">
-      <div className="w-full aspect-square bg-white rounded-[2.5rem] shadow-[0_20px_40px_rgb(0,0,0,0.06)] flex items-center justify-center p-8 border border-gray-100 relative overflow-hidden group">
+      <div className="w-full aspect-square bg-white rounded-[2.5rem] shadow-soft flex items-center justify-center p-8 border border-gray-100 relative overflow-hidden group">
         <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_#000_1px,_transparent_1px)]" style={{ backgroundSize: '24px 24px' }}></div>
 
         {/* Monochrome sketch-style illustration */}
-        <svg className="w-full h-full max-w-sm text-black relative z-10 transition-transform duration-700 group-hover:scale-105" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Desk Base */}
+        {/* <!-- ILLUSTRATION: Replace this <img> src with /assets/hero-illustration.svg once pushed --> */}
+        <img
+          src=""
+          alt="Study desk illustration"
+          width="400"
+          height="400"
+          className="w-full h-full max-w-sm relative z-10 transition-transform duration-700 group-hover:scale-105 object-contain"
+        />
+        <svg className="hidden w-full h-full max-w-sm text-black relative z-10 transition-transform duration-700 group-hover:scale-105" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="60" y="260" width="280" height="12" rx="6" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M80 272L70 360M320 272L330 360" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-
-          {/* Laptop */}
           <rect x="140" y="180" width="120" height="80" rx="6" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <rect x="110" y="260" width="180" height="8" rx="4" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M190 200V180H210" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-
-          {/* Lamp */}
           <circle cx="310" cy="140" r="24" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M310 164L310 260" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M290 260H330" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M295 125L280 110M325 125L340 110M310 116V95" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-
-          {/* Books */}
           <path d="M80 230L120 230M80 245L120 245" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M70 260V220C70 215 75 210 80 210H120C125 210 130 215 130 220V260" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
@@ -113,17 +114,19 @@ const FeaturesSection = () => (
       <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">Everything in one place</h2>
       <p className="text-xl text-gray-500 max-w-2xl">Curated resources to help students learn better and achieve more.</p>
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
       {features.map((f, i) => (
-        <div key={i} className="group flex flex-col p-10 bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-gray-100 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300">
-          <div className="w-16 h-16 bg-[#F5F5F0] rounded-2xl flex items-center justify-center text-black mb-8 group-hover:scale-110 transition-transform duration-300">
+        <div key={i} className="group flex flex-row md:flex-col items-center md:items-start p-[20px_24px] md:p-10 bg-white rounded-3xl md:rounded-[2.5rem] shadow-soft border border-gray-100 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 min-h-[unset]">
+          <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-[#F0F1F5] rounded-xl md:rounded-2xl flex items-center justify-center text-black mr-4 md:mr-0 md:mb-8 group-hover:scale-110 transition-transform duration-300">
             {f.icon}
           </div>
-          <h3 className="text-2xl font-bold mb-4 text-black">{f.title}</h3>
-          <p className="text-lg text-gray-500 mb-10 flex-1 leading-relaxed">{f.desc}</p>
-          <div className="mt-auto">
-            <button className="w-12 h-12 rounded-full bg-[#F5F5F0] flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors duration-300">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          <div className="flex flex-col flex-1 text-left">
+            <h3 className="text-base md:text-2xl font-bold mb-1 md:mb-4 text-black">{f.title}</h3>
+            <p className="text-sm md:text-lg text-gray-500 mb-0 md:mb-10 flex-1 leading-relaxed md:block hidden">{f.desc}</p>
+          </div>
+          <div className="mt-0 md:mt-auto ml-4 md:ml-0">
+            <button className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-[#F0F1F5] flex items-center justify-center group-hover:bg-[#E11584] group-hover:text-white transition-colors duration-300">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </button>
           </div>
         </div>
@@ -134,7 +137,7 @@ const FeaturesSection = () => (
 
 const SecondaryCTASection = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-16 pb-32">
-    <div className="w-full bg-black text-white rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_40px_rgb(0,0,0,0.15)] relative overflow-hidden">
+    <div className="w-full bg-black text-white rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 shadow-soft relative overflow-hidden">
       {/* Decorative subtle background circle */}
       <div className="absolute -right-20 -top-40 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
 
@@ -143,14 +146,14 @@ const SecondaryCTASection = () => (
         <p className="text-gray-300 text-xl md:text-2xl leading-relaxed">Start exploring resources that help you learn, practice and succeed.</p>
       </div>
       <div className="w-full md:w-auto relative z-10">
-        <button className="w-full md:w-auto whitespace-nowrap px-10 py-5 text-lg font-bold text-black bg-white rounded-full hover:bg-gray-100 hover:scale-105 transition-all active:scale-95 shadow-xl">Explore Now</button>
+        <button className="w-full md:w-auto whitespace-nowrap px-10 py-5 text-lg font-bold text-black bg-white rounded-full hover:bg-white hover:text-[#E11584] hover:scale-105 transition-all active:scale-95 shadow-xl focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2 focus:ring-offset-black">Explore Now</button>
       </div>
     </div>
   </section>
 );
 
 const Footer = () => (
-  <footer className="w-full bg-white pt-24 pb-12 px-4 md:px-8 border-t border-gray-100">
+  <footer className="w-full bg-white pt-24 pb-12 px-4 md:px-8 border-t border-gray-100 shadow-footer">
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
       <div className="flex flex-col">
         <h3 className="text-3xl font-bold text-black mb-2">Horizon</h3>
@@ -160,7 +163,7 @@ const Footer = () => (
 
       <div className="flex flex-col">
         <h4 className="text-xl font-bold text-black mb-8">Explore</h4>
-        <nav className="flex flex-col gap-5">
+        <nav className="flex flex-col gap-[12px] md:gap-5">
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">Library</Link>
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">Notes</Link>
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">Previous Papers</Link>
@@ -171,7 +174,7 @@ const Footer = () => (
 
       <div className="flex flex-col">
         <h4 className="text-xl font-bold text-black mb-8">Information</h4>
-        <nav className="flex flex-col gap-5">
+        <nav className="flex flex-col gap-[12px] md:gap-5">
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">Announcements</Link>
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">About</Link>
           <Link to="/" className="text-lg text-gray-500 hover:text-black transition-colors">Contact</Link>
@@ -186,9 +189,9 @@ const Footer = () => (
           <input
             type="email"
             placeholder="Enter your email"
-            className="w-full px-5 py-4 text-lg bg-[#F5F5F0] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-black placeholder-gray-400"
+            className="w-full px-5 py-4 text-lg bg-[#F0F1F5] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#E11584] placeholder-gray-400"
           />
-          <button className="w-full px-5 py-4 text-lg bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors active:scale-[0.98]">Subscribe</button>
+          <button className="w-full px-5 py-4 text-lg bg-black text-white font-bold rounded-2xl hover:bg-[#E11584] transition-colors active:scale-[0.98] focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Subscribe</button>
         </form>
       </div>
     </div>
@@ -200,7 +203,7 @@ const Footer = () => (
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col selection:bg-gray-200 selection:text-black">
+    <div className="min-h-screen w-full flex flex-col selection:bg-gray-200 selection:text-black bg-[#F0F1F5]">
       <Header />
       <main className="flex-1 w-full">
         <HeroSection />

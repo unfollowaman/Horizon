@@ -12,7 +12,7 @@ export default {
         'accent-yellow': '#FFFF00',
         ink: '#000000',
         paper: '#FFFFFF',
-        surface: '#F5F5F0',
+        surface: '#F0F1F5',
       },
       borderRadius: {
         none: '0px',
@@ -35,6 +35,9 @@ export default {
       },
       boxShadow: {
         elevated: '4px 4px 0px 0px #000000',
+        'soft': '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'nav': '0 2px 12px rgba(0, 0, 0, 0.08)',
+        'footer': '0 -1px 6px rgba(0, 0, 0, 0.05)',
       },
     },
   },
