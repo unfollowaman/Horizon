@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => (
-  <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-    <div className="flex items-center justify-between w-full max-w-5xl px-6 py-3 bg-white rounded-[2rem] shadow-nav border border-gray-100">
+  <header className="absolute top-2 left-0 right-0 z-50 flex justify-center px-4">
+    <div className="flex items-center justify-between w-full max-w-[95%] px-6 py-3 bg-white rounded-[2rem] shadow-nav border border-gray-100">
       <div className="flex items-center">
         <Link to="/" className="text-2xl font-bold tracking-tight text-black focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Horizon</Link>
       </div>
