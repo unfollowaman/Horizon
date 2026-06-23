@@ -30,11 +30,11 @@ const Header = () => (
 );
 
 const HeroSection = () => (
-  <section className="w-full max-w-6xl mx-auto px-4 pt-40 pb-20 md:pt-48 md:pb-32 flex flex-col md:flex-row items-center gap-12">
+  <section className="w-full max-w-6xl mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-center gap-12">
     <div className="flex-1 flex flex-col items-start text-left">
-      <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full mb-8">Your Path. Your Future.</span>
+      <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full mb-4">Your Path. Your Future.</span>
       <h1 className="text-5xl md:text-6xl lg:text-[72px] font-bold leading-[1.05] tracking-tight mb-8 text-black">Everything you need to learn, all in one place.</h1>
-      <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-lg leading-relaxed">
+      <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-lg leading-relaxed">
         Horizon provides students with curated educational resources, well-structured notes, and practice materials designed for success.
       </p>
       <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
@@ -43,7 +43,7 @@ const HeroSection = () => (
       </div>
     </div>
 
-    <div className="flex-1 w-full max-w-lg md:max-w-none mt-12 md:mt-0">
+    <div className="hidden md:block flex-1 w-full max-w-lg md:max-w-none mt-12 md:mt-0">
       <div className="w-full aspect-square bg-white rounded-[2.5rem] shadow-soft flex items-center justify-center p-8 border border-gray-100 relative overflow-hidden group">
         <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_#000_1px,_transparent_1px)]" style={{ backgroundSize: '24px 24px' }}></div>
 
