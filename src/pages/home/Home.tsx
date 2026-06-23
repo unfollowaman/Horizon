@@ -30,16 +30,16 @@ const Header = () => (
 );
 
 const HeroSection = () => (
-  <section className="w-full max-w-6xl mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-center gap-12">
+  <section className="w-full max-w-[95%] mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-start gap-12">
     <div className="flex-1 flex flex-col items-start text-left">
       <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full mb-4">Your Path. Your Future.</span>
-      <h1 className="text-5xl md:text-6xl lg:text-[72px] font-bold leading-[1.05] tracking-tight mb-8 text-black">Everything you need to learn, all in one place.</h1>
+      <h1 className="text-[36px] md:text-[58px] lg:text-[60px] font-bold leading-[1.05] tracking-tight mb-8 text-black">Everything you need to learn, all in one place.</h1>
       <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-lg leading-relaxed">
         Horizon provides students with curated educational resources, well-structured notes, and practice materials designed for success.
       </p>
       <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-black rounded-full hover:bg-[#E11584] hover:shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Explore Library</button>
-        <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-black bg-white rounded-full border border-gray-200 shadow-sm hover:border-[#E11584] hover:text-[#E11584] hover:shadow-[0_8px_20px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Browse Notes</button>
+        <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-white bg-black rounded-[4000px] hover:bg-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Explore Library</button>
+        <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-black bg-white rounded-[4000px] border border-gray-200 hover:border-[#E11584] hover:text-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Browse Notes</button>
       </div>
     </div>
 
@@ -108,7 +108,7 @@ const features = [
 ];
 
 const FeaturesSection = () => (
-  <section className="w-full max-w-6xl mx-auto px-4 py-24">
+  <section className="w-full max-w-[95%] mx-auto px-4 py-24">
     <div className="flex flex-col items-center text-center mb-20">
       <span className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase mb-4">WHAT YOU'LL GET</span>
       <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">Everything in one place</h2>
@@ -136,7 +136,7 @@ const FeaturesSection = () => (
 );
 
 const SecondaryCTASection = () => (
-  <section className="w-full max-w-6xl mx-auto px-4 py-16 pb-32">
+  <section className="w-full max-w-[95%] mx-auto px-4 py-16 pb-32">
     <div className="w-full bg-black text-white rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 shadow-soft relative overflow-hidden">
       {/* Decorative subtle background circle */}
       <div className="absolute -right-20 -top-40 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
@@ -154,7 +154,7 @@ const SecondaryCTASection = () => (
 
 const Footer = () => (
   <footer className="w-full bg-white pt-24 pb-12 px-4 md:px-8 border-t border-gray-100 shadow-footer">
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+    <div className="max-w-[95%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
       <div className="flex flex-col">
         <h3 className="text-3xl font-bold text-black mb-2">Horizon</h3>
         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">Your Path. Your Future.</p>
@@ -195,7 +195,7 @@ const Footer = () => (
         </form>
       </div>
     </div>
-    <div className="max-w-6xl mx-auto pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between text-base text-gray-400">
+    <div className="max-w-[95%] mx-auto pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between text-base text-gray-400">
       <p>© {new Date().getFullYear()} Horizon. All rights reserved.</p>
     </div>
   </footer>
