@@ -30,14 +30,19 @@ const Header = () => (
 );
 
 const HeroSection = () => (
-  <section className="w-full max-w-[95%] mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-start gap-12">
-    <div className="flex-1 flex flex-col items-start text-left">
-      <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full mb-4">BUILT FOR STUDENTS.</span>
-      <h1 className="text-[36px] md:text-[58px] lg:text-[60px] font-bold leading-[1.05] tracking-tight mb-8 text-black">Knowledge made accessible.</h1>
-      <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-lg leading-relaxed">
-        Curated study material designed to save time and improve results.
-      </p>
-      <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+  <section className="w-full max-w-[95%] mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-stretch gap-12">
+    <div className="flex-1 flex flex-col items-start text-left justify-start md:justify-between gap-6 md:gap-0">
+      <div className="flex flex-col items-start gap-6">
+        <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full">BUILT FOR STUDENTS.</span>
+        <div className="flex flex-col gap-6">
+          <h1 className="text-[36px] md:text-[58px] lg:text-[60px] font-bold leading-[1.05] tracking-tight text-black">Knowledge made accessible.</h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-lg leading-relaxed">
+            Curated study material designed to save time and improve results.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto mt-0 md:mt-auto">
         <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-white bg-black rounded-[4000px] hover:bg-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Explore Library</button>
         <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-black bg-white rounded-[4000px] border border-gray-200 hover:border-[#E11584] hover:text-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Browse Notes</button>
       </div>
