@@ -3,22 +3,22 @@ import { Link } from 'react-router-dom';
 
 const Header = () => (
   <header className="absolute top-2 left-0 right-0 z-50 flex justify-center px-4">
-    <div className="flex items-center justify-between w-full max-w-[95%] px-6 py-3 bg-white rounded-[2rem] shadow-nav border border-gray-100">
+    <div className="flex h-[75px] items-center justify-between w-full max-w-[95%] px-6 bg-white rounded-[25px] shadow-nav border border-gray-100">
       <div className="flex items-center">
         <Link to="/" className="text-2xl font-bold tracking-tight text-black focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Horizon</Link>
       </div>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex items-center gap-8">
-        <Link to="/" className="text-sm font-medium text-black hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Home</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Library</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Notes</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Previous Papers</Link>
-        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Announcements</Link>
+        <Link to="/" className="text-[25px] font-medium text-black hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Home</Link>
+        <Link to="/" className="text-[25px] font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Library</Link>
+        <Link to="/" className="text-[25px] font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Notes</Link>
+        <Link to="/" className="text-[25px] font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Previous Papers</Link>
+        <Link to="/" className="text-[25px] font-medium text-gray-500 hover:text-[#E11584] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E11584] rounded">Announcements</Link>
       </nav>
 
       <div className="hidden md:flex items-center">
-        <Link to="/" className="px-6 py-3 text-sm font-bold text-white bg-black rounded-full hover:bg-[#E11584] hover:shadow-lg transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Get Started</Link>
+        <Link to="/" className="px-6 py-3 text-[25px] font-bold text-white bg-black rounded-full hover:bg-[#E11584] hover:shadow-lg transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Get Started</Link>
       </div>
 
       {/* Mobile Menu Icon */}
@@ -30,19 +30,19 @@ const Header = () => (
 );
 
 const HeroSection = () => (
-  <section className="w-full max-w-[95%] mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-32 flex flex-col md:flex-row items-stretch gap-12">
-    <div className="flex-1 flex flex-col items-start text-left justify-start md:justify-between gap-6 md:gap-0">
-      <div className="flex flex-col items-start gap-6">
+  <section className="w-full max-w-[95%] mx-auto px-4 pt-[103px] pb-20 md:pb-32 flex flex-col md:flex-row items-stretch gap-12">
+    <div className="flex-1 flex flex-col items-start text-left justify-start gap-[100px]">
+      <div className="flex flex-col items-start gap-[40px]">
         <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-gray-600 bg-gray-200 rounded-full">BUILT FOR STUDENTS.</span>
-        <div className="flex flex-col gap-6">
-          <h1 className="text-[36px] md:text-[58px] lg:text-[60px] font-bold leading-[1.05] tracking-tight text-black">Knowledge made accessible.</h1>
+        <div className="flex flex-col gap-[40px]">
+          <h1 className="text-[36px] md:text-[58px] lg:text-[60px] font-bold leading-[40px] tracking-tight text-black">Knowledge made accessible.</h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-lg leading-relaxed">
             Curated study material designed to save time and improve results.
           </p>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto mt-0 md:mt-auto">
+      <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto mt-0">
         <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-white bg-black rounded-[4000px] hover:bg-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Explore Library</button>
         <button className="w-full sm:w-auto px-[28px] py-[10px] text-base font-bold text-black bg-white rounded-[4000px] border border-gray-200 hover:border-[#E11584] hover:text-[#E11584] hover:-translate-y-0.5 transition-all active:scale-95 focus:ring-2 focus:ring-[#E11584] focus:ring-offset-2">Browse Notes</button>
       </div>
