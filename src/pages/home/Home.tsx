@@ -7,12 +7,12 @@ const Header = () => (
     <div className="flex w-full max-w-[1200px] justify-between items-center gap-2 md:gap-4 no-scrollbar overflow-x-auto overflow-y-hidden pb-4 -mb-4 md:pb-0 md:-mb-0 snap-x px-2 md:px-0">
 
       {/* Tile 1: Logo */}
-      <div className="flex h-12 md:h-14 items-center px-5 md:px-6 bg-white rounded-full shadow-nav border border-gray-100 shrink-0 snap-start">
+      <div className="flex h-12 md:h-14 items-center px-5 md:px-6 bg-white rounded-full border border-gray-100 shrink-0 snap-start">
         <Link to="/" className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm whitespace-nowrap">Horizon</Link>
       </div>
 
       {/* Tile 2: Navigation */}
-      <nav className="flex h-12 md:h-14 items-center px-1 md:px-2 bg-white rounded-full shadow-nav border border-gray-100 shrink-0 snap-center">
+      <nav className="flex h-12 md:h-14 items-center px-1 md:px-2 bg-white rounded-full border border-gray-100 shrink-0 snap-center">
         <div className="flex items-center gap-1 bg-surface px-1 py-1 rounded-full border border-gray-100">
           <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-slate-900 bg-white shadow-sm rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap">Home</Link>
           <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Library</Link>
@@ -23,12 +23,12 @@ const Header = () => (
       </nav>
 
       {/* Tile 3: Get Started */}
-      <Link to="/" className="flex h-12 md:h-14 px-6 md:px-8 items-center justify-center text-sm font-medium text-white bg-slate-900 rounded-full shadow-nav hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap shrink-0 snap-end">
+      <Link to="/" className="flex h-12 md:h-14 px-6 md:px-8 items-center justify-center text-sm font-medium text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap shrink-0 snap-end">
         Get Started
       </Link>
 
       {/* Tile 4: Theme Toggle */}
-      <button className="flex h-12 md:h-14 w-12 md:w-14 shrink-0 items-center justify-center bg-white rounded-full shadow-nav border border-gray-100 text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent snap-end" aria-label="Toggle theme">
+      <button className="flex h-12 md:h-14 w-12 md:w-14 shrink-0 items-center justify-center bg-white rounded-full border border-gray-100 text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent snap-end" aria-label="Toggle theme">
         <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
