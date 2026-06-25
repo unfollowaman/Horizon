@@ -3,39 +3,39 @@ import { Link } from 'react-router-dom';
 
 const Header = () => (
   <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
-    <div className="flex h-6 md:h-[72px] items-center justify-between w-full max-w-[1200px] px-6 md:px-8 bg-white rounded-full shadow-nav border border-gray-100">
+    {/* Unified Responsive Header */}
+    <div className="flex w-full max-w-[1200px] justify-between items-center gap-2 md:gap-4 no-scrollbar overflow-x-auto overflow-y-hidden pb-4 -mb-4 md:pb-0 md:-mb-0 snap-x px-2 md:px-0">
 
-      {/* Logo */}
-      <div className="flex items-center">
-        <Link to="/" className="text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm">Horizon</Link>
+      {/* Tile 1: Logo */}
+      <div className="flex h-12 md:h-14 items-center px-5 md:px-6 bg-white rounded-full shadow-nav border border-gray-100 shrink-0 snap-start">
+        <Link to="/" className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm whitespace-nowrap">Horizon</Link>
       </div>
 
-      {/* Desktop Nav - Centered Pill */}
-      <nav className="hidden md:flex items-center gap-1 bg-surface px-1 py-1 rounded-full border border-gray-100">
-        <Link to="/" className="px-5 py-2 text-sm font-medium text-slate-900 bg-white shadow-sm rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent">Home</Link>
-        <Link to="/" className="px-5 py-2 text-sm font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full">Library</Link>
-        <Link to="/" className="px-5 py-2 text-sm font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full">Notes</Link>
-        <Link to="/" className="px-5 py-2 text-sm font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full">Past Papers</Link>
-        <Link to="/" className="px-5 py-2 text-sm font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full">Announcements</Link>
+      {/* Tile 2: Navigation */}
+      <nav className="flex h-12 md:h-14 items-center px-1 md:px-2 bg-white rounded-full shadow-nav border border-gray-100 shrink-0 snap-center">
+        <div className="flex items-center gap-1 bg-surface px-1 py-1 rounded-full border border-gray-100">
+          <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-slate-900 bg-white shadow-sm rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent whitespace-nowrap">Home</Link>
+          <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Library</Link>
+          <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Notes</Link>
+          <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Past Papers</Link>
+          <Link to="/" className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-[13px] font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Announcements</Link>
+        </div>
       </nav>
 
-      {/* Actions */}
-      <div className="hidden md:flex items-center gap-3">
-        <Link to="/" className="px-6 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">Get Started</Link>
+      {/* Tile 3: Get Started */}
+      <Link to="/" className="flex h-12 md:h-14 px-6 md:px-8 items-center justify-center text-sm font-medium text-white bg-slate-900 rounded-full shadow-nav hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap shrink-0 snap-end">
+        Get Started
+      </Link>
 
-        {/* Visual Theme Toggle */}
-        <button className="w-10 h-10 flex items-center justify-center text-slate-600 bg-surface rounded-full hover:text-slate-900 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle theme">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile Menu Icon */}
-      <button className="md:hidden p-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-md">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+      {/* Tile 4: Theme Toggle */}
+      <button className="flex h-12 md:h-14 w-12 md:w-14 shrink-0 items-center justify-center bg-white rounded-full shadow-nav border border-gray-100 text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent snap-end" aria-label="Toggle theme">
+        <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
       </button>
 
+      {/* Invisible spacer for mobile scroll padding right edge */}
+      <div className="md:hidden shrink-0 w-2 h-full"></div>
     </div>
   </header>
 );
