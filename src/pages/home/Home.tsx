@@ -149,7 +149,7 @@ const Header = () => {
 
 
 const HeroSection = () => (
-  <section className="w-full px-4 md:px-8 pt-32 pb-16 md:pt-48 md:pb-24 flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+  <section className="w-full px-4 md:px-8 pt-[119px] pb-[32px] md:pt-[163px] md:pb-[32px] flex flex-col md:flex-row items-center gap-12 lg:gap-20">
     {/* Left Content Column */}
     <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
 
@@ -159,7 +159,7 @@ const HeroSection = () => (
       </div>
 
       {/* Main Typography */}
-      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-6 max-w-[800px]">
+      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-[52px] max-w-[800px]">
         Everything you<br />
         need to learn,<br />
         all in one place.
@@ -259,10 +259,9 @@ const features = [
 ];
 
 const FeaturesSection = () => (
-  <section className="w-full px-4 md:px-8 py-24 md:py-32">
-    <div className="flex flex-col items-center text-center mb-16 md:mb-24">
-      <span className="text-label-caps text-slate-500 mb-6">WHAT YOU'LL GET</span>
-      <h2 className="text-4xl md:text-display-section text-slate-900 mb-6">Everything in one place</h2>
+  <section className="w-full px-4 md:px-8 pt-[32px] pb-24 md:pt-[32px] md:pb-32">
+    <div className="flex flex-col items-center text-center mb-[44px] md:mb-[76px]">
+      <h2 className="text-4xl md:text-display-section text-slate-900 mb-[52px]">Everything in one place</h2>
       <p className="text-lg md:text-body-large text-slate-600 max-w-2xl">Curated resources to help you study better and achieve more.</p>
     </div>
 
