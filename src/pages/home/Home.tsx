@@ -1,41 +1,152 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const Header = () => (
-  <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
-    {/* Unified Responsive Header */}
-    <div className="flex w-full max-w-[1200px] justify-between items-center gap-0 md:gap-4 px-0 md:px-0">
 
-      {/* Tile 1: Logo */}
-      <div className="flex h-11 md:h-14 items-center px-1 md:px-6 bg-white rounded-full border border-gray-100 shrink-0">
-        <Link to="/" className="text-[8px] md:text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm whitespace-nowrap">Horizon</Link>
+const navLinks = [
+  { label: 'Home', path: '/', mobileOnly: true },
+  { label: 'Tools', path: '/', mobileOnly: true },
+  { label: 'About', path: '/', mobileOnly: true },
+  { label: 'Features', path: '/', mobileOnly: true },
+  { label: 'Roadmap', path: '/', mobileOnly: true },
+  { label: 'Library', path: '/', mobileOnly: false },
+  { label: 'Notes', path: '/', mobileOnly: false },
+  { label: 'Past Papers', path: '/', mobileOnly: false },
+  { label: 'Announcements', path: '/', mobileOnly: false },
+];
+
+const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
+
+  const closeMenu = () => setIsMobileMenuOpen(false);
+
+  return (
+    <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
+      {/* Desktop Header */}
+      <div className="hidden md:flex w-full max-w-[1200px] justify-between items-center gap-4 px-0">
+        {/* Tile 1: Logo */}
+        <div className="flex h-14 items-center px-6 bg-white rounded-full border border-gray-100 shrink-0">
+          <Link to="/" className="text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm whitespace-nowrap">Horizon</Link>
+        </div>
+
+        {/* Tile 2: Navigation */}
+        <nav className="flex h-14 items-center px-2 bg-white rounded-full border border-gray-100 shrink-0">
+          <div className="flex items-center gap-0 bg-surface p-1 rounded-full border border-gray-100">
+            {navLinks.filter(link => !link.mobileOnly).map((link, index) => (
+              <Link key={index} to={link.path} className="px-4 py-1.5 text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">{link.label}</Link>
+            ))}
+          </div>
+        </nav>
+
+        {/* Tile 3: Get Started */}
+        <Link to="/" className="flex h-14 px-8 items-center justify-center text-sm font-medium tracking-tight text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap shrink-0">
+          Get Started
+        </Link>
+
+        {/* Tile 4: Theme Toggle */}
+        <button className="flex h-14 w-14 shrink-0 items-center justify-center bg-white rounded-full border border-gray-100 text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle theme">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
       </div>
 
-      {/* Tile 2: Navigation */}
-      <nav className="flex h-11 md:h-14 items-center px-0 md:px-2 bg-white rounded-full border border-gray-100 shrink-0">
-        <div className="flex items-center gap-0 bg-surface p-0 md:p-1 rounded-full border border-gray-100">
-          <Link to="/" className="px-0.5 md:px-4 py-1 md:py-1.5 text-[6px] md:text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Library</Link>
-          <Link to="/" className="px-0.5 md:px-4 py-1 md:py-1.5 text-[6px] md:text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Notes</Link>
-          <Link to="/" className="px-0.5 md:px-4 py-1 md:py-1.5 text-[6px] md:text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Past Papers</Link>
-          <Link to="/" className="px-0.5 md:px-4 py-1 md:py-1.5 text-[6px] md:text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">Announcements</Link>
+      {/* Mobile Header Component */}
+      <div className="flex md:hidden flex-col w-full">
+        {/* Backdrop for open menu */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[-1]" onClick={closeMenu} aria-hidden="true" />
+        )}
+
+        <div className="relative w-full">
+          {/* Top Pill / Closed State */}
+          <div className={`flex items-center justify-between w-full h-[64px] px-5 bg-white border border-gray-100 transition-all duration-300 ease-in-out z-10 ${isMobileMenuOpen ? 'rounded-t-[32px] border-b-0' : 'rounded-full shadow-card'}`}>
+            <Link to="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm" onClick={closeMenu}>
+              <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-8 h-8" />
+              <span className="text-xl font-bold tracking-tight text-slate-900">Horizon</span>
+            </Link>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex items-center justify-center w-11 h-11 rounded-full text-slate-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors"
+              aria-expanded={isMobileMenuOpen}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Expanded Menu */}
+          <div
+            className={`absolute top-[64px] left-0 w-full bg-white border border-gray-100 border-t-0 rounded-b-[32px] overflow-hidden transition-all duration-300 ease-in-out shadow-card ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100 pointer-events-auto py-2 pb-6' : 'max-h-0 opacity-0 pointer-events-none py-0 pb-0'}`}
+          >
+            {/* Theme Toggle at top right of expanded menu */}
+            <div className="flex justify-end px-5 mb-2">
+              <button className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle theme">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </button>
+            </div>
+
+            <nav className="flex flex-col px-5 mb-6 overflow-y-auto max-h-[50vh] no-scrollbar">
+              {navLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.path}
+                  onClick={closeMenu}
+                  className="px-2 py-4 text-lg font-medium text-slate-700 hover:text-slate-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 focus:text-slate-900 rounded-2xl transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Get Started CTA at bottom */}
+            <div className="px-5">
+              <Link
+                to="/"
+                onClick={closeMenu}
+                className="flex w-full h-[56px] items-center justify-center text-base font-medium tracking-tight text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+              >
+                Get started
+              </Link>
+            </div>
+          </div>
         </div>
-      </nav>
+      </div>
+    </header>
+  );
+};
 
-      {/* Tile 3: Get Started */}
-      <Link to="/" className="flex h-11 md:h-14 px-1.5 md:px-8 items-center justify-center text-[7px] md:text-sm font-medium tracking-tight text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap shrink-0">
-        Get Started
-      </Link>
-
-      {/* Tile 4: Theme Toggle */}
-      <button className="flex h-11 md:h-14 w-8 md:w-14 shrink-0 items-center justify-center bg-white rounded-full border border-gray-100 text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle theme">
-        <svg className="w-3.5 h-3.5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </button>
-
-    </div>
-  </header>
-);
 
 const HeroSection = () => (
   <section className="w-full px-4 md:px-8 pt-32 pb-16 md:pt-48 md:pb-24 flex flex-col md:flex-row items-center gap-12 lg:gap-20">
