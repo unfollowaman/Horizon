@@ -4,27 +4,29 @@ import { Link } from 'react-router-dom';
 
 const navLinks = [
   {
-    label: 'Tools',
+    label: 'MCQ sheet',
     path: '/',
-    mobileOnly: true,
+    showOnMobile: true,
+    showOnDesktop: false,
     icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
   },
   {
-    label: 'About',
+    label: 'PYQ Papers',
     path: '/',
-    mobileOnly: true,
+    showOnMobile: true,
+    showOnDesktop: false,
     icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
   },
   {
-    label: 'Features',
+    label: 'Library',
     path: '/',
-    mobileOnly: true,
+    showOnMobile: true,
+    showOnDesktop: true,
     icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
   },
-  { label: 'Library', path: '/', mobileOnly: false },
-  { label: 'Notes', path: '/', mobileOnly: false },
-  { label: 'Past Papers', path: '/', mobileOnly: false },
-  { label: 'Announcements', path: '/', mobileOnly: false },
+  { label: 'Notes', path: '/', showOnMobile: false, showOnDesktop: true },
+  { label: 'Past Papers', path: '/', showOnMobile: false, showOnDesktop: true },
+  { label: 'Announcements', path: '/', showOnMobile: false, showOnDesktop: true },
 ];
 
 const Header = () => {
@@ -65,7 +67,7 @@ const Header = () => {
         {/* Tile 2: Navigation */}
         <nav className="flex h-14 items-center px-2 bg-white rounded-full border border-gray-100 shrink-0">
           <div className="flex items-center gap-0 bg-surface p-1 rounded-full border border-gray-100">
-            {navLinks.filter(link => !link.mobileOnly).map((link, index) => (
+            {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
               <Link key={index} to={link.path} className="px-4 py-1.5 text-[13px] tracking-tight font-medium text-gray-500 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-full whitespace-nowrap">{link.label}</Link>
             ))}
           </div>
@@ -87,7 +89,7 @@ const Header = () => {
       {/* Mobile Header Component */}
       <div className="flex md:hidden flex-col w-full">
         {/* Backdrop for open menu */}
-        <div className={`fixed inset-0 bg-[rgba(0,0,0,0.2)] backdrop-blur-[6px] z-[-1] transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={closeMenu} aria-hidden="true" />
+        <div className={`fixed inset-0 bg-[rgba(0,0,0,0.1)] backdrop-blur-[6px] z-[-1] transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={closeMenu} aria-hidden="true" />
 
         <div className="relative w-full">
           {/* Top Pill / Closed State */}
@@ -117,15 +119,15 @@ const Header = () => {
 
           {/* Expanded Menu */}
           <div
-            className={`absolute top-[76px] left-0 w-full bg-white/70 backdrop-blur-[12px] border border-white/40 rounded-[32px] shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-[45vh] min-h-[380px] max-h-[450px] p-5 ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
+            className={`absolute top-[76px] left-0 w-full bg-white/70 backdrop-blur-[12px] border border-white/40 rounded-[32px] shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-auto max-h-[85vh] p-5 ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
           >
             <nav className="flex flex-col mb-6 overflow-y-auto no-scrollbar w-full">
-              {navLinks.filter(link => link.mobileOnly).map((link, index) => (
+              {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
                 <Link
                   key={index}
                   to={link.path}
                   onClick={closeMenu}
-                  className={`flex items-center justify-between py-5 text-[17px] font-medium text-slate-900 hover:bg-gray-50/50 focus:outline-none focus:bg-gray-50/50 rounded-2xl transition-colors ${index !== 2 ? 'border-b border-gray-200/60' : ''}`}
+                  className={`flex items-center justify-between py-2 min-h-[44px] text-[17px] font-medium text-slate-900 hover:bg-gray-50/50 focus:outline-none focus:bg-gray-50/50 rounded-2xl transition-colors ${index !== array.length - 1 ? 'border-b border-gray-200/60' : ''}`}
                 >
                   <div className="flex items-center gap-4">
                     {link.icon}
