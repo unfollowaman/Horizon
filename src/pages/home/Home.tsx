@@ -186,18 +186,18 @@ const HeroSection = () => (
 
       {/* Badge */}
       <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-8">
-        <span className="text-sm font-medium text-slate-600">Your Path. Your Future.</span>
+        <span className="text-sm font-medium text-slate-600">CURATED FOR LEARNING.</span>
       </div>
 
       {/* Main Typography */}
       <h1 className="text-5xl md:text-display-hero text-slate-900 mb-[52px] max-w-[800px]">
-        Everything you<br />
-        need to learn,<br />
-        all in one place.
+        Resources<br />
+        for every<br />
+        learner.
       </h1>
 
       <p className="text-lg md:text-body-large text-slate-600 max-w-[500px] mb-10">
-        Horizon is an educational platform built for students to access study materials, notes, past papers and important announcements — anytime, anywhere.
+        A growing collection of educational resources for students.
       </p>
 
       {/* Actions */}
