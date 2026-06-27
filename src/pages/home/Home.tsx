@@ -56,7 +56,7 @@ const Header = () => {
   const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
+    <header className="fixed top-[5px] left-0 right-0 z-50 flex justify-center px-4 w-full">
       {/* Desktop Header */}
       <div className="hidden md:flex w-full max-w-[1200px] justify-between items-center gap-4 px-4 py-2 bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.07)] mx-6">
         {/* Tile 1: Logo */}
@@ -180,7 +180,7 @@ const Header = () => {
 
 
 const HeroSection = () => (
-  <section className="w-full max-w-[1200px] px-4 mx-auto pt-[104px] pb-6 md:pt-[104px] md:pb-8 flex flex-col">
+  <section className="w-full max-w-[1200px] px-4 mx-auto pt-[93px] pb-6 md:pt-[93px] md:pb-8 flex flex-col">
     <div className="flex flex-col md:flex-row items-center md:items-start gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-12 bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.07)] md:mx-6">
       {/* Left Content Column */}
       <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
