@@ -183,12 +183,7 @@ const HeroSection = () => (
   <section className="w-full max-w-[1200px] px-4 mx-auto pt-[93px] pb-6 md:pt-[93px] md:pb-8 flex flex-col">
     <div className="flex flex-col md:flex-row items-center md:items-start gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-12 bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.07)] md:mx-6">
       {/* Left Content Column */}
-      <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
-
-      {/* Badge */}
-      <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-2">
-        <span className="text-sm font-medium text-slate-600">CURATED FOR LEARNING.</span>
-      </div>
+      <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left justify-start w-full">
 
       {/* Main Typography */}
       <h1 className="text-5xl md:text-display-hero text-slate-900 mb-2 max-w-[800px]">
@@ -202,11 +197,11 @@ const HeroSection = () => (
       </p>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-        <button className="w-full sm:w-auto px-8 py-3.5 text-base font-medium text-white bg-slate-900 rounded-lg hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+      <div className="flex flex-row items-center justify-center md:justify-start gap-2 sm:gap-4 w-full sm:w-auto mt-2 md:mt-0">
+        <button className="flex-1 sm:flex-none px-2 sm:px-8 py-3.5 text-[15px] sm:text-base font-medium text-white bg-slate-900 rounded-lg hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap">
           Explore Library
         </button>
-        <button className="w-full sm:w-auto px-8 py-3.5 text-base font-medium text-slate-900 bg-surface rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+        <button className="flex-1 sm:flex-none px-2 sm:px-8 py-3.5 text-[15px] sm:text-base font-medium text-slate-900 bg-surface rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 whitespace-nowrap">
           Browse Notes
         </button>
       </div>
