@@ -3,11 +3,24 @@ import { Link } from 'react-router-dom';
 
 
 const navLinks = [
-  { label: 'Home', path: '/', mobileOnly: true },
-  { label: 'Tools', path: '/', mobileOnly: true },
-  { label: 'About', path: '/', mobileOnly: true },
-  { label: 'Features', path: '/', mobileOnly: true },
-  { label: 'Roadmap', path: '/', mobileOnly: true },
+  {
+    label: 'Tools',
+    path: '/',
+    mobileOnly: true,
+    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+  },
+  {
+    label: 'About',
+    path: '/',
+    mobileOnly: true,
+    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+  },
+  {
+    label: 'Features',
+    path: '/',
+    mobileOnly: true,
+    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+  },
   { label: 'Library', path: '/', mobileOnly: false },
   { label: 'Notes', path: '/', mobileOnly: false },
   { label: 'Past Papers', path: '/', mobileOnly: false },
@@ -74,13 +87,11 @@ const Header = () => {
       {/* Mobile Header Component */}
       <div className="flex md:hidden flex-col w-full">
         {/* Backdrop for open menu */}
-        {isMobileMenuOpen && (
-          <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[-1]" onClick={closeMenu} aria-hidden="true" />
-        )}
+        <div className={`fixed inset-0 bg-[rgba(0,0,0,0.2)] backdrop-blur-[6px] z-[-1] transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={closeMenu} aria-hidden="true" />
 
         <div className="relative w-full">
           {/* Top Pill / Closed State */}
-          <div className={`flex items-center justify-between w-full h-[64px] px-5 bg-white border border-gray-100 transition-all duration-300 ease-in-out z-10 ${isMobileMenuOpen ? 'rounded-t-[32px] border-b-0' : 'rounded-full shadow-card'}`}>
+          <div className="flex items-center justify-between w-full h-[64px] px-5 bg-white border border-gray-100 transition-all duration-300 ease-in-out z-10 relative rounded-full shadow-card">
             <Link to="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm" onClick={closeMenu}>
               <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-8 h-8" />
               <span className="text-xl font-bold tracking-tight text-slate-900">Horizon</span>
@@ -106,36 +117,31 @@ const Header = () => {
 
           {/* Expanded Menu */}
           <div
-            className={`absolute top-[64px] left-0 w-full bg-white border border-gray-100 border-t-0 rounded-b-[32px] overflow-hidden transition-all duration-300 ease-in-out shadow-card ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100 pointer-events-auto py-2 pb-6' : 'max-h-0 opacity-0 pointer-events-none py-0 pb-0'}`}
+            className={`absolute top-[76px] left-0 w-full bg-white/70 backdrop-blur-[12px] border border-white/40 rounded-[32px] shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-[45vh] min-h-[380px] max-h-[450px] p-5 ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
           >
-            {/* Theme Toggle at top right of expanded menu */}
-            <div className="flex justify-end px-5 mb-2">
-              <button className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-600 hover:text-slate-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle theme">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </button>
-            </div>
-
-            <nav className="flex flex-col px-5 mb-6 overflow-y-auto max-h-[50vh] no-scrollbar">
-              {navLinks.map((link, index) => (
+            <nav className="flex flex-col mb-6 overflow-y-auto no-scrollbar w-full">
+              {navLinks.filter(link => link.mobileOnly).map((link, index) => (
                 <Link
                   key={index}
                   to={link.path}
                   onClick={closeMenu}
-                  className="px-2 py-4 text-lg font-medium text-slate-700 hover:text-slate-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 focus:text-slate-900 rounded-2xl transition-colors"
+                  className={`flex items-center justify-between py-5 text-[17px] font-medium text-slate-900 hover:bg-gray-50/50 focus:outline-none focus:bg-gray-50/50 rounded-2xl transition-colors ${index !== 2 ? 'border-b border-gray-200/60' : ''}`}
                 >
-                  {link.label}
+                  <div className="flex items-center gap-4">
+                    {link.icon}
+                    <span>{link.label}</span>
+                  </div>
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" /></svg>
                 </Link>
               ))}
             </nav>
 
             {/* Get Started CTA at bottom */}
-            <div className="px-5">
+            <div className="mt-auto">
               <Link
                 to="/"
                 onClick={closeMenu}
-                className="flex w-full h-[56px] items-center justify-center text-base font-medium tracking-tight text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                className="flex w-full h-[56px] items-center justify-center text-[15px] font-medium tracking-tight text-white bg-slate-900 rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
               >
                 Get started
               </Link>
