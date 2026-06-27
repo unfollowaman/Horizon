@@ -93,15 +93,38 @@ const Header = () => {
 
         <div className="relative w-full">
           {/* Top Pill / Closed State */}
-          <div className="flex items-center justify-between w-full h-[64px] px-5 bg-white border border-gray-100 transition-all duration-300 ease-in-out z-10 relative rounded-full shadow-card">
-            <Link to="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm" onClick={closeMenu}>
+          <div
+            className="flex items-center justify-between w-full h-[64px] px-5 transition-all duration-300 ease-in-out z-30 relative rounded-full overflow-visible"
+            style={{
+              background: 'rgba(255, 255, 255, 0.55)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(255, 255, 255, 0.2)'
+            }}
+          >
+            {/* Top rim highlight */}
+            <span
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '8%',
+                right: '8%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.9) 30%, rgba(255,255,255,0.9) 70%, transparent)',
+                borderRadius: '9999px',
+                pointerEvents: 'none'
+              }}
+            />
+            <Link to="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm relative z-10" onClick={closeMenu}>
               <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-8 h-8" />
               <span className="text-xl font-bold tracking-tight text-slate-900">Horizon</span>
             </Link>
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex items-center justify-center w-11 h-11 rounded-full text-slate-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors"
+              className="flex items-center justify-center w-11 h-11 rounded-full text-slate-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors relative z-10"
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -119,7 +142,7 @@ const Header = () => {
 
           {/* Expanded Menu */}
           <div
-            className={`absolute top-[76px] left-0 w-full bg-white/70 backdrop-blur-[12px] border border-white/40 rounded-[32px] shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-auto max-h-[85vh] p-5 ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
+            className={`fixed top-0 left-0 right-0 w-full bg-white/70 backdrop-blur-[12px] border-b border-white/40 shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-auto max-h-[50dvh] overflow-y-auto pt-[96px] pb-5 px-5 rounded-b-[32px] ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
           >
             <nav className="flex flex-col mb-6 overflow-y-auto no-scrollbar w-full">
               {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
