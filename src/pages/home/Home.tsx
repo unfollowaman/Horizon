@@ -180,23 +180,24 @@ const Header = () => {
 
 
 const HeroSection = () => (
-  <section className="w-full px-4 md:px-8 pt-[112px] pb-6 md:pt-[144px] md:pb-8 flex flex-col md:flex-row items-center md:items-start gap-12 lg:gap-20">
-    {/* Left Content Column */}
-    <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
+  <section className="w-full max-w-[1200px] px-4 mx-auto pt-[104px] pb-6 md:pt-[104px] md:pb-8 flex flex-col">
+    <div className="flex flex-col md:flex-row items-center md:items-start gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-12 bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.07)] md:mx-6">
+      {/* Left Content Column */}
+      <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
 
       {/* Badge */}
-      <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-4">
+      <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-2">
         <span className="text-sm font-medium text-slate-600">CURATED FOR LEARNING.</span>
       </div>
 
       {/* Main Typography */}
-      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-4 max-w-[800px]">
+      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-2 max-w-[800px]">
         Resources<br />
         for every<br />
         learner.
       </h1>
 
-      <p className="text-lg md:text-body-large text-slate-600 max-w-[500px] mb-8">
+      <p className="text-lg md:text-body-large text-slate-600 max-w-[500px] mb-4">
         A growing collection of educational resources for students.
       </p>
 
@@ -252,6 +253,7 @@ const HeroSection = () => (
           <path d="M290 160 L270 190 M270 150 L240 170 M310 170 L300 200" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </div>
+    </div>
     </div>
   </section>
 );
