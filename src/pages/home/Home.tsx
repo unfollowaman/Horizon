@@ -8,21 +8,21 @@ const navLinks = [
     path: '/',
     showOnMobile: true,
     showOnDesktop: false,
-    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+    icon: <svg className="w-[20px] h-[20px] text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
   },
   {
     label: 'PYQ Papers',
     path: '/',
     showOnMobile: true,
     showOnDesktop: false,
-    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+    icon: <svg className="w-[20px] h-[20px] text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
   },
   {
     label: 'Library',
     path: '/',
     showOnMobile: true,
     showOnDesktop: true,
-    icon: <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+    icon: <svg className="w-[20px] h-[20px] text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
   },
   { label: 'Notes', path: '/', showOnMobile: false, showOnDesktop: true },
   { label: 'Past Papers', path: '/', showOnMobile: false, showOnDesktop: true },
@@ -142,21 +142,21 @@ const Header = () => {
 
           {/* Expanded Menu */}
           <div
-            className={`fixed top-0 left-0 right-0 w-full bg-white/70 backdrop-blur-[12px] border-b border-white/40 shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-auto max-h-[50dvh] overflow-y-auto pt-[96px] pb-5 px-5 rounded-b-[32px] ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
+            className={`fixed top-0 left-4 right-4 w-auto bg-white/70 backdrop-blur-[12px] border-b border-white/40 shadow-lg transition-all duration-200 ease-out z-20 flex flex-col h-auto max-h-[50dvh] overflow-y-auto pt-[96px] pb-4 px-5 rounded-b-[32px] ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-4 opacity-0 pointer-events-none'}`}
           >
-            <nav className="flex flex-col mb-6 overflow-y-auto no-scrollbar w-full">
+            <nav className="flex flex-col mb-[56px] overflow-y-auto no-scrollbar w-full">
               {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
                 <Link
                   key={index}
                   to={link.path}
                   onClick={closeMenu}
-                  className={`flex items-center justify-between py-2 min-h-[44px] text-[17px] font-medium text-slate-900 hover:bg-gray-50/50 focus:outline-none focus:bg-gray-50/50 rounded-2xl transition-colors ${index !== array.length - 1 ? 'border-b border-gray-200/60' : ''}`}
+                  className={`flex items-center justify-between py-4 min-h-[56px] text-[18px] font-medium text-slate-900 hover:bg-gray-50/50 focus:outline-none focus:bg-gray-50/50 rounded-2xl transition-colors ${index !== array.length - 1 ? 'border-b border-gray-200/60' : ''}`}
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-[14px]">
                     {link.icon}
-                    <span>{link.label}</span>
+                    <span className="tracking-tight">{link.label}</span>
                   </div>
-                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" /></svg>
+                  <svg className="w-[16px] h-[16px] text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </Link>
               ))}
             </nav>
