@@ -58,7 +58,7 @@ const Header = () => {
   return (
     <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
       {/* Desktop Header */}
-      <div className="hidden md:flex w-full max-w-[1200px] justify-between items-center gap-4 px-0">
+      <div className="hidden md:flex w-full max-w-[1200px] justify-between items-center gap-4 px-4 py-2 bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.07)] mx-6">
         {/* Tile 1: Logo */}
         <div className="flex h-14 items-center px-6 bg-white rounded-full border border-gray-100 shrink-0">
           <Link to="/" className="text-2xl font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent rounded-sm whitespace-nowrap">Horizon</Link>
@@ -180,23 +180,23 @@ const Header = () => {
 
 
 const HeroSection = () => (
-  <section className="w-full px-4 md:px-8 pt-[119px] pb-[32px] md:pt-[163px] md:pb-[32px] flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+  <section className="w-full px-4 md:px-8 pt-[112px] pb-6 md:pt-[144px] md:pb-8 flex flex-col md:flex-row items-center md:items-start gap-12 lg:gap-20">
     {/* Left Content Column */}
     <div className="flex-1 flex flex-col items-start text-left justify-start w-full">
 
       {/* Badge */}
-      <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-8">
+      <div className="inline-flex items-center px-4 py-2 bg-surface rounded-full mb-4">
         <span className="text-sm font-medium text-slate-600">CURATED FOR LEARNING.</span>
       </div>
 
       {/* Main Typography */}
-      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-[52px] max-w-[800px]">
+      <h1 className="text-5xl md:text-display-hero text-slate-900 mb-4 max-w-[800px]">
         Resources<br />
         for every<br />
         learner.
       </h1>
 
-      <p className="text-lg md:text-body-large text-slate-600 max-w-[500px] mb-10">
+      <p className="text-lg md:text-body-large text-slate-600 max-w-[500px] mb-8">
         A growing collection of educational resources for students.
       </p>
 
@@ -213,7 +213,7 @@ const HeroSection = () => (
     </div>
 
     {/* Right Illustration Column - Hidden on Mobile */}
-    <div className="hidden md:flex flex-1 w-full justify-end">
+    <div className="hidden md:flex flex-1 w-full justify-end md:-mt-8">
       <div className="w-full max-w-[500px] aspect-[4/3] relative flex items-center justify-center">
         {/* We use a structured SVG composition to mimic the sketch style seen in the reference */}
         <svg viewBox="0 0 500 375" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full object-contain mix-blend-multiply opacity-90">
