@@ -159,7 +159,7 @@ const features = [
 ];
 
 const FeaturesSection = () => (
-  <section className="w-full bg-[#03111A] px-6 py-24 md:py-32">
+  <section className="w-full bg-[#03111A] px-6 pt-12 pb-24 md:pt-16 md:pb-32">
     <div className="max-w-[1200px] mx-auto flex flex-col">
       <div className="flex flex-col items-center text-center mb-16 md:mb-20">
         <h2 className="text-4xl md:text-5xl text-white font-normal" style={{ fontFamily: "'Instrument Serif', serif" }}>Everything in one place</h2>
