@@ -174,9 +174,38 @@ const FeaturesSection = () => (
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((f, i) => (
-          <div key={i} className={`liquid-glass rounded-2xl p-6 flex flex-col animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
-            <h3 className="text-white text-lg font-medium mb-3">{f.title}</h3>
-            <p className="text-[#9A9AA8] text-sm leading-relaxed">{f.desc}</p>
+          <div key={i} className={`liquid-glass rounded-2xl p-6 flex flex-col animate-fade-rise relative overflow-hidden ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+            {/* Aurora blobs */}
+            <div
+              className="aurora-blob pointer-events-none absolute -top-8 -left-8 h-40 w-40 rounded-full opacity-40"
+              style={{
+                background: 'radial-gradient(circle, #ed254e 0%, transparent 70%)',
+                filter: 'blur(55px)',
+                animation: 'aurora-blob-1 8s ease-in-out infinite',
+              }}
+            />
+            <div
+              className="aurora-blob pointer-events-none absolute top-1/2 -right-10 h-36 w-36 rounded-full opacity-35"
+              style={{
+                background: 'radial-gradient(circle, #c41f42 0%, transparent 70%)',
+                filter: 'blur(50px)',
+                animation: 'aurora-blob-2 11s ease-in-out infinite',
+                animationDelay: '2s',
+              }}
+            />
+            <div
+              className="aurora-blob pointer-events-none absolute -bottom-6 left-1/3 h-32 w-32 rounded-full opacity-30"
+              style={{
+                background: 'radial-gradient(circle, #f2527a 0%, transparent 70%)',
+                filter: 'blur(45px)',
+                animation: 'aurora-blob-3 14s ease-in-out infinite',
+                animationDelay: '4s',
+              }}
+            />
+            <div className="relative z-10">
+              <h3 className="text-white text-lg font-medium mb-3">{f.title}</h3>
+              <p className="text-[#9A9AA8] text-sm leading-relaxed">{f.desc}</p>
+            </div>
           </div>
         ))}
       </div>

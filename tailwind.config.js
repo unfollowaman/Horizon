@@ -52,6 +52,11 @@ export default {
         'footer': '0 -4px 24px rgba(0, 0, 0, 0.02)',
         'card': '0 2px 8px rgba(0, 0, 0, 0.04), 0 16px 32px rgba(0, 0, 0, 0.04)',
       },
+      animation: {
+        'aurora-1': 'aurora-blob-1 8s ease-in-out infinite',
+        'aurora-2': 'aurora-blob-2 11s ease-in-out infinite',
+        'aurora-3': 'aurora-blob-3 14s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
