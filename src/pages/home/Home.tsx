@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { LiquidGlassGroup, LiquidGlassItem } from '../../components/ui/LiquidGlass';
 
 const navLinks = [
   { label: 'MCQ Sheet', path: '/', showOnMobile: true, showOnDesktop: true },
@@ -47,13 +48,18 @@ const Header = () => {
         </Link>
 
         {/* Navigation */}
-        <nav className="liquid-glass rounded-full px-6 h-10 flex items-center justify-center gap-4">
+        <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-2">
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
-            <Link key={index} to={link.path} className="text-sm text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-sm whitespace-nowrap">
+            <LiquidGlassItem
+              key={index}
+              value={link.label}
+              to={link.path}
+              className="px-4 py-1.5 text-sm text-[#9A9AA8] data-[active=true]:text-white hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-full whitespace-nowrap"
+            >
               {link.label}
-            </Link>
+            </LiquidGlassItem>
           ))}
-        </nav>
+        </LiquidGlassGroup>
 
         {/* Get Started */}
         <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center text-sm text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white whitespace-nowrap">
@@ -94,18 +100,19 @@ const Header = () => {
                   </svg>
                 </button>
               </div>
-              <nav className="flex flex-col gap-6 overflow-y-auto no-scrollbar mb-8">
+              <LiquidGlassGroup as="nav" className="flex flex-col gap-2 overflow-y-auto no-scrollbar mb-8 p-1">
                 {navLinks.filter(link => link.showOnMobile).map((link, index) => (
-                  <Link
+                  <LiquidGlassItem
                     key={index}
+                    value={link.label}
                     to={link.path}
                     onClick={closeMenu}
-                    className="text-lg font-medium text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-sm"
+                    className="px-4 py-3 text-lg font-medium text-[#9A9AA8] data-[active=true]:text-white hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-xl"
                   >
                     {link.label}
-                  </Link>
+                  </LiquidGlassItem>
                 ))}
-              </nav>
+              </LiquidGlassGroup>
               <div className="mt-auto">
                 <Link to="/" onClick={closeMenu} className="liquid-glass flex w-full h-12 items-center justify-center text-sm font-medium text-white rounded-full focus:outline-none focus:ring-2 focus:ring-white">
                   Get Started
