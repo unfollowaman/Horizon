@@ -90,33 +90,56 @@ const Header = () => {
 
           {/* Expanded Menu Overlay */}
           <div className={`fixed inset-0 z-40 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-            <div className="absolute inset-0 bg-[#03111A]/90 backdrop-blur-md" onClick={closeMenu} aria-hidden="true" />
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeMenu} aria-hidden="true" />
 
-            <div className="absolute top-0 right-0 w-full max-w-sm h-full liquid-glass border-l border-[#2E2E2E]/50 flex flex-col pt-6 px-6 pb-8 transform transition-transform duration-300 ease-out" style={{ transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)' }}>
-              <div className="flex justify-end mb-8">
-                <button onClick={closeMenu} className="w-11 h-11 flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-white rounded-full">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <LiquidGlassGroup as="nav" className="flex flex-col gap-2 overflow-y-auto no-scrollbar mb-8 p-1">
-                {navLinks.filter(link => link.showOnMobile).map((link, index) => (
-                  <LiquidGlassItem
-                    key={index}
-                    value={link.label}
-                    to={link.path}
-                    onClick={closeMenu}
-                    className="px-4 py-3 text-lg font-medium text-[#9A9AA8] data-[active=true]:text-white hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-xl"
-                  >
-                    {link.label}
-                  </LiquidGlassItem>
-                ))}
-              </LiquidGlassGroup>
-              <div className="mt-auto">
-                <Link to="/" onClick={closeMenu} className="liquid-glass flex w-full h-12 items-center justify-center text-sm font-medium text-white rounded-full focus:outline-none focus:ring-2 focus:ring-white">
-                  Get Started
-                </Link>
+            <div className="absolute inset-0 flex items-start justify-center pt-24 px-6 pointer-events-none">
+              <div
+                className="w-full max-w-sm liquid-glass rounded-[32px] bg-[#03111A]/80 backdrop-blur-2xl flex flex-col p-6 pointer-events-auto transform transition-all duration-300 ease-out origin-top"
+                style={{
+                  opacity: isMobileMenuOpen ? 1 : 0,
+                  transform: isMobileMenuOpen ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(-10px)',
+                }}
+              >
+                {/* Menu Header */}
+                <div className="flex justify-between items-center mb-6">
+                  {/* Pink Icon Box */}
+                  <div className="w-10 h-10 rounded-[12px] bg-[#ff2952] flex items-center justify-center text-white">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      {/* Simple asterisk shape */}
+                      <path d="M13 3v7.267l6.294-3.633-1 1.732-6.294 3.634H19v2h-6.999l6.294 3.634-1 1.732L11 15.733V23h-2v-7.267l-6.294 3.633-1-1.732 6.294-3.634H2v-2h6.999L2.705 8.366l1-1.732L10 10.267V3h2z" />
+                    </svg>
+                  </div>
+                  {/* Close Button */}
+                  <button onClick={closeMenu} className="w-10 h-10 flex items-center justify-center text-white bg-white/5 rounded-full hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Navigation Links */}
+                <nav className="flex flex-col gap-4 mb-8">
+                  {navLinks.filter(link => link.showOnMobile).map((link, index) => (
+                    <Link
+                      key={index}
+                      to={link.path}
+                      onClick={closeMenu}
+                      className="text-lg text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-md px-1"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-3">
+                  <Link to="/" onClick={closeMenu} className="w-full h-12 flex items-center justify-center text-base font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                    Sign in
+                  </Link>
+                  <Link to="/" onClick={closeMenu} className="w-full h-12 flex items-center justify-center text-base font-medium text-[#03111A] bg-white rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                    Get now
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
