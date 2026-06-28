@@ -175,48 +175,57 @@ const FeaturesSection = () => (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((f, i) => (
           <div key={i} className={`liquid-glass rounded-2xl p-6 flex flex-col animate-fade-rise relative overflow-hidden ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
-            {/* Aurora blob 1 — base crimson, anchored bottom-left, bleeds upward */}
+            {/* Layer 1: Static base — always fills bottom, no animation, no blur */}
             <div
-              className="aurora-blob pointer-events-none absolute rounded-full"
+              className="aurora-layer pointer-events-none absolute inset-x-0 bottom-0"
               style={{
-                background: 'radial-gradient(ellipse at center, #ed254e 0%, #ed254e55 45%, transparent 75%)',
-                filter: 'blur(38px)',
-                opacity: 0.82,
-                width: '85%',
-                height: '75%',
-                bottom: '-20%',
-                left: '-10%',
-                animation: 'aurora-rise-1 9s ease-in-out infinite',
+                height: '65%',
+                background:
+                  'radial-gradient(ellipse 120% 100% at 50% 100%, #ff2952 0%, #ed254e 25%, rgba(140, 10, 38, 0.8) 55%, transparent 82%)',
+                opacity: 0.92,
               }}
             />
-            {/* Aurora blob 2 — deep rose, anchored bottom-right */}
+            {/* Layer 2: Animated blob — anchored bottom-left, drifts slowly */}
             <div
-              className="aurora-blob pointer-events-none absolute rounded-full"
+              className="aurora-layer pointer-events-none absolute rounded-full"
               style={{
-                background: 'radial-gradient(ellipse at center, #c41f42 0%, #c41f4255 45%, transparent 75%)',
-                filter: 'blur(42px)',
-                opacity: 0.75,
-                width: '80%',
-                height: '70%',
-                bottom: '-15%',
-                right: '-15%',
-                animation: 'aurora-rise-2 12s ease-in-out infinite',
-                animationDelay: '2.5s',
-              }}
-            />
-            {/* Aurora blob 3 — soft pink-red, anchored bottom-center, rises highest */}
-            <div
-              className="aurora-blob pointer-events-none absolute rounded-full"
-              style={{
-                background: 'radial-gradient(ellipse at center, #f2527a 0%, #f2527a44 45%, transparent 75%)',
-                filter: 'blur(35px)',
-                opacity: 0.65,
-                width: '70%',
-                height: '60%',
+                width: '100%',
+                height: '58%',
                 bottom: '-10%',
-                left: '15%',
-                animation: 'aurora-rise-3 15s ease-in-out infinite',
-                animationDelay: '5s',
+                left: '-18%',
+                background:
+                  'radial-gradient(ellipse at center, #ed254e 0%, rgba(237, 37, 78, 0.55) 45%, transparent 72%)',
+                filter: 'blur(20px)',
+                opacity: 0.88,
+                animation: 'aurora-drift-1 10s ease-in-out infinite',
+              }}
+            />
+            {/* Layer 3: Animated blob — anchored bottom-right, drifts on different path */}
+            <div
+              className="aurora-layer pointer-events-none absolute rounded-full"
+              style={{
+                width: '95%',
+                height: '52%',
+                bottom: '-8%',
+                right: '-18%',
+                background:
+                  'radial-gradient(ellipse at center, #ff3d6b 0%, rgba(255, 61, 107, 0.5) 45%, transparent 72%)',
+                filter: 'blur(16px)',
+                opacity: 0.8,
+                animation: 'aurora-drift-2 13s ease-in-out infinite',
+                animationDelay: '3s',
+              }}
+            />
+            {/* Layer 4: Static top bleed — soft upward fade anchored mid-card */}
+            <div
+              className="aurora-layer pointer-events-none absolute inset-x-0"
+              style={{
+                height: '38%',
+                bottom: '27%',
+                background:
+                  'radial-gradient(ellipse 75% 100% at 50% 100%, rgba(210, 28, 58, 0.38) 0%, transparent 100%)',
+                filter: 'blur(12px)',
+                opacity: 1,
               }}
             />
             <div className="relative z-10">
