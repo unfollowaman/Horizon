@@ -42,13 +42,13 @@ const Header = () => {
       {/* Desktop Header */}
       <div className="hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20">
         {/* Logo */}
-        <Link to="/" className="liquid-glass rounded-full px-5 h-10 flex items-center justify-center gap-2 text-xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+        <Link to="/" className="liquid-glass rounded-full px-3 h-10 flex items-center justify-center gap-2 text-xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
           <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-4 h-4" />
           Horizon
         </Link>
 
         {/* Navigation */}
-        <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-2">
+        <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-[5px]">
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
             <LiquidGlassItem
               key={index}
