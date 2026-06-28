@@ -41,13 +41,13 @@ const Header = () => {
       {/* Desktop Header */}
       <div className="hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20">
         {/* Logo */}
-        <Link to="/" className="liquid-glass rounded-full px-6 py-2.5 flex items-center gap-2 text-2xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
-          <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-5 h-5" />
+        <Link to="/" className="liquid-glass rounded-full px-5 h-10 flex items-center justify-center gap-2 text-xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+          <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-4 h-4" />
           Horizon
         </Link>
 
         {/* Navigation */}
-        <nav className="liquid-glass rounded-full px-8 py-2.5 flex items-center gap-6">
+        <nav className="liquid-glass rounded-full px-6 h-10 flex items-center justify-center gap-4">
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
             <Link key={index} to={link.path} className="text-sm text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-sm whitespace-nowrap">
               {link.label}
@@ -56,7 +56,7 @@ const Header = () => {
         </nav>
 
         {/* Get Started */}
-        <Link to="/" className="liquid-glass rounded-full px-6 py-2.5 text-sm text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white whitespace-nowrap">
+        <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center text-sm text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white whitespace-nowrap">
           Get Started
         </Link>
       </div>
