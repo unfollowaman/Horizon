@@ -13,6 +13,18 @@ const navLinks = [
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Assuming hero section is ~100vh
+      const threshold = window.innerHeight * 0.8;
+      setScrolledPastHero(window.scrollY > threshold);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -38,14 +50,11 @@ const Header = () => {
   const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 flex justify-center w-full">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none">
       {/* Desktop Header */}
-      <div className="hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20">
-        {/* Logo */}
-        <Link to="/" className="liquid-glass rounded-full px-3 h-10 flex items-center justify-center gap-2 text-xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
-          <img src="/assets/favicon/favicon.svg" alt="Horizon Logo" className="w-4 h-4" />
-          Horizon
-        </Link>
+      <div className="hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto">
+        {/* Navigation Placeholder (Left) for balancing flex-between if needed, but since we want center nav and right button, let's use an empty div */}
+        <div className="w-[100px]" aria-hidden="true" />
 
         {/* Navigation */}
         <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-[5px]">
@@ -68,17 +77,13 @@ const Header = () => {
       </div>
 
       {/* Mobile Header Component */}
-      <div className="flex md:hidden flex-col w-full absolute top-0 left-0 right-0 z-50">
+      <div className="flex md:hidden flex-col w-full absolute top-0 left-0 right-0 z-50 pointer-events-auto">
         <div className="relative w-full">
           {/* Top Bar */}
-          <div className="flex items-center justify-between w-full h-[72px] px-6 transition-all duration-300 ease-in-out z-30 relative">
-            <Link to="/" className="text-2xl tracking-tight font-normal text-white focus:outline-none focus:ring-2 focus:ring-white rounded-sm relative z-10" style={{ fontFamily: "'Instrument Serif', serif" }} onClick={closeMenu}>
-              Horizon
-            </Link>
-
+          <div className="flex items-center justify-end w-full h-[72px] px-6 transition-all duration-300 ease-in-out z-30 relative">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex items-center justify-center w-11 h-11 text-white focus:outline-none focus:ring-2 focus:ring-white rounded-full relative z-10"
+              className={`flex items-center justify-center w-11 h-11 text-white focus:outline-none focus:ring-2 focus:ring-white rounded-full relative z-10 liquid-glass transition-opacity duration-300 ${scrolledPastHero || isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -159,6 +164,16 @@ const HeroSection = () => (
 
     {/* Content */}
     <div className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-40 w-full max-w-[1200px] mx-auto">
+
+      {/* Brand Pill Logo */}
+      <div className="animate-fade-rise liquid-glass rounded-full px-4 h-11 flex items-center justify-center gap-3 mb-8 whitespace-nowrap">
+        <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-6 h-6 object-contain" />
+        <div className="w-[1px] h-4 bg-white/20"></div>
+        <span className="text-xl tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+          Horizon
+        </span>
+      </div>
+
       <h1 className="animate-fade-rise text-white font-normal" style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(2.8rem, 8vw, 6rem)', lineHeight: 0.95, letterSpacing: '-2px', maxWidth: '900px' }}>
         Resources for <em style={{ fontStyle: 'italic', color: '#C8C8D0' }}>every</em> learner.
       </h1>
