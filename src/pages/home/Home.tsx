@@ -94,7 +94,7 @@ const Header = () => {
 
             <div className="absolute inset-0 flex items-start justify-center pt-8 px-6 pointer-events-none">
               <div
-                className="w-full max-w-sm liquid-glass rounded-[32px] bg-[#03111A]/80 backdrop-blur-2xl flex flex-col p-6 pointer-events-auto transform transition-all duration-300 ease-out origin-top"
+                className={`w-full max-w-sm liquid-glass rounded-[32px] bg-[#03111A]/80 backdrop-blur-2xl flex flex-col p-6 transform transition-all duration-300 ease-out origin-top ${isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
                 style={{
                   opacity: isMobileMenuOpen ? 1 : 0,
                   transform: isMobileMenuOpen ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(-10px)',
