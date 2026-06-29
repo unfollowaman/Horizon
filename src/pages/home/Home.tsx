@@ -213,60 +213,152 @@ const FeaturesSection = () => (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((f, i) => (
           <div key={i} className={`liquid-glass rounded-2xl p-6 flex flex-col animate-fade-rise relative overflow-hidden ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
-            {/* Layer 1: Static base — always fills bottom, no animation, no blur */}
             <div
-              className="aurora-layer pointer-events-none absolute inset-x-0 bottom-0"
               style={{
-                height: '65%',
-                background:
-                  'radial-gradient(ellipse 120% 100% at 50% 100%, #ff2952 0%, #ed254e 25%, rgba(140, 10, 38, 0.8) 55%, transparent 82%)',
-                opacity: 0.92,
-              }}
-            />
-            {/* Layer 2: Animated blob — anchored bottom-left, drifts slowly */}
-            <div
-              className="aurora-layer pointer-events-none absolute rounded-full"
-              style={{
-                width: '100%',
-                height: '58%',
-                bottom: '-10%',
-                left: '-18%',
-                background:
-                  'radial-gradient(ellipse at center, #ed254e 0%, rgba(237, 37, 78, 0.55) 45%, transparent 72%)',
-                filter: 'blur(20px)',
-                opacity: 0.88,
-                animation: 'aurora-drift-1 10s ease-in-out infinite',
-              }}
-            />
-            {/* Layer 3: Animated blob — anchored bottom-right, drifts on different path */}
-            <div
-              className="aurora-layer pointer-events-none absolute rounded-full"
-              style={{
-                width: '95%',
-                height: '52%',
-                bottom: '-8%',
-                right: '-18%',
-                background:
-                  'radial-gradient(ellipse at center, #ff3d6b 0%, rgba(255, 61, 107, 0.5) 45%, transparent 72%)',
-                filter: 'blur(16px)',
-                opacity: 0.8,
-                animation: 'aurora-drift-2 13s ease-in-out infinite',
-                animationDelay: '3s',
-              }}
-            />
-            {/* Layer 4: Static top bleed — soft upward fade anchored mid-card */}
-            <div
-              className="aurora-layer pointer-events-none absolute inset-x-0"
-              style={{
-                height: '38%',
-                bottom: '27%',
-                background:
-                  'radial-gradient(ellipse 75% 100% at 50% 100%, rgba(210, 28, 58, 0.38) 0%, transparent 100%)',
-                filter: 'blur(12px)',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '57%',
+                background: 'radial-gradient(ellipse 160% 100% at 50% 100%, #ff1f4b 0%, #ed254e 20%, rgba(160,10,38,0.72) 50%, transparent 88%)',
                 opacity: 1,
+                pointerEvents: 'none',
               }}
             />
-            <div className="relative z-10">
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '-3%',
+                bottom: 0,
+                width: '22%',
+                height: '64%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #c41f42 0%, #c41f42dd 18%, #c41f4288 44%, #c41f4233 68%, transparent 88%)',
+                filter: 'blur(8px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire4 3.2s ease-in-out infinite',
+                animationDelay: '0s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '5%',
+                bottom: 0,
+                width: '26%',
+                height: '80%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ed254e 0%, #ed254edd 18%, #ed254e88 44%, #ed254e33 68%, transparent 88%)',
+                filter: 'blur(10px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire1 2.7s ease-in-out infinite',
+                animationDelay: '0.5s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '18%',
+                bottom: 0,
+                width: '30%',
+                height: '90%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ff2952 0%, #ff2952dd 18%, #ff295288 44%, #ff295233 68%, transparent 88%)',
+                filter: 'blur(11px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire3 3.4s ease-in-out infinite',
+                animationDelay: '0.9s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '36%',
+                bottom: 0,
+                width: '32%',
+                height: '96%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ff1f4b 0%, #ff1f4bdd 18%, #ff1f4b88 44%, #ff1f4b33 68%, transparent 88%)',
+                filter: 'blur(12px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire2 2.5s ease-in-out infinite',
+                animationDelay: '1.2s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '55%',
+                bottom: 0,
+                width: '28%',
+                height: '86%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #f2527a 0%, #f2527add 18%, #f2527a88 44%, #f2527a33 68%, transparent 88%)',
+                filter: 'blur(10px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire5 3.7s ease-in-out infinite',
+                animationDelay: '0.7s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '69%',
+                bottom: 0,
+                width: '24%',
+                height: '74%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ed254e 0%, #ed254edd 18%, #ed254e88 44%, #ed254e33 68%, transparent 88%)',
+                filter: 'blur(9px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire6 2.9s ease-in-out infinite',
+                animationDelay: '1.5s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div
+              className="fire-flame"
+              style={{
+                position: 'absolute',
+                left: '80%',
+                bottom: 0,
+                width: '22%',
+                height: '66%',
+                borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #c41f42 0%, #c41f42dd 18%, #c41f4288 44%, #c41f4233 68%, transparent 88%)',
+                filter: 'blur(8px)',
+                opacity: 0.92,
+                transformOrigin: 'bottom center',
+                animation: 'fire7 3.3s ease-in-out infinite',
+                animationDelay: '0.3s',
+                pointerEvents: 'none',
+                willChange: 'transform',
+              }}
+            />
+            <div style={{ position: 'relative', zIndex: 10 }}>
               <h3 className="text-white text-lg font-medium mb-3">{f.title}</h3>
               <p className="text-[#9A9AA8] text-sm leading-relaxed">{f.desc}</p>
             </div>
