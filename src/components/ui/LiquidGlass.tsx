@@ -42,23 +42,6 @@ export const LiquidGlassGroup = ({
   const itemsRef = useRef<Map<string, HTMLElement>>(new Map());
   const [activeRect, setActiveRect] = useState<ItemRect | null>(null);
 
-  const registerItem = React.useCallback((val: string, element: HTMLElement) => {
-    itemsRef.current.set(val, element);
-    updateActiveRect();
-  }, []);
-
-  const unregisterItem = React.useCallback((val: string) => {
-    itemsRef.current.delete(val);
-    updateActiveRect();
-  }, []);
-
-  const handleItemClick = React.useCallback((val: string) => {
-    if (value === undefined) {
-      setInternalValue(val);
-    }
-    onChange?.(val);
-  }, [value, onChange]);
-
   const updateActiveRect = React.useCallback(() => {
     if (!activeValue || !groupRef.current) {
       setActiveRect((prev) => (prev !== null ? null : prev));
@@ -97,6 +80,25 @@ export const LiquidGlassGroup = ({
       return newRect;
     });
   }, [activeValue]);
+
+  const registerItem = React.useCallback((val: string, element: HTMLElement) => {
+    itemsRef.current.set(val, element);
+    updateActiveRect();
+  }, []);
+
+  const unregisterItem = React.useCallback((val: string) => {
+    itemsRef.current.delete(val);
+    updateActiveRect();
+  }, []);
+
+  const handleItemClick = React.useCallback((val: string) => {
+    if (value === undefined) {
+      setInternalValue(val);
+    }
+    onChange?.(val);
+  }, [value, onChange]);
+
+
 
   // Re-measure on active value change or window resize
   useEffect(() => {
@@ -182,7 +184,7 @@ export const LiquidGlassItem = ({
 
   const handleClick = (e: React.MouseEvent) => {
     onItemClick?.(value);
-    // @ts-ignore
+    // @ts-expect-error - ignore custom onClick prop type
     onClick?.(e);
   };
 
