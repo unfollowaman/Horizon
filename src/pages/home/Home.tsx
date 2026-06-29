@@ -92,7 +92,7 @@ const Header = () => {
           <div className={`fixed inset-0 z-40 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeMenu} aria-hidden="true" />
 
-            <div className="absolute inset-0 flex items-start justify-center pt-24 px-6 pointer-events-none">
+            <div className="absolute inset-0 flex items-start justify-center pt-8 px-6 pointer-events-none">
               <div
                 className="w-full max-w-sm liquid-glass rounded-[32px] bg-[#03111A]/80 backdrop-blur-2xl flex flex-col p-6 pointer-events-auto transform transition-all duration-300 ease-out origin-top"
                 style={{
@@ -118,13 +118,13 @@ const Header = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex flex-col gap-4 mb-8">
+                <nav className="flex flex-col gap-2 mb-8">
                   {navLinks.filter(link => link.showOnMobile).map((link, index) => (
                     <Link
                       key={index}
                       to={link.path}
                       onClick={closeMenu}
-                      className="text-lg text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-md px-1"
+                      className="text-[12px] text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-md px-1"
                     >
                       {link.label}
                     </Link>
