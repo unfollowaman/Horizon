@@ -52,9 +52,15 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none">
       {/* Desktop Header */}
-      <div className="hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto">
-        {/* Navigation Placeholder (Left) for balancing flex-between if needed, but since we want center nav and right button, let's use an empty div */}
-        <div className="w-[100px]" aria-hidden="true" />
+      <div className={`hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto transition-opacity duration-300 ${scrolledPastHero ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        {/* Brand Logo (Desktop) */}
+        <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center gap-3 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-white">
+          <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-5 h-5 object-contain" />
+          <div className="w-[1px] h-3.5 bg-white/20"></div>
+          <span className="text-lg tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+            Horizon
+          </span>
+        </Link>
 
         {/* Navigation */}
         <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-[5px]">
@@ -166,7 +172,7 @@ const HeroSection = () => (
     <div className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-40 w-full max-w-[1200px] mx-auto">
 
       {/* Brand Pill Logo */}
-      <div className="animate-fade-rise liquid-glass rounded-full px-4 h-11 flex items-center justify-center gap-3 mb-8 whitespace-nowrap">
+      <div className="animate-fade-rise liquid-glass rounded-full px-4 h-11 flex items-center justify-center gap-3 mb-8 whitespace-nowrap md:hidden">
         <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-6 h-6 object-contain" />
         <div className="w-[1px] h-4 bg-white/20"></div>
         <span className="text-xl tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
