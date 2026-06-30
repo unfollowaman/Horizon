@@ -52,7 +52,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none">
       {/* Desktop Header */}
-      <div className={`hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto transition-opacity duration-300 ${scrolledPastHero ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto transition-all duration-300 ${scrolledPastHero ? 'opacity-0 -translate-y-4 blur-sm pointer-events-none' : 'opacity-100 translate-y-0 blur-0'}`}>
         {/* Brand Logo (Desktop) */}
         <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center gap-3 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-white">
           <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-5 h-5 object-contain" />
