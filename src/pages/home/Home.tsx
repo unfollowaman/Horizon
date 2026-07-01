@@ -55,7 +55,7 @@ const Header = () => {
       <div className={`hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto transition-all duration-300 ${scrolledPastHero ? 'opacity-0 -translate-y-4 blur-sm pointer-events-none' : 'opacity-100 translate-y-0 blur-0'}`}>
         {/* Brand Logo (Desktop) */}
         <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center gap-3 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-white">
-          <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-5 h-5 object-contain" />
+          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className="h-5 w-auto object-contain" />
           <div className="w-[1px] h-3.5 bg-white/20"></div>
           <span className="text-lg tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
             Horizon
@@ -173,7 +173,7 @@ const HeroSection = () => (
 
       {/* Brand Pill Logo */}
       <div className="animate-fade-rise liquid-glass rounded-full px-4 h-11 flex items-center justify-center gap-3 mb-8 whitespace-nowrap md:hidden">
-        <img src="/assets/favicon/web-app-manifest-512x512.png" alt="Horizon Icon" className="w-6 h-6 object-contain" />
+        <img src="/assets/favicon/logo.png" alt="Horizon Logo" className="h-6 w-auto object-contain" />
         <div className="w-[1px] h-4 bg-white/20"></div>
         <span className="text-xl tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
           Horizon
