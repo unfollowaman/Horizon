@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LiquidGlassGroup, LiquidGlassItem } from '../../components/ui/LiquidGlass';
-
-const navLinks = [
-  { label: 'MCQ Sheet', path: '/', showOnMobile: true, showOnDesktop: true },
-  { label: 'PYQ Papers', path: '/', showOnMobile: true, showOnDesktop: true },
-  { label: 'Library', path: '/', showOnMobile: true, showOnDesktop: true },
-  { label: 'Notes', path: '/', showOnMobile: true, showOnDesktop: true },
-  { label: 'Past Papers', path: '/', showOnMobile: true, showOnDesktop: true },
-  { label: 'Announcements', path: '/', showOnMobile: true, showOnDesktop: true },
-];
+import { navLinks } from '../../data/navigation';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -201,12 +193,12 @@ const HeroSection = () => (
 );
 
 const features = [
+  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively." },
+  { title: "Flashcards", desc: "Quick-recall cards for fast revision." },
+  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material." },
+  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview." },
   { title: "Study Notes", desc: "Comprehensive notes for all subjects." },
-  { title: "Previous Year Papers", desc: "Past papers to help you prepare effectively." },
-  { title: "Study Materials", desc: "Extra materials to boost your understanding." },
-  { title: "Practice Questions", desc: "Exam-oriented questions and revision material." },
-  { title: "Announcements", desc: "Stay updated with newly uploaded resources." },
-  { title: "PDF Library", desc: "Browse all educational resources in one place." }
+  { title: "Announcements/Updates", desc: "Stay updated with newly uploaded resources." }
 ];
 
 const FeaturesSection = () => (
@@ -411,11 +403,12 @@ const Footer = () => (
       <div className="flex flex-col lg:col-span-2">
         <h4 className="text-white mb-6 font-medium text-sm">Explore</h4>
         <nav className="flex flex-col gap-4">
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Library</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Notes</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Past Papers</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Study Materials</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Practice Questions</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">PYQ Papers</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Flashcards</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">MCQ Sets</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Revision Sheets</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Study Notes</Link>
+          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Announcements/Updates</Link>
         </nav>
       </div>
 
