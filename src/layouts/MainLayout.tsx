@@ -1,5 +1,6 @@
 import type React from 'react';
 import { Outlet, Link } from 'react-router-dom';
+import { navLinks } from '../data/navigation';
 
 const MainLayout: React.FC = () => {
   return (
@@ -10,7 +11,9 @@ const MainLayout: React.FC = () => {
             <Link to="/" className="inline-block p-2 no-underline text-ink focus-visible:outline-accent-yellow">Horizon</Link>
           </h1>
           <Link to="/" className="inline-block min-h-[44px] flex items-center p-3 font-bold hover:bg-surface focus-visible:outline-accent-yellow">Home</Link>
-          <Link to="/library" className="inline-block min-h-[44px] flex items-center p-3 font-bold hover:bg-surface focus-visible:outline-accent-yellow">Library</Link>
+          {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
+            <Link key={index} to={link.path} className="inline-block min-h-[44px] flex items-center p-3 font-bold hover:bg-surface focus-visible:outline-accent-yellow">{link.label}</Link>
+          ))}
           {/* Placeholders for future auth features */}
           <Link to="/login" className="inline-block min-h-[44px] flex items-center p-3 font-bold hover:bg-surface focus-visible:outline-accent-yellow">Login</Link>
           <Link to="/register" className="inline-block min-h-[44px] flex items-center p-3 font-bold hover:bg-surface focus-visible:outline-accent-yellow">Register</Link>
