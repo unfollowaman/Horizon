@@ -362,11 +362,11 @@ const FeaturesSection = () => (
   </section>
 );
 
-const SecondaryCTASection = () => (
-  <section className="w-full bg-[#03111A] px-6 py-20 pb-32">
-    <div className="max-w-[1200px] mx-auto flex flex-col items-center text-center">
-      <h2 className="text-3xl md:text-4xl text-white font-normal mb-8" style={{ fontFamily: "'Instrument Serif', serif" }}>New here?</h2>
-      <Link to="/" className="liquid-glass rounded-full px-10 py-4 text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white inline-flex items-center justify-center">
+const HighlightsSection = () => (
+  <section className={styles.highlightsSection}>
+    <div className={styles.highlightsContainer}>
+      <h2 className={styles.highlightsTitle}>New here?</h2>
+      <Link to="/" className={`liquid-glass ${styles.highlightsCtaBtn}`}>
         Explore Now
       </Link>
     </div>
@@ -451,7 +451,7 @@ const Home: React.FC = () => {
       <main className="flex-1 w-full flex flex-col">
         <HeroSection />
         <FeaturesSection />
-        <SecondaryCTASection />
+        <HighlightsSection />
       </main>
       <Footer />
     </div>
