@@ -47,7 +47,7 @@ const Header = () => {
       {/* Desktop Header */}
       <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
-        <Link to="/" className={`${styles.brandLogoDesktop} ${styles.liquidGlass}`}>
+        <Link to="/" className={`${styles.brandLogoDesktop} liquid-glass`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.brandLogoImg} />
           <div className={styles.brandLogoDivider}></div>
           <span className={styles.brandLogoText}>
@@ -56,7 +56,7 @@ const Header = () => {
         </Link>
 
         {/* Navigation */}
-        <LiquidGlassGroup as="nav" className={`${styles.navGroup} ${styles.liquidGlass}`}>
+        <LiquidGlassGroup as="nav" className={`${styles.navGroup} liquid-glass`}>
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
             <LiquidGlassItem
               key={index}
@@ -70,7 +70,7 @@ const Header = () => {
         </LiquidGlassGroup>
 
         {/* Get Started */}
-        <Link to="/" className={`${styles.getStartedBtn} ${styles.liquidGlass}`}>
+        <Link to="/" className={`${styles.getStartedBtn} liquid-glass`}>
           Get Started
         </Link>
       </div>
@@ -82,7 +82,7 @@ const Header = () => {
           <div className={styles.mobileTopBar}>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`${styles.hamburgerBtn} ${styles.liquidGlass} ${scrolledPastHero || isMobileMenuOpen ? styles.hamburgerVisible : styles.hamburgerHidden}`}
+              className={`${styles.hamburgerBtn} liquid-glass ${scrolledPastHero || isMobileMenuOpen ? styles.hamburgerVisible : styles.hamburgerHidden}`}
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -97,7 +97,7 @@ const Header = () => {
             <div className={styles.menuBackdrop} onClick={closeMenu} aria-hidden="true" />
 
             <div className={styles.menuContentWrapper}>
-              <div className={`${styles.menuPanel} ${styles.liquidGlass} ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
+              <div className={`${styles.menuPanel} liquid-glass ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
                   {/* Pink Icon Box */}
@@ -159,7 +159,7 @@ const HeroSection = () => (
     <div className={styles.heroContent}>
 
       {/* Brand Pill Logo */}
-      <div className={`animate-fade-rise ${styles.heroBrandPill} ${styles.liquidGlass}`}>
+      <div className={`animate-fade-rise ${styles.heroBrandPill} liquid-glass`}>
         <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
         <div className={styles.heroBrandPillDivider}></div>
         <span className={styles.heroBrandPillText}>
@@ -176,10 +176,10 @@ const HeroSection = () => (
       </p>
 
       <div className={`animate-fade-rise-delay-2 ${styles.heroCtaGroup}`}>
-        <Link to="/" className={`${styles.heroCtaBtn} ${styles.liquidGlass}`}>
+        <Link to="/" className={`${styles.heroCtaBtn} liquid-glass`}>
           Explore Library
         </Link>
-        <Link to="/" className={`${styles.heroCtaBtn} ${styles.liquidGlass}`}>
+        <Link to="/" className={`${styles.heroCtaBtn} liquid-glass`}>
           Browse Notes
         </Link>
       </div>
@@ -197,15 +197,15 @@ const features = [
 ];
 
 const FeaturesSection = () => (
-  <section className="w-full bg-[#03111A] px-6 pt-12 pb-24 md:pt-16 md:pb-32">
-    <div className="max-w-[1200px] mx-auto flex flex-col">
-      <div className="flex flex-col items-center text-center mb-16 md:mb-20">
-        <h2 className="text-4xl md:text-5xl text-white font-normal" style={{ fontFamily: "'Instrument Serif', serif" }}>Everything in one place</h2>
+  <section className={styles.featuresSection}>
+    <div className={styles.featuresContainer}>
+      <div className={styles.featuresHeader}>
+        <h2 className={styles.featuresTitle}>Everything in one place</h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={styles.featuresGrid}>
         {features.map((f, i) => (
-          <div key={i} className={`liquid-glass rounded-2xl p-6 flex flex-col animate-fade-rise relative overflow-hidden ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+          <div key={i} className={`${styles.featureCard} liquid-glass animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
             <div
               style={{
                 position: 'absolute',
@@ -351,9 +351,9 @@ const FeaturesSection = () => (
                 willChange: 'transform',
               }}
             />
-            <div style={{ position: 'relative', zIndex: 10 }}>
-              <h3 className="text-white text-lg font-medium mb-3">{f.title}</h3>
-              <p className="text-[#9A9AA8] text-sm leading-relaxed">{f.desc}</p>
+            <div className={styles.featureCardContent}>
+              <h3 className={styles.featureCardTitle}>{f.title}</h3>
+              <p className={styles.featureCardDesc}>{f.desc}</p>
             </div>
           </div>
         ))}
