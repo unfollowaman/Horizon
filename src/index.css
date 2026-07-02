@@ -9,6 +9,92 @@
     --muted-foreground: #9A9AA8;
     --border: #2E2E2E;
     --surface: rgba(255,255,255,0.04);
+
+    /* Extracted Colors */
+    --color-accent-blue: #0000FF;
+    --color-accent-red: #FF0000;
+    --color-accent-yellow: #FFFF00;
+    --color-accent: #E11584;
+    --color-ink: #000000;
+    --color-paper: #FFFFFF;
+    --color-surface: #F0F1F5;
+
+    /* Extracted Spacing */
+    --spacing-1: 8px;
+    --spacing-1-5: 6px;
+    --spacing-2: 16px;
+    --spacing-3: 24px;
+    --spacing-4: 32px;
+    --spacing-5: 48px;
+    --spacing-6: 64px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-11: 44px;
+    --spacing-12: 48px;
+    --spacing-14: 56px;
+    --spacing-32: 128px;
+    --spacing-40: 160px;
+
+    /* Extracted Border Radius */
+    --radius-none: 0px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-2xl: 32px;
+    --radius-3xl: 48px;
+    --radius-full: 9999px;
+
+    /* Extracted Typography */
+    --font-h1-size: 48px;
+    --font-h1-height: 1.1;
+    --font-h1-weight: 700;
+
+    --font-h2-size: 32px;
+    --font-h2-height: 1.2;
+    --font-h2-weight: 700;
+
+    --font-body1-size: 16px;
+    --font-body1-height: 1.5;
+    --font-body1-weight: 400;
+
+    --font-caption-size: 13px;
+    --font-caption-height: 1.4;
+    --font-caption-weight: 400;
+
+    --font-display-hero-size: 68px;
+    --font-display-hero-height: 1.05;
+    --font-display-hero-weight: 800;
+    --font-display-hero-spacing: -0.02em;
+
+    --font-display-section-size: 40px;
+    --font-display-section-height: 1.2;
+    --font-display-section-weight: 700;
+    --font-display-section-spacing: -0.01em;
+
+    --font-heading-card-size: 20px;
+    --font-heading-card-height: 1.4;
+    --font-heading-card-weight: 700;
+
+    --font-body-large-size: 18px;
+    --font-body-large-height: 1.6;
+    --font-body-large-weight: 400;
+
+    --font-body-base-size: 16px;
+    --font-body-base-height: 1.6;
+    --font-body-base-weight: 400;
+
+    --font-label-caps-size: 12px;
+    --font-label-caps-height: 1.5;
+    --font-label-caps-weight: 600;
+    --font-label-caps-spacing: 0.1em;
+
+    /* Extracted Shadows */
+    --shadow-elevated: 4px 4px 0px 0px #000000;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-nav: 0 8px 32px rgba(0, 0, 0, 0.04);
+    --shadow-footer: 0 -4px 24px rgba(0, 0, 0, 0.02);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 16px 32px rgba(0, 0, 0, 0.04);
   }
 
   body {

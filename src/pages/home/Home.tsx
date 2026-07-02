@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LiquidGlassGroup, LiquidGlassItem } from '../../components/ui/LiquidGlass';
 import { navLinks } from '../../data/navigation';
+import styles from './Home.module.css';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,26 +43,26 @@ const Header = () => {
   const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none">
+    <header className={styles.headerContainer}>
       {/* Desktop Header */}
-      <div className={`hidden md:flex w-full max-w-7xl justify-between items-center px-8 py-6 mx-auto relative z-20 pointer-events-auto transition-all duration-300 ${scrolledPastHero ? 'opacity-0 -translate-y-4 blur-sm pointer-events-none' : 'opacity-100 translate-y-0 blur-0'}`}>
+      <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
-        <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center gap-3 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-white">
-          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className="h-5 w-auto object-contain" />
-          <div className="w-[1px] h-3.5 bg-white/20"></div>
-          <span className="text-lg tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+        <Link to="/" className={`${styles.brandLogoDesktop} ${styles.liquidGlass}`}>
+          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.brandLogoImg} />
+          <div className={styles.brandLogoDivider}></div>
+          <span className={styles.brandLogoText}>
             Horizon
           </span>
         </Link>
 
         {/* Navigation */}
-        <LiquidGlassGroup as="nav" className="liquid-glass rounded-full p-1.5 h-10 flex items-center justify-center gap-[5px]">
+        <LiquidGlassGroup as="nav" className={`${styles.navGroup} ${styles.liquidGlass}`}>
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
             <LiquidGlassItem
               key={index}
               value={link.label}
               to={link.path}
-              className="px-4 py-1.5 text-sm text-[#9A9AA8] data-[active=true]:text-white hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-full whitespace-nowrap"
+              className={styles.navItem}
             >
               {link.label}
             </LiquidGlassItem>
@@ -69,65 +70,59 @@ const Header = () => {
         </LiquidGlassGroup>
 
         {/* Get Started */}
-        <Link to="/" className="liquid-glass rounded-full px-4 h-10 flex items-center justify-center text-sm text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white whitespace-nowrap">
+        <Link to="/" className={`${styles.getStartedBtn} ${styles.liquidGlass}`}>
           Get Started
         </Link>
       </div>
 
       {/* Mobile Header Component */}
-      <div className="flex md:hidden flex-col w-full absolute top-0 left-0 right-0 z-50 pointer-events-auto">
-        <div className="relative w-full">
+      <div className={styles.mobileHeaderContainer}>
+        <div className={styles.mobileHeaderRelative}>
           {/* Top Bar */}
-          <div className="flex items-center justify-end w-full h-[72px] px-6 transition-all duration-300 ease-in-out z-30 relative">
+          <div className={styles.mobileTopBar}>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`flex items-center justify-center w-11 h-11 text-white focus:outline-none focus:ring-2 focus:ring-white rounded-full relative z-10 liquid-glass transition-opacity duration-300 ${scrolledPastHero || isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              className={`${styles.hamburgerBtn} ${styles.liquidGlass} ${scrolledPastHero || isMobileMenuOpen ? styles.hamburgerVisible : styles.hamburgerHidden}`}
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className={styles.hamburgerIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
 
           {/* Expanded Menu Overlay */}
-          <div className={`fixed inset-0 z-40 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeMenu} aria-hidden="true" />
+          <div className={`${styles.menuOverlayWrapper} ${isMobileMenuOpen ? styles.menuOverlayVisible : styles.menuOverlayHidden}`}>
+            <div className={styles.menuBackdrop} onClick={closeMenu} aria-hidden="true" />
 
-            <div className="absolute inset-0 flex items-start justify-center pt-8 px-6 pointer-events-none">
-              <div
-                className={`w-full max-w-sm liquid-glass rounded-[32px] bg-[#03111A]/80 backdrop-blur-2xl flex flex-col p-6 transform transition-all duration-300 ease-out origin-top ${isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
-                style={{
-                  opacity: isMobileMenuOpen ? 1 : 0,
-                  transform: isMobileMenuOpen ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(-10px)',
-                }}
-              >
+            <div className={styles.menuContentWrapper}>
+              <div className={`${styles.menuPanel} ${styles.liquidGlass} ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
                 {/* Menu Header */}
-                <div className="flex justify-between items-center mb-6">
+                <div className={styles.menuHeader}>
                   {/* Pink Icon Box */}
-                  <div className="w-10 h-10 rounded-[12px] bg-[#ff2952] flex items-center justify-center text-white">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <div className={styles.menuPinkIcon}>
+                    <svg fill="currentColor" viewBox="0 0 24 24">
                       {/* Simple asterisk shape */}
                       <path d="M13 3v7.267l6.294-3.633-1 1.732-6.294 3.634H19v2h-6.999l6.294 3.634-1 1.732L11 15.733V23h-2v-7.267l-6.294 3.633-1-1.732 6.294-3.634H2v-2h6.999L2.705 8.366l1-1.732L10 10.267V3h2z" />
                     </svg>
                   </div>
                   {/* Close Button */}
-                  <button onClick={closeMenu} className="w-10 h-10 flex items-center justify-center text-white bg-white/5 rounded-full hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <button onClick={closeMenu} className={styles.menuCloseBtn}>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex flex-col gap-2 mb-8">
+                <nav className={styles.menuNavLinks}>
                   {navLinks.filter(link => link.showOnMobile).map((link, index) => (
                     <Link
                       key={index}
                       to={link.path}
                       onClick={closeMenu}
-                      className="text-[12px] text-[#9A9AA8] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-md px-1"
+                      className={styles.menuNavLink}
                     >
                       {link.label}
                     </Link>
@@ -135,11 +130,11 @@ const Header = () => {
                 </nav>
 
                 {/* Action Buttons */}
-                <div className="flex flex-col gap-3">
-                  <Link to="/" onClick={closeMenu} className="w-full h-12 flex items-center justify-center text-base font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                <div className={styles.menuActionButtons}>
+                  <Link to="/" onClick={closeMenu} className={styles.menuSignInBtn}>
                     Sign in
                   </Link>
-                  <Link to="/" onClick={closeMenu} className="w-full h-12 flex items-center justify-center text-base font-medium text-[#03111A] bg-white rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                  <Link to="/" onClick={closeMenu} className={styles.menuGetNowBtn}>
                     Get now
                   </Link>
                 </div>
@@ -153,38 +148,38 @@ const Header = () => {
 };
 
 const HeroSection = () => (
-  <section className="relative flex flex-col items-center justify-center min-h-[100dvh] w-full overflow-hidden">
+  <section className={styles.heroSection}>
     {/* Video background */}
-    <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" src="/assets/video/bg.mp4" />
+    <video autoPlay loop muted playsInline className={styles.heroVideo} src="/assets/video/bg.mp4" />
 
     {/* Dark overlay */}
-    <div className="absolute inset-0 bg-black/40 z-[1]" />
+    <div className={styles.heroOverlay} />
 
     {/* Content */}
-    <div className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-40 w-full max-w-[1200px] mx-auto">
+    <div className={styles.heroContent}>
 
       {/* Brand Pill Logo */}
-      <div className="animate-fade-rise liquid-glass rounded-full px-4 h-11 flex items-center justify-center gap-3 mb-8 whitespace-nowrap md:hidden">
-        <img src="/assets/favicon/logo.png" alt="Horizon Logo" className="h-6 w-auto object-contain" />
-        <div className="w-[1px] h-4 bg-white/20"></div>
-        <span className="text-xl tracking-tight font-normal text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+      <div className={`animate-fade-rise ${styles.heroBrandPill} ${styles.liquidGlass}`}>
+        <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
+        <div className={styles.heroBrandPillDivider}></div>
+        <span className={styles.heroBrandPillText}>
           Horizon
         </span>
       </div>
 
-      <h1 className="animate-fade-rise text-white font-normal" style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(2.8rem, 8vw, 6rem)', lineHeight: 0.95, letterSpacing: '-2px', maxWidth: '900px' }}>
-        Resources for <em style={{ fontStyle: 'italic', color: '#C8C8D0' }}>every</em> learner.
+      <h1 className={`animate-fade-rise ${styles.heroTitle}`}>
+        Resources for <em className={styles.heroTitleEm}>every</em> learner.
       </h1>
 
-      <p className="animate-fade-rise-delay text-[#9A9AA8]" style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', maxWidth: '560px', marginTop: '2rem', lineHeight: 1.6 }}>
+      <p className={`animate-fade-rise-delay ${styles.heroSubtitle}`}>
         Study notes, past papers, and practice materials — everything your class needs, in one place.
       </p>
 
-      <div className="animate-fade-rise-delay-2 flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto justify-center">
-        <Link to="/" className="liquid-glass rounded-full px-14 py-4 text-base text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white flex items-center justify-center">
+      <div className={`animate-fade-rise-delay-2 ${styles.heroCtaGroup}`}>
+        <Link to="/" className={`${styles.heroCtaBtn} ${styles.liquidGlass}`}>
           Explore Library
         </Link>
-        <Link to="/" className="liquid-glass rounded-full px-14 py-4 text-base text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white flex items-center justify-center">
+        <Link to="/" className={`${styles.heroCtaBtn} ${styles.liquidGlass}`}>
           Browse Notes
         </Link>
       </div>
