@@ -17,7 +17,7 @@
   max-width: 80rem; /* max-w-7xl */
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-6) var(--spacing-8); /* py-6 px-8 */
+  padding: var(--spacing-3) var(--spacing-8); /* py-6 px-8 */
   margin: 0 auto;
   position: relative;
   z-index: 20;
@@ -242,7 +242,7 @@
   -webkit-backdrop-filter: blur(40px);
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-6); /* p-6 */
+  padding: var(--spacing-3); /* p-6 */
   transform-origin: top;
   transition: all 300ms ease-out;
 }
@@ -545,4 +545,98 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+/* ================= FEATURES SECTION ================= */
+
+.featuresSection {
+  width: 100%;
+  background-color: var(--background);
+  padding: 48px var(--spacing-6) 96px;
+}
+@media (min-width: 768px) {
+  .featuresSection {
+    padding-top: 64px;
+    padding-bottom: 128px;
+  }
+}
+
+.featuresContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.featuresHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 64px;
+}
+@media (min-width: 768px) {
+  .featuresHeader {
+    margin-bottom: 80px;
+  }
+}
+
+.featuresTitle {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  color: var(--color-paper);
+  font-weight: 400;
+  font-family: 'Instrument Serif', serif;
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .featuresTitle {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--spacing-3);
+}
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .featuresGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.featureCard {
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.featureCardContent {
+  position: relative;
+  z-index: 10;
+}
+
+.featureCardTitle {
+  color: var(--color-paper);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+  margin: 0 0 var(--spacing-3) 0;
+}
+
+.featureCardDesc {
+  color: #9A9AA8;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  margin: 0;
 }
