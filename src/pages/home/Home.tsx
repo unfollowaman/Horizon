@@ -374,62 +374,61 @@ const HighlightsSection = () => (
 );
 
 const Footer = () => (
-  <footer className="w-full bg-[#03111A] pt-20 pb-12 px-6 border-t border-[#2E2E2E]">
-    <div className="w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-20">
+  <footer className={styles.footer}>
+    <div className={styles.footerContainer}>
 
       {/* Brand Column */}
-      <div className="flex flex-col lg:col-span-4 pr-0 lg:pr-8">
-        <h3 className="text-2xl text-white mb-6 font-normal" style={{ fontFamily: "'Instrument Serif', serif" }}>Horizon</h3>
-        <p className="text-[#9A9AA8] mb-8 text-sm leading-relaxed">
+      <div className={styles.footerBrandCol}>
+        <h3 className={styles.footerBrandTitle}>Horizon</h3>
+        <p className={styles.footerBrandDesc}>
           Your Path. Your Future.<br/>
           Built for students.<br/>
           Designed for success.
         </p>
-        <div className="flex items-center gap-4">
+        <div className={styles.footerSocials}>
           {[1, 2, 3, 4].map((i) => (
-            <Link key={i} to="/" className="w-11 h-11 flex items-center justify-center text-white hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white rounded-full">
-              <span className="w-5 h-5 bg-white rounded-sm block"></span>
+            <Link key={i} to="/" className={styles.footerSocialLink}>
+              <span className={styles.footerSocialIcon}></span>
             </Link>
           ))}
         </div>
       </div>
 
       {/* Explore Links */}
-      <div className="flex flex-col lg:col-span-2">
-        <h4 className="text-white mb-6 font-medium text-sm">Explore</h4>
-        <nav className="flex flex-col gap-4">
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">PYQ Papers</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Flashcards</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">MCQ Sets</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Revision Sheets</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Study Notes</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Announcements/Updates</Link>
+      <div className={styles.footerLinksCol}>
+        <h4 className={styles.footerLinksTitle}>Explore</h4>
+        <nav className={styles.footerNav}>
+          {navLinks.map((link, index) => (
+            <Link key={index} to={link.path} className={styles.footerNavLink}>
+              {link.label}
+            </Link>
+          ))}
         </nav>
       </div>
 
       {/* Info Links */}
-      <div className="flex flex-col lg:col-span-2">
-        <h4 className="text-white mb-6 font-medium text-sm">Info</h4>
-        <nav className="flex flex-col gap-4">
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Announcements</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">About Us</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Contact</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Privacy Policy</Link>
-          <Link to="/" className="text-[#9A9AA8] text-sm hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white w-fit rounded-sm">Terms of Use</Link>
+      <div className={styles.footerLinksCol}>
+        <h4 className={styles.footerLinksTitle}>Info</h4>
+        <nav className={styles.footerNav}>
+          <Link to="/" className={styles.footerNavLink}>Announcements</Link>
+          <Link to="/" className={styles.footerNavLink}>About Us</Link>
+          <Link to="/" className={styles.footerNavLink}>Contact</Link>
+          <Link to="/" className={styles.footerNavLink}>Privacy Policy</Link>
+          <Link to="/" className={styles.footerNavLink}>Terms of Use</Link>
         </nav>
       </div>
 
       {/* Newsletter */}
-      <div className="flex flex-col lg:col-span-4">
-        <h4 className="text-white mb-6 font-medium text-sm">Stay Updated</h4>
-        <p className="text-[#9A9AA8] text-sm mb-6 max-w-sm leading-relaxed">Subscribe to get the latest announcements and updates.</p>
-        <form className="flex flex-col sm:flex-row gap-3 w-full max-w-md" onSubmit={(e) => e.preventDefault()}>
+      <div className={styles.footerNewsletterCol}>
+        <h4 className={styles.footerLinksTitle}>Stay Updated</h4>
+        <p className={styles.footerNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
+        <form className={styles.footerForm} onSubmit={(e) => e.preventDefault()}>
           <input
             type="email"
             placeholder="Your email"
-            className="liquid-glass rounded-full px-5 py-2.5 text-sm text-white placeholder:text-[#9A9AA8] focus:outline-none focus:ring-2 focus:ring-white flex-1 min-h-[44px]"
+            className={`liquid-glass ${styles.footerInput}`}
           />
-          <button className="liquid-glass rounded-full px-6 py-2.5 text-sm text-white hover:scale-[1.03] transition-transform focus:outline-none focus:ring-2 focus:ring-white min-h-[44px]">
+          <button className={`liquid-glass ${styles.footerSubmitBtn}`}>
             Subscribe
           </button>
         </form>
@@ -438,8 +437,8 @@ const Footer = () => (
     </div>
 
     {/* Copyright Strip */}
-    <div className="w-full max-w-[1200px] mx-auto pt-8 border-t border-[#2E2E2E] flex justify-center">
-      <p className="text-xs text-[#9A9AA8]">© {new Date().getFullYear()} Horizon. All rights reserved.</p>
+    <div className={styles.footerCopyright}>
+      <p className={styles.footerCopyrightText}>© {new Date().getFullYear()} Horizon. All rights reserved.</p>
     </div>
   </footer>
 );
