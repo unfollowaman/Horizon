@@ -155,6 +155,10 @@ const HeroSection = () => (
     {/* Dark overlay */}
     <div className={styles.heroOverlay} />
 
+    {/* Video to Next Section Blend Overlays */}
+    <div className={styles.heroVignette} />
+    <div className={styles.heroGradientFade} />
+
     {/* Content */}
     <div className={styles.heroContent}>
 
