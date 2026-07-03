@@ -205,7 +205,7 @@ const FeaturesSection = () => (
 
       <div className={styles.featuresGrid}>
         {features.map((f, i) => (
-          <div key={i} className={`${styles.featureCard} liquid-glass animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+          <div key={i} className={`${styles.featureCard} liquid-glass animate-fade-rise ${i % 2 === 1 ? 'animate-fade-rise-delay' : ''}`}>
             <div
               style={{
                 position: 'absolute',
