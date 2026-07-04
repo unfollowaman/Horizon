@@ -152,9 +152,6 @@ const HeroSection = () => (
     {/* Video background */}
     <video autoPlay loop muted playsInline className={styles.heroVideo} src="/assets/video/bg.mp4" />
 
-    {/* Dark overlay */}
-    <div className={styles.heroOverlay} />
-
     {/* Video to Next Section Blend Overlays */}
     <div className={styles.heroVignette} />
     <div className={styles.heroGradientFade} />

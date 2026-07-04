@@ -400,17 +400,10 @@
   z-index: 0;
 }
 
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* bg-black/40 */
-  z-index: 1;
-}
-
 .heroVignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, rgba(255, 255, 255, 0.6) 85%, rgba(255, 255, 255, 0.9) 100%);
+  background: linear-gradient(to bottom, transparent 85%, rgba(255, 255, 255, 0.9) 100%);
   z-index: 2;
   pointer-events: none;
 }
