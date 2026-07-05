@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LiquidGlassGroup, LiquidGlassItem } from '../../components/ui/LiquidGlass';
 import { navLinks } from '../../data/navigation';
 import styles from './Home.module.css';
 
@@ -47,7 +46,7 @@ const Header = () => {
       {/* Desktop Header */}
       <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
-        <Link to="/" className={`${styles.brandLogoDesktop} liquid-glass`}>
+        <Link to="/" className={`${styles.brandLogoDesktop} neu-raised`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.brandLogoImg} />
           <div className={styles.brandLogoDivider}></div>
           <span className={styles.brandLogoText}>
@@ -56,21 +55,20 @@ const Header = () => {
         </Link>
 
         {/* Navigation */}
-        <LiquidGlassGroup as="nav" className={`${styles.navGroup} liquid-glass`}>
+        <nav className={`${styles.navGroup} neu-raised`}>
           {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
-            <LiquidGlassItem
+            <Link
               key={index}
-              value={link.label}
               to={link.path}
               className={styles.navItem}
             >
               {link.label}
-            </LiquidGlassItem>
+            </Link>
           ))}
-        </LiquidGlassGroup>
+        </nav>
 
         {/* Get Started */}
-        <Link to="/" className={`${styles.getStartedBtn} liquid-glass`}>
+        <Link to="/" className={`${styles.getStartedBtn} neu-raised neu-raised-hover`}>
           Get Started
         </Link>
       </div>
@@ -82,7 +80,7 @@ const Header = () => {
           <div className={styles.mobileTopBar}>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`${styles.hamburgerBtn} liquid-glass ${scrolledPastHero || isMobileMenuOpen ? styles.hamburgerVisible : styles.hamburgerHidden}`}
+              className={`${styles.hamburgerBtn} neu-raised ${scrolledPastHero || isMobileMenuOpen ? styles.hamburgerVisible : styles.hamburgerHidden}`}
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -97,7 +95,7 @@ const Header = () => {
             <div className={styles.menuBackdrop} onClick={closeMenu} aria-hidden="true" />
 
             <div className={styles.menuContentWrapper}>
-              <div className={`${styles.menuPanel} liquid-glass ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
+              <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
                   {/* Pink Icon Box */}
@@ -150,7 +148,7 @@ const Header = () => {
 const HeroSection = () => (
   <section className={styles.heroSection}>
     {/* Video background */}
-    <video autoPlay loop muted playsInline className={styles.heroVideo} src="/assets/video/bg.mp4" />
+
 
     {/* Video to Next Section Blend Overlays */}
     <div className={styles.heroVignette} />
@@ -160,7 +158,7 @@ const HeroSection = () => (
     <div className={styles.heroContent}>
 
       {/* Brand Pill Logo */}
-      <div className={`animate-fade-rise ${styles.heroBrandPill} liquid-glass`}>
+      <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
         <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
         <div className={styles.heroBrandPillDivider}></div>
         <span className={styles.heroBrandPillText}>
@@ -214,7 +212,7 @@ const HighlightsSection = () => (
   <section className={styles.highlightsSection}>
     <div className={styles.highlightsContainer}>
       <h2 className={styles.highlightsTitle}>New here?</h2>
-      <Link to="/" className={`liquid-glass ${styles.highlightsCtaBtn}`}>
+      <Link to="/" className={`neu-raised neu-raised-hover ${styles.highlightsCtaBtn}`}>
         Explore Now
       </Link>
     </div>
@@ -274,9 +272,9 @@ const Footer = () => (
           <input
             type="email"
             placeholder="Your email"
-            className={`liquid-glass ${styles.footerInput}`}
+            className={`neu-recessed ${styles.footerInput}`}
           />
-          <button className={`liquid-glass ${styles.footerSubmitBtn}`}>
+          <button className={`neu-raised neu-raised-hover ${styles.footerSubmitBtn}`}>
             Subscribe
           </button>
         </form>
@@ -293,7 +291,7 @@ const Footer = () => (
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[#03111A] font-sans">
+    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)] font-sans">
       <Header />
       <main className="flex-1 w-full flex flex-col">
         <HeroSection />

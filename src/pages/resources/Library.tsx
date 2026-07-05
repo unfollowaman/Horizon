@@ -41,13 +41,13 @@ const Library: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-h1 uppercase mb-8 border-b-4 border-ink pb-4">Resource Library</h2>
+      <h2 className="text-h1 uppercase mb-8 pb-4 text-ink">Resource Library</h2>
 
       {/* Category Filter */}
       <div className="mb-8 flex gap-4 flex-wrap">
         <button
           onClick={() => handleCategoryChange('All')}
-          className={`min-h-[44px] px-4 py-2 font-bold border-2 border-ink focus-visible:outline-accent-yellow ${activeCategory === 'All' ? 'bg-ink text-paper' : 'bg-paper text-ink hover:bg-surface'}`}
+          className={`min-h-[44px] px-4 py-2 font-bold rounded-md ${activeCategory === 'All' ? 'neu-recessed text-ink' : 'neu-raised text-ink hover:neu-raised-hover'}`}
         >
           All
         </button>
@@ -55,7 +55,7 @@ const Library: React.FC = () => {
           <button
             key={category}
             onClick={() => handleCategoryChange(category)}
-            className={`min-h-[44px] px-4 py-2 font-bold border-2 border-ink focus-visible:outline-accent-yellow ${activeCategory === category ? 'bg-ink text-paper' : 'bg-paper text-ink hover:bg-surface'}`}
+            className={`min-h-[44px] px-4 py-2 font-bold rounded-md ${activeCategory === category ? 'neu-recessed text-ink' : 'neu-raised text-ink hover:neu-raised-hover'}`}
           >
             {category}
           </button>
@@ -64,23 +64,23 @@ const Library: React.FC = () => {
 
       {/* Resource Grid */}
       {filteredResources.length === 0 ? (
-        <div className="border-2 border-dashed border-ink p-8 text-center bg-paper">
+        <div className="neu-recessed rounded-2xl p-8 text-center">
           <p className="font-bold text-body1">No resources found for this category.</p>
         </div>
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
           {filteredResources.map(resource => (
-            <div key={resource.id} className="border-2 border-ink p-4 rounded-md bg-paper shadow-elevated flex flex-col">
-              <div className="h-32 bg-ink text-paper mb-4 flex items-center justify-center font-bold font-mono">
+            <div key={resource.id} className="neu-raised p-4 rounded-2xl flex flex-col">
+              <div className="h-32 neu-recessed text-muted-foreground rounded-lg mb-4 flex items-center justify-center font-bold font-mono border-none">
                 [Thumbnail Placeholder]
               </div>
               <h4 className="text-h2 font-bold mb-2">{resource.title}</h4>
               <p className="mb-4 text-caption flex-1">{resource.description}</p>
-              <div className="flex justify-between items-center mt-auto border-t-2 border-ink pt-4">
-                <span className="text-caption font-bold border-2 border-ink p-1 bg-surface inline-block">
+              <div className="flex justify-between items-center mt-auto pt-4">
+                <span className="text-caption font-bold neu-recessed p-1 rounded-sm inline-block">
                   {resource.category}
                 </span>
-                <Link to={`/resource/${resource.id}`} className="inline-block p-2 font-bold underline decoration-2 underline-offset-4 hover:bg-accent-yellow">View Details</Link>
+                <Link to={`/resource/${resource.id}`} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline">View Details</Link>
               </div>
             </div>
           ))}
