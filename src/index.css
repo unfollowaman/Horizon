@@ -216,6 +216,7 @@
   }
 }
 
+
 @keyframes fire1 {
   0%,100% { transform: scaleY(1)    skewX(2deg)   translateX(0px); }
   18%      { transform: scaleY(1.28) skewX(-11deg) translateX(-7px); }
