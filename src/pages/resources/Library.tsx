@@ -70,7 +70,7 @@ const Library: React.FC = () => {
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
           {filteredResources.map(resource => (
-            <div key={resource.id} className="neu-raised p-4 rounded-2xl flex flex-col">
+            <div key={resource.id} className="neu-card p-4 rounded-2xl flex flex-col">
               <div className="h-32 neu-recessed text-muted-foreground rounded-lg mb-4 flex items-center justify-center font-bold font-mono border-none">
                 [Thumbnail Placeholder]
               </div>

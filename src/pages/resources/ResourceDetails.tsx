@@ -9,7 +9,7 @@ const ResourceDetails: React.FC = () => {
 
   if (!resource) {
     return (
-      <div className="text-center p-8 neu-raised rounded-2xl">
+      <div className="text-center p-8 neu-card rounded-2xl">
         <h2 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h2>
         <Link to="/library" className="btn btn-filled">Back to Library</Link>
       </div>
@@ -34,7 +34,7 @@ const ResourceDetails: React.FC = () => {
           <h2 className="text-h1 uppercase mb-2">{resource.title}</h2>
           <p className="text-body1 font-bold mb-8">{resource.description}</p>
 
-          <div className="neu-raised rounded-2xl p-4">
+          <div className="neu-card rounded-2xl p-4">
             <div className="h-96 neu-recessed rounded-xl p-2 flex flex-col items-center justify-center mb-6 text-muted-foreground">
               <span className="text-h2 font-bold font-mono">[ PDF Viewer Placeholder ]</span>
             </div>
@@ -46,7 +46,7 @@ const ResourceDetails: React.FC = () => {
 
         {/* Sidebar / Metadata */}
         <aside className="flex-1 min-w-[250px]">
-          <section className="neu-raised rounded-2xl p-6 mb-8">
+          <section className="neu-card rounded-2xl p-6 mb-8">
             <h3 className="text-h2 uppercase mb-4 pb-2 text-ink">Details</h3>
             <ul className="list-none p-0 m-0 text-body1">
               <li className="mb-2 pb-2 flex justify-between">
@@ -61,7 +61,7 @@ const ResourceDetails: React.FC = () => {
             </ul>
           </section>
 
-          <section className="neu-raised rounded-2xl p-6">
+          <section className="neu-card rounded-2xl p-6">
             <h3 className="text-h2 font-bold uppercase mb-4 pb-2 text-ink">Related</h3>
             {relatedResources.length > 0 ? (
               <ul className="list-none p-0 m-0">

@@ -6,7 +6,7 @@ const NotificationSettings: React.FC = () => {
       <h2>Notification Settings</h2>
       <p>Configure how you receive updates and alerts. (Push notifications coming soon)</p>
 
-      <div className="neu-raised rounded-2xl p-6 mt-6">
+      <div className="neu-card rounded-2xl p-6 mt-6">
         <h3>Push Notifications</h3>
         <p style={{ fontSize: '0.9rem', color: '#666' }}>Receive real-time alerts on your device for new resources and announcements.</p>
 
@@ -18,7 +18,7 @@ const NotificationSettings: React.FC = () => {
         </div>
       </div>
 
-      <div className="neu-raised rounded-2xl p-6 mt-6">
+      <div className="neu-card rounded-2xl p-6 mt-6">
         <h3>Email Preferences</h3>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           <li style={{ marginBottom: '0.5rem' }}>

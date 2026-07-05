@@ -121,6 +121,8 @@
 
 @layer components {
   .neu-raised {
+    position: relative;
+    z-index: 1;
     background-color: var(--bg-raised);
     box-shadow:
       8px 10px 20px rgba(0,0,0,0.10),
@@ -128,6 +130,47 @@
       -4px -4px 10px rgba(255,255,255,0.95);
     border: 1px solid var(--border-subtle);
     transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+
+  .neu-raised::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background-color: var(--bg-recessed);
+    border-radius: inherit;
+    box-shadow:
+      inset 3px 3px 8px rgba(0,0,0,0.08),
+      inset -3px -3px 8px rgba(255,255,255,0.95);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+
+  /* Specific styling for larger structural cards with an 8px inset */
+  .neu-card {
+    position: relative;
+    z-index: 1;
+    background-color: var(--bg-raised);
+    box-shadow:
+      8px 10px 20px rgba(0,0,0,0.10),
+      2px 3px 6px rgba(0,0,0,0.06),
+      -4px -4px 10px rgba(255,255,255,0.95);
+    border: 1px solid var(--border-subtle);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+  .neu-card::before {
+    content: "";
+    position: absolute;
+    inset: 8px; /* Thick 8px inset for large cards */
+    background-color: var(--bg-recessed);
+    border-radius: inherit;
+    box-shadow:
+      inset 3px 3px 8px rgba(0,0,0,0.08),
+      inset -3px -3px 8px rgba(255,255,255,0.95);
+    pointer-events: none;
+    z-index: -1;
   }
 
   .neu-raised-hover:hover {
@@ -139,11 +182,28 @@
   }
 
   .neu-recessed {
+    position: relative;
+    z-index: 1;
     background-color: var(--bg-recessed);
     box-shadow:
       inset 3px 3px 8px rgba(0,0,0,0.08),
       inset -3px -3px 8px rgba(255,255,255,0.95);
     border: 1px solid rgba(0,0,0,0.03);
+  }
+
+  .neu-recessed::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    background-color: var(--bg-raised);
+    border-radius: inherit;
+    box-shadow:
+      8px 10px 20px rgba(0,0,0,0.10),
+      2px 3px 6px rgba(0,0,0,0.06),
+      -4px -4px 10px rgba(255,255,255,0.95);
+    z-index: -1;
+    pointer-events: none;
+    border: 1px solid var(--border-subtle);
   }
 }
 

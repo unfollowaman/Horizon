@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
   return (
-    <div className="neu-raised rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
+    <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
       <h2>Register Placeholder</h2>
       <p>User registration functionality will be implemented in the future.</p>
 
