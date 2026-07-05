@@ -75,7 +75,7 @@
   font-size: 1.125rem; /* text-lg */
   letter-spacing: -0.015em; /* tracking-tight */
   font-weight: 400; /* font-normal */
-  color: var(--color-paper);
+  color: var(--color-ink);
   font-family: 'Instrument Serif', serif;
 }
 
@@ -92,7 +92,7 @@
 .navItem {
   padding: var(--spacing-1-5) var(--spacing-4); /* py-1.5 px-4 */
   font-size: 0.875rem; /* text-sm */
-  color: #9A9AA8;
+  color: var(--color-ink);
   transition: colors 150ms;
   border-radius: var(--radius-full);
   white-space: nowrap;
@@ -102,10 +102,10 @@
   text-decoration: none;
 }
 .navItem[data-active="true"] {
-  color: var(--color-paper);
+  color: var(--color-ink);
 }
 .navItem:hover {
-  color: var(--color-paper);
+  color: var(--color-ink);
 }
 .navItem:focus {
   outline: none;
@@ -120,7 +120,7 @@
   align-items: center;
   justify-content: center;
   font-size: 0.875rem; /* text-sm */
-  color: var(--color-paper);
+  color: var(--color-ink);
   transition: transform 150ms;
   white-space: nowrap;
   text-decoration: none;
