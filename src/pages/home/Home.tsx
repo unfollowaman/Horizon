@@ -175,15 +175,6 @@ const HeroSection = () => (
       <p className={`animate-fade-rise-delay ${styles.heroSubtitle}`}>
         Study notes, past papers, and practice materials — everything your class needs, in one place.
       </p>
-
-      <div className={`animate-fade-rise-delay-2 ${styles.heroCtaGroup}`}>
-        <Link to="/" className={`${styles.heroCtaBtn} liquid-glass`}>
-          Explore Library
-        </Link>
-        <Link to="/" className={`${styles.heroCtaBtn} liquid-glass`}>
-          Browse Notes
-        </Link>
-      </div>
     </div>
   </section>
 );
