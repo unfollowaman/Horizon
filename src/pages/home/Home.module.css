@@ -90,7 +90,7 @@
 }
 
 .navItem {
-  padding: var(--spacing-1-5) var(--spacing-4); /* py-1.5 px-4 */
+  padding: var(--spacing-1-5) 20px; /* py-1.5 px-20px */
   font-size: 0.875rem; /* text-sm */
   color: var(--color-ink);
   transition: colors 150ms;
