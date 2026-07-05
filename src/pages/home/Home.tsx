@@ -197,7 +197,7 @@ const FeaturesSection = () => (
 
       <div className={styles.featuresGrid}>
         {features.map((f, i) => (
-          <div key={i} className={`${styles.featureCard} liquid-glass animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+          <div key={i} className={`${styles.featureCard} liquid-glass animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
             <div
               style={{
                 position: 'absolute',
@@ -205,7 +205,7 @@ const FeaturesSection = () => (
                 right: 0,
                 bottom: 0,
                 height: '57%',
-                background: 'radial-gradient(ellipse 160% 100% at 50% 100%, #F0F9FF 0%, #38BDF8 20%, rgba(2,132,199,0.72) 50%, transparent 88%)',
+                background: 'radial-gradient(ellipse 160% 100% at 50% 100%, #ff1f4b 0%, #ed254e 20%, rgba(160,10,38,0.72) 50%, transparent 88%)',
                 opacity: 1,
                 pointerEvents: 'none',
               }}
@@ -219,9 +219,9 @@ const FeaturesSection = () => (
                 width: '22%',
                 height: '64%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #0284C7 0%, #0284C7dd 18%, #0284C788 44%, #0284C733 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #c41f42 0%, #c41f42dd 18%, #c41f4288 44%, #c41f4233 68%, transparent 88%)',
                 filter: 'blur(8px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire4 3.2s ease-in-out infinite',
                 animationDelay: '0s',
@@ -238,9 +238,9 @@ const FeaturesSection = () => (
                 width: '26%',
                 height: '80%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #38BDF8 0%, #38BDF8dd 18%, #38BDF888 44%, #38BDF833 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ed254e 0%, #ed254edd 18%, #ed254e88 44%, #ed254e33 68%, transparent 88%)',
                 filter: 'blur(10px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire1 2.7s ease-in-out infinite',
                 animationDelay: '0.5s',
@@ -257,9 +257,9 @@ const FeaturesSection = () => (
                 width: '30%',
                 height: '90%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #BAE6FD 0%, #BAE6FDdd 18%, #BAE6FD88 44%, #BAE6FD33 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ff2952 0%, #ff2952dd 18%, #ff295288 44%, #ff295233 68%, transparent 88%)',
                 filter: 'blur(11px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire3 3.4s ease-in-out infinite',
                 animationDelay: '0.9s',
@@ -276,9 +276,9 @@ const FeaturesSection = () => (
                 width: '32%',
                 height: '96%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #F0F9FF 0%, #F0F9FFdd 18%, #F0F9FF88 44%, #F0F9FF33 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ff1f4b 0%, #ff1f4bdd 18%, #ff1f4b88 44%, #ff1f4b33 68%, transparent 88%)',
                 filter: 'blur(12px)',
-                opacity: 0.90,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire2 2.5s ease-in-out infinite',
                 animationDelay: '1.2s',
@@ -295,9 +295,9 @@ const FeaturesSection = () => (
                 width: '28%',
                 height: '86%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #7DD3FC 0%, #7DD3FCdd 18%, #7DD3FC88 44%, #7DD3FC33 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #f2527a 0%, #f2527add 18%, #f2527a88 44%, #f2527a33 68%, transparent 88%)',
                 filter: 'blur(10px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire5 3.7s ease-in-out infinite',
                 animationDelay: '0.7s',
@@ -314,9 +314,9 @@ const FeaturesSection = () => (
                 width: '24%',
                 height: '74%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #38BDF8 0%, #38BDF8dd 18%, #38BDF888 44%, #38BDF833 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #ed254e 0%, #ed254edd 18%, #ed254e88 44%, #ed254e33 68%, transparent 88%)',
                 filter: 'blur(9px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire6 2.9s ease-in-out infinite',
                 animationDelay: '1.5s',
@@ -333,9 +333,9 @@ const FeaturesSection = () => (
                 width: '22%',
                 height: '66%',
                 borderRadius: '50% 50% 40% 40% / 85% 85% 15% 15%',
-                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #0284C7 0%, #0284C7dd 18%, #0284C788 44%, #0284C733 68%, transparent 88%)',
+                background: 'radial-gradient(ellipse 90% 55% at 50% 100%, #c41f42 0%, #c41f42dd 18%, #c41f4288 44%, #c41f4233 68%, transparent 88%)',
                 filter: 'blur(8px)',
-                opacity: 0.98,
+                opacity: 0.92,
                 transformOrigin: 'bottom center',
                 animation: 'fire7 3.3s ease-in-out infinite',
                 animationDelay: '0.3s',
@@ -343,9 +343,11 @@ const FeaturesSection = () => (
                 willChange: 'transform',
               }}
             />
-            <div className={styles.featureCardContent}>
-              <h3 className={styles.featureCardTitle}>{f.title}</h3>
-              <p className={styles.featureCardDesc}>{f.desc}</p>
+            <div style={{ position: 'relative', zIndex: 10 }}>
+              <div className={styles.featureCardContent}>
+                <h3 className={styles.featureCardTitle}>{f.title}</h3>
+                <p className={styles.featureCardDesc}>{f.desc}</p>
+              </div>
             </div>
           </div>
         ))}
