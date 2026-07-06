@@ -98,12 +98,9 @@ const Header = () => {
               <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
-                  {/* Pink Icon Box */}
-                  <div className={styles.menuPinkIcon}>
-                    <svg fill="currentColor" viewBox="0 0 24 24">
-                      {/* Simple asterisk shape */}
-                      <path d="M13 3v7.267l6.294-3.633-1 1.732-6.294 3.634H19v2h-6.999l6.294 3.634-1 1.732L11 15.733V23h-2v-7.267l-6.294 3.633-1-1.732 6.294-3.634H2v-2h6.999L2.705 8.366l1-1.732L10 10.267V3h2z" />
-                    </svg>
+                  {/* Logo */}
+                  <div className={styles.menuBrandIcon}>
+                    <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.menuBrandLogoImg} />
                   </div>
                   {/* Close Button */}
                   <button onClick={closeMenu} className={styles.menuCloseBtn}>
