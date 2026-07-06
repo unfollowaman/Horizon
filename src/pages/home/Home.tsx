@@ -212,9 +212,19 @@ const HighlightsSection = () => (
   <section className={styles.highlightsSection}>
     <div className={styles.highlightsContainer}>
       <h2 className={styles.highlightsTitle}>New here?</h2>
-      <Link to="/" className={`neu-raised neu-raised-hover ${styles.highlightsCtaBtn}`}>
-        Explore Now
-      </Link>
+      <div className={styles.highlightsNewsletterWrapper}>
+        <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
+        <form className={styles.highlightsForm} onSubmit={(e) => e.preventDefault()}>
+          <input
+            type="email"
+            placeholder="Your email"
+            className={`neu-recessed ${styles.highlightsInput}`}
+          />
+          <button className={`neu-raised neu-raised-hover ${styles.highlightsSubmitBtn}`}>
+            Subscribe
+          </button>
+        </form>
+      </div>
     </div>
   </section>
 );
@@ -262,22 +272,6 @@ const Footer = () => (
           <Link to="/" className={styles.footerNavLink}>Privacy Policy</Link>
           <Link to="/" className={styles.footerNavLink}>Terms of Use</Link>
         </nav>
-      </div>
-
-      {/* Newsletter */}
-      <div className={styles.footerNewsletterCol}>
-        <h4 className={styles.footerLinksTitle}>Stay Updated</h4>
-        <p className={styles.footerNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
-        <form className={styles.footerForm} onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="email"
-            placeholder="Your email"
-            className={`neu-recessed ${styles.footerInput}`}
-          />
-          <button className={`neu-raised neu-raised-hover ${styles.footerSubmitBtn}`}>
-            Subscribe
-          </button>
-        </form>
       </div>
 
     </div>
