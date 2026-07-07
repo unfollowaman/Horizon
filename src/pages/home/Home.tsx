@@ -282,7 +282,7 @@ const Footer = () => (
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)] font-sans">
+    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)]">
       <Header />
       <main className="flex-1 w-full flex flex-col">
         <HeroSection />
