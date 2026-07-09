@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
+import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import styles from './Home.module.css';
 
 const Header = () => {
@@ -144,13 +145,6 @@ const Header = () => {
 
 const HeroSection = () => (
   <section className={styles.heroSection}>
-    {/* Video background */}
-
-
-    {/* Video to Next Section Blend Overlays */}
-    <div className={styles.heroVignette} />
-    <div className={styles.heroGradientFade} />
-
     {/* Content */}
     <div className={styles.heroContent}>
 
@@ -170,6 +164,8 @@ const HeroSection = () => (
       <p className={`animate-fade-rise-delay ${styles.heroSubtitle}`}>
         Study notes, past papers, and practice materials — everything your class needs, in one place.
       </p>
+
+      <HeroPhoneAnimation />
     </div>
   </section>
 );

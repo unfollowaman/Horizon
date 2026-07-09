@@ -398,27 +398,6 @@
   }
 }
 
-.heroVideo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.heroVignette {
-  position: absolute;
-  inset: 0;
-  background: var(--bg-base);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.heroGradientFade {
-  display: none;
-}
-
 .heroContent {
   position: relative;
   z-index: 10;
