@@ -8,7 +8,7 @@ const ORGANIZE_END = 8000;
 const CENTER_X = 150;
 const CENTER_Y = 235;
 const ORBIT_RADIUS = 118;
-const ORBIT_SPEED = 14;
+const ORBIT_SPEED = 72;
 
 interface IconConfig {
   label: string;
@@ -60,11 +60,25 @@ export const HeroPhoneAnimation: React.FC = () => {
 
     // Mascot
     if (mascotRef.current) {
+      let mascotOpacity = 1;
+      let mascotScaleMultiplier = 1;
+      let mascotBlur = 0;
+
+      if (t < 1000) {
+        const localT = clamp(t / 1000, 0, 1);
+        const eased = easeOutBack(localT);
+        mascotOpacity = localT;
+        mascotScaleMultiplier = lerp(0.1, 1, eased);
+        mascotBlur = Math.max(0, lerp(20, 0, eased));
+      }
+
       const x = lerp(CENTER_X, 40, settle);
       const y = lerp(CENTER_Y, 54, settle);
-      const scale = lerp(1, 0.42, settle);
+      const scale = lerp(1, 16 / 45, settle) * mascotScaleMultiplier;
+
       mascotRef.current.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
-      mascotRef.current.style.opacity = `${globalFade}`;
+      mascotRef.current.style.opacity = `${mascotOpacity * globalFade}`;
+      mascotRef.current.style.filter = `blur(${mascotBlur}px)`;
     }
 
     // Glow
