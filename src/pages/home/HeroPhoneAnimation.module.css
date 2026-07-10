@@ -76,7 +76,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 96px;
+  width: 45px;
   height: auto;
   pointer-events: none;
   transform-origin: center center;
@@ -87,7 +87,7 @@
   position: absolute;
   top: 45px;
   left: 65px;
-  font-family: var(--font-family, 'Playfair Display', serif);
+  font-family: 'Instrument Serif', serif;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -98,7 +98,7 @@
   position: absolute;
   top: 96px;
   left: 34px;
-  font-family: var(--font-family, 'Playfair Display', serif);
+  font-family: 'Instrument Serif', serif;
   font-size: 13px;
   font-weight: 600;
   color: #6B7280;
@@ -126,6 +126,6 @@
   font-weight: 600;
   color: #4B5563;
   margin-top: 6px;
-  font-family: var(--font-family, 'Playfair Display', serif);
+  font-family: 'Instrument Serif', serif;
   white-space: nowrap;
 }
