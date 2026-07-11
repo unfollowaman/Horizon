@@ -183,7 +183,7 @@ const FeaturesSection = () => (
   <section className={styles.featuresSection}>
     <div className={styles.featuresContainer}>
       <div className={styles.featuresHeader}>
-        <h2 className={styles.featuresTitle}>Everything in one place</h2>
+        <h2 className={styles.featuresTitle}>Everything in <span className={styles.textGradient}>one</span> place</h2>
       </div>
 
       <div className={styles.featuresGrid}>

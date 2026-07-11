@@ -9,20 +9,14 @@
   transform-origin: top center;
 }
 
-@media (max-width: 767px) and (min-width: 480px) {
+@media (min-width: 768px) {
   .wrapper {
-    transform: scale(0.85);
-  }
-}
-
-@media (max-width: 479px) {
-  .wrapper {
-    transform: scale(0.7);
+    padding-bottom: 10px;
   }
 }
 
 .phoneFrame {
-  width: 300px;
+  width: 340px;
   height: 560px;
   position: relative;
   border-radius: 46px;
@@ -32,6 +26,19 @@
   overflow: hidden;
   mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 96%);
   -webkit-mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 96%);
+}
+
+@media (min-width: 768px) {
+  .phoneFrame {
+    width: 300px;
+  }
+}
+
+.phoneInner {
+  width: 300px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
 }
 
 .notch {
