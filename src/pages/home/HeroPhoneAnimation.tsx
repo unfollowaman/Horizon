@@ -190,46 +190,48 @@ export const HeroPhoneAnimation: React.FC = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.phoneFrame}>
-        <div className={styles.notch} />
+        <div className={styles.phoneInner}>
+          <div className={styles.notch} />
 
-        <div ref={glowRef} className={styles.glow} style={{ opacity: 0 }} />
+          <div ref={glowRef} className={styles.glow} style={{ opacity: 0 }} />
 
-        <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0 }}>
-          <circle cx={CENTER_X} cy={CENTER_Y} r={ORBIT_RADIUS} />
-        </svg>
+          <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0 }}>
+            <circle cx={CENTER_X} cy={CENTER_Y} r={ORBIT_RADIUS} />
+          </svg>
 
-        <img
-          ref={mascotRef}
-          src="/assets/favicon/logo.png"
-          alt="Mascot"
-          className={styles.mascot}
-          style={{ opacity: 0 }}
-        />
-
-        <div ref={wordmarkRef} className={styles.wordmark} style={{ opacity: 0 }}>
-          HORIZON
-        </div>
-        <div ref={exploreRef} className={styles.exploreLabel} style={{ opacity: 0 }}>
-          Explore
-        </div>
-
-        {iconsConfig.map((config, idx) => (
-          <div
-            key={config.label}
-            ref={el => { iconRefs.current[idx] = el; }}
-            className={styles.iconContainer}
+          <img
+            ref={mascotRef}
+            src="/assets/favicon/logo.png"
+            alt="Mascot"
+            className={styles.mascot}
             style={{ opacity: 0 }}
-          >
-            <img
-              src={`/assets/hero/${config.asset}`}
-              alt={config.label}
-              className={styles.iconImage}
-            />
-            <div className={`iconLabel ${styles.iconLabel}`}>
-              {config.label}
-            </div>
+          />
+
+          <div ref={wordmarkRef} className={styles.wordmark} style={{ opacity: 0 }}>
+            HORIZON
           </div>
-        ))}
+          <div ref={exploreRef} className={styles.exploreLabel} style={{ opacity: 0 }}>
+            Explore
+          </div>
+
+          {iconsConfig.map((config, idx) => (
+            <div
+              key={config.label}
+              ref={el => { iconRefs.current[idx] = el; }}
+              className={styles.iconContainer}
+              style={{ opacity: 0 }}
+            >
+              <img
+                src={`/assets/hero/${config.asset}`}
+                alt={config.label}
+                className={styles.iconImage}
+              />
+              <div className={`iconLabel ${styles.iconLabel}`}>
+                {config.label}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
