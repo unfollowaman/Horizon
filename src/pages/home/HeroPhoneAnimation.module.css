@@ -15,18 +15,6 @@
   }
 }
 
-@media (max-width: 767px) and (min-width: 480px) {
-  .wrapper {
-    transform: scale(0.85);
-  }
-}
-
-@media (max-width: 479px) {
-  .wrapper {
-    transform: scale(0.7);
-  }
-}
-
 .phoneFrame {
   width: 340px;
   height: 560px;
