@@ -16,7 +16,7 @@
 }
 
 .phoneFrame {
-  width: 340px;
+  width: 420px;
   height: 560px;
   position: relative;
   border-radius: 46px;
@@ -35,10 +35,16 @@
 }
 
 .phoneInner {
-  width: 300px;
+  width: 420px;
   height: 100%;
   margin: 0 auto;
   position: relative;
+}
+
+@media (min-width: 768px) {
+  .phoneInner {
+    width: 300px;
+  }
 }
 
 .notch {
