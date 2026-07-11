@@ -16,7 +16,8 @@
 }
 
 .phoneFrame {
-  width: 340px;
+  width: 100%;
+  max-width: 420px;
   height: 560px;
   position: relative;
   border-radius: 46px;
@@ -35,10 +36,16 @@
 }
 
 .phoneInner {
-  width: 300px;
+  width: 100%;
   height: 100%;
   margin: 0 auto;
   position: relative;
+}
+
+@media (min-width: 768px) {
+  .phoneInner {
+    width: 300px;
+  }
 }
 
 .notch {
@@ -93,7 +100,7 @@
 .wordmark {
   position: absolute;
   top: 45px;
-  left: 65px;
+  left: calc(50% - 85px);
   font-family: 'Instrument Serif', serif;
   font-size: 15px;
   font-weight: 700;
@@ -104,7 +111,7 @@
 .exploreLabel {
   position: absolute;
   top: 96px;
-  left: 34px;
+  left: calc(50% - 116px);
   font-family: 'Instrument Serif', serif;
   font-size: 13px;
   font-weight: 600;

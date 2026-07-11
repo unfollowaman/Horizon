@@ -5,9 +5,9 @@ const TOTAL = 10500;
 const ARRIVE_END = 1800;
 const ORBIT_END = 6800;
 const ORGANIZE_END = 8000;
-const CENTER_X = 150;
+const BASE_CENTER_X = 150;
 const CENTER_Y = 235;
-const ORBIT_RADIUS = 118;
+const BASE_ORBIT_RADIUS = 118;
 const ORBIT_SPEED = 72;
 
 interface IconConfig {
@@ -33,6 +33,7 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export const HeroPhoneAnimation: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mascotRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -41,13 +42,30 @@ export const HeroPhoneAnimation: React.FC = () => {
   const ringRef = useRef<SVGSVGElement>(null);
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
   }, []);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        setContainerWidth(entries[0].contentRect.width);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const applyState = (t: number) => {
+    const scaleX = containerWidth / 300;
+    const centerX = BASE_CENTER_X * scaleX;
+    const orbitRadius = BASE_ORBIT_RADIUS * scaleX;
     const fadeStart = TOTAL - 300;
     const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
 
@@ -72,7 +90,8 @@ export const HeroPhoneAnimation: React.FC = () => {
         mascotBlur = Math.max(0, lerp(20, 0, eased));
       }
 
-      const x = lerp(CENTER_X, 40, settle);
+      const endX = containerWidth > 300 ? 60 : 40;
+      const x = lerp(centerX, endX, settle);
       const y = lerp(CENTER_Y, 54, settle);
       const scale = lerp(1, 16 / 45, settle) * mascotScaleMultiplier;
 
@@ -84,7 +103,7 @@ export const HeroPhoneAnimation: React.FC = () => {
     // Glow
     if (glowRef.current) {
       glowRef.current.style.opacity = `${(1 - settle) * globalFade}`;
-      glowRef.current.style.transform = `translate(-50%, -50%) translate(${CENTER_X}px, ${CENTER_Y}px)`;
+      glowRef.current.style.transform = `translate(-50%, -50%) translate(${centerX}px, ${CENTER_Y}px)`;
     }
 
     // Wordmark & Explore
@@ -107,13 +126,15 @@ export const HeroPhoneAnimation: React.FC = () => {
 
       let x: number, y: number, opacity: number, labelOpacity: number;
 
+      const targetGridX = config.grid.x * scaleX;
+
       if (t < ARRIVE_END) {
         // Act 1
         const rad = config.baseAngle * Math.PI / 180;
-        const originX = CENTER_X + 210 * Math.cos(rad);
-        const originY = CENTER_Y + 210 * Math.sin(rad);
-        const orbitStartX = CENTER_X + ORBIT_RADIUS * Math.cos(rad);
-        const orbitStartY = CENTER_Y + ORBIT_RADIUS * Math.sin(rad);
+        const originX = centerX + (210 * scaleX) * Math.cos(rad);
+        const originY = CENTER_Y + (210 * scaleX) * Math.sin(rad);
+        const orbitStartX = centerX + orbitRadius * Math.cos(rad);
+        const orbitStartY = CENTER_Y + orbitRadius * Math.sin(rad);
 
         const localT = clamp((t - config.arriveDelay) / 700, 0, 1);
         const eased = easeOutBack(localT);
@@ -128,8 +149,8 @@ export const HeroPhoneAnimation: React.FC = () => {
         const angleDeg = config.baseAngle + ORBIT_SPEED * (tOrbit / 1000);
         const angleRad = angleDeg * Math.PI / 180;
 
-        x = CENTER_X + ORBIT_RADIUS * Math.cos(angleRad);
-        y = CENTER_Y + ORBIT_RADIUS * Math.sin(angleRad);
+        x = centerX + orbitRadius * Math.cos(angleRad);
+        y = CENTER_Y + orbitRadius * Math.sin(angleRad);
         opacity = 1;
         labelOpacity = 0;
       } else if (t < ORGANIZE_END) {
@@ -138,16 +159,16 @@ export const HeroPhoneAnimation: React.FC = () => {
         const endAngleDeg = config.baseAngle + ORBIT_SPEED * (tOrbitEnd / 1000); // base + 70
         const endAngleRad = endAngleDeg * Math.PI / 180;
 
-        const orbitEndX = CENTER_X + ORBIT_RADIUS * Math.cos(endAngleRad);
-        const orbitEndY = CENTER_Y + ORBIT_RADIUS * Math.sin(endAngleRad);
+        const orbitEndX = centerX + orbitRadius * Math.cos(endAngleRad);
+        const orbitEndY = CENTER_Y + orbitRadius * Math.sin(endAngleRad);
 
-        x = lerp(orbitEndX, config.grid.x, settle);
+        x = lerp(orbitEndX, targetGridX, settle);
         y = lerp(orbitEndY, config.grid.y, settle);
         opacity = 1;
         labelOpacity = settle;
       } else {
         // Pause
-        x = config.grid.x;
+        x = targetGridX;
         y = config.grid.y;
         opacity = 1;
         labelOpacity = 1;
@@ -190,13 +211,13 @@ export const HeroPhoneAnimation: React.FC = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.phoneFrame}>
-        <div className={styles.phoneInner}>
+        <div ref={containerRef} className={styles.phoneInner}>
           <div className={styles.notch} />
 
           <div ref={glowRef} className={styles.glow} style={{ opacity: 0 }} />
 
-          <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0 }}>
-            <circle cx={CENTER_X} cy={CENTER_Y} r={ORBIT_RADIUS} />
+          <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0, width: '100%', height: '100%' }} preserveAspectRatio="xMidYMid slice">
+            <circle cx={BASE_CENTER_X} cy={CENTER_Y} r={BASE_ORBIT_RADIUS} transform={`scale(${containerWidth / 300}, 1)`} style={{ transformOrigin: `${BASE_CENTER_X}px ${CENTER_Y}px` }} />
           </svg>
 
           <img
