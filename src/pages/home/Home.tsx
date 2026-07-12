@@ -176,7 +176,7 @@ const features = [
   { title: "MCQ Sets", desc: "Exam-oriented questions and practice material." },
   { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview." },
   { title: "Study Notes", desc: "Comprehensive notes for all subjects." },
-  { title: "Announcements/Updates", desc: "Stay updated with newly uploaded resources." }
+  { title: "Updates", desc: "Stay updated with newly uploaded resources." }
 ];
 
 const FeaturesSection = () => (
