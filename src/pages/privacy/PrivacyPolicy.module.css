@@ -1,0 +1,129 @@
+.privacyContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-4) var(--spacing-3) 128px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+@media (min-width: 768px) {
+  .privacyContainer {
+    padding-top: var(--spacing-6);
+  }
+}
+
+.header {
+  padding: var(--spacing-5) var(--spacing-4);
+  border-radius: var(--radius-2xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.pageTitle {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 400;
+  color: var(--color-ink);
+  margin: 0;
+  line-height: 1;
+}
+
+.textGradient {
+  font-style: italic;
+  background: linear-gradient(to bottom right, #E91E8C, #C2185B, #8B0A50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent; /* Fallback */
+  padding-right: 0.15em;
+}
+
+.lastUpdated {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.contentCard {
+  padding: var(--spacing-4) var(--spacing-3);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+@media (min-width: 768px) {
+  .contentCard {
+    padding: var(--spacing-6) var(--spacing-5);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  margin: 0 0 var(--spacing-1) 0;
+  padding-bottom: var(--spacing-1);
+  border-bottom: 1px solid var(--border);
+}
+
+.section h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  margin: var(--spacing-2) 0 var(--spacing-1) 0;
+}
+
+.section p {
+  color: var(--muted-foreground);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.section ul {
+  color: var(--muted-foreground);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0;
+  padding-left: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.section li strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.inlineLink {
+  color: var(--color-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 150ms ease;
+}
+
+.inlineLink:hover {
+  color: #C2185B;
+}
+
+.inlineLink:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-ink);
+  border-radius: 2px;
+}

@@ -10,6 +10,7 @@ import NotificationSettings from './pages/settings/NotificationSettings';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import About from './pages/about/About';
+import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/settings/notifications" element={<NotificationSettings />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Route>
         {/* Catch-all route for 404s */}
         <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
