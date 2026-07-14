@@ -1,35 +1,63 @@
 import { useState, useEffect } from 'react';
 import type React from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { mockResources, mockCategories } from '../../data/mock';
+import { mockCategories } from '../../data/mock';
 import type { Category, Resource } from '../../types';
+import { supabase } from '../../services/supabase';
 
 const Library: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryQuery = searchParams.get('category') as Category | null;
 
   const [activeCategory, setActiveCategory] = useState<Category | 'All'>('All');
-  const [filteredResources, setFilteredResources] = useState<Resource[]>(mockResources);
+  const [allResources, setAllResources] = useState<Resource[]>([]);
+  const [filteredResources, setFilteredResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from('books').select('*');
+
+      if (error) {
+        console.error('Error fetching resources:', error);
+      } else if (data) {
+        // Map database fields to our Resource interface if needed.
+        // Assumes books table has id, title, description, category, created_at as uploadDate,
+        // pdf_url as pdfUrl, and thumbnail_url as thumbnailUrl or similar.
+        // We'll map them carefully.
+        const mappedResources: Resource[] = data.map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          category: item.category as Category,
+          uploadDate: item.created_at || item.uploadDate || new Date().toISOString(),
+          pdfUrl: item.pdf_url || item.pdfUrl || '',
+          thumbnailUrl: item.thumbnail_url || item.thumbnailUrl || '',
+        }));
+        setAllResources(mappedResources);
+      }
+      setLoading(false);
+    };
+
+    fetchResources();
+  }, []);
 
   useEffect(() => {
     if (categoryQuery && mockCategories.includes(categoryQuery)) {
-
       setActiveCategory(categoryQuery);
     } else {
-
       setActiveCategory('All');
     }
   }, [categoryQuery]);
 
   useEffect(() => {
     if (activeCategory === 'All') {
-
-      setFilteredResources(mockResources);
+      setFilteredResources(allResources);
     } else {
-
-      setFilteredResources(mockResources.filter(r => r.category === activeCategory));
+      setFilteredResources(allResources.filter(r => r.category === activeCategory));
     }
-  }, [activeCategory]);
+  }, [activeCategory, allResources]);
 
   const handleCategoryChange = (category: Category | 'All') => {
     if (category === 'All') {
@@ -63,7 +91,11 @@ const Library: React.FC = () => {
       </div>
 
       {/* Resource Grid */}
-      {filteredResources.length === 0 ? (
+      {loading ? (
+        <div className="neu-recessed rounded-2xl p-8 text-center">
+          <p className="font-bold text-body1">Loading resources...</p>
+        </div>
+      ) : filteredResources.length === 0 ? (
         <div className="neu-recessed rounded-2xl p-8 text-center">
           <p className="font-bold text-body1">No resources found for this category.</p>
         </div>
@@ -71,8 +103,12 @@ const Library: React.FC = () => {
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
           {filteredResources.map(resource => (
             <div key={resource.id} className="neu-card p-4 rounded-2xl flex flex-col">
-              <div className="h-32 neu-recessed text-muted-foreground rounded-lg mb-4 flex items-center justify-center font-bold font-mono border-none">
-                [Thumbnail Placeholder]
+              <div className="h-32 neu-recessed text-muted-foreground rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                {resource.thumbnailUrl ? (
+                  <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="font-bold font-mono text-sm">[No Thumbnail]</span>
+                )}
               </div>
               <h4 className="text-h2 font-bold mb-2">{resource.title}</h4>
               <p className="mb-4 text-caption flex-1">{resource.description}</p>
