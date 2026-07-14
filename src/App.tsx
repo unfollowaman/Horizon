@@ -9,6 +9,7 @@ import Dashboard from './pages/user/Dashboard';
 import NotificationSettings from './pages/settings/NotificationSettings';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import About from './pages/about/About';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route element={<MainLayout />}>
+          <Route path="/about" element={<About />} />
           <Route path="/library" element={<Library />} />
           <Route path="/resource/:id" element={<ResourceDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
