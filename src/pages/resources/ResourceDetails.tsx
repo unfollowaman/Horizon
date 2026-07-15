@@ -32,9 +32,9 @@ const ResourceDetails: React.FC = () => {
           id: data.id,
           title: data.title,
           description: data.description,
-          category: data.category as Category,
+          category: (data.type || data.category) as Category,
           uploadDate: data.created_at || data.uploadDate || new Date().toISOString(),
-          pdfUrl: data.pdf_url || data.pdfUrl || '',
+          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || data.pdfUrl || ''),
           thumbnailUrl: data.thumbnail_url || data.thumbnailUrl || '',
         };
         setResource(mappedResource);
@@ -43,7 +43,7 @@ const ResourceDetails: React.FC = () => {
         const { data: relatedData, error: relatedError } = await supabase
           .from('books')
           .select('*')
-          .eq('category', data.category)
+          .eq('type', data.type || data.category)
           .neq('id', data.id)
           .limit(3);
 
@@ -54,9 +54,9 @@ const ResourceDetails: React.FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                category: item.category as Category,
+                category: (item.type || item.category) as Category,
                 uploadDate: item.created_at || item.uploadDate || new Date().toISOString(),
-                pdfUrl: item.pdf_url || item.pdfUrl || '',
+                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || item.pdfUrl || ''),
                 thumbnailUrl: item.thumbnail_url || item.thumbnailUrl || '',
             }));
             setRelatedResources(mappedRelated);
