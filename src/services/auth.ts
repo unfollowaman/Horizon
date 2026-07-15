@@ -20,7 +20,7 @@ export const register = async (email: string, password: string, name: string) =>
     const { error: profileError } = await supabase
       .from('profiles')
       .insert([
-        { id: data.user.id, name, email, role: 'student' }
+        { id: data.user.id, name, role: 'student' }
       ]);
 
     if (profileError) {

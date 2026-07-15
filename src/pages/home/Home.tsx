@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { register } from '../../services/auth';
+import { Link, useNavigate } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import styles from './Home.module.css';
@@ -69,7 +70,7 @@ const Header = () => {
         </nav>
 
         {/* Get Started */}
-        <Link to="/" className={`${styles.getStartedBtn} neu-raised neu-raised-hover`}>
+        <Link to="/register" className={`${styles.getStartedBtn} neu-raised neu-raised-hover`}>
           Get Started
         </Link>
       </div>
@@ -127,7 +128,7 @@ const Header = () => {
 
                 {/* Action Buttons */}
                 <div className={styles.menuActionButtons}>
-                  <Link to="/" onClick={closeMenu} className={styles.menuSignInBtn}>
+                  <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
                     Sign in
                   </Link>
                   <Link to="/" onClick={closeMenu} className={styles.menuGetNowBtn}>
@@ -171,12 +172,12 @@ const HeroSection = () => (
 );
 
 const features = [
-  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively." },
-  { title: "Flashcards", desc: "Quick-recall cards for fast revision." },
-  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material." },
-  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview." },
-  { title: "Study Notes", desc: "Comprehensive notes for all subjects." },
-  { title: "Updates", desc: "Stay updated with newly uploaded resources." }
+  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library?category=Previous%20Year%20Papers" },
+  { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)" },
+  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)" },
+  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)" },
+  { title: "Study Notes", desc: "Comprehensive notes for all subjects. (Coming Soon)" },
+  { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)" }
 ];
 
 const FeaturesSection = () => (
@@ -189,6 +190,9 @@ const FeaturesSection = () => (
       <div className={styles.featuresGrid}>
         {features.map((f, i) => (
           <div key={i} className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+            {f.path ? (
+              <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />
+            ) : null}
             <div className={styles.featureCardInner} />
             <div className={styles.featureCardContent}>
               <h3 className={styles.featureCardTitle}>{f.title}</h3>
@@ -201,26 +205,72 @@ const FeaturesSection = () => (
   </section>
 );
 
-const HighlightsSection = () => (
+const HighlightsSection = () => {
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const navigate = useNavigate();
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await register(email, password, name);
+      navigate('/dashboard');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Failed to subscribe');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
   <section className={styles.highlightsSection}>
     <div className={styles.highlightsContainer}>
       <h2 className={styles.highlightsTitle}>New here?</h2>
       <div className={styles.highlightsNewsletterWrapper}>
         <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
-        <form className={styles.highlightsForm} onSubmit={(e) => e.preventDefault()}>
+        {error && <p className="text-red-500 mb-2">{error}</p>}
+        <form className={styles.highlightsForm} onSubmit={handleSubscribe}>
+          <input
+            type="text"
+            placeholder="Your name"
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className={`neu-recessed ${styles.highlightsInput}`}
+            style={{ marginBottom: '0.5rem' }}
+          />
           <input
             type="email"
             placeholder="Your email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             className={`neu-recessed ${styles.highlightsInput}`}
+            style={{ marginBottom: '0.5rem' }}
           />
-          <button className={`neu-raised neu-raised-hover ${styles.highlightsSubmitBtn}`}>
-            Subscribe
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className={`neu-recessed ${styles.highlightsInput}`}
+            style={{ marginBottom: '0.5rem' }}
+          />
+          <button type="submit" disabled={loading} className={`neu-raised neu-raised-hover ${styles.highlightsSubmitBtn}`}>
+            {loading ? 'Subscribing...' : 'Subscribe'}
           </button>
         </form>
       </div>
     </div>
   </section>
-);
+  );
+};
 
 const Footer = () => (
   <footer className={styles.footer}>

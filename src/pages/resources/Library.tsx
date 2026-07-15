@@ -17,16 +17,22 @@ const Library: React.FC = () => {
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('books').select('*');
+      let query = supabase.from('books').select('*');
+      if (categoryQuery && (categoryQuery as string) !== 'All') {
+        query = query.eq('category', categoryQuery);
+      }
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching resources:', error);
+        setAllResources([]);
       } else if (data) {
         // Map database fields to our Resource interface if needed.
         // Assumes books table has id, title, description, category, created_at as uploadDate,
         // pdf_url as pdfUrl, and thumbnail_url as thumbnailUrl or similar.
         // We'll map them carefully.
-        const mappedResources: Resource[] = data.map(item => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mappedResources: Resource[] = data.map((item: any) => ({
           id: item.id,
           title: item.title,
           description: item.description,
@@ -41,7 +47,7 @@ const Library: React.FC = () => {
     };
 
     fetchResources();
-  }, []);
+  }, [categoryQuery]);
 
   useEffect(() => {
     if (categoryQuery && mockCategories.includes(categoryQuery)) {
