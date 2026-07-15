@@ -68,31 +68,6 @@ const ResourceDetails: React.FC = () => {
     fetchResourceAndRelated();
   }, [id]);
 
-  const handleDownload = async () => {
-      if (!resource?.pdfUrl) return;
-
-      // The pdfUrl might be a full URL, or a path within a bucket.
-      // Based on instructions "Load PDF URLs from Supabase Storage/database."
-      // If it's a full URL, we can just open it.
-      // If it's a storage path, we need to get the public URL.
-
-      if (resource.pdfUrl.startsWith('http')) {
-         window.open(resource.pdfUrl, '_blank');
-      } else {
-         // Assume it's a path in a bucket named 'pdfs' (or whatever default they use)
-         // We will try to open it directly if it's already a full path or
-         // get public url from 'books' bucket if they use that.
-         // Let's check if it starts with a bucket name, for now, let's just use createSignedUrl or getPublicUrl
-         // For a simpler approach, if we don't know the bucket, we might just try opening the path directly or use getPublicUrl on a known bucket.
-         // Let's assume the pdfUrl stored is the path within the 'books' bucket, or we can just open the url.
-         const { data } = supabase.storage.from('books').getPublicUrl(resource.pdfUrl);
-         if (data?.publicUrl) {
-             window.open(data.publicUrl, '_blank');
-         } else {
-            window.open(resource.pdfUrl, '_blank');
-         }
-      }
-  };
 
   if (loading) {
     return (
@@ -125,19 +100,15 @@ const ResourceDetails: React.FC = () => {
           <p className="text-body1 font-bold mb-8">{resource.description}</p>
 
           <div className="neu-card rounded-2xl p-4">
-            <div className="h-96 neu-recessed rounded-xl p-2 flex flex-col items-center justify-center mb-6 text-muted-foreground overflow-hidden">
-               {resource.thumbnailUrl ? (
-                   <img src={resource.thumbnailUrl} alt={resource.title} className="max-w-full max-h-full object-contain" />
-               ) : (
-                  <span className="text-h2 font-bold font-mono">[ PDF Viewer Placeholder ]</span>
-               )}
+            <div className="h-[600px] neu-recessed rounded-xl p-2 flex flex-col items-center justify-center text-muted-foreground overflow-hidden">
+               <iframe
+                 src={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+                 width="100%"
+                 height="100%"
+                 style={{ border: 'none' }}
+                 title={resource.title}
+               />
             </div>
-            <button
-                onClick={handleDownload}
-                className="w-full neu-raised hover:neu-raised-hover p-3 rounded-full font-bold text-ink"
-            >
-              Download PDF
-            </button>
           </div>
         </div>
 
