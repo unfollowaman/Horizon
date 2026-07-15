@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource/playfair-display": "^5.2.8",
     "@supabase/supabase-js": "^2.110.3",
+    "dotenv": "^17.4.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.18.0"

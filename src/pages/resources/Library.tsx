@@ -19,7 +19,7 @@ const Library: React.FC = () => {
       setLoading(true);
       let query = supabase.from('books').select('*');
       if (categoryQuery && (categoryQuery as string) !== 'All') {
-        query = query.eq('category', categoryQuery);
+        query = query.eq('type', categoryQuery);
       }
       const { data, error } = await query;
 
@@ -36,9 +36,9 @@ const Library: React.FC = () => {
           id: item.id,
           title: item.title,
           description: item.description,
-          category: item.category as Category,
+          category: (item.type || item.category) as Category,
           uploadDate: item.created_at || item.uploadDate || new Date().toISOString(),
-          pdfUrl: item.pdf_url || item.pdfUrl || '',
+          pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || item.pdfUrl || ''),
           thumbnailUrl: item.thumbnail_url || item.thumbnailUrl || '',
         }));
         setAllResources(mappedResources);
