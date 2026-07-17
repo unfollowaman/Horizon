@@ -6,6 +6,10 @@ export interface Resource {
   uploadDate: string;
   pdfUrl: string;
   thumbnailUrl: string;
+  class?: string;
+  subject?: string;
+  year?: string;
+  type?: string;
 }
 
 export type Category = 'Notes' | 'Previous Year Papers' | 'Study Material' | 'Practice Questions';

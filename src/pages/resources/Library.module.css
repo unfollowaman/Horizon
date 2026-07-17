@@ -1,0 +1,31 @@
+.heroBrandPill {
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  height: var(--spacing-11);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+  white-space: nowrap;
+}
+
+.heroBrandPillImg {
+  height: 1.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.heroBrandPillDivider {
+  width: 1px;
+  height: 1rem;
+  background-color: var(--border);
+}
+
+.heroBrandPillText {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+  color: var(--color-ink);
+  font-family: 'Instrument Serif', serif;
+}

@@ -172,7 +172,7 @@ const HeroSection = () => (
 );
 
 const features = [
-  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library?category=Previous%20Year%20Papers" },
+  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library" },
   { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)" },
   { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)" },
   { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)" },
