@@ -118,9 +118,9 @@ const Library: React.FC = () => {
   }, [allResources, selectedClass, selectedSubject, selectedYear]);
 
   return (
-    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] py-[clamp(24px,3vw,48px)]">
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] pt-[8px] pb-[clamp(24px,3vw,48px)]">
       {/* New Page Header */}
-      <div className="flex flex-col items-start gap-[clamp(16px,2vw,24px)] mb-[clamp(48px,6vw,72px)]">
+      <div className="flex flex-col items-start gap-[12px] mb-[clamp(12px,3vw,20px)]">
         <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <div className={styles.heroBrandPillDivider}></div>
@@ -222,7 +222,7 @@ const Library: React.FC = () => {
                   <span className="font-bold font-mono text-xs p-2">PDF</span>
                 )}
               </div>
-              <h4 className="text-[clamp(22px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-1">{resource.subject || resource.title}</h4>
+              <h4 className="text-[clamp(22px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-1">{`${resource.class} ${resource.subject} PYQ`}</h4>
               <p className="text-[clamp(14px,1.5vw,16px)] mb-3 text-ink/70 font-bold">{resource.year}</p>
               <div className="w-full flex gap-2 mt-auto">
                 <Link to={`/resource/${resource.id}`} className="flex-1 h-[44px] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
