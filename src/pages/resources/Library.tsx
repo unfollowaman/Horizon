@@ -118,25 +118,25 @@ const Library: React.FC = () => {
   }, [allResources, selectedClass, selectedSubject, selectedYear]);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-8 md:py-12">
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] py-[clamp(24px,3vw,48px)]">
       {/* New Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center gap-[clamp(16px,2vw,24px)] mb-[clamp(48px,6vw,72px)]">
         <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <div className={styles.heroBrandPillDivider}></div>
           <span className={styles.heroBrandPillText}>Horizon</span>
         </div>
-        <h2 className="text-h2 uppercase text-ink md:mb-4">PYQ Papers</h2>
+        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink md:mb-4">PYQ Papers</h2>
       </div>
 
       {/* Filter Controls */}
-      <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-2 md:grid-cols-3 gap-[clamp(16px,2vw,24px)]">
         <div className="flex flex-col gap-2">
           <label className="text-caption font-bold text-ink">Class</label>
           <select
             value={selectedClass}
             onChange={e => setSelectedClass(e.target.value)}
-            className="neu-recessed p-3 rounded-lg text-ink font-bold bg-transparent outline-none cursor-pointer"
+            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
           >
             {uniqueClasses.map(cls => (
               <option key={cls} value={cls}>{cls}</option>
@@ -149,7 +149,7 @@ const Library: React.FC = () => {
           <select
             value={selectedSubject}
             onChange={e => setSelectedSubject(e.target.value)}
-            className="neu-recessed p-3 rounded-lg text-ink font-bold bg-transparent outline-none cursor-pointer"
+            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
           >
             <option value="All Subjects">All Subjects</option>
             {uniqueSubjects.map(sub => (
@@ -158,12 +158,12 @@ const Library: React.FC = () => {
           </select>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="col-span-2 md:col-span-1 flex flex-col gap-2">
           <label className="text-caption font-bold text-ink">Year</label>
           <select
             value={selectedYear}
             onChange={e => setSelectedYear(e.target.value)}
-            className="neu-recessed p-3 rounded-lg text-ink font-bold bg-transparent outline-none cursor-pointer"
+            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
           >
             <option value="All Years">All Years</option>
             {uniqueYears.map(year => (
@@ -184,9 +184,9 @@ const Library: React.FC = () => {
           <p className="text-caption">Try selecting a different class, subject, or year.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[clamp(16px,2vw,32px)]">
           {filteredResources.map(resource => (
-            <div key={resource.id} className="neu-raised p-3 md:p-4 rounded-xl flex flex-col items-center text-center">
+            <div key={resource.id} className="neu-raised p-[clamp(18px,2vw,24px)] rounded-xl flex flex-col h-full items-center text-center">
               <div className="w-full aspect-[3/4] neu-recessed text-muted-foreground rounded-lg mb-3 flex items-center justify-center overflow-hidden">
                 {resource.thumbnailUrl ? (
                   <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
@@ -194,15 +194,15 @@ const Library: React.FC = () => {
                   <span className="font-bold font-mono text-xs p-2">PDF</span>
                 )}
               </div>
-              <h4 className="text-body1 font-bold mb-1 text-ink leading-tight line-clamp-2">{resource.subject || resource.title}</h4>
-              <p className="text-caption mb-3 text-ink/70 font-bold">{resource.year}</p>
+              <h4 className="text-[clamp(22px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-2">{resource.subject || resource.title}</h4>
+              <p className="text-[clamp(14px,1.5vw,16px)] mb-3 text-ink/70 font-bold">{resource.year}</p>
               <div className="w-full flex gap-2 mt-auto">
-                <Link to={`/resource/${resource.id}`} className="flex-1 py-2 text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+                <Link to={`/resource/${resource.id}`} className="flex-1 h-[clamp(44px,5vw,48px)] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
                   View
                 </Link>
                 {resource.pdfUrl && (
-                  <a href={resource.pdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
-                    Open
+                  <a href={resource.pdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1 h-[clamp(44px,5vw,48px)] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+                    Download
                   </a>
                 )}
               </div>
