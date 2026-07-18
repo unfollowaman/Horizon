@@ -23,19 +23,37 @@ const Library: React.FC = () => {
         setAllResources([]);
       } else if (data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mappedResources: Resource[] = data.map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          category: item.type as any,
-          uploadDate: item.created_at || new Date().toISOString(),
-          pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
-          thumbnailUrl: item.thumbnail_url || '',
-          class: item.class,
-          subject: item.subject,
-          year: item.year ? item.year.toString() : undefined,
-        }));
+        const mappedResources: Resource[] = data.map((item: any) => {
+          let className = item.class;
+          if (className) {
+            const strClass = String(className);
+            const trimmed = strClass.trim();
+            if (/^\d+$/.test(trimmed)) {
+              className = `Class ${trimmed}`;
+            } else if (/^class\s+\d+$/i.test(trimmed)) {
+              const numMatch = trimmed.match(/\d+/);
+              if (numMatch) {
+                className = `Class ${numMatch[0]}`;
+              }
+            } else {
+              className = trimmed;
+            }
+          }
+
+          return {
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            category: item.type as any,
+            uploadDate: item.created_at || new Date().toISOString(),
+            pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+            thumbnailUrl: item.thumbnail_url || '',
+            class: className,
+            subject: item.subject,
+            year: item.year ? item.year.toString() : undefined,
+          };
+        });
         setAllResources(mappedResources);
       }
       setLoading(false);
@@ -46,10 +64,25 @@ const Library: React.FC = () => {
 
   const uniqueClasses = useMemo(() => {
     const classes = new Set(allResources.map(r => r.class).filter(Boolean) as string[]);
-    const sorted = Array.from(classes).sort();
-    if (!sorted.includes('Class 10')) {
-      sorted.unshift('Class 10');
+    if (!classes.has('Class 10')) {
+      classes.add('Class 10');
     }
+    const sorted = Array.from(classes).sort((a, b) => {
+      const matchA = a.match(/Class (\d+)/i);
+      const matchB = b.match(/Class (\d+)/i);
+
+      const numA = matchA ? parseInt(matchA[1], 10) : 0;
+      const numB = matchB ? parseInt(matchB[1], 10) : 0;
+
+      if (numA && numB) {
+        return numB - numA;
+      }
+
+      if (numA) return -1;
+      if (numB) return 1;
+
+      return a.localeCompare(b);
+    });
     return sorted;
   }, [allResources]);
 
