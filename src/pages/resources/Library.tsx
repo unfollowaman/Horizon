@@ -120,56 +120,87 @@ const Library: React.FC = () => {
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] py-[clamp(24px,3vw,48px)]">
       {/* New Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center gap-[clamp(16px,2vw,24px)] mb-[clamp(48px,6vw,72px)]">
+      <div className="flex flex-col items-start gap-[clamp(16px,2vw,24px)] mb-[clamp(48px,6vw,72px)]">
         <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <div className={styles.heroBrandPillDivider}></div>
           <span className={styles.heroBrandPillText}>Horizon</span>
         </div>
-        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink md:mb-4">PYQ Papers</h2>
+        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">PYQ Papers</h2>
       </div>
 
       {/* Filter Controls */}
       <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-2 md:grid-cols-3 gap-[clamp(16px,2vw,24px)]">
         <div className="flex flex-col gap-2">
           <label className="text-caption font-bold text-ink">Class</label>
-          <select
-            value={selectedClass}
-            onChange={e => setSelectedClass(e.target.value)}
-            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
-          >
-            {uniqueClasses.map(cls => (
-              <option key={cls} value={cls}>{cls}</option>
-            ))}
-          </select>
+          <div className="relative w-full">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink/70 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+            <select
+              value={selectedClass}
+              onChange={e => setSelectedClass(e.target.value)}
+              className="neu-recessed w-full appearance-none h-[clamp(60px,6vw,64px)] pr-10 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
+              style={{ paddingLeft: '3.25rem' }}
+            >
+              {uniqueClasses.map(cls => (
+                <option key={cls} value={cls}>{cls}</option>
+              ))}
+            </select>
+            <svg className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
           <label className="text-caption font-bold text-ink">Subject</label>
-          <select
-            value={selectedSubject}
-            onChange={e => setSelectedSubject(e.target.value)}
-            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
-          >
-            <option value="All Subjects">All Subjects</option>
-            {uniqueSubjects.map(sub => (
-              <option key={sub} value={sub}>{sub}</option>
-            ))}
-          </select>
+          <div className="relative w-full">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink/70 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            </svg>
+            <select
+              value={selectedSubject}
+              onChange={e => setSelectedSubject(e.target.value)}
+              className="neu-recessed w-full appearance-none h-[clamp(60px,6vw,64px)] pr-10 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
+              style={{ paddingLeft: '3.25rem' }}
+            >
+              <option value="All Subjects">All Subjects</option>
+              {uniqueSubjects.map(sub => (
+                <option key={sub} value={sub}>{sub}</option>
+              ))}
+            </select>
+            <svg className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
         </div>
 
         <div className="col-span-2 md:col-span-1 flex flex-col gap-2">
           <label className="text-caption font-bold text-ink">Year</label>
-          <select
-            value={selectedYear}
-            onChange={e => setSelectedYear(e.target.value)}
-            className="neu-recessed h-[clamp(60px,6vw,64px)] px-4 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
-          >
-            <option value="All Years">All Years</option>
-            {uniqueYears.map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+          <div className="relative w-full">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink/70 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <select
+              value={selectedYear}
+              onChange={e => setSelectedYear(e.target.value)}
+              className="neu-recessed w-full appearance-none h-[clamp(60px,6vw,64px)] pr-10 rounded-lg text-ink text-[clamp(16px,1.5vw,18px)] font-bold bg-transparent outline-none cursor-pointer"
+              style={{ paddingLeft: '3.25rem' }}
+            >
+              <option value="All Years">All Years</option>
+              {uniqueYears.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <svg className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -186,22 +217,22 @@ const Library: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[clamp(16px,2vw,32px)]">
           {filteredResources.map(resource => (
-            <div key={resource.id} className="neu-raised p-[clamp(18px,2vw,24px)] rounded-xl flex flex-col h-full items-center text-center">
-              <div className="w-full aspect-[3/4] neu-recessed text-muted-foreground rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+            <div key={resource.id} className="neu-raised p-[clamp(18px,2vw,24px)] rounded-xl flex flex-col h-full items-center text-center aspect-square">
+              <div className="w-full flex-1 min-h-0 neu-recessed text-muted-foreground rounded-lg mb-3 flex items-center justify-center overflow-hidden">
                 {resource.thumbnailUrl ? (
                   <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
                 ) : (
                   <span className="font-bold font-mono text-xs p-2">PDF</span>
                 )}
               </div>
-              <h4 className="text-[clamp(22px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-2">{resource.subject || resource.title}</h4>
+              <h4 className="text-[clamp(22px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-1">{resource.subject || resource.title}</h4>
               <p className="text-[clamp(14px,1.5vw,16px)] mb-3 text-ink/70 font-bold">{resource.year}</p>
               <div className="w-full flex gap-2 mt-auto">
-                <Link to={`/resource/${resource.id}`} className="flex-1 h-[clamp(44px,5vw,48px)] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+                <Link to={`/resource/${resource.id}`} className="flex-1 h-[44px] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
                   View
                 </Link>
                 {resource.pdfUrl && (
-                  <a href={resource.pdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1 h-[clamp(44px,5vw,48px)] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+                  <a href={resource.pdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1 h-[44px] flex items-center justify-center whitespace-nowrap text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
                     Download
                   </a>
                 )}
