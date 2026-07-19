@@ -118,9 +118,9 @@ const Library: React.FC = () => {
   }, [allResources, selectedClass, selectedSubject, selectedYear]);
 
   return (
-    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] pt-[8px] pb-[clamp(24px,3vw,48px)]">
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:pt-[8px] pb-[clamp(24px,3vw,48px)]">
       {/* New Page Header */}
-      <div className="flex flex-col items-start gap-[12px] mb-[clamp(12px,3vw,20px)]">
+      <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
         <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <div className={styles.heroBrandPillDivider}></div>

@@ -6,7 +6,10 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-3);
-  margin-bottom: var(--spacing-4);
+  margin-bottom: 0;
+  @media (min-width: 768px) {
+    margin-bottom: var(--spacing-4);
+  }
   white-space: nowrap;
 }
 
