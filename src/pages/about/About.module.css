@@ -15,6 +15,7 @@
 
 .aboutHeader {
   padding: var(--spacing-5) var(--spacing-4);
+  --tw-radius: var(--radius-2xl);
   border-radius: var(--radius-2xl);
   text-align: center;
   display: flex;
@@ -64,6 +65,7 @@
 
 .card {
   padding: var(--spacing-4);
+  --tw-radius: var(--radius-xl);
   border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
@@ -113,5 +115,6 @@
 .inlineLink:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-ink);
+  --tw-radius: 2px;
   border-radius: 2px;
 }
