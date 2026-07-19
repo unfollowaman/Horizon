@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin';
+
 export default {
   content: [
     "./index.html",
@@ -59,5 +61,75 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'rounded': (value) => {
+            return {
+              '--tw-radius': value,
+              'border-radius': value,
+            };
+          },
+          'rounded-t': (value) => {
+            return {
+              '--tw-radius-tl': value,
+              '--tw-radius-tr': value,
+              'border-top-left-radius': value,
+              'border-top-right-radius': value,
+            };
+          },
+          'rounded-r': (value) => {
+            return {
+              '--tw-radius-tr': value,
+              '--tw-radius-br': value,
+              'border-top-right-radius': value,
+              'border-bottom-right-radius': value,
+            };
+          },
+          'rounded-b': (value) => {
+            return {
+              '--tw-radius-bl': value,
+              '--tw-radius-br': value,
+              'border-bottom-right-radius': value,
+              'border-bottom-left-radius': value,
+            };
+          },
+          'rounded-l': (value) => {
+            return {
+              '--tw-radius-tl': value,
+              '--tw-radius-bl': value,
+              'border-top-left-radius': value,
+              'border-bottom-left-radius': value,
+            };
+          },
+          'rounded-tl': (value) => {
+            return {
+              '--tw-radius-tl': value,
+              'border-top-left-radius': value,
+            };
+          },
+          'rounded-tr': (value) => {
+            return {
+              '--tw-radius-tr': value,
+              'border-top-right-radius': value,
+            };
+          },
+          'rounded-br': (value) => {
+            return {
+              '--tw-radius-br': value,
+              'border-bottom-right-radius': value,
+            };
+          },
+          'rounded-bl': (value) => {
+            return {
+              '--tw-radius-bl': value,
+              'border-bottom-left-radius': value,
+            };
+          },
+        },
+        { values: theme('borderRadius') }
+      )
+    })
+  ],
 }
