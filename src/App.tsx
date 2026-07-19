@@ -11,10 +11,12 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route element={<MainLayout />}>
