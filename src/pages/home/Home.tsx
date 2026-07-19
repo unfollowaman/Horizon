@@ -150,13 +150,13 @@ const HeroSection = () => (
     <div className={styles.heroContent}>
 
       {/* Brand Pill Logo */}
-      <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
+      <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
         <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
         <div className={styles.heroBrandPillDivider}></div>
         <span className={styles.heroBrandPillText}>
           Horizon
         </span>
-      </div>
+      </Link>
 
       <h1 className={`animate-fade-rise ${styles.heroTitle}`}>
         Resources for <em className={styles.heroTitleEm}>every</em> learner.
