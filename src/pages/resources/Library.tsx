@@ -122,11 +122,11 @@ const Library: React.FC = () => {
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:pt-[8px] pb-[clamp(24px,3vw,48px)]">
       {/* New Page Header */}
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
-        <div className={`animate-fade-rise ${styles.heroBrandPill} neu-raised`}>
+        <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <div className={styles.heroBrandPillDivider}></div>
           <span className={styles.heroBrandPillText}>Horizon</span>
-        </div>
+        </Link>
         <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">PYQ Papers</h2>
       </div>
 
