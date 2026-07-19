@@ -45,7 +45,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options }) 
             {options.map((option) => (
               <div
                 key={option}
-                className={`px-[clamp(12px,2vw,16px)] py-3 cursor-pointer hover:bg-black/5 text-[clamp(14px,1.5vw,18px)] font-medium ${value === option ? 'font-bold bg-black/5' : ''}`}
+                className={`px-[clamp(12px,2vw,16px)] py-1 cursor-pointer hover:bg-black/5 text-[clamp(14px,1.5vw,18px)] font-medium ${value === option ? 'font-bold bg-black/5' : ''}`}
                 onClick={() => {
                   onChange(option);
                   setIsOpen(false);
