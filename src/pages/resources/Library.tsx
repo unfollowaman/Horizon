@@ -10,8 +10,8 @@ const Library: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const [selectedClass, setSelectedClass] = useState<string>('Class 10');
-  const [selectedSubject, setSelectedSubject] = useState<string>('All Subjects');
-  const [selectedYear, setSelectedYear] = useState<string>('All Years');
+  const [selectedSubject, setSelectedSubject] = useState<string>('Subjects');
+  const [selectedYear, setSelectedYear] = useState<string>('Years');
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -102,10 +102,10 @@ const Library: React.FC = () => {
     if (selectedClass && selectedClass !== 'All Classes') {
       filtered = filtered.filter(r => r.class === selectedClass);
     }
-    if (selectedSubject !== 'All Subjects') {
+    if (selectedSubject !== 'Subjects') {
       filtered = filtered.filter(r => r.subject === selectedSubject);
     }
-    if (selectedYear !== 'All Years') {
+    if (selectedYear !== 'Years') {
       filtered = filtered.filter(r => r.year === selectedYear);
     }
 
@@ -130,14 +130,10 @@ const Library: React.FC = () => {
       </div>
 
       {/* Filter Controls */}
-      <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-2 md:grid-cols-3 gap-[clamp(16px,2vw,24px)]">
-        <div className="flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(60px,6vw,64px)] flex items-center px-4 cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <svg className="h-[1.2em] w-[1.2em] text-ink/70 shrink-0 mr-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-            </svg>
-            <span className="text-ink text-[clamp(16px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedClass}</span>
+      <div className="mb-[clamp(24px,4vw,40px)] flex w-full gap-[12px]">
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
+            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedClass}</span>
             <select
               value={selectedClass}
               onChange={e => setSelectedClass(e.target.value)}
@@ -147,54 +143,45 @@ const Library: React.FC = () => {
                 <option key={cls} value={cls}>{cls}</option>
               ))}
             </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(60px,6vw,64px)] flex items-center px-4 cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <svg className="h-[1.2em] w-[1.2em] text-ink/70 shrink-0 mr-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-            </svg>
-            <span className="text-ink text-[clamp(16px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedSubject}</span>
+        <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
+          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
+            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedSubject}</span>
             <select
               value={selectedSubject}
               onChange={e => setSelectedSubject(e.target.value)}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
             >
-              <option value="All Subjects">All Subjects</option>
+              <option value="Subjects">Subjects</option>
               {uniqueSubjects.map(sub => (
                 <option key={sub} value={sub}>{sub}</option>
               ))}
             </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </div>
         </div>
 
-        <div className="col-span-2 md:col-span-1 flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(60px,6vw,64px)] flex items-center px-4 cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <svg className="h-[1.2em] w-[1.2em] text-ink/70 shrink-0 mr-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span className="text-ink text-[clamp(16px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedYear}</span>
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
+            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedYear}</span>
             <select
               value={selectedYear}
               onChange={e => setSelectedYear(e.target.value)}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
             >
-              <option value="All Years">All Years</option>
+              <option value="Years">Years</option>
               {uniqueYears.map(year => (
                 <option key={year} value={year}>{year}</option>
               ))}
             </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </div>
