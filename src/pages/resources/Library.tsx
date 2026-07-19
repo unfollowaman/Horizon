@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import type { Resource } from '../../types';
 import { supabase } from '../../services/supabase';
 import styles from './Library.module.css';
+import { Dropdown } from '../../components/Dropdown';
 
 const Library: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
@@ -132,59 +133,27 @@ const Library: React.FC = () => {
       {/* Filter Controls */}
       <div className="mb-[clamp(24px,4vw,40px)] flex w-full gap-[12px]">
         <div className="flex-1 min-w-0 flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedClass}</span>
-            <select
-              value={selectedClass}
-              onChange={e => setSelectedClass(e.target.value)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
-            >
-              {uniqueClasses.map(cls => (
-                <option key={cls} value={cls}>{cls}</option>
-              ))}
-            </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </div>
+          <Dropdown
+            value={selectedClass}
+            onChange={setSelectedClass}
+            options={uniqueClasses}
+          />
         </div>
 
         <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedSubject}</span>
-            <select
-              value={selectedSubject}
-              onChange={e => setSelectedSubject(e.target.value)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
-            >
-              <option value="Subjects">Subjects</option>
-              {uniqueSubjects.map(sub => (
-                <option key={sub} value={sub}>{sub}</option>
-              ))}
-            </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </div>
+          <Dropdown
+            value={selectedSubject}
+            onChange={setSelectedSubject}
+            options={['Subjects', ...uniqueSubjects]}
+          />
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-2">
-          <div className="relative w-full neu-recessed rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20">
-            <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">{selectedYear}</span>
-            <select
-              value={selectedYear}
-              onChange={e => setSelectedYear(e.target.value)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
-            >
-              <option value="Years">Years</option>
-              {uniqueYears.map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
-            <svg className="h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </div>
+          <Dropdown
+            value={selectedYear}
+            onChange={setSelectedYear}
+            options={['Years', ...uniqueYears]}
+          />
         </div>
       </div>
 
