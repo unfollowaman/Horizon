@@ -1,4 +1,5 @@
 .heroBrandPill {
+  --tw-radius: var(--radius-full);
   border-radius: var(--radius-full);
   padding: 0 var(--spacing-4);
   height: var(--spacing-11);
