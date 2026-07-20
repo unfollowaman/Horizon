@@ -9,7 +9,7 @@ interface MaterialCardProps {
 const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
   return (
     <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
-      <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-[12px] mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
+      <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
         {resource.thumbnailUrl ? (
           <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
         ) : (
