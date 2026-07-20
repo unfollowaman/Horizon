@@ -11,9 +11,33 @@ const Library: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedClass, setSelectedClass] = useState<string>('Class 10');
-  const [selectedSubject, setSelectedSubject] = useState<string>('Subjects');
-  const [selectedYear, setSelectedYear] = useState<string>('Years');
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true
+  );
+
+  const [selectedClass, setSelectedClass] = useState<string>(isDesktop ? 'Classes' : 'Class 10');
+  const [selectedSubject, setSelectedSubject] = useState<string>(isDesktop ? 'All Subjects' : 'Subjects');
+  const [selectedYear, setSelectedYear] = useState<string>(isDesktop ? 'All Years' : 'Years');
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+    const handler = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches);
+      if (e.matches) {
+        setSelectedSubject(prev => prev === 'Subjects' ? 'All Subjects' : prev);
+        setSelectedYear(prev => prev === 'Years' ? 'All Years' : prev);
+        // Only switch Class 10 to Classes if it's considered the "default" transition.
+        // We do this to ensure they see the desktop default when resizing from mobile default.
+        setSelectedClass(prev => prev === 'Class 10' ? 'Classes' : prev);
+      } else {
+        setSelectedSubject(prev => prev === 'All Subjects' ? 'Subjects' : prev);
+        setSelectedYear(prev => prev === 'All Years' ? 'Years' : prev);
+        setSelectedClass(prev => prev === 'Classes' ? 'Class 10' : prev);
+      }
+    };
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -101,13 +125,13 @@ const Library: React.FC = () => {
   const filteredResources = useMemo(() => {
     let filtered = allResources;
 
-    if (selectedClass && selectedClass !== 'All Classes') {
+    if (selectedClass && selectedClass !== 'All Classes' && selectedClass !== 'Classes') {
       filtered = filtered.filter(r => r.class === selectedClass);
     }
-    if (selectedSubject !== 'Subjects') {
+    if (selectedSubject !== 'Subjects' && selectedSubject !== 'All Subjects') {
       filtered = filtered.filter(r => r.subject === selectedSubject);
     }
-    if (selectedYear !== 'Years') {
+    if (selectedYear !== 'Years' && selectedYear !== 'All Years') {
       filtered = filtered.filter(r => r.year === selectedYear);
     }
 
@@ -137,7 +161,7 @@ const Library: React.FC = () => {
           <Dropdown
             value={selectedClass}
             onChange={setSelectedClass}
-            options={uniqueClasses}
+            options={isDesktop ? ['Classes', ...uniqueClasses] : uniqueClasses}
           />
         </div>
 
@@ -145,7 +169,7 @@ const Library: React.FC = () => {
           <Dropdown
             value={selectedSubject}
             onChange={setSelectedSubject}
-            options={['Subjects', ...uniqueSubjects]}
+            options={isDesktop ? ['All Subjects', ...uniqueSubjects] : ['Subjects', ...uniqueSubjects]}
           />
         </div>
 
@@ -153,7 +177,7 @@ const Library: React.FC = () => {
           <Dropdown
             value={selectedYear}
             onChange={setSelectedYear}
-            options={['Years', ...uniqueYears]}
+            options={isDesktop ? ['All Years', ...uniqueYears] : ['Years', ...uniqueYears]}
           />
         </div>
       </div>
