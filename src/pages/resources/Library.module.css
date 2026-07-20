@@ -10,6 +10,7 @@
   margin-bottom: 0;
   @media (min-width: 768px) {
     margin-bottom: var(--spacing-4);
+    gap: 0px;
   }
   white-space: nowrap;
 }
@@ -24,6 +25,9 @@
   width: 1px;
   height: 1rem;
   background-color: var(--border);
+  @media (min-width: 768px) {
+    display: none;
+  }
 }
 
 .heroBrandPillText {
