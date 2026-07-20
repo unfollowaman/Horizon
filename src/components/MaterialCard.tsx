@@ -22,10 +22,10 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
         {resource.year || resource.subject}
       </p>
-      <div className="w-full flex gap-[8px] mt-auto">
+      <div className="w-full flex justify-center gap-[4px] mt-auto">
         <Link
           to={`/resource/${resource.id}`}
-          className="flex-1 min-w-0 p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink text-center"
+          className="p-[6px_12px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
         >
           View
         </Link>
@@ -34,7 +34,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
             href={resource.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 min-w-0 p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink text-center"
+            className="p-[6px_12px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
           >
             Download
           </a>
