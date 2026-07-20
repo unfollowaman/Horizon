@@ -27,7 +27,21 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
           to={`/resource/${resource.id}`}
           className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
         >
-          View
+          <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <defs>
+              <linearGradient id={`pdfGrad-${resource.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#E91E8C" />
+                <stop offset="50%" stopColor="#C2185B" />
+                <stop offset="100%" stopColor="#8B0A50" />
+              </linearGradient>
+            </defs>
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <path d="M8 18v-4h1.5a1 1 0 0 1 0 2H8" />
+            <path d="M11 14h1.5a2 2 0 0 1 0 4H11v-4z" />
+            <path d="M16 18v-4h2M16 16h1.5" />
+          </svg>
+          <span className="shrink-0">View</span>
         </Link>
         {resource.pdfUrl && (
           <a
@@ -36,7 +50,19 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
             rel="noopener noreferrer"
             className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
           >
-            Download
+            <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id={`dlGrad-${resource.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#E91E8C" />
+                  <stop offset="50%" stopColor="#C2185B" />
+                  <stop offset="100%" stopColor="#8B0A50" />
+                </linearGradient>
+              </defs>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" x2="12" y1="15" y2="3"/>
+            </svg>
+            <span className="shrink-0">Download</span>
           </a>
         )}
       </div>
