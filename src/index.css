@@ -192,6 +192,46 @@
       -6px -6px 14px rgba(255,255,255,0.98);
   }
 
+  /* Specific styling for small buttons with a 2px inset */
+  .neu-raised-sm {
+    position: relative;
+    z-index: 1;
+    background-color: var(--bg-raised);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.15), /* Outer delicate trace */
+      8px 10px 20px rgba(0,0,0,0.10),
+      2px 3px 6px rgba(0,0,0,0.06),
+      -4px -4px 10px rgba(255,255,255,0.95);
+    border: 1px solid var(--border-subtle);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+  .neu-raised-sm::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background-color: var(--bg-recessed);
+    border-top-left-radius: calc(max(0px, var(--tw-radius-tl, var(--tw-radius, 0px)) - 2px));
+    border-top-right-radius: calc(max(0px, var(--tw-radius-tr, var(--tw-radius, 0px)) - 2px));
+    border-bottom-right-radius: calc(max(0px, var(--tw-radius-br, var(--tw-radius, 0px)) - 2px));
+    border-bottom-left-radius: calc(max(0px, var(--tw-radius-bl, var(--tw-radius, 0px)) - 2px));
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,0.15), /* Inner delicate trace */
+      inset 3px 3px 8px rgba(0,0,0,0.08),
+      inset -3px -3px 8px rgba(255,255,255,0.95);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .neu-raised-sm-hover:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.15),
+      12px 14px 28px rgba(0,0,0,0.12),
+      4px 6px 10px rgba(0,0,0,0.08),
+      -6px -6px 14px rgba(255,255,255,0.98);
+  }
+
   .neu-recessed {
     position: relative;
     z-index: 1;
