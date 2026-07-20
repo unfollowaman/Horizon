@@ -5,6 +5,7 @@ import type { Resource } from '../../types';
 import { supabase } from '../../services/supabase';
 import styles from './Library.module.css';
 import { Dropdown } from '../../components/Dropdown';
+import MaterialCard from '../../components/MaterialCard';
 
 const Library: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
@@ -168,29 +169,9 @@ const Library: React.FC = () => {
           <p className="text-caption">Try selecting a different class, subject, or year.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[clamp(16px,2vw,32px)]">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
           {filteredResources.map(resource => (
-            <div key={resource.id} className="neu-raised p-[clamp(8px,2vw,24px)] rounded-xl flex flex-col h-full items-center text-center aspect-square">
-              <div className="w-full flex-1 min-h-0 neu-recessed text-muted-foreground rounded-lg mb-3 flex items-center justify-center overflow-hidden">
-                {resource.thumbnailUrl ? (
-                  <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="font-bold font-mono text-xs p-2">PDF</span>
-                )}
-              </div>
-              <h4 className="text-[clamp(14px,2.5vw,32px)] font-bold mb-1 text-ink leading-tight line-clamp-1">{`${resource.class} ${resource.subject} PYQ`}</h4>
-              <p className="text-[clamp(12px,1.5vw,16px)] mb-3 text-ink/70 font-bold">{resource.year}</p>
-              <div className="w-full flex gap-2 mt-auto">
-                <Link to={`/resource/${resource.id}`} className="flex-1 h-[44px] flex items-center justify-center whitespace-nowrap text-xs min-[400px]:text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
-                  View
-                </Link>
-                {resource.pdfUrl && (
-                  <a href={resource.pdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1 h-[44px] flex items-center justify-center whitespace-nowrap text-xs min-[400px]:text-sm font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
-                    Download
-                  </a>
-                )}
-              </div>
-            </div>
+            <MaterialCard key={resource.id} resource={resource} />
           ))}
         </div>
       )}
