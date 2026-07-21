@@ -12,7 +12,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
   return (
     <div
       className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center cursor-pointer"
-      onClick={() => navigate(`/resource/${resource.id}`)}
+      onClick={() => navigate(`/view/${resource.id}`)}
     >
       <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
         {resource.thumbnailUrl ? (
@@ -29,7 +29,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       </p>
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
-          to={`/resource/${resource.id}`}
+          to={`/view/${resource.id}`}
           onClick={(e) => e.stopPropagation()}
           className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
         >

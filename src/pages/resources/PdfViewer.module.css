@@ -1,0 +1,114 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  padding: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .pageContainer {
+    padding: var(--spacing-8);
+  }
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.heroBrandPill {
+  --tw-radius: var(--radius-full);
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  height: var(--spacing-11);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  white-space: nowrap;
+}
+
+.heroBrandPillImg {
+  height: 1.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.heroBrandPillDivider {
+  width: 1px;
+  height: 1rem;
+  background-color: var(--border);
+}
+
+.heroBrandPillText {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+  color: var(--color-ink);
+  font-family: 'Instrument Serif', serif;
+}
+
+.viewerContainer {
+  width: 100%;
+  height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-xl);
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+/* Customize react-pdf pages */
+.reactPdfPage {
+  margin-bottom: var(--spacing-4);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.reactPdfPage canvas {
+  border-radius: 4px;
+}
+
+.downloadSection {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-4);
+}
+
+.suggestedSection {
+  margin-top: var(--spacing-8);
+}
+
+.suggestedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .suggestedGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-6);
+  }
+}
+@media (min-width: 1024px) {
+  .suggestedGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

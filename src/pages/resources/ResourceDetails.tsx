@@ -135,7 +135,7 @@ const ResourceDetails: React.FC = () => {
               <ul className="list-none p-0 m-0">
                 {relatedResources.map((related) => (
                   <li key={related.id} className="mb-4 pb-2">
-                    <Link to={`/resource/${related.id}`} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline block text-ink">
+                    <Link to={`/view/${related.id}`} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline block text-ink">
                       {related.title}
                     </Link>
                   </li>
