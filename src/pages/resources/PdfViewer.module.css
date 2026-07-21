@@ -63,15 +63,62 @@
 .viewerContainer {
   width: 100%;
   height: 85vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-4);
   padding: var(--spacing-4);
   border-radius: var(--radius-xl);
-  /* Smooth scrolling */
-  scroll-behavior: smooth;
+  /* Make sure container is relative for absolute zoom controls if needed */
+  position: relative;
+  /* overflow hidden to constraint the wrapper, but the download button is inside here too.
+     Wait, actually we should let this scroll vertically if we want the download button to be accessible below the wrapper.
+     Or, we put the TransformWrapper inside a flex-1 child, and the button below it.
+  */
+  overflow-y: auto;
+}
+
+.transformWrapperContainer {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  overflow: hidden; /* Constrains the TransformWrapper to the viewport so it can pan inside */
+  border-radius: var(--radius-lg);
+  min-height: 0; /* Important for flex children to shrink/contain correctly */
+}
+
+/* Zoom controls */
+.zoomControls {
+  position: absolute;
+  top: var(--spacing-6);
+  right: var(--spacing-6);
+  display: flex;
+  gap: var(--spacing-2);
+  z-index: 10;
+  background-color: var(--bg-base);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.transformWrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.transformContent {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.pdfDocument {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 /* Customize react-pdf pages */

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { supabase } from '../../services/supabase';
@@ -25,7 +26,6 @@ const PdfViewer: React.FC = () => {
 
   // Ref to container to calculate scale dynamically
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pdfScale, setPdfScale] = useState(1);
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
@@ -90,43 +90,6 @@ const PdfViewer: React.FC = () => {
     fetchResourceAndRelated();
   }, [id]);
 
-  useEffect(() => {
-    const updateScale = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.clientWidth - 32; // Account for padding
-
-        // standard aspect ratio of A4 is 1:1.414
-        // we want to fit ~1.5 pages vertically into 85vh
-        // let page height be h. 1.5h = 85vh
-        // h = 85vh / 1.5
-        // w = h / 1.414
-        const targetHeight = (window.innerHeight * 0.85) / 1.2;
-        const targetWidthByHeight = targetHeight / 1.414;
-
-        // pdf.js base width for A4 is roughly 595px at scale 1
-        const BASE_WIDTH = 595;
-
-        // We want the width to be at most the container width, but also small enough to show 1.5 pages
-        const finalWidth = Math.min(width, targetWidthByHeight);
-
-        // To be safe for mobiles where width is very small, always use full width if targetWidthByHeight > containerWidth
-        const scale = finalWidth / BASE_WIDTH;
-
-        // Give a slight bump to scale for better readability, or just use container width for mobile
-        if (window.innerWidth < 768) {
-             setPdfScale(width / BASE_WIDTH);
-        } else {
-             setPdfScale(scale);
-        }
-      }
-    };
-
-    updateScale();
-    window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
-  }, [loading]);
-
-
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
   }
@@ -184,23 +147,55 @@ const PdfViewer: React.FC = () => {
           ref={containerRef}
           className={`${styles.viewerContainer} neu-recessed`}
         >
-          <Document
-            file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            loading={<div className="p-4 font-bold">Rendering PDF...</div>}
-          >
-            {Array.from(new Array(numPages || 0), (_, index) => (
-              <div key={`page_${index + 1}`} className={styles.reactPdfPage}>
-                 <Page
-                   pageNumber={index + 1}
-                   scale={pdfScale}
-                   renderTextLayer={false}
-                   renderAnnotationLayer={false}
-                   loading={<div className="h-64 w-full animate-pulse bg-gray-200 rounded-md"></div>}
-                 />
-              </div>
-            ))}
-          </Document>
+          <div className={styles.transformWrapperContainer}>
+            <TransformWrapper
+              initialScale={1}
+              minScale={0.5}
+              maxScale={4}
+              centerOnInit
+              wheel={{ wheelDisabled: true }} // Disable wheel zoom so user can scroll normally
+              panning={{ excluded: ['a', 'button', 'input'] }} // exclude some elements from panning
+            >
+              {({ zoomIn, zoomOut, resetTransform }) => (
+                <>
+                  <div className={styles.zoomControls}>
+                    <button onClick={() => zoomOut()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover" title="Zoom Out">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <button onClick={() => resetTransform()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover font-bold text-sm" title="Reset Zoom">
+                      Reset
+                    </button>
+                    <button onClick={() => zoomIn()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover" title="Zoom In">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                  </div>
+
+                  <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
+                    <div style={{ overflowY: 'auto', width: '100%', height: '100%' }}>
+                      <Document
+                        file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        loading={<div className="p-4 font-bold flex justify-center w-full">Rendering PDF...</div>}
+                        className={styles.pdfDocument}
+                      >
+                        {Array.from(new Array(numPages || 0), (_, index) => (
+                          <div key={`page_${index + 1}`} className={styles.reactPdfPage}>
+                            <Page
+                              pageNumber={index + 1}
+                              scale={1} // Base scale, react-zoom-pan-pinch handles the actual display scaling
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              loading={<div className="h-64 w-full animate-pulse bg-gray-200 rounded-md"></div>}
+                            />
+                          </div>
+                        ))}
+                      </Document>
+                    </div>
+                  </TransformComponent>
+                </>
+              )}
+            </TransformWrapper>
+          </div>
 
           {/* Download Button Below Last Page */}
           <div className={styles.downloadSection}>
