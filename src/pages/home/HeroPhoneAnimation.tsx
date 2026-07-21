@@ -69,6 +69,14 @@ export const HeroPhoneAnimation: React.FC = () => {
     const fadeStart = TOTAL - 300;
     const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
 
+    const iconSize = clamp(64 * scaleX, 44, 80);
+    const mascotSize = clamp(45 * scaleX, 34, 54);
+    const glowSize = clamp(140 * scaleX, 110, 170);
+    const wordmarkFontSize = clamp(15 * scaleX, 13, 17);
+    const exploreFontSize = clamp(13 * scaleX, 11, 15);
+    const labelFontSize = clamp(11 * scaleX, 9, 13);
+    const labelMaxWidth = clamp(100 * scaleX, 70, 150);
+
     let settle = 0;
     if (t >= ORBIT_END && t < ORGANIZE_END) {
       settle = easeInOutCubic((t - ORBIT_END) / (ORGANIZE_END - ORBIT_END));
@@ -98,20 +106,25 @@ export const HeroPhoneAnimation: React.FC = () => {
       mascotRef.current.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
       mascotRef.current.style.opacity = `${mascotOpacity * globalFade}`;
       mascotRef.current.style.filter = `blur(${mascotBlur}px)`;
+      mascotRef.current.style.width = `${mascotSize}px`;
     }
 
     // Glow
     if (glowRef.current) {
       glowRef.current.style.opacity = `${(1 - settle) * globalFade}`;
       glowRef.current.style.transform = `translate(-50%, -50%) translate(${centerX}px, ${CENTER_Y}px)`;
+      glowRef.current.style.width = `${glowSize}px`;
+      glowRef.current.style.height = `${glowSize}px`;
     }
 
     // Wordmark & Explore
     if (wordmarkRef.current) {
       wordmarkRef.current.style.opacity = `${settle * globalFade}`;
+      wordmarkRef.current.style.fontSize = `${wordmarkFontSize}px`;
     }
     if (exploreRef.current) {
       exploreRef.current.style.opacity = `${settle * globalFade}`;
+      exploreRef.current.style.fontSize = `${exploreFontSize}px`;
     }
 
     // Ring
@@ -177,9 +190,16 @@ export const HeroPhoneAnimation: React.FC = () => {
       el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
       el.style.opacity = `${opacity * globalFade}`;
 
+      const img = el.querySelector('img');
+      if (img) {
+        img.style.width = `${iconSize}px`;
+      }
+
       const label = el.querySelector('.iconLabel') as HTMLDivElement;
       if (label) {
         label.style.opacity = `${labelOpacity * globalFade}`;
+        label.style.fontSize = `${labelFontSize}px`;
+        label.style.maxWidth = `${labelMaxWidth}px`;
       }
     });
   };
@@ -212,8 +232,6 @@ export const HeroPhoneAnimation: React.FC = () => {
     <div className={styles.wrapper}>
       <div className={styles.phoneFrame}>
         <div ref={containerRef} className={styles.phoneInner}>
-          <div className={styles.notch} />
-
           <div ref={glowRef} className={styles.glow} style={{ opacity: 0 }} />
 
           <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0, width: '100%', height: '100%' }} preserveAspectRatio="xMidYMid slice">
