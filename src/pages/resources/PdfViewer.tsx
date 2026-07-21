@@ -145,7 +145,7 @@ const PdfViewer: React.FC = () => {
         {/* PDF Reader Container */}
         <div
           ref={containerRef}
-          className={`${styles.viewerContainer} neu-recessed`}
+          className={`${styles.viewerContainer} neu-raised rounded-xl`}
         >
           <div className={styles.transformWrapperContainer}>
             <TransformWrapper
@@ -196,23 +196,30 @@ const PdfViewer: React.FC = () => {
               )}
             </TransformWrapper>
           </div>
+        </div>
 
-          {/* Download Button Below Last Page */}
-          <div className={styles.downloadSection}>
-            <a
-              href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 px-6 flex items-center justify-center whitespace-normal text-body1 gap-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" x2="12" y1="15" y2="3"/>
-              </svg>
-              <span>Download PDF</span>
-            </a>
-          </div>
+        {/* Download Button Below Last Page */}
+        <div className={styles.downloadSection}>
+          <a
+            href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 px-6 flex items-center justify-center whitespace-normal text-body1 gap-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="url(#pink-gradient-download)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id="pink-gradient-download" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#E91E8C" />
+                  <stop offset="50%" stopColor="#C2185B" />
+                  <stop offset="100%" stopColor="#8B0A50" />
+                </linearGradient>
+              </defs>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" x2="12" y1="15" y2="3"/>
+            </svg>
+            <span>Download PDF</span>
+          </a>
         </div>
 
         {/* Suggested PDFs */}
