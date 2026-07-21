@@ -12,6 +12,7 @@ import Register from './pages/auth/Register';
 import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
+import PdfViewer from './pages/resources/PdfViewer';
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Route>
+
+        {/* Standalone PDF Viewer Route */}
+        <Route path="/view/:id" element={<PdfViewer />} />
+
         {/* Catch-all route for 404s */}
         <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
       </Routes>
