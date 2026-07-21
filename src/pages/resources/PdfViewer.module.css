@@ -78,6 +78,14 @@
   overflow-y: auto;
 }
 
+@media (min-width: 768px) {
+  .viewerContainer {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .transformWrapperContainer {
   width: 100%;
   flex: 1;
