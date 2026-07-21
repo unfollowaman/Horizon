@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Resource } from '../types';
 
 interface MaterialCardProps {
@@ -7,8 +7,13 @@ interface MaterialCardProps {
 }
 
 const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
+    <div
+      className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center cursor-pointer"
+      onClick={() => navigate(`/resource/${resource.id}`)}
+    >
       <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
         {resource.thumbnailUrl ? (
           <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
@@ -25,6 +30,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
           to={`/resource/${resource.id}`}
+          onClick={(e) => e.stopPropagation()}
           className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
         >
           <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -48,6 +54,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
             href={resource.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
           >
             <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
