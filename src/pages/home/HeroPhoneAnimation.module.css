@@ -49,19 +49,6 @@
   }
 }
 
-.notch {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 84px;
-  height: 22px;
-  --tw-radius: 14px;
-  border-radius: 14px;
-  background-color: #111827;
-  z-index: 10;
-}
-
 .glow {
   position: absolute;
   top: 0;
@@ -144,5 +131,5 @@
   color: #4B5563;
   margin-top: 6px;
   font-family: 'Instrument Serif', serif;
-  white-space: nowrap;
+  text-align: center;
 }
