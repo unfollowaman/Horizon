@@ -10,7 +10,7 @@
   margin-bottom: 0;
   @media (min-width: 768px) {
     margin-bottom: var(--spacing-4);
-    gap: 0px;
+    gap: 16px;
   }
   white-space: nowrap;
 }
