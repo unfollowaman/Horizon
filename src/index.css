@@ -186,10 +186,10 @@
   .neu-raised-hover:hover {
     transform: translateY(-3px);
     box-shadow:
-      0 0 0 1px rgba(0,0,0,0.15),
-      12px 14px 28px rgba(0,0,0,0.12),
-      4px 6px 10px rgba(0,0,0,0.08),
-      -6px -6px 14px rgba(255,255,255,0.98);
+      0 0 0 1px rgba(233, 30, 140, 0.15),
+      12px 14px 28px rgba(233, 30, 140, 0.12),
+      4px 6px 10px rgba(233, 30, 140, 0.08),
+      -6px -6px 14px rgba(255, 255, 255, 0.98);
   }
 
   /* Specific styling for small buttons with a 2px inset */
@@ -226,10 +226,10 @@
   .neu-raised-sm-hover:hover {
     transform: translateY(-3px);
     box-shadow:
-      0 0 0 1px rgba(0,0,0,0.15),
-      12px 14px 28px rgba(0,0,0,0.12),
-      4px 6px 10px rgba(0,0,0,0.08),
-      -6px -6px 14px rgba(255,255,255,0.98);
+      0 0 0 1px rgba(233, 30, 140, 0.15),
+      12px 14px 28px rgba(233, 30, 140, 0.12),
+      4px 6px 10px rgba(233, 30, 140, 0.08),
+      -6px -6px 14px rgba(255, 255, 255, 0.98);
   }
 
   .neu-recessed {
