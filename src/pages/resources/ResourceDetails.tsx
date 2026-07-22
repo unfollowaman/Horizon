@@ -88,7 +88,7 @@ const ResourceDetails: React.FC = () => {
 
   return (
     <div>
-      <Link to="/library" className="inline-block p-2 mb-4 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+      <Link to="/library" className="inline-flex items-center h-11 p-2 px-4 mb-4 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
         &larr; Back to Library
       </Link>
 
