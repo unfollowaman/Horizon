@@ -122,7 +122,7 @@ const PdfViewer: React.FC = () => {
         <header className={styles.header}>
           <button
             onClick={() => navigate(-1)}
-            className="p-2 px-4 font-bold neu-raised rounded-md hover:neu-raised-hover text-ink flex items-center gap-2"
+            className="p-2 px-4 h-11 font-bold neu-raised rounded-md hover:neu-raised-hover text-ink flex items-center gap-2"
           >
             &larr; Back
           </button>
