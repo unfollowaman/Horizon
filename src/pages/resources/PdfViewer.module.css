@@ -37,6 +37,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-3);
+  @media (min-width: 768px) {
+    gap: 16px;
+  }
   white-space: nowrap;
 }
 
@@ -50,6 +53,9 @@
   width: 1px;
   height: 1rem;
   background-color: var(--border);
+  @media (min-width: 768px) {
+    display: none;
+  }
 }
 
 .heroBrandPillText {

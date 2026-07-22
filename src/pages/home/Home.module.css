@@ -443,6 +443,7 @@
 @media (min-width: 768px) {
   .heroBrandPill {
     display: none; /* md:hidden */
+    gap: 16px;
   }
 }
 
@@ -456,6 +457,9 @@
   width: 1px;
   height: 1rem; /* h-4 */
   background-color: var(--border);
+  @media (min-width: 768px) {
+    display: none;
+  }
 }
 
 .heroBrandPillText {
