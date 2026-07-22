@@ -136,10 +136,7 @@ const PdfViewer: React.FC = () => {
 
         {/* Title */}
         <div className="text-center my-2">
-          <h1
-            className="text-h2 md:text-h1 uppercase text-ink px-4 font-normal"
-            style={{ fontFamily: '"Instrument Serif", serif' }}
-          >
+          <h1 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink px-4">
             {resource.title}
           </h1>
           <p className="text-body1 text-ink/70 font-bold mt-2">
