@@ -173,7 +173,7 @@ const PdfViewer: React.FC = () => {
                   </div>
 
                   <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
-                    <div style={{ overflowY: 'auto', width: '100%', height: '100%' }}>
+                    <div className={styles.pdfScrollContainer}>
                       <Document
                         file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
                         onLoadSuccess={onDocumentLoadSuccess}

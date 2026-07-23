@@ -68,7 +68,7 @@
 
 .viewerContainer {
   width: 100%;
-  height: 85vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,7 +81,7 @@
      Wait, actually we should let this scroll vertically if we want the download button to be accessible below the wrapper.
      Or, we put the TransformWrapper inside a flex-1 child, and the button below it.
   */
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
 @media (min-width: 768px) {
@@ -89,6 +89,8 @@
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    height: 85vh;
+    overflow-y: auto;
   }
 }
 
@@ -96,9 +98,17 @@
   width: 100%;
   flex: 1;
   position: relative;
-  overflow: hidden; /* Constrains the TransformWrapper to the viewport so it can pan inside */
+  overflow: visible; /* Let it grow naturally on mobile */
   border-radius: var(--radius-lg);
   min-height: 0; /* Important for flex children to shrink/contain correctly */
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  .transformWrapperContainer {
+    height: 100%;
+    overflow: hidden; /* Constrains the TransformWrapper to the viewport so it can pan inside */
+  }
 }
 
 /* Zoom controls */
@@ -117,15 +127,40 @@
 
 .transformWrapper {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
+}
+
+@media (min-width: 768px) {
+  .transformWrapper {
+    height: 100% !important;
+  }
 }
 
 .transformContent {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
   display: flex !important;
   justify-content: center;
   align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .transformContent {
+    height: 100% !important;
+  }
+}
+
+.pdfScrollContainer {
+  width: 100%;
+  height: auto;
+  overflow-y: visible;
+}
+
+@media (min-width: 768px) {
+  .pdfScrollContainer {
+    height: 100%;
+    overflow-y: auto;
+  }
 }
 
 .pdfDocument {
