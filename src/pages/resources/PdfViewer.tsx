@@ -1,4 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return isMobile;
+};
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -16,6 +26,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 const PdfViewer: React.FC = () => {
+  const isMobile = useIsMobile();
+  const [currentScale, setCurrentScale] = useState(1);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -155,8 +167,12 @@ const PdfViewer: React.FC = () => {
               minScale={0.5}
               maxScale={4}
               centerOnInit
-              wheel={{ wheelDisabled: true }} // Disable wheel zoom so user can scroll normally
-              panning={{ excluded: ['a', 'button', 'input'] }} // exclude some elements from panning
+              wheel={{ wheelDisabled: true }}
+              panning={{
+                excluded: ['a', 'button', 'input'],
+                disabled: isMobile && currentScale <= 1
+              }}
+              onTransformed={(ref) => setCurrentScale(ref.state.scale)}
             >
               {({ zoomIn, zoomOut, resetTransform }) => (
                 <>
@@ -172,6 +188,7 @@ const PdfViewer: React.FC = () => {
                     </button>
                   </div>
 
+                  <div style={{ width: '100%', height: '100%', touchAction: isMobile && currentScale <= 1 ? 'pan-y' : 'none' }}>
                   <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
                     <div style={{ overflowY: 'auto', width: '100%', height: '100%' }}>
                       <Document
@@ -194,6 +211,7 @@ const PdfViewer: React.FC = () => {
                       </Document>
                     </div>
                   </TransformComponent>
+                  </div>
                 </>
               )}
             </TransformWrapper>
