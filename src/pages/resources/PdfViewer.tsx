@@ -155,8 +155,12 @@ const PdfViewer: React.FC = () => {
               minScale={0.5}
               maxScale={4}
               centerOnInit
-              wheel={{ wheelDisabled: true }} // Disable wheel zoom so user can scroll normally
+              wheel={{
+                wheelDisabled: false,
+                activationKeys: ['Control', 'Shift', 'Meta', 'Alt']
+              }} // Require modifier key to zoom with wheel, otherwise let it scroll naturally
               panning={{ excluded: ['a', 'button', 'input'] }} // exclude some elements from panning
+              trackPadPanning={{ disabled: false }} // Allows natural scrolling/panning using wheel/trackpad when zoom modifier is not active
             >
               {({ zoomIn, zoomOut, resetTransform }) => (
                 <>
