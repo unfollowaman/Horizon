@@ -22,6 +22,10 @@ export const register = async (email: string, password: string, name: string) =>
   });
   if (error) throw error;
 
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    throw new Error('This email is already registered. Please sign in instead.');
+  }
+
   return data;
 };
 
