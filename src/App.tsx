@@ -13,10 +13,12 @@ import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
 import PdfViewer from './pages/resources/PdfViewer';
+import AuthListener from './components/AuthListener';
 
 function App() {
   return (
     <BrowserRouter>
+      <AuthListener />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />

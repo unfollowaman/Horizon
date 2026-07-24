@@ -17,6 +17,7 @@ export const register = async (email: string, password: string, name: string) =>
       data: {
         name,
       },
+      emailRedirectTo: window.location.origin,
     },
   });
   if (error) throw error;
