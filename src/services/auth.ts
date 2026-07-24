@@ -13,22 +13,13 @@ export const register = async (email: string, password: string, name: string) =>
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        name,
+      },
+    },
   });
   if (error) throw error;
-
-  if (data.user) {
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        { id: data.user.id, name, role: 'student' }
-      ]);
-
-    if (profileError) {
-      console.error("Error creating profile:", profileError);
-      // We should probably handle this better, but throwing for now
-      throw profileError;
-    }
-  }
 
   return data;
 };
