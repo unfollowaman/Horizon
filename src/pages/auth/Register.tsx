@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { register } from '../../services/auth';
 
 const Register: React.FC = () => {
@@ -8,7 +8,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,13 +17,24 @@ const Register: React.FC = () => {
 
     try {
       await register(email, password, name);
-      navigate('/dashboard'); // Or wherever you want to redirect after registration
+      setIsSuccess(true);
     } catch (err: unknown) {
       setError((err as Error).message || 'Failed to register');
     } finally {
       setLoading(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8 text-center">
+        <h2>Check your email</h2>
+        <p style={{ marginTop: '1rem' }}>
+          Your account has been created successfully. Please check your email to verify your account before signing in.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">

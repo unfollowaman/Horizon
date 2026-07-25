@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { register } from '../../services/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import styles from './Home.module.css';
@@ -210,7 +210,7 @@ const HighlightsSection = () => {
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = React.useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,7 +218,7 @@ const HighlightsSection = () => {
     setError('');
     try {
       await register(email, password, name);
-      navigate('/dashboard');
+      setIsSuccess(true);
     } catch (err: unknown) {
       setError((err as Error).message || 'Failed to subscribe');
     } finally {
@@ -231,10 +231,17 @@ const HighlightsSection = () => {
     <div className={styles.highlightsContainer}>
       <h2 className={styles.highlightsTitle}>New here?</h2>
       <div className={styles.highlightsNewsletterWrapper}>
-        <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
-        <form className={styles.highlightsForm} onSubmit={handleSubscribe}>
-          <input
+        {isSuccess ? (
+          <div className="text-center p-4">
+            <h3 className="text-xl font-bold mb-2">Check your email</h3>
+            <p>Your account has been created successfully. Please check your email to verify your account before signing in.</p>
+          </div>
+        ) : (
+          <>
+            <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
+            {error && <p className="text-red-500 mb-2">{error}</p>}
+            <form className={styles.highlightsForm} onSubmit={handleSubscribe}>
+              <input
             type="text"
             placeholder="Your name"
             required
@@ -265,6 +272,8 @@ const HighlightsSection = () => {
             {loading ? 'Subscribing...' : 'Subscribe'}
           </button>
         </form>
+        </>
+        )}
       </div>
     </div>
   </section>
