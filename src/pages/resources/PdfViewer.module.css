@@ -73,7 +73,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-4);
-  padding: var(--spacing-4);
+  padding: 0;
   border-radius: var(--radius-xl);
   /* Make sure container is relative for absolute zoom controls if needed */
   position: relative;
@@ -87,6 +87,7 @@
     margin-right: auto;
     height: 85vh;
     overflow-y: auto;
+    padding: var(--spacing-4);
   }
 }
 
