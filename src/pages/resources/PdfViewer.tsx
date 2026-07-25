@@ -129,7 +129,6 @@ const PdfViewer: React.FC = () => {
 
           <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`${styles.heroBrandPill} neu-raised no-underline`}>
             <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
-            <div className={styles.heroBrandPillDivider}></div>
             <span className={styles.heroBrandPillText}>Horizon</span>
           </Link>
         </header>

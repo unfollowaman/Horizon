@@ -149,7 +149,6 @@ const Library: React.FC = () => {
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
         <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
           <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
-          <div className={styles.heroBrandPillDivider}></div>
           <span className={styles.heroBrandPillText}>Horizon</span>
         </Link>
         <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">PYQ Papers</h2>
