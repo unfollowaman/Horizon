@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-3);
+  gap: 8px;
   @media (min-width: 768px) {
     gap: 16px;
   }
@@ -47,15 +47,6 @@
   height: 1.5rem;
   width: auto;
   object-fit: contain;
-}
-
-.heroBrandPillDivider {
-  width: 1px;
-  height: 1rem;
-  background-color: var(--border);
-  @media (min-width: 768px) {
-    display: none;
-  }
 }
 
 .heroBrandPillText {
