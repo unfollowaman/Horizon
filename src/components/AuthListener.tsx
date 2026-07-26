@@ -1,25 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../services/supabase';
+import { useAuth } from '../context/AuthContext';
 
 const AuthListener = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { session, profile, loading } = useAuth();
 
   useEffect(() => {
-    let isMounted = true;
+    if (loading) return;
 
-    const checkAuthAndProfile = async (session: any) => {
-      if (!session) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('onboarding_completed')
-        .eq('id', session.user.id)
-        .single();
-
-      if (!isMounted) return;
-
+    if (session) {
       const onboardingCompleted = profile?.onboarding_completed;
 
       if (!onboardingCompleted) {
@@ -36,26 +27,8 @@ const AuthListener = () => {
           }
         }
       }
-    };
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          checkAuthAndProfile(session);
-        }
-      }
-    );
-
-    // Initial check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) checkAuthAndProfile(session);
-    });
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
+    }
+  }, [session, profile, loading, location.pathname, navigate]);
 
   return null;
 };

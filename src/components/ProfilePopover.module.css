@@ -1,0 +1,138 @@
+.popoverContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.avatarBtn {
+  width: 44px;
+  height: 44px;
+  --tw-radius: 9999px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+}
+
+.avatarInitials {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.popoverMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  --tw-radius: 16px;
+  border-radius: 16px;
+  background-color: var(--bg-base);
+  z-index: 100;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.popoverAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.popoverAvatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: var(--bg-base);
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.popoverUserInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popoverName {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popoverEmail {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--shadow-dark);
+  opacity: 0.2;
+  margin: 8px 0;
+}
+
+.popoverActions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.popoverLink, .popoverSignOutBtn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  --tw-radius: 8px;
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.popoverLink:hover, .popoverSignOutBtn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.popoverSignOutBtn {
+  color: #ef4444; /* Red color for sign out */
+  font-weight: 500;
+}
+
+.popoverSignOutBtn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
