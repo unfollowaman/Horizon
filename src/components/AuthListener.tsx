@@ -7,25 +7,55 @@ const AuthListener = () => {
   const location = useLocation();
 
   useEffect(() => {
+    let isMounted = true;
+
+    const checkAuthAndProfile = async (session: any) => {
+      if (!session) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .single();
+
+      if (!isMounted) return;
+
+      const onboardingCompleted = profile?.onboarding_completed;
+
+      if (!onboardingCompleted) {
+        if (location.pathname !== '/onboarding') {
+          navigate('/onboarding', { replace: true });
+        }
+      } else {
+        if (location.pathname === '/onboarding') {
+          navigate('/', { replace: true });
+        } else {
+          const publicRoutes = ['/login', '/register'];
+          if (publicRoutes.includes(location.pathname)) {
+            navigate('/', { replace: true });
+          }
+        }
+      }
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN' && session) {
-          // If the user signed in (e.g. via email link callback or regular login),
-          // check if they are on a public/auth page, and redirect to dashboard.
-          // This avoids interrupting them if they are on another authenticated page,
-          // though typically after a fresh login they'd be on root, /login, or /register.
-          const publicRoutes = ['/', '/login', '/register'];
-          if (publicRoutes.includes(location.pathname)) {
-            navigate('/dashboard', { replace: true });
-          }
+          checkAuthAndProfile(session);
         }
       }
     );
 
+    // Initial check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) checkAuthAndProfile(session);
+    });
+
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate, location.pathname]);
+  }, [navigate]);
 
   return null;
 };

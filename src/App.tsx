@@ -9,6 +9,7 @@ import Dashboard from './pages/user/Dashboard';
 import NotificationSettings from './pages/settings/NotificationSettings';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import Onboarding from './pages/onboarding/Onboarding';
 import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
@@ -21,6 +22,7 @@ function App() {
       <AuthListener />
       <ScrollToTop />
       <Routes>
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/" element={<Home />} />
         <Route element={<MainLayout />}>
           <Route path="/about" element={<About />} />
