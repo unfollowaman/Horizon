@@ -1,23 +1,13 @@
 import type React from 'react';
-import { Link } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
   return (
-    <div>
-      <h2>User Dashboard Placeholder</h2>
-      <p>This area will contain personalized content for logged-in users.</p>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginTop: '2rem' }}>
-        <div className="neu-card rounded-2xl p-6">
-          <h3>Saved Resources</h3>
-          <p>You have not saved any resources yet.</p>
-          <Link to="/library">Browse Library</Link>
-        </div>
-
-        <div className="neu-card rounded-2xl p-6">
-          <h3>Recent Activity</h3>
-          <p>No recent activity found.</p>
-        </div>
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="neu-card rounded-2xl p-8 text-center max-w-md">
+        <h2 className="text-h2 mb-4">Profile Dashboard</h2>
+        <p className="text-muted-foreground">
+          Profile Dashboard coming in the next update.
+        </p>
       </div>
     </div>
   );

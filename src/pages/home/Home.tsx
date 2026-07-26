@@ -3,9 +3,12 @@ import { register } from '../../services/auth';
 import { Link } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
+import ProfilePopover from '../../components/ProfilePopover';
+import { useAuth } from '../../context/AuthContext';
 import styles from './Home.module.css';
 
 const Header = () => {
+  const { session, loading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
 
@@ -69,10 +72,16 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Get Started */}
-        <Link to="/register" className={`${styles.getStartedBtn} neu-raised neu-raised-hover`}>
-          Get Started
-        </Link>
+        {/* Get Started or Profile Popover */}
+        {!loading && (
+          session ? (
+            <ProfilePopover />
+          ) : (
+            <Link to="/register" className={`${styles.getStartedBtn} neu-raised neu-raised-hover`}>
+              Get Started
+            </Link>
+          )
+        )}
       </div>
 
       {/* Mobile Header Component */}
@@ -127,14 +136,24 @@ const Header = () => {
                 </nav>
 
                 {/* Action Buttons */}
-                <div className={styles.menuActionButtons}>
-                  <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
-                    Sign in
-                  </Link>
-                  <Link to="/" onClick={closeMenu} className={styles.menuGetNowBtn}>
-                    Get now
-                  </Link>
-                </div>
+                {!loading && (
+                  <div className={styles.menuActionButtons}>
+                    {session ? (
+                      <div style={{ alignSelf: 'center', margin: 'auto' }}>
+                        <ProfilePopover />
+                      </div>
+                    ) : (
+                      <>
+                        <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
+                          Sign in
+                        </Link>
+                        <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>
+                          Get Started
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -335,13 +354,15 @@ const Footer = () => (
 );
 
 const Home: React.FC = () => {
+  const { session, loading } = useAuth();
+
   return (
     <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)]">
       <Header />
       <main className="flex-1 w-full flex flex-col">
         <HeroSection />
         <FeaturesSection />
-        <HighlightsSection />
+        {!loading && !session && <HighlightsSection />}
       </main>
       <Footer />
     </div>

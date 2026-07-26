@@ -15,13 +15,15 @@ import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
 import PdfViewer from './pages/resources/PdfViewer';
 import AuthListener from './components/AuthListener';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthListener />
-      <ScrollToTop />
-      <Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <AuthListener />
+        <ScrollToTop />
+        <Routes>
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/" element={<Home />} />
         <Route element={<MainLayout />}>
@@ -38,10 +40,11 @@ function App() {
         {/* Standalone PDF Viewer Route */}
         <Route path="/view/:id" element={<PdfViewer />} />
 
-        {/* Catch-all route for 404s */}
-        <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
-      </Routes>
-    </BrowserRouter>
+          {/* Catch-all route for 404s */}
+          <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
