@@ -1,0 +1,141 @@
+.container {
+  width: min(96vw, 1600px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 2vw, 32px);
+  padding-right: clamp(16px, 2vw, 32px);
+  padding-bottom: clamp(24px, 3vw, 48px);
+}
+
+.heroBrandPill {
+  --tw-radius: var(--radius-full);
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  height: var(--spacing-11);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .heroBrandPill {
+    margin-bottom: var(--spacing-4);
+    gap: 16px;
+  }
+}
+
+.heroBrandPillImg {
+  height: 1.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.heroBrandPillText {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+  color: var(--color-ink);
+  font-family: 'Instrument Serif', serif;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .layoutGrid {
+    grid-template-columns: 1.6fr 1fr;
+    gap: 32px;
+  }
+}
+
+.colMain {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .colMain {
+    gap: 32px;
+  }
+}
+
+.colSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .colSidebar {
+    gap: 32px;
+  }
+}
+
+/* Custom dashboard styles */
+.profileHeaderCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .profileHeaderCard {
+    align-items: flex-start;
+    text-align: left;
+    flex-direction: row;
+    gap: 24px;
+  }
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-recessed);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-accent);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.15),
+    inset 3px 3px 8px rgba(0,0,0,0.08),
+    inset -3px -3px 8px rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.03);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.name {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.email {
+  color: var(--muted-foreground);
+}
+
+.editBtn {
+  align-self: center;
+  @media (min-width: 768px) {
+    align-self: flex-start;
+  }
+}

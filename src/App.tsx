@@ -14,6 +14,7 @@ import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
 import PdfViewer from './pages/resources/PdfViewer';
+import StudyNotes from './pages/resources/StudyNotes';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 
@@ -29,6 +30,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/about" element={<About />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/notes" element={<StudyNotes />} />
           <Route path="/resource/:id" element={<ResourceDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
