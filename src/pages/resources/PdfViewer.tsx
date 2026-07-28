@@ -8,6 +8,7 @@ import { supabase } from '../../services/supabase';
 import type { Resource } from '../../types';
 import MaterialCard from '../../components/MaterialCard';
 import styles from './PdfViewer.module.css';
+import { useAuth } from '../../context/AuthContext';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -18,14 +19,60 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [initialProgressFetched, setInitialProgressFetched] = useState<boolean>(false);
 
   // Ref to container to calculate scale dynamically
   const containerRef = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Set up intersection observer to detect current reading page
+  useEffect(() => {
+    if (!numPages || pageRefs.current.length === 0) return;
+
+    const observerOptions = {
+      root: null, // use viewport (or we could use the pdfScrollContainer)
+      rootMargin: '0px',
+      threshold: 0.3 // Trigger when 30% of a page is visible
+    };
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      let maxRatio = 0;
+      let mostVisiblePage = -1;
+
+      // We might get multiple entries at once, so we need to find the one with the highest intersection ratio
+      // or simply rely on the one that is currently intersecting
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const pageIndex = Number(entry.target.getAttribute('data-page-index'));
+          if (entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            mostVisiblePage = pageIndex;
+          }
+        }
+      });
+
+      if (mostVisiblePage !== -1) {
+        setCurrentPage(mostVisiblePage + 1);
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    pageRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [numPages]);
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
@@ -89,6 +136,117 @@ const PdfViewer: React.FC = () => {
 
     fetchResourceAndRelated();
   }, [id]);
+
+  // Ref to track the latest page for the cleanup function
+  const latestPageRef = useRef(currentPage);
+  useEffect(() => {
+    latestPageRef.current = currentPage;
+  }, [currentPage]);
+
+  // Save reading progress debounced and on unmount
+  useEffect(() => {
+    if (!id || !user || !initialProgressFetched) return;
+
+    let timeoutId: number;
+
+    const saveProgress = async (pageToSave: number) => {
+      try {
+        const { error } = await supabase
+          .from('reading_progress')
+          .upsert({
+            user_id: user.id,
+            resource_id: id,
+            progress: pageToSave,
+            last_read_at: new Date().toISOString()
+          }, { onConflict: 'user_id, resource_id' });
+
+        if (error) {
+          console.error("Error saving reading progress:", error);
+        }
+      } catch (err) {
+        console.error("Failed to save progress:", err);
+      }
+    };
+
+    // Debounce the save when currentPage changes
+    if (currentPage > 1 || (currentPage === 1 && initialProgressFetched)) {
+      timeoutId = window.setTimeout(() => {
+        saveProgress(currentPage);
+      }, 2000); // Save after 2 seconds of resting on a page
+    }
+
+    return () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, [currentPage, id, user, initialProgressFetched]);
+
+  // Cleanup: save immediately when unmounting
+  useEffect(() => {
+    return () => {
+      if (user && id && initialProgressFetched && latestPageRef.current > 0) {
+        // We use an inline async function since we can't await in cleanup easily
+        // and we want it to fire as best-effort.
+        const saveUnmount = async () => {
+          try {
+            const { error } = await supabase
+              .from('reading_progress')
+              .upsert({
+                user_id: user.id,
+                resource_id: id,
+                progress: latestPageRef.current,
+                last_read_at: new Date().toISOString()
+              }, { onConflict: 'user_id, resource_id' });
+            if (error) console.error("Unmount save error", error);
+          } catch {
+            // ignore
+          }
+        };
+        saveUnmount();
+      }
+    };
+  }, [user, id, initialProgressFetched]);
+
+
+  // Fetch initial reading progress
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!id || !user || !numPages || initialProgressFetched) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('reading_progress')
+          .select('progress')
+          .eq('resource_id', id)
+          .eq('user_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 is "No rows found"
+          console.error("Error fetching reading progress:", error);
+          return;
+        }
+
+        if (data && data.progress) {
+          const targetPage = Math.min(data.progress, numPages);
+          setCurrentPage(targetPage);
+
+          // Small delay to ensure refs are attached and layout is settled
+          setTimeout(() => {
+            const pageEl = pageRefs.current[targetPage - 1];
+            if (pageEl) {
+              pageEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+            }
+          }, 300);
+        }
+      } catch (err) {
+        console.error("Error in fetchProgress:", err);
+      } finally {
+        setInitialProgressFetched(true);
+      }
+    };
+
+    fetchProgress();
+  }, [id, user, numPages, initialProgressFetched]);
+
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -184,7 +342,12 @@ const PdfViewer: React.FC = () => {
                         className={styles.pdfDocument}
                       >
                         {Array.from(new Array(numPages || 0), (_, index) => (
-                          <div key={`page_${index + 1}`} className={styles.reactPdfPage}>
+                          <div
+                            key={`page_${index + 1}`}
+                            className={styles.reactPdfPage}
+                            ref={(el) => { pageRefs.current[index] = el; }}
+                            data-page-index={index}
+                          >
                             <Page
                               pageNumber={index + 1}
                               scale={1} // Base scale, react-zoom-pan-pinch handles the actual display scaling
