@@ -33,7 +33,7 @@ async function run() {
   await findFiles('');
   console.log(`Found ${allPDFs.length} PDFs`);
 
-  const { data: existingData, error: existingError } = await supabase.from('books').select('file_path');
+  const { data: existingData, error: existingError } = await supabase.from('learning_resources').select('file_path');
   if (existingError) {
       console.error("Error fetching existing:", existingError);
       return;
@@ -47,7 +47,7 @@ async function run() {
     let _class = "";
     let subject = "";
     let year = null;
-    let type = "Previous Year Papers"; // match current frontend filtering mockCategories value
+    let resource_type = "pyq"; // PostgreSQL ENUM allowed value
 
     // First try matching filename format e.g. class-10-social-science-pyq-2021.pdf
     let match = pdf.name.match(/class-(\d+)-(.*?)-pyq-(\d{4})/i);
@@ -81,9 +81,10 @@ async function run() {
     if (!existingPaths.has(pdf.path)) {
         toInsert.push({
             title: title,
-            class: _class,
+            student_class: _class,
             subject: subject,
-            type: type,
+            resource_type: resource_type,
+            medium: 'english', // PostgreSQL ENUM allowed value
             year: year,
             file_path: pdf.path,
         });
@@ -92,7 +93,7 @@ async function run() {
 
   if (toInsert.length > 0) {
       console.log("Inserting:", toInsert);
-      const { data, error } = await supabase.from('books').insert(toInsert).select();
+      const { data, error } = await supabase.from('learning_resources').insert(toInsert).select();
       if (error) {
           console.error("Insert Error:", error);
       } else {

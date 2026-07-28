@@ -42,7 +42,7 @@ const Library: React.FC = () => {
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('books').select('*').eq('type', 'pyq');
+      const { data, error } = await supabase.from('learning_resources').select('*').eq('resource_type', 'pyq');
 
       if (error) {
         console.error('Error fetching resources:', error);
@@ -50,7 +50,7 @@ const Library: React.FC = () => {
       } else if (data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mappedResources: Resource[] = data.map((item: any) => {
-          let className = item.class;
+          let className = item.student_class;
           if (className) {
             const strClass = String(className);
             const trimmed = strClass.trim();
@@ -71,7 +71,7 @@ const Library: React.FC = () => {
             title: item.title,
             description: item.description,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            category: item.type as any,
+            category: item.resource_type as any,
             uploadDate: item.created_at || new Date().toISOString(),
             pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
             thumbnailUrl: item.thumbnail_url || '',
