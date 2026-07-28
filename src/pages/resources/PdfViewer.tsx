@@ -102,7 +102,8 @@ const PdfViewer: React.FC = () => {
           thumbnailUrl: data.thumbnail_url || '',
           class: data.student_class || undefined,
           subject: data.subject || undefined,
-          type: data.resource_type
+          type: data.resource_type,
+          chapter_id: data.chapter_id || null
         };
         setResource(mappedResource);
 
@@ -126,7 +127,8 @@ const PdfViewer: React.FC = () => {
                 thumbnailUrl: item.thumbnail_url || '',
                 class: item.student_class || undefined,
                 subject: item.subject || undefined,
-                type: item.resource_type
+                type: item.resource_type,
+                chapter_id: item.chapter_id || null
             }));
             setRelatedResources(mappedRelated);
         }
@@ -179,6 +181,76 @@ const PdfViewer: React.FC = () => {
       if (timeoutId) window.clearTimeout(timeoutId);
     };
   }, [currentPage, id, user, initialProgressFetched]);
+
+
+  // Track chapter completion status for this session to avoid multiple DB calls
+  const completionCheckedRef = useRef<boolean>(false);
+
+  // Reset completion check when resource changes
+  useEffect(() => {
+    completionCheckedRef.current = false;
+  }, [id]);
+
+  // Chapter completion logic
+  useEffect(() => {
+    const handleChapterCompletion = async () => {
+      // Requirements:
+      // - Only Notes complete a chapter
+      // - Need a chapter_id
+      // - Reached the completion threshold (95% - as confirmed by user, which means currentPage === numPages for simplicity based on our previous discussion?
+      // Wait, let's look at the instruction: "Use a completion threshold of 95%. A chapter should be marked as completed once the student has reached at least 95% of the Chapter Notes PDF. Do not require the student to reach the absolute last page."
+
+      if (!user || !resource || !numPages || completionCheckedRef.current) return;
+      if (resource.type !== 'notes' || !resource.chapter_id) return;
+
+      // Calculate percentage read
+      const percentRead = currentPage / numPages;
+      if (percentRead >= 0.95) {
+        completionCheckedRef.current = true; // Mark checked immediately to prevent multiple concurrent calls
+
+        try {
+          // Check if completion record already exists
+          const { data: existingRecords, error: fetchError } = await supabase
+            .from('chapter_completion')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('chapter_id', resource.chapter_id);
+
+          if (fetchError) {
+            console.error("Error checking existing chapter completion:", fetchError);
+            completionCheckedRef.current = false; // Reset to allow retry on error
+            return;
+          }
+
+          if (!existingRecords || existingRecords.length === 0) {
+            // No record exists, insert new one
+            const { error: insertError } = await supabase
+              .from('chapter_completion')
+              .insert({
+                user_id: user.id,
+                resource_id: resource.id,
+                chapter_id: resource.chapter_id
+              });
+
+            if (insertError) {
+              console.error("Error inserting chapter completion:", insertError);
+              completionCheckedRef.current = false; // Reset to allow retry on error
+            } else {
+              console.log("Chapter marked as completed.");
+            }
+          } else {
+             // Record already exists
+             console.log("Chapter already completed.");
+          }
+        } catch (err) {
+          console.error("Failed to process chapter completion:", err);
+          completionCheckedRef.current = false;
+        }
+      }
+    };
+
+    handleChapterCompletion();
+  }, [currentPage, numPages, resource, user]);
 
   // Cleanup: save immediately when unmounting
   useEffect(() => {

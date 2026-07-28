@@ -10,6 +10,7 @@ export interface Resource {
   subject?: string;
   year?: string;
   type?: string;
+  chapter_id?: string | null;
 }
 
 export type Category = 'Notes' | 'Previous Year Papers' | 'Study Material' | 'Practice Questions' | 'notes' | 'revision_sheets' | 'mcq' | 'flashcards' | 'pyq';
@@ -46,6 +47,7 @@ export type LearningResource = {
   subject?: string | null;
   year?: number | null;
   created_at?: string;
+  chapter_id?: string | null;
 }
 
 export type ReadingProgress = {
@@ -102,6 +104,7 @@ export interface Database {
           subject?: string | null
           year?: number | null
           created_at?: string
+          chapter_id?: string | null
         }
         Update: {
           id?: string
@@ -116,6 +119,7 @@ export interface Database {
           subject?: string | null
           year?: number | null
           created_at?: string
+          chapter_id?: string | null
         }
         Relationships: []
       }
