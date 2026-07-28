@@ -1,11 +1,126 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../services/supabase';
+import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
+
+
+interface ProgressData {
+  allTimeCompletedChapters: number;
+  syllabusTotalChapters: number;
+  syllabusCompletedChapters: number;
+  percentageComplete: number;
+  subjectProgress: Record<string, { total: number; completed: number; percentage: number }>;
+}
 
 const Dashboard: React.FC = () => {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const [progressData, setProgressData] = useState<ProgressData | null>(null);
+  const [isLoadingProgress, setIsLoadingProgress] = useState(true);
+
+  useEffect(() => {
+    async function fetchProgress() {
+      if (!user || !profile) return;
+      setIsLoadingProgress(true);
+
+      try {
+        // Fetch syllabus: all chapters for the student's class
+        const { data: syllabusData, error: syllabusError } = await supabase
+          .from('learning_resources')
+          .select('chapter_id, subject')
+          .eq('resource_type', 'notes')
+          .eq('student_class', profile.student_class || '')
+          .not('chapter_id', 'is', null);
+
+        if (syllabusError) throw syllabusError;
+
+        // Fetch completed chapters for the user
+        const { data: completionsData, error: completionsError } = await supabase
+          .from('chapter_completion')
+          .select('chapter_id')
+          .eq('user_id', user.id);
+
+        if (completionsError) throw completionsError;
+
+        const allTimeCompletedChapters = completionsData ? completionsData.length : 0;
+
+        if (!syllabusData || syllabusData.length === 0) {
+          setProgressData({
+            allTimeCompletedChapters,
+            syllabusTotalChapters: 0,
+            syllabusCompletedChapters: 0,
+            percentageComplete: 0,
+            subjectProgress: {}
+          });
+          setIsLoadingProgress(false);
+          return;
+        }
+
+        // Create a set of unique chapters for the syllabus and group by subject
+        const syllabusChapterIds = new Set<string>();
+        const subjectTotals: Record<string, Set<string>> = {};
+
+        syllabusData.forEach(resource => {
+          if (resource.chapter_id) {
+            syllabusChapterIds.add(resource.chapter_id);
+            const subject = resource.subject || 'Other';
+            if (!subjectTotals[subject]) {
+              subjectTotals[subject] = new Set();
+            }
+            subjectTotals[subject].add(resource.chapter_id);
+          }
+        });
+
+        // Check which completions are within the current syllabus
+        const completedChapterIds = new Set(completionsData?.map(c => c.chapter_id) || []);
+
+        let syllabusCompletedChapters = 0;
+        const subjectCompleted: Record<string, number> = {};
+
+        for (const subject of Object.keys(subjectTotals)) {
+           subjectCompleted[subject] = 0;
+           for (const chapterId of subjectTotals[subject]) {
+             if (completedChapterIds.has(chapterId)) {
+               syllabusCompletedChapters++;
+               subjectCompleted[subject]++;
+             }
+           }
+        }
+
+        const syllabusTotalChapters = syllabusChapterIds.size;
+        const percentageComplete = syllabusTotalChapters > 0 ? Math.round((syllabusCompletedChapters / syllabusTotalChapters) * 100) : 0;
+
+        const subjectProgress: Record<string, { total: number; completed: number; percentage: number }> = {};
+        for (const subject of Object.keys(subjectTotals)) {
+           const total = subjectTotals[subject].size;
+           const completed = subjectCompleted[subject];
+           subjectProgress[subject] = {
+             total,
+             completed,
+             percentage: total > 0 ? Math.round((completed / total) * 100) : 0
+           };
+        }
+
+        setProgressData({
+          allTimeCompletedChapters,
+          syllabusTotalChapters,
+          syllabusCompletedChapters,
+          percentageComplete,
+          subjectProgress
+        });
+      } catch (err) {
+        console.error("Error fetching progress:", err);
+      } finally {
+        setIsLoadingProgress(false);
+      }
+    }
+
+    fetchProgress();
+  }, [user, profile]);
+
 
   const handleSignOut = async () => {
     await signOut();
@@ -85,14 +200,70 @@ const Dashboard: React.FC = () => {
             <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-4 font-semibold">
               Learning Progress
             </span>
-            <div className="neu-recessed rounded-xl p-6 text-center">
-              <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-caption font-bold rounded-full mb-3">
-                Coming Soon
-              </span>
-              <p className="text-muted-foreground text-body-base">
-                This section will track your syllabus completion as you study.
-              </p>
-            </div>
+            {isLoadingProgress ? (
+              <div className="neu-recessed rounded-xl p-6 text-center animate-pulse">
+                <p className="text-muted-foreground text-body-base">Loading progress...</p>
+              </div>
+            ) : !profile?.student_class ? (
+              <div className="neu-recessed rounded-xl p-6 text-center">
+                <p className="text-muted-foreground text-body-base">
+                  Set your class in your profile to track your syllabus progress.
+                </p>
+              </div>
+            ) : !progressData || progressData.syllabusTotalChapters === 0 ? (
+              <div className="neu-recessed rounded-xl p-6 text-center">
+                <p className="text-muted-foreground text-body-base">
+                  No syllabus data found for {profile.student_class}. Start reading notes to track progress!
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-6">
+                {/* Overall Progress */}
+                <div className="neu-recessed rounded-xl p-6 flex flex-col gap-3">
+                  <div className="flex justify-between items-end">
+                    <span className="text-body-large text-ink font-bold">Overall Syllabus</span>
+                    <span className="text-h2 text-accent font-bold leading-none">{progressData.percentageComplete}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative">
+                    <div
+                      className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
+                      style={{ width: `${progressData.percentageComplete}%` }}
+                    />
+                  </div>
+                  <span className="text-caption text-muted-foreground font-medium text-right">
+                    {progressData.syllabusCompletedChapters} of {progressData.syllabusTotalChapters} Chapters Completed
+                  </span>
+                </div>
+
+                {/* Subject-wise Progress */}
+                {Object.keys(progressData.subjectProgress).length > 0 && (
+                  <div className="flex flex-col gap-3">
+                    <span className="text-caption text-muted-foreground uppercase tracking-wider block font-semibold pl-2">
+                      Subject-wise Progress
+                    </span>
+                    <div className="flex flex-col gap-3">
+                      {Object.entries(progressData.subjectProgress).map(([subject, stats]) => (
+                        <div key={subject} className="neu-recessed rounded-xl p-4 flex flex-col gap-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-body-base text-ink font-bold">{subject}</span>
+                            <span className="text-caption font-bold text-accent">{stats.percentage}%</span>
+                          </div>
+                          <div className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative">
+                            <div
+                              className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
+                              style={{ width: `${stats.percentage}%` }}
+                            />
+                          </div>
+                          <span className="text-[11px] leading-tight text-muted-foreground font-medium text-right mt-1">
+                            {stats.completed} / {stats.total} Chapters
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Card 3: Recent Activity */}
@@ -173,7 +344,9 @@ const Dashboard: React.FC = () => {
             </span>
             <div className="grid grid-cols-3 gap-3">
               <div className="neu-recessed rounded-xl p-4 text-center">
-                <span className="block text-2xl font-bold text-ink mb-1">--</span>
+                <span className="block text-2xl font-bold text-ink mb-1">
+                  {isLoadingProgress ? '--' : progressData?.allTimeCompletedChapters ?? '--'}
+                </span>
                 <span className="block text-[11px] leading-tight text-muted-foreground font-medium">
                   Completed Chapters
                 </span>
