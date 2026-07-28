@@ -22,7 +22,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
         )}
       </div>
       <h4 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
-        {resource.type === 'pyq' ? `${resource.class} ${resource.subject} PYQ` : resource.title}
+        {resource.resource_type === 'pyq' ? `${resource.student_class} ${resource.subject} PYQ` : resource.title}
       </h4>
       <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
         {resource.year || resource.subject}

@@ -2,18 +2,16 @@ export interface Resource {
   id: string;
   title: string;
   description: string;
-  category: Category;
+  resource_type: ResourceType;
+  medium: Medium;
   uploadDate: string;
   pdfUrl: string;
   thumbnailUrl: string;
-  class?: string;
-  subject?: string;
+  student_class?: string | null;
+  subject?: string | null;
   year?: string;
-  type?: string;
   chapter_id?: string | null;
 }
-
-export type Category = 'Notes' | 'Previous Year Papers' | 'Study Material' | 'Practice Questions' | 'notes' | 'revision_sheets' | 'mcq' | 'flashcards' | 'pyq';
 
 export interface Announcement {
   id: string;

@@ -96,13 +96,13 @@ const PdfViewer: React.FC = () => {
           id: data.id,
           title: data.title,
           description: data.description,
-          category: data.resource_type,
+          resource_type: data.resource_type,
+          medium: data.medium,
           uploadDate: data.created_at || new Date().toISOString(),
           pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
           thumbnailUrl: data.thumbnail_url || '',
-          class: data.student_class || undefined,
+          student_class: data.student_class || undefined,
           subject: data.subject || undefined,
-          type: data.resource_type,
           chapter_id: data.chapter_id || null
         };
         setResource(mappedResource);
@@ -121,13 +121,13 @@ const PdfViewer: React.FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                category: item.resource_type,
+                resource_type: item.resource_type,
+                medium: item.medium,
                 uploadDate: item.created_at || new Date().toISOString(),
                 pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
                 thumbnailUrl: item.thumbnail_url || '',
-                class: item.student_class || undefined,
+                student_class: item.student_class || undefined,
                 subject: item.subject || undefined,
-                type: item.resource_type,
                 chapter_id: item.chapter_id || null
             }));
             setRelatedResources(mappedRelated);
@@ -201,7 +201,7 @@ const PdfViewer: React.FC = () => {
       // Wait, let's look at the instruction: "Use a completion threshold of 95%. A chapter should be marked as completed once the student has reached at least 95% of the Chapter Notes PDF. Do not require the student to reach the absolute last page."
 
       if (!user || !resource || !numPages || completionCheckedRef.current) return;
-      if (resource.type !== 'notes' || !resource.chapter_id) return;
+      if (resource.resource_type !== 'notes' || !resource.chapter_id) return;
 
       // Calculate percentage read
       const percentRead = currentPage / numPages;
@@ -369,7 +369,7 @@ const PdfViewer: React.FC = () => {
             {resource.title}
           </h1>
           <p className="text-body1 text-ink/70 font-bold mt-2">
-            {resource.class && resource.subject ? `${resource.class} • ${resource.subject}` : resource.category}
+            {resource.student_class && resource.subject ? `${resource.student_class} • ${resource.subject}` : resource.resource_type}
           </p>
         </div>
 
