@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
+import type { Profile } from '../../types';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const Onboarding: React.FC = () => {
     fetchUserAndProfile();
   }, [navigate]);
 
-  const updateProfile = async (updates: any) => {
+  const updateProfile = async (updates: Partial<Profile>) => {
     if (!userId) return;
     setSaving(true);
     await supabase.from('profiles').update(updates).eq('id', userId);
