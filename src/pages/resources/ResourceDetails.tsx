@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
-import type { Resource, Category } from '../../types';
+import type { Resource } from '../../types';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +16,7 @@ const ResourceDetails: React.FC = () => {
       setLoading(true);
 
       const { data, error } = await supabase
-        .from('books')
+        .from('learning_resources')
         .select('*')
         .eq('id', id)
         .single();
@@ -32,18 +32,20 @@ const ResourceDetails: React.FC = () => {
           id: data.id,
           title: data.title,
           description: data.description,
-          category: (data.type || data.category) as Category,
-          uploadDate: data.created_at || data.uploadDate || new Date().toISOString(),
-          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || data.pdfUrl || ''),
-          thumbnailUrl: data.thumbnail_url || data.thumbnailUrl || '',
+          category: data.resource_type,
+          uploadDate: data.created_at || new Date().toISOString(),
+          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
+          thumbnailUrl: data.thumbnail_url || '',
+          class: data.student_class || undefined,
+          subject: data.subject || undefined,
         };
         setResource(mappedResource);
 
         // Fetch related
         const { data: relatedData, error: relatedError } = await supabase
-          .from('books')
+          .from('learning_resources')
           .select('*')
-          .eq('type', data.type || data.category)
+          .eq('resource_type', data.resource_type)
           .neq('id', data.id)
           .limit(3);
 
@@ -54,10 +56,12 @@ const ResourceDetails: React.FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                category: (item.type || item.category) as Category,
-                uploadDate: item.created_at || item.uploadDate || new Date().toISOString(),
-                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || item.pdfUrl || ''),
-                thumbnailUrl: item.thumbnail_url || item.thumbnailUrl || '',
+                category: item.resource_type,
+                uploadDate: item.created_at || new Date().toISOString(),
+                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+                thumbnailUrl: item.thumbnail_url || '',
+                class: item.student_class || undefined,
+                subject: item.subject || undefined,
             }));
             setRelatedResources(mappedRelated);
         }

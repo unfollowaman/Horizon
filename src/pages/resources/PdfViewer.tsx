@@ -33,7 +33,7 @@ const PdfViewer: React.FC = () => {
       setLoading(true);
 
       const { data, error } = await supabase
-        .from('books')
+        .from('learning_resources')
         .select('*')
         .eq('id', id)
         .single();
@@ -49,19 +49,19 @@ const PdfViewer: React.FC = () => {
           id: data.id,
           title: data.title,
           description: data.description,
-          category: (data.type || data.category) as Resource['category'],
-          uploadDate: data.created_at || data.uploadDate || new Date().toISOString(),
-          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || data.pdfUrl || ''),
-          thumbnailUrl: data.thumbnail_url || data.thumbnailUrl || '',
-          class: data.class,
-          subject: data.subject,
-          type: data.type
+          category: data.resource_type,
+          uploadDate: data.created_at || new Date().toISOString(),
+          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
+          thumbnailUrl: data.thumbnail_url || '',
+          class: data.student_class || undefined,
+          subject: data.subject || undefined,
+          type: data.resource_type
         };
         setResource(mappedResource);
 
         // Fetch suggested PDFs based on class and subject
-        let query = supabase.from('books').select('*').neq('id', data.id);
-        if (data.class) query = query.eq('class', data.class);
+        let query = supabase.from('learning_resources').select('*').neq('id', data.id);
+        if (data.student_class) query = query.eq('student_class', data.student_class);
         if (data.subject) query = query.eq('subject', data.subject);
 
         const { data: relatedData, error: relatedError } = await query.limit(4);
@@ -73,13 +73,13 @@ const PdfViewer: React.FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                category: (item.type || item.category) as Resource['category'],
-                uploadDate: item.created_at || item.uploadDate || new Date().toISOString(),
-                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || item.pdfUrl || ''),
-                thumbnailUrl: item.thumbnail_url || item.thumbnailUrl || '',
-                class: item.class,
-                subject: item.subject,
-                type: item.type
+                category: item.resource_type,
+                uploadDate: item.created_at || new Date().toISOString(),
+                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+                thumbnailUrl: item.thumbnail_url || '',
+                class: item.student_class || undefined,
+                subject: item.subject || undefined,
+                type: item.resource_type
             }));
             setRelatedResources(mappedRelated);
         }
