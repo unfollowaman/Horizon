@@ -48,7 +48,7 @@ const About: React.FC = () => {
           <div className={`${styles.card} neu-raised`}>
             <h3 className={styles.sectionTitle}>An Evolving Online Library</h3>
             <p className={styles.paragraph}>
-              Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more books, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips.
+              Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more learning materials, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips.
               Check out our <Link to="/library" className={styles.inlineLink}>Library</Link> to see our current offerings.
             </p>
           </div>
