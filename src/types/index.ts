@@ -51,7 +51,7 @@ export type LearningResource = {
 export type ReadingProgress = {
   id: string;
   user_id: string;
-  resource_id: string; // changed from book_id
+  resource_id: string;
   progress: number;
   last_read_at?: string | null;
   created_at?: string;
