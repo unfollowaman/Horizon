@@ -32,11 +32,12 @@ const ResourceDetails: React.FC = () => {
           id: data.id,
           title: data.title,
           description: data.description,
-          category: data.resource_type,
+          resource_type: data.resource_type,
+          medium: data.medium,
           uploadDate: data.created_at || new Date().toISOString(),
           pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
           thumbnailUrl: data.thumbnail_url || '',
-          class: data.student_class || undefined,
+          student_class: data.student_class || undefined,
           subject: data.subject || undefined,
         };
         setResource(mappedResource);
@@ -56,11 +57,12 @@ const ResourceDetails: React.FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                category: item.resource_type,
+                resource_type: item.resource_type,
+                medium: item.medium,
                 uploadDate: item.created_at || new Date().toISOString(),
                 pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
                 thumbnailUrl: item.thumbnail_url || '',
-                class: item.student_class || undefined,
+                student_class: item.student_class || undefined,
                 subject: item.subject || undefined,
             }));
             setRelatedResources(mappedRelated);
@@ -122,7 +124,7 @@ const ResourceDetails: React.FC = () => {
             <h3 className="text-h2 uppercase mb-4 pb-2 text-ink">Details</h3>
             <ul className="list-none p-0 m-0 text-body1">
               <li className="mb-2 pb-2 flex justify-between">
-                <strong>Category:</strong> <span>{resource.category}</span>
+                <strong>Type:</strong> <span>{resource.resource_type}</span>
               </li>
               <li className="mb-2 pb-2 flex justify-between">
                 <strong>Uploaded:</strong> <span>{new Date(resource.uploadDate).toLocaleDateString()}</span>

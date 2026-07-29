@@ -70,12 +70,12 @@ const Library: React.FC = () => {
             id: item.id,
             title: item.title,
             description: item.description,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            category: item.resource_type as any,
+            resource_type: item.resource_type,
+            medium: item.medium,
             uploadDate: item.created_at || new Date().toISOString(),
             pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
             thumbnailUrl: item.thumbnail_url || '',
-            class: className,
+            student_class: className,
             subject: item.subject,
             year: item.year ? item.year.toString() : undefined,
           };
@@ -89,7 +89,7 @@ const Library: React.FC = () => {
   }, []);
 
   const uniqueClasses = useMemo(() => {
-    const classes = new Set(allResources.map(r => r.class).filter(Boolean) as string[]);
+    const classes = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
     if (!classes.has('Class 10')) {
       classes.add('Class 10');
     }
@@ -126,7 +126,7 @@ const Library: React.FC = () => {
     let filtered = allResources;
 
     if (selectedClass && selectedClass !== 'All Classes' && selectedClass !== 'Classes') {
-      filtered = filtered.filter(r => r.class === selectedClass);
+      filtered = filtered.filter(r => r.student_class === selectedClass);
     }
     if (selectedSubject !== 'Subjects' && selectedSubject !== 'All Subjects') {
       filtered = filtered.filter(r => r.subject === selectedSubject);
