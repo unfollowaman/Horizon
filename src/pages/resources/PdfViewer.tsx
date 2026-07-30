@@ -31,6 +31,22 @@ const PdfViewer: React.FC = () => {
   // Ref to container to calculate scale dynamically
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  // Measure container width for dynamic PDF scaling
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   // Set up intersection observer to detect current reading page
   useEffect(() => {
@@ -422,6 +438,7 @@ const PdfViewer: React.FC = () => {
                           >
                             <Page
                               pageNumber={index + 1}
+                              width={containerWidth || Math.min(window.innerWidth, 800)}
                               scale={1} // Base scale, react-zoom-pan-pinch handles the actual display scaling
                               renderTextLayer={false}
                               renderAnnotationLayer={false}
