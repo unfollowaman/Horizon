@@ -194,7 +194,7 @@ const features = [
   { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)" },
   { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)" },
   { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)" },
-  { title: "Study Notes", desc: "Comprehensive notes for all subjects. (Coming Soon)" },
+  { title: "Study Notes", desc: "Comprehensive notes for all subjects.", path: "/notes" },
   { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)" }
 ];
 
