@@ -1,0 +1,9 @@
+Root cause:
+The database recorded a `file_path` for the Notes resource that did not actually exist in the Supabase Storage `pdfs` bucket. When the frontend constructed the public URL and passed it to react-pdf, the Supabase Storage API returned a 404/400 JSON error response instead of a PDF file, causing the PDF viewer to fail.
+
+Files changed:
+None in the codebase. (The issue was fixed directly in the Supabase database).
+
+Exact reason the Notes PDF failed while PYQs work:
+PYQs records in the `learning_resources` table have valid `file_path`s (e.g. `pyqs/class-10/science/class-10-science-pyq-2026.pdf`) that match real PDF objects uploaded to the Supabase `pdfs` storage bucket. Fetching these URLs returns a 200 OK and PDF content.
+Notes records, on the other hand, had a `file_path` (e.g. `notes/class-10/history/hindi-medium/class-10-history-chapter-1-notes-hindi-medium.pdf`) but the physical PDF file was missing from the storage bucket. Therefore, the Notes URL request returned an error response instead of the PDF data.
