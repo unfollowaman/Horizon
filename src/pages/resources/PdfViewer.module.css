@@ -104,13 +104,19 @@
   position: absolute;
   top: var(--spacing-6);
   right: var(--spacing-6);
-  display: flex;
+  display: none; /* Hidden on mobile by default */
   gap: var(--spacing-2);
   z-index: 10;
   background-color: var(--bg-base);
   padding: var(--spacing-2);
   border-radius: var(--radius-lg);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+@media (min-width: 768px) {
+  .zoomControls {
+    display: flex; /* Visible on desktop */
+  }
 }
 
 .transformWrapper {
