@@ -11,6 +11,7 @@ export interface Resource {
   subject?: string | null;
   year?: string;
   chapter_id?: string | null;
+  chapters?: Chapter | null;
 }
 
 export interface Announcement {
@@ -46,6 +47,17 @@ export type LearningResource = {
   year?: number | null;
   created_at?: string;
   chapter_id?: string | null;
+}
+
+export type Chapter = {
+  id: string;
+  student_class?: string | null;
+  subject?: string | null;
+  chapter_number: number;
+  chapter_name: string;
+  display_order: number;
+  is_active: boolean;
+  created_at?: string;
 }
 
 export type ReadingProgress = {
@@ -118,6 +130,37 @@ export interface Database {
           year?: number | null
           created_at?: string
           chapter_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_resources_chapter_id_fkey"
+            columns: ["chapter_id"]
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      chapters: {
+        Row: Chapter
+        Insert: {
+          id?: string
+          student_class?: string | null
+          subject?: string | null
+          chapter_number: number
+          chapter_name: string
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          student_class?: string | null
+          subject?: string | null
+          chapter_number?: number
+          chapter_name?: string
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
         }
         Relationships: []
       }
