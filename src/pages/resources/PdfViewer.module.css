@@ -184,25 +184,6 @@
   margin-top: var(--spacing-8);
 }
 
-.suggestedGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-4);
-  margin-top: var(--spacing-4);
-}
-
-@media (min-width: 768px) {
-  .suggestedGrid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-6);
-  }
-}
-@media (min-width: 1024px) {
-  .suggestedGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 .pdfTitle {
   font-family: 'Instrument Serif', serif;
 }

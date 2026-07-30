@@ -466,7 +466,7 @@ const PdfViewer: React.FC = () => {
         {relatedResources.length > 0 && (
           <section className={styles.suggestedSection}>
             <h3 className="text-h3 font-bold uppercase mb-4 text-ink">Suggested for you</h3>
-            <div className={styles.suggestedGrid}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
               {relatedResources.map((related) => (
                 <MaterialCard key={related.id} resource={related} />
               ))}
