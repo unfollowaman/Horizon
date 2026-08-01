@@ -1,4 +1,8 @@
+const fs = require('fs');
 
+const path = 'src/pages/resources/PdfViewer.module.css';
+
+const newCss = `
 .pageContainer {
   height: 100vh;
   height: 100dvh; /* For mobile browsers */
@@ -318,3 +322,7 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
 }
+`;
+
+fs.writeFileSync(path, newCss);
+console.log("CSS updated.");

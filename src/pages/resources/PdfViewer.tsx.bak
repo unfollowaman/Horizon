@@ -6,6 +6,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { supabase } from '../../services/supabase';
 import type { Resource } from '../../types';
+import MaterialCard from '../../components/MaterialCard';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
 
@@ -21,7 +22,7 @@ const PdfViewer: React.FC = () => {
   const { user } = useAuth();
 
   const [resource, setResource] = useState<Resource | null>(null);
-
+  const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -135,6 +136,21 @@ const PdfViewer: React.FC = () => {
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);
         } else if (relatedData) {
+            const mappedRelated: Resource[] = relatedData.map(item => ({
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                resource_type: item.resource_type,
+                medium: item.medium,
+                uploadDate: item.created_at || new Date().toISOString(),
+                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+                thumbnailUrl: item.thumbnail_url || '',
+                student_class: item.student_class || undefined,
+                subject: item.subject || undefined,
+                chapter_id: item.chapter_id || null,
+                chapters: item.chapters || null
+            }));
+            setRelatedResources(mappedRelated);
         }
       }
       setLoading(false);
@@ -324,35 +340,6 @@ const PdfViewer: React.FC = () => {
   }, [id, user, numPages, initialProgressFetched]);
 
 
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isThreeDotsMenuOpen, setIsThreeDotsMenuOpen] = useState(false);
-
-  // Close menus on click outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest(`.${styles.threeDotsWrapper}`)) {
-        setIsThreeDotsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Hamburger Menu Handlers
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMobileMenuOpen]);
-
-  const closeMenu = () => setIsMobileMenuOpen(false);
-
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
   }
@@ -380,153 +367,159 @@ const PdfViewer: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Floating Controls */}
-      <button
-        onClick={() => navigate(-1)}
-        className={`${styles.floatingTopLeft} neu-raised`}
-        aria-label="Go Back"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </button>
+      <div className={styles.contentWrapper}>
+        {/* Header */}
+        <header className={styles.header}>
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 px-4 h-11 font-bold neu-raised rounded-md hover:neu-raised-hover text-ink flex items-center gap-2"
+          >
+            &larr; Back
+          </button>
 
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className={`${styles.floatingTopRight} neu-raised`}
-        aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-      >
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+          <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`${styles.heroBrandPill} neu-raised no-underline`}>
+            <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
+            <span className={styles.heroBrandPillText}>Horizon</span>
+          </Link>
+        </header>
 
-      {/* Expanded Hamburger Menu Overlay (Replicated from Home.tsx) */}
-      <div className={`${styles.menuOverlayWrapper} ${isMobileMenuOpen ? styles.menuOverlayVisible : styles.menuOverlayHidden}`}>
-        <div className={styles.menuBackdrop} onClick={closeMenu} aria-hidden="true" />
-        <div className={styles.menuContentWrapper}>
-          <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
-            <div className={styles.menuHeader}>
-              <div className={styles.menuBrandIcon}>
-                <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.menuBrandLogoImg} />
-              </div>
-              <button onClick={closeMenu} className={styles.menuCloseBtn}>
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <nav className={styles.menuNavLinks}>
-              <Link to="/library" onClick={closeMenu} className={styles.menuNavLink}>PYQ Papers</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Flashcards</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>MCQ Sets</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Revision Sheets</Link>
-              <Link to="/notes" onClick={closeMenu} className={styles.menuNavLink}>Study Notes</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Updates</Link>
-            </nav>
-            <div className={styles.menuActionButtons}>
-              {user ? (
-                <Link to="/dashboard" onClick={closeMenu} className={styles.menuSignInBtn}>Dashboard</Link>
-              ) : (
+        {/* Title */}
+        <div className="text-center my-2">
+          <h1 className={`text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink px-4 ${styles.pdfTitle}`}>
+            {resource.resource_type === 'notes' && resource.chapters ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}` : resource.title}
+          </h1>
+          <p className="text-body1 text-ink/70 font-bold mt-2">
+            {resource.student_class && resource.subject ? `${resource.student_class} • ${resource.subject}` : resource.resource_type}
+          </p>
+        </div>
+
+        {/* PDF Reader Container */}
+        <div
+          ref={containerRef}
+          className={`${styles.viewerContainer} neu-raised rounded-xl`}
+        >
+          <div className={styles.transformWrapperContainer}>
+            <TransformWrapper
+              initialScale={1}
+              minScale={0.5}
+              maxScale={4}
+              centerOnInit
+              wheel={{
+                wheelDisabled: false,
+                activationKeys: ['Control', 'Shift', 'Meta', 'Alt']
+              }} // Require modifier key to zoom with wheel, otherwise let it scroll naturally
+              panning={{ excluded: ['a', 'button', 'input'] }} // exclude some elements from panning
+              trackPadPanning={{ disabled: false }} // Allows natural scrolling/panning using wheel/trackpad when zoom modifier is not active
+            >
+              {({ zoomIn, zoomOut, resetTransform }) => (
                 <>
-                  <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>Sign in</Link>
-                  <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>Get Started</Link>
+                  <div className={styles.zoomControls}>
+                    <button onClick={() => zoomOut()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover" title="Zoom Out">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <button onClick={() => resetTransform()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover font-bold text-sm" title="Reset Zoom">
+                      Reset
+                    </button>
+                    <button onClick={() => zoomIn()} className="neu-raised-sm rounded-md p-2 hover:neu-raised-hover" title="Zoom In">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                  </div>
+
+                  <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
+                    <div className={styles.pdfScrollContainer}>
+                      <Document
+                        file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        loading={<div className="p-4 font-bold flex justify-center w-full">Rendering PDF...</div>}
+                        className={styles.pdfDocument}
+                      >
+                        {Array.from(new Array(numPages || 0), (_, index) => (
+                          <div
+                            key={`page_${index + 1}`}
+                            className={styles.reactPdfPage}
+                            ref={(el) => { pageRefs.current[index] = el; }}
+                            data-page-index={index}
+                          >
+                            <Page
+                              pageNumber={index + 1}
+                              width={containerWidth || Math.min(window.innerWidth, 800)}
+                              scale={1} // Base scale, react-zoom-pan-pinch handles the actual display scaling
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              loading={<div className="h-64 w-full animate-pulse bg-gray-200 rounded-md"></div>}
+                            />
+                          </div>
+                        ))}
+                      </Document>
+                    </div>
+                  </TransformComponent>
                 </>
               )}
-            </div>
+            </TransformWrapper>
           </div>
         </div>
-      </div>
 
-      {/* PDF Reader Container (Full screen) */}
-      <div
-        ref={containerRef}
-        className={styles.viewerContainer}
-      >
-        <div className={styles.transformWrapperContainer}>
-          <TransformWrapper
-            initialScale={1}
-            minScale={0.5}
-            maxScale={4}
-            centerOnInit
-            wheel={{
-              wheelDisabled: false,
-              activationKeys: ['Control', 'Shift', 'Meta', 'Alt']
-            }}
-            panning={{ excluded: ['a', 'button', 'input'] }}
-            trackPadPanning={{ disabled: false }}
+        {/* Download Button Below Last Page */}
+        <div className={`${styles.downloadSection} flex gap-4`}>
+
+          <a
+            href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 px-6 flex items-center justify-center whitespace-normal text-body1 gap-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink"
           >
-            {({ zoomIn, zoomOut }) => (
-              <>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="url(#pink-gradient-download)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id="pink-gradient-download" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#E91E8C" />
+                  <stop offset="50%" stopColor="#C2185B" />
+                  <stop offset="100%" stopColor="#8B0A50" />
+                </linearGradient>
+              </defs>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" x2="12" y1="15" y2="3"/>
+            </svg>
+            <span>Download PDF</span>
+          </a>
 
-
-                {/* Floating Bottom Right Three-Dots Menu */}
-                <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper}`}>
-                  {isThreeDotsMenuOpen && (
-                    <div className={`${styles.threeDotsMenu} neu-raised`}>
-                      <button onClick={() => { zoomIn(); setIsThreeDotsMenuOpen(false); }} className={styles.threeDotsMenuItem}>
-                        Zoom In
-                      </button>
-                      <button onClick={() => { zoomOut(); setIsThreeDotsMenuOpen(false); }} className={styles.threeDotsMenuItem}>
-                        Zoom Out
-                      </button>
-                      <a
-                        href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.threeDotsMenuItem}
-                        onClick={() => setIsThreeDotsMenuOpen(false)}
-                      >
-                        Download PDF
-                      </a>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
-                    className={`${styles.threeDotsBtn} neu-raised`}
-                    aria-label="More options"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="1"></circle>
-                      <circle cx="12" cy="5" r="1"></circle>
-                      <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
-                  </button>
-                </div>
-
-                <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
-                  <div className={styles.pdfScrollContainer}>
-                    <Document
-                      file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-                      onLoadSuccess={onDocumentLoadSuccess}
-                      loading={<div className="p-4 font-bold flex justify-center w-full">Rendering PDF...</div>}
-                      className={styles.pdfDocument}
-                    >
-                      {Array.from(new Array(numPages || 0), (_, index) => (
-                        <div
-                          key={`page_${index + 1}`}
-                          className={styles.reactPdfPage}
-                          ref={(el) => { pageRefs.current[index] = el; }}
-                          data-page-index={index}
-                        >
-                          <Page
-                            pageNumber={index + 1}
-                            width={containerWidth || Math.min(window.innerWidth, 800)}
-                            scale={1}
-                            renderTextLayer={false}
-                            renderAnnotationLayer={false}
-                            loading={<div className="h-64 w-full animate-pulse bg-gray-200 rounded-md"></div>}
-                          />
-                        </div>
-                      ))}
-                    </Document>
-                  </div>
-                </TransformComponent>
-              </>
-            )}
-          </TransformWrapper>
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: resource.title,
+                  url: window.location.href
+                }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                  alert('Link copied to clipboard!');
+                }).catch(() => {});
+              }
+            }}
+            className="p-3 px-6 flex items-center justify-center whitespace-normal text-body1 gap-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
         </div>
+
+        {/* Suggested PDFs */}
+        {relatedResources.length > 0 && (
+          <section className={styles.suggestedSection}>
+            <h3 className="text-h3 font-bold uppercase mb-4 text-ink">Suggested for you</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
+              {relatedResources.map((related) => (
+                <MaterialCard key={related.id} resource={related} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
