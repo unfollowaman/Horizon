@@ -129,6 +129,7 @@ const PdfViewer: React.FC = () => {
         if (data.student_class) query = query.eq('student_class', data.student_class);
         if (data.subject) query = query.eq('subject', data.subject);
         if (data.medium) query = query.eq('medium', data.medium);
+        query = query.eq('resource_type', data.resource_type);
 
         const { data: relatedData, error: relatedError } = await query.limit(4);
 
@@ -459,7 +460,8 @@ const PdfViewer: React.FC = () => {
         </div>
 
         {/* Download Button Below Last Page */}
-        <div className={styles.downloadSection}>
+        <div className={`${styles.downloadSection} flex gap-4`}>
+
           <a
             href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
             target="_blank"
@@ -480,6 +482,31 @@ const PdfViewer: React.FC = () => {
             </svg>
             <span>Download PDF</span>
           </a>
+
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: resource.title,
+                  url: window.location.href
+                }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                  alert('Link copied to clipboard!');
+                }).catch(() => {});
+              }
+            }}
+            className="p-3 px-6 flex items-center justify-center whitespace-normal text-body1 gap-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
         </div>
 
         {/* Suggested PDFs */}
