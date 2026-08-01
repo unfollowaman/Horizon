@@ -269,19 +269,9 @@
   margin-bottom: var(--spacing-6); /* mb-6 */
 }
 
-.menuBrandIcon {
-  width: var(--spacing-10); /* w-10 */
-  height: var(--spacing-10); /* h-10 */
-  --tw-radius: 12px;
-  border-radius: 12px; /* rounded-[12px] */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.menuBrandLogoImg {
-  height: 1.5rem;
-  width: auto;
-  object-fit: contain;
+.menuProfileContainer button {
+  width: 40px !important;
+  height: 40px !important;
 }
 
 .menuCloseBtn {
@@ -332,6 +322,17 @@
 .menuNavLink:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-ink);
+}
+
+.menuDivider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin: 8px var(--spacing-1);
+  border: none;
+}
+
+.menuNavLinksAuth {
+  margin-bottom: 0;
 }
 
 .menuActionButtons {
