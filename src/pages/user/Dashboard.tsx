@@ -33,6 +33,7 @@ const Dashboard: React.FC = () => {
           .select('chapter_id, subject')
           .eq('resource_type', 'notes')
           .eq('student_class', profile.student_class || '')
+          .eq('medium', profile.study_medium || 'english')
           .not('chapter_id', 'is', null);
 
         if (syllabusError) throw syllabusError;
