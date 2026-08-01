@@ -22,7 +22,7 @@ const doodle_star_top = 'data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAA
 const doodle_pen = 'data:image/webp;base64,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';
 
 
-const PyqIllustration: React.FC = () => {
+const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
   const rawId = useId().replace(/:/g, '');
   const gradId = `pyqGrad-${rawId}`;
   const paperGrad = `url(#${gradId})`;
@@ -32,7 +32,9 @@ const PyqIllustration: React.FC = () => {
       <path d="M230 50 h55 l35 35 v105 a12 12 0 0 1 -12 12 h-78 a12 12 0 0 1 -12 -12 v-128 a12 12 0 0 1 12 -12 z" fill="#fff" stroke={paperGrad} strokeWidth="6" strokeLinejoin="round"/>
       <path d="M285 50 v25 a10 10 0 0 0 10 10 h25" fill="none" stroke={paperGrad} strokeWidth="6" strokeLinejoin="round" />
       <path d="M285 50 l35 35" fill="#E91E8C" opacity="0.1" />
-      <text x="240" y="110" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="30" fill={paperGrad}>PYQ</text>
+      <text x="240" y="110" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="30" fill={paperGrad}>
+        {type === 'notes' ? 'NOTE' : 'PYQ'}
+      </text>
       <path d="M240 138 h45 M240 162 h65 M240 186 h65" stroke={paperGrad} strokeWidth="5" strokeLinecap="round"/>
     </>
   );
@@ -169,11 +171,15 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
         {resource.thumbnailUrl ? (
           <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
         ) : (
-          <PyqIllustration />
+          <DefaultIllustration type={resource.resource_type} />
         )}
       </div>
       <h4 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
-        {resource.resource_type === 'pyq' ? `${resource.student_class} ${resource.subject} PYQ` : resource.title}
+        {resource.resource_type === 'pyq'
+          ? `${resource.student_class} ${resource.subject} PYQ`
+          : resource.resource_type === 'notes' && resource.chapters
+            ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}`
+            : resource.title}
       </h4>
       <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
         {resource.year || resource.subject}

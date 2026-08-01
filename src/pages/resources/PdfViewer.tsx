@@ -97,7 +97,7 @@ const PdfViewer: React.FC = () => {
 
       const { data, error } = await supabase
         .from('learning_resources')
-        .select('*')
+        .select('*, chapters(*)')
         .eq('id', id)
         .single();
 
@@ -119,14 +119,16 @@ const PdfViewer: React.FC = () => {
           thumbnailUrl: data.thumbnail_url || '',
           student_class: data.student_class || undefined,
           subject: data.subject || undefined,
-          chapter_id: data.chapter_id || null
+          chapter_id: data.chapter_id || null,
+          chapters: data.chapters || null
         };
         setResource(mappedResource);
 
         // Fetch suggested PDFs based on class and subject
-        let query = supabase.from('learning_resources').select('*').neq('id', data.id);
+        let query = supabase.from('learning_resources').select('*, chapters(*)').neq('id', data.id);
         if (data.student_class) query = query.eq('student_class', data.student_class);
         if (data.subject) query = query.eq('subject', data.subject);
+        if (data.medium) query = query.eq('medium', data.medium);
 
         const { data: relatedData, error: relatedError } = await query.limit(4);
 
@@ -144,7 +146,8 @@ const PdfViewer: React.FC = () => {
                 thumbnailUrl: item.thumbnail_url || '',
                 student_class: item.student_class || undefined,
                 subject: item.subject || undefined,
-                chapter_id: item.chapter_id || null
+                chapter_id: item.chapter_id || null,
+                chapters: item.chapters || null
             }));
             setRelatedResources(mappedRelated);
         }
@@ -382,7 +385,7 @@ const PdfViewer: React.FC = () => {
         {/* Title */}
         <div className="text-center my-2">
           <h1 className={`text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink px-4 ${styles.pdfTitle}`}>
-            {resource.title}
+            {resource.resource_type === 'notes' && resource.chapters ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}` : resource.title}
           </h1>
           <p className="text-body1 text-ink/70 font-bold mt-2">
             {resource.student_class && resource.subject ? `${resource.student_class} • ${resource.subject}` : resource.resource_type}
