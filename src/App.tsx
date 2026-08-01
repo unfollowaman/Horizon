@@ -16,6 +16,7 @@ import ScrollToTop from './components/ScrollToTop';
 import PdfViewer from './pages/resources/PdfViewer';
 import StudyNotes from './pages/resources/StudyNotes';
 import AuthListener from './components/AuthListener';
+import ComingSoon from './pages/coming-soon/ComingSoon';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/coming-soon" element={<ComingSoon />} />
         </Route>
 
         {/* Standalone PDF Viewer Route */}

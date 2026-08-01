@@ -6,6 +6,7 @@ import { supabase } from '../../services/supabase';
 import styles from './StudyNotes.module.css';
 import { Dropdown } from '../../components/Dropdown';
 import MaterialCard from '../../components/MaterialCard';
+import OtherResources from '../../components/OtherResources';
 
 const StudyNotes: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
@@ -210,6 +211,9 @@ const StudyNotes: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Feature Tiles at the Bottom */}
+      <OtherResources currentCategory="Study Notes" />
     </div>
   );
 };

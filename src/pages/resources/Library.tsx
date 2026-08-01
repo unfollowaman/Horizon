@@ -6,6 +6,7 @@ import { supabase } from '../../services/supabase';
 import styles from './Library.module.css';
 import { Dropdown } from '../../components/Dropdown';
 import MaterialCard from '../../components/MaterialCard';
+import OtherResources from '../../components/OtherResources';
 
 const Library: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
@@ -198,6 +199,9 @@ const Library: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Feature Tiles at the Bottom */}
+      <OtherResources currentCategory="PYQ Papers" />
     </div>
   );
 };

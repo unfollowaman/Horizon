@@ -8,8 +8,8 @@ const MainLayout: React.FC = () => {
         <Outlet />
       </main>
 
-      <footer className="p-6 text-center text-muted-foreground neu-recessed mt-auto">
-        <p>&copy; {new Date().getFullYear()} Horizon Educational Platform. All rights reserved.</p>
+      <footer className="p-[12px] text-center text-muted-foreground neu-recessed mt-auto text-sm">
+        <p className="m-0">&copy; {new Date().getFullYear()} Horizon Educational Platform. All rights reserved.</p>
       </footer>
     </div>
   );

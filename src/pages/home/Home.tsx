@@ -191,11 +191,11 @@ const HeroSection = () => (
 
 const features = [
   { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library" },
-  { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)" },
-  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)" },
-  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)" },
+  { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)", path: "/coming-soon" },
+  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)", path: "/coming-soon" },
+  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)", path: "/coming-soon" },
   { title: "Study Notes", desc: "Comprehensive notes for all subjects.", path: "/notes" },
-  { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)" }
+  { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)", path: "/coming-soon" }
 ];
 
 const FeaturesSection = () => (
