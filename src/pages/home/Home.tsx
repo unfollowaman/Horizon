@@ -110,9 +110,7 @@ const Header = () => {
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
                   {/* Logo */}
-                  <div className={styles.menuBrandIcon}>
-                    <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.menuBrandLogoImg} />
-                  </div>
+                  {session ? <div className={styles.menuProfileContainer}><ProfilePopover /></div> : <div style={{ width: '40px', height: '40px' }} />}
                   {/* Close Button */}
                   <button onClick={closeMenu} className={styles.menuCloseBtn}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,36 +120,30 @@ const Header = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className={styles.menuNavLinks}>
-                  {navLinks.filter(link => link.showOnMobile).map((link, index) => (
-                    <Link
-                      key={index}
-                      to={link.path}
-                      onClick={closeMenu}
-                      className={styles.menuNavLink}
-                    >
-                      {link.label}
-                    </Link>
+                <nav className={`${styles.menuNavLinks} ${session ? styles.menuNavLinksAuth : ''}`}>
+                  {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
+                    <React.Fragment key={index}>
+                      <Link
+                        to={link.path}
+                        onClick={closeMenu}
+                        className={styles.menuNavLink}
+                      >
+                        {link.label}
+                      </Link>
+                      {index < array.length - 1 && <div className={styles.menuDivider} />}
+                    </React.Fragment>
                   ))}
                 </nav>
 
                 {/* Action Buttons */}
-                {!loading && (
+                {!loading && !session && (
                   <div className={styles.menuActionButtons}>
-                    {session ? (
-                      <div style={{ alignSelf: 'center', margin: 'auto' }}>
-                        <ProfilePopover />
-                      </div>
-                    ) : (
-                      <>
-                        <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
-                          Sign in
-                        </Link>
-                        <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>
-                          Get Started
-                        </Link>
-                      </>
-                    )}
+                    <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
+                      Sign in
+                    </Link>
+                    <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>
+                      Get Started
+                    </Link>
                   </div>
                 )}
               </div>
