@@ -130,11 +130,11 @@ const PdfViewer: React.FC = () => {
         if (data.medium) query = query.eq('medium', data.medium);
         query = query.eq('resource_type', data.resource_type);
 
-        const { data: relatedData, error: relatedError } = await query.limit(4);
+        const { error: relatedError } = await query.limit(4);
 
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);
-        } else if (relatedData) {
+          // ignore
         }
       }
       setLoading(false);
