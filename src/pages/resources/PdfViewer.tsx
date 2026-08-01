@@ -383,10 +383,10 @@ const PdfViewer: React.FC = () => {
       {/* Floating Controls */}
       <button
         onClick={() => navigate(-1)}
-        className={`${styles.floatingTopLeft} neu-raised`}
+        className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover`}
         aria-label="Go Back"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -394,7 +394,7 @@ const PdfViewer: React.FC = () => {
 
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className={`${styles.floatingTopRight} neu-raised`}
+        className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover`}
         aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
       >
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
@@ -484,10 +484,10 @@ const PdfViewer: React.FC = () => {
                   )}
                   <button
                     onClick={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
-                    className={`${styles.threeDotsBtn} neu-raised`}
+                    className={`${styles.threeDotsBtn} neu-raised rounded-full neu-raised-hover`}
                     aria-label="More options"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="1"></circle>
                       <circle cx="12" cy="5" r="1"></circle>
                       <circle cx="12" cy="19" r="1"></circle>

@@ -81,12 +81,15 @@
   z-index: 50;
   width: var(--spacing-11);
   height: var(--spacing-11);
+  --tw-radius: var(--radius-full);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-ink);
   background-color: var(--bg-base);
+  border: none;
+  cursor: pointer;
 }
 
 .floatingTopRight {
@@ -96,12 +99,15 @@
   z-index: 50;
   width: var(--spacing-11);
   height: var(--spacing-11);
+  --tw-radius: var(--radius-full);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-ink);
   background-color: var(--bg-base);
+  border: none;
+  cursor: pointer;
 }
 
 .threeDotsWrapper {
@@ -118,12 +124,15 @@
 .threeDotsBtn {
   width: var(--spacing-11);
   height: var(--spacing-11);
+  --tw-radius: var(--radius-full);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-ink);
   background-color: var(--bg-base);
+  border: none;
+  cursor: pointer;
 }
 
 .threeDotsMenu {
