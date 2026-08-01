@@ -462,36 +462,55 @@ const PdfViewer: React.FC = () => {
 
 
                 {/* Floating Bottom Right Three-Dots Menu */}
-                <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper}`}>
-                  {isThreeDotsMenuOpen && (
-                    <div className={`${styles.threeDotsMenu} neu-raised`}>
-                      <button onClick={() => { zoomIn(); setIsThreeDotsMenuOpen(false); }} className={styles.threeDotsMenuItem}>
-                        Zoom In
-                      </button>
-                      <button onClick={() => { zoomOut(); setIsThreeDotsMenuOpen(false); }} className={styles.threeDotsMenuItem}>
-                        Zoom Out
-                      </button>
-                      <a
-                        href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.threeDotsMenuItem}
-                        onClick={() => setIsThreeDotsMenuOpen(false)}
-                      >
-                        Download PDF
-                      </a>
-                    </div>
-                  )}
+                <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover`}>
+                  <div className={styles.menuItemsContainer}>
+                    <button onClick={() => { zoomIn(); setIsThreeDotsMenuOpen(false); }} className={styles.iconBtn} aria-label="Zoom In">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </button>
+                    <button onClick={() => { zoomOut(); setIsThreeDotsMenuOpen(false); }} className={styles.iconBtn} aria-label="Zoom Out">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </button>
+                    <a
+                      href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.iconBtn}
+                      onClick={() => setIsThreeDotsMenuOpen(false)}
+                      aria-label="Download PDF"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    </a>
+                  </div>
                   <button
                     onClick={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
-                    className={`${styles.threeDotsBtn} neu-raised rounded-full neu-raised-hover`}
+                    className={styles.toggleBtn}
                     aria-label="More options"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="1"></circle>
-                      <circle cx="12" cy="5" r="1"></circle>
-                      <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
+                    {isThreeDotsMenuOpen ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    )}
                   </button>
                 </div>
 
