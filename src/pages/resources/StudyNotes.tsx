@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import type React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { Resource } from '../../types';
 import { supabase } from '../../services/supabase';
-import styles from './StudyNotes.module.css';
 import { Dropdown } from '../../components/Dropdown';
 import MaterialCard from '../../components/MaterialCard';
 import OtherResources from '../../components/OtherResources';
+import ProfileButton from '../../components/ProfileButton';
 
 const StudyNotes: React.FC = () => {
+  const navigate = useNavigate();
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -154,16 +155,22 @@ const StudyNotes: React.FC = () => {
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
-      {/* Brand header */}
-      <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
-        <Link
-          to="/"
-          onClick={() => window.scrollTo(0, 0)}
-          className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}
+      {/* Page Header */}
+      <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full">
+        <button
+          onClick={() => navigate(-1)}
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer"
+          aria-label="Go Back"
         >
-          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
-          <span className={styles.heroBrandPillText}>Horizon</span>
-        </Link>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <ProfileButton />
+      </div>
+
+      <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
         <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">Study Notes</h2>
       </div>
 
