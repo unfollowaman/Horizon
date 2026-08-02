@@ -74,6 +74,32 @@
 }
 
 /* Floating Controls */
+.controlsVisible {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.controlsHidden {
+  animation: fadeOutBlue 1s forwards;
+  pointer-events: none; /* prevent clicks when hidden */
+}
+
+@keyframes fadeOutBlue {
+  0% {
+    opacity: 1;
+    background-color: var(--bg-base);
+  }
+  50% {
+    background-color: rgba(0, 123, 255, 0.8);
+    opacity: 0.8;
+  }
+  100% {
+    background-color: rgba(0, 123, 255, 0);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 .floatingTopLeft {
   position: absolute;
   top: max(var(--spacing-4), env(safe-area-inset-top, var(--spacing-4)));

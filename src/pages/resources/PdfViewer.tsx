@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -26,6 +26,7 @@ const PdfViewer: React.FC = () => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [initialProgressFetched, setInitialProgressFetched] = useState<boolean>(false);
+  const [showControls, setShowControls] = useState<boolean>(true);
 
   // Ref to container to calculate scale dynamically
   const containerRef = useRef<HTMLDivElement>(null);
@@ -324,8 +325,41 @@ const PdfViewer: React.FC = () => {
   }, [id, user, numPages, initialProgressFetched]);
 
 
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThreeDotsMenuOpen, setIsThreeDotsMenuOpen] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    if (!isMobileMenuOpen && !isThreeDotsMenuOpen) {
+      timerRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 5000);
+    }
+  }, [isMobileMenuOpen, isThreeDotsMenuOpen]);
+
+  const handleInteraction = useCallback(() => {
+    setShowControls(true);
+    resetTimer();
+  }, [resetTimer]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen || isThreeDotsMenuOpen) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      setShowControls(true);
+    } else {
+      resetTimer();
+    }
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [isMobileMenuOpen, isThreeDotsMenuOpen, resetTimer]);
 
   // Close menus on click outside
   useEffect(() => {
@@ -379,11 +413,11 @@ const PdfViewer: React.FC = () => {
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.pageContainer} onClick={handleInteraction} onTouchStart={handleInteraction}>
       {/* Floating Controls */}
       <button
         onClick={() => navigate(-1)}
-        className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover`}
+        className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label="Go Back"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -394,7 +428,7 @@ const PdfViewer: React.FC = () => {
 
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover`}
+        className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
       >
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
@@ -462,7 +496,7 @@ const PdfViewer: React.FC = () => {
 
 
                 {/* Floating Bottom Right Three-Dots Menu */}
-                <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover`}>
+                <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}>
                   <div className={styles.menuItemsContainer}>
                     <button onClick={() => { zoomIn(); setIsThreeDotsMenuOpen(false); }} className={styles.iconBtn} aria-label="Zoom In">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
