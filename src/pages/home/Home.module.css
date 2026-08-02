@@ -266,7 +266,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-6); /* mb-6 */
+  margin-bottom: 12px;
 }
 
 .menuProfileContainer button {
@@ -326,8 +326,8 @@
 
 .menuDivider {
   height: 1px;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin: 8px var(--spacing-1);
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 4px var(--spacing-1);
   border: none;
 }
 
