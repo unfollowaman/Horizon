@@ -447,7 +447,7 @@ const PdfViewer: React.FC = () => {
         <div className={styles.transformWrapperContainer}>
           <TransformWrapper
             initialScale={1}
-            minScale={0.5}
+            minScale={1}
             maxScale={4}
             centerOnInit
             wheel={{
