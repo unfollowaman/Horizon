@@ -99,9 +99,11 @@ const StudyNotes: React.FC = () => {
 
   const uniqueClasses = useMemo(() => {
     const classes = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
-    if (!classes.has('Class 10')) {
-      classes.add('Class 10');
-    }
+    ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'].forEach(cls => {
+      if (!classes.has(cls)) {
+        classes.add(cls);
+      }
+    });
     const sorted = Array.from(classes).sort((a, b) => {
       const matchA = a.match(/Class (\d+)/i);
       const matchB = b.match(/Class (\d+)/i);
