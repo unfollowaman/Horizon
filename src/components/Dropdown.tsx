@@ -10,10 +10,6 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options }) 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isSubjectDropdown =
-    value.toLowerCase().includes('subject') ||
-    options.some(opt => opt.toLowerCase().includes('subject'));
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,11 +28,11 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options }) 
         className="w-full neu-raised hover:neu-raised-hover rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-within:ring-2 focus-within:ring-ink/20"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={`text-ink text-[clamp(14px,1.5vw,18px)] font-bold truncate pointer-events-none ${isSubjectDropdown ? '' : 'flex-1'}`}>
+        <span className="text-ink text-[clamp(14px,1.5vw,18px)] font-bold flex-1 truncate pointer-events-none">
           {value}
         </span>
         <svg
-          className={`h-[1.2em] w-[1.2em] text-ink shrink-0 ${isSubjectDropdown ? 'ml-1' : 'ml-[clamp(4px,1vw,12px)]'} pointer-events-none transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-[1.2em] w-[1.2em] text-ink shrink-0 ml-[clamp(4px,1vw,12px)] pointer-events-none transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         >
           <polyline points="6 9 12 15 18 9"/>
