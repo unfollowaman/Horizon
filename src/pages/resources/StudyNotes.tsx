@@ -186,7 +186,7 @@ const StudyNotes: React.FC = () => {
           />
         </div>
 
-        <div className="flex-auto min-w-0 flex flex-col gap-2">
+        <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedSubject}
             onChange={setSelectedSubject}
