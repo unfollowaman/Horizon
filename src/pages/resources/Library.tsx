@@ -214,7 +214,7 @@ const Library: React.FC = () => {
       )}
 
       {/* Feature Tiles at the Bottom */}
-      <OtherResources currentCategory="PYQ Papers" />
+      <OtherResources currentCategoryId="pyq" />
     </div>
   );
 };

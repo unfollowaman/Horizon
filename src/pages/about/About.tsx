@@ -2,6 +2,7 @@ import type React from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
+import { RESOURCE_CATEGORIES } from '../../config/resources';
 
 const About: React.FC = () => {
   useEffect(() => {
@@ -49,7 +50,7 @@ const About: React.FC = () => {
             <h3 className={styles.sectionTitle}>An Evolving Online Library</h3>
             <p className={styles.paragraph}>
               Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more learning materials, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips.
-              Check out our <Link to="/library" className={styles.inlineLink}>Library</Link> to see our current offerings.
+              Check out our <Link to={RESOURCE_CATEGORIES.pyq.path} className={styles.inlineLink}>Library</Link> to see our current offerings.
             </p>
           </div>
 

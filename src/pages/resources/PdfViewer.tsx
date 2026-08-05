@@ -9,6 +9,7 @@ import type { Resource } from '../../types';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { handleDownload } from '../../utils/download';
+import { navLinks } from '../../data/navigation';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -484,12 +485,18 @@ const PdfViewer: React.FC = () => {
               </button>
             </div>
             <nav className={styles.menuNavLinks}>
-              <Link to="/library" onClick={closeMenu} className={styles.menuNavLink}>PYQ Papers</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Flashcards</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>MCQ Sets</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Revision Sheets</Link>
-              <Link to="/notes" onClick={closeMenu} className={styles.menuNavLink}>Study Notes</Link>
-              <Link to="/" onClick={closeMenu} className={styles.menuNavLink}>Updates</Link>
+              {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
+                <React.Fragment key={link.id || index}>
+                  <Link
+                    to={link.path}
+                    onClick={closeMenu}
+                    className={styles.menuNavLink}
+                  >
+                    {link.label}
+                  </Link>
+                  {index < array.length - 1 && <div className={styles.menuDivider} style={{ borderBottom: '1px solid rgba(0,0,0,0.2)', margin: '4px var(--spacing-1)' }} />}
+                </React.Fragment>
+              ))}
             </nav>
             <div className={styles.menuActionButtons}>
               {user ? (

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../services/supabase';
 import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
+import { RESOURCE_CATEGORIES } from '../../config/resources';
 
 
 interface ProgressData {
@@ -189,7 +190,7 @@ const Dashboard: React.FC = () => {
               </p>
             </div>
             <Link
-              to="/notes"
+              to={RESOURCE_CATEGORIES.notes.path}
               className="inline-flex items-center justify-center px-8 h-12 text-accent font-bold rounded-full neu-raised neu-raised-hover transition-all"
             >
               Browse Notes
