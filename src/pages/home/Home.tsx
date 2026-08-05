@@ -155,6 +155,8 @@ const Header = () => {
   );
 };
 
+import { getAllFeatures } from '../../config/resources';
+
 const HeroSection = () => (
   <section className={styles.heroSection}>
     {/* Content */}
@@ -181,15 +183,6 @@ const HeroSection = () => (
   </section>
 );
 
-const features = [
-  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library" },
-  { title: "Flashcards", desc: "Quick-recall cards for fast revision. (Coming Soon)", path: "/coming-soon" },
-  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material. (Coming Soon)", path: "/coming-soon" },
-  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview. (Coming Soon)", path: "/coming-soon" },
-  { title: "Study Notes", desc: "Comprehensive notes for all subjects.", path: "/notes" },
-  { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)", path: "/coming-soon" }
-];
-
 const FeaturesSection = () => (
   <section className={styles.featuresSection}>
     <div className={styles.featuresContainer}>
@@ -198,7 +191,7 @@ const FeaturesSection = () => (
       </div>
 
       <div className={styles.featuresGrid}>
-        {features.map((f, i) => (
+        {getAllFeatures().map((f, i) => (
           <div key={i} className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
             {f.path ? (
               <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />

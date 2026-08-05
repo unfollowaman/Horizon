@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import type { Resource } from '../../types';
+import { RESOURCE_CATEGORIES } from '../../config/resources';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -83,19 +84,22 @@ const ResourceDetails: React.FC = () => {
     );
   }
 
+  const backPath = resource && resource.resource_type ? RESOURCE_CATEGORIES[resource.resource_type]?.path || '/' : '/';
+  const backText = resource && resource.resource_type ? `Back to ${RESOURCE_CATEGORIES[resource.resource_type]?.title || 'Library'}` : 'Back to Home';
+
   if (!resource) {
     return (
       <div className="text-center p-8 neu-card rounded-2xl">
         <h2 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h2>
-        <Link to="/library" className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Back to Library</Link>
+        <Link to="/" className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Back to Home</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to="/library" className="inline-flex items-center h-11 p-2 px-4 mb-4 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
-        &larr; Back to Library
+      <Link to={backPath} className="inline-flex items-center h-11 p-2 px-4 mb-4 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+        &larr; {backText}
       </Link>
 
       <div className="flex gap-8 flex-wrap">

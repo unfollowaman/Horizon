@@ -222,7 +222,7 @@ const StudyNotes: React.FC = () => {
       )}
 
       {/* Feature Tiles at the Bottom */}
-      <OtherResources currentCategory="Study Notes" />
+      <OtherResources currentCategoryId="notes" />
     </div>
   );
 };

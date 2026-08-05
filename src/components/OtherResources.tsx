@@ -1,24 +1,17 @@
 import type React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './OtherResources.module.css';
+import { getAllFeatures } from '../config/resources';
+import type { ResourceType } from '../types';
 
 interface OtherResourcesProps {
-  currentCategory: string; // The title of the current category to exclude
+  currentCategoryId: ResourceType | 'updates'; // The id of the current category to exclude
 }
 
-const allFeatures = [
-  { title: "PYQ Papers", desc: "Past papers to help you prepare effectively.", path: "/library" },
-  { title: "Flashcards", desc: "Quick-recall cards for fast revision.", path: "/coming-soon" },
-  { title: "MCQ Sets", desc: "Exam-oriented questions and practice material.", path: "/coming-soon" },
-  { title: "Revision Sheets", desc: "Condensed sheets for quick topic overview.", path: "/coming-soon" },
-  { title: "Study Notes", desc: "Comprehensive notes for all subjects.", path: "/notes" },
-  { title: "Updates", desc: "Stay updated with newly uploaded resources.", path: "/coming-soon" }
-];
-
-const OtherResources: React.FC<OtherResourcesProps> = ({ currentCategory }) => {
+const OtherResources: React.FC<OtherResourcesProps> = ({ currentCategoryId }) => {
   // Filter out the current category and take the first 4
-  const displayFeatures = allFeatures
-    .filter(f => f.title !== currentCategory)
+  const displayFeatures = getAllFeatures()
+    .filter(f => f.id !== currentCategoryId)
     .slice(0, 4);
 
   return (
