@@ -169,10 +169,45 @@
 }
 
 .threeDotsWrapper.menuOpen .menuItemsContainer {
-  max-height: 200px;
+  max-height: 250px;
   opacity: 1;
   padding-top: var(--spacing-2);
   padding-bottom: 4px;
+}
+
+.toast {
+  position: fixed;
+  bottom: max(var(--spacing-6), env(safe-area-inset-bottom, var(--spacing-6)));
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-ink);
+  color: var(--bg-base);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+    visibility: hidden;
+  }
 }
 
 .iconBtn {

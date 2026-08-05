@@ -328,6 +328,7 @@ const PdfViewer: React.FC = () => {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThreeDotsMenuOpen, setIsThreeDotsMenuOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetTimer = useCallback(() => {
@@ -345,6 +346,31 @@ const PdfViewer: React.FC = () => {
     setShowControls(true);
     resetTimer();
   }, [resetTimer]);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    setIsThreeDotsMenuOpen(false);
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: resource?.title || 'PDF Resource',
+          text: 'Check out this PDF on Horizon.',
+          url: url,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (isMobileMenuOpen || isThreeDotsMenuOpen) {
@@ -415,6 +441,11 @@ const PdfViewer: React.FC = () => {
 
   return (
     <div className={styles.pageContainer} onClick={handleInteraction} onTouchStart={handleInteraction}>
+      {showToast && (
+        <div className={styles.toast}>
+          Link copied to clipboard.
+        </div>
+      )}
       {/* Floating Controls */}
       <button
         onClick={() => navigate(-1)}
@@ -512,6 +543,13 @@ const PdfViewer: React.FC = () => {
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </button>
+                    <button onClick={handleShare} className={styles.iconBtn} aria-label="Share">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
                       </svg>
                     </button>
                     <button
