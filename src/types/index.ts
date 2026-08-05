@@ -12,6 +12,7 @@ export interface Resource {
   year?: string;
   chapter_id?: string | null;
   chapters?: Chapter | null;
+  allow_download?: boolean;
 }
 
 export interface Announcement {
@@ -47,6 +48,7 @@ export type LearningResource = {
   year?: number | null;
   created_at?: string;
   chapter_id?: string | null;
+  allow_download?: boolean | null;
 }
 
 export type Chapter = {
@@ -115,6 +117,7 @@ export interface Database {
           year?: number | null
           created_at?: string
           chapter_id?: string | null
+          allow_download?: boolean | null
         }
         Update: {
           id?: string
@@ -130,6 +133,7 @@ export interface Database {
           year?: number | null
           created_at?: string
           chapter_id?: string | null
+          allow_download?: boolean | null
         }
         Relationships: [
           {

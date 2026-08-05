@@ -1,7 +1,15 @@
-export const handleDownload = async (url: string, e?: { preventDefault: () => void; stopPropagation: () => void }) => {
+import { canDownload } from './permissions';
+import type { Resource } from '../types';
+
+export const handleDownload = async (url: string, resource: Pick<Resource, 'allow_download'>, e?: { preventDefault: () => void; stopPropagation: () => void }) => {
   if (e) {
     e.preventDefault();
     e.stopPropagation();
+  }
+
+  if (!canDownload(resource)) {
+    console.warn("Download blocked by permissions.");
+    return;
   }
 
   // Extract filename from URL
