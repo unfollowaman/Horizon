@@ -2,6 +2,7 @@ import React from 'react';
 import { useId } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { Resource } from '../types';
+import { handleDownload } from '../utils/download';
 
 interface MaterialCardProps {
   resource: Resource;
@@ -207,11 +208,9 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
           <span className="shrink-0">View</span>
         </Link>
         {resource.pdfUrl && (
-          <a
-            href={resource.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            type="button"
+            onClick={(e) => handleDownload(resource.pdfUrl, e)}
             className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
           >
             <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -227,7 +226,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
               <line x1="12" x2="12" y1="15" y2="3"/>
             </svg>
             <span className="shrink-0">Download</span>
-          </a>
+          </button>
         )}
       </div>
     </div>
