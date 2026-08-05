@@ -8,6 +8,7 @@ import { supabase } from '../../services/supabase';
 import type { Resource } from '../../types';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
+import { handleDownload } from '../../utils/download';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -513,12 +514,14 @@ const PdfViewer: React.FC = () => {
                         <line x1="8" y1="11" x2="14" y2="11"></line>
                       </svg>
                     </button>
-                    <a
-                      href={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
                       className={styles.iconBtn}
-                      onClick={() => setIsThreeDotsMenuOpen(false)}
+                      onClick={(e) => {
+                        setIsThreeDotsMenuOpen(false);
+                        const url = resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl;
+                        handleDownload(url, e);
+                      }}
                       aria-label="Download PDF"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -526,7 +529,7 @@ const PdfViewer: React.FC = () => {
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                       </svg>
-                    </a>
+                    </button>
                   </div>
                   <button
                     onClick={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
