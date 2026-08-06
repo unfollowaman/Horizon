@@ -40,6 +40,7 @@ const ResourceDetails: React.FC = () => {
           thumbnailUrl: data.thumbnail_url || '',
           student_class: data.student_class || undefined,
           subject: data.subject || undefined,
+          allow_download: data.allow_download ?? undefined,
         };
         setResource(mappedResource);
 
@@ -65,6 +66,7 @@ const ResourceDetails: React.FC = () => {
                 thumbnailUrl: item.thumbnail_url || '',
                 student_class: item.student_class || undefined,
                 subject: item.subject || undefined,
+                allow_download: item.allow_download ?? undefined,
             }));
             setRelatedResources(mappedRelated);
         }

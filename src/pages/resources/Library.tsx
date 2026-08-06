@@ -80,6 +80,7 @@ const Library: React.FC = () => {
             student_class: className,
             subject: item.subject,
             year: item.year ? item.year.toString() : undefined,
+            allow_download: item.allow_download ?? undefined,
           };
         });
         setAllResources(mappedResources);

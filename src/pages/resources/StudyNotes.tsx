@@ -86,7 +86,8 @@ const StudyNotes: React.FC = () => {
             student_class: className,
             subject: item.subject,
             chapter_id: item.chapter_id,
-            chapters: item.chapters
+            chapters: item.chapters,
+            allow_download: item.allow_download ?? undefined
           };
         });
         setAllResources(mappedResources);
