@@ -1,45 +1,40 @@
 1. **Update `src/types/index.ts`**
-   - Add `allow_download?: boolean` to `Resource`.
-   - Add `allow_download?: boolean | null` to `LearningResource`.
-   - Add `allow_download?: boolean | null` to the `Insert` and `Update` types of `learning_resources` table.
+   - Add `storage_bucket: string;` to `Resource` interface.
+   - Add `storage_bucket: string;` to `LearningResource` type.
+   - Add `storage_bucket?: string;` to `Insert` and `Update` types under `learning_resources` in the `Database` interface.
+   - Verify changes with `read_file`.
 
-2. **Create `src/utils/permissions.ts`**
-   - Define a helper function:
-     ```typescript
-     import type { Resource } from '../types';
-     export const canDownload = (resource: Pick<Resource, 'allow_download'>): boolean => {
-       return resource.allow_download !== false;
-     };
-     ```
-     (I will ensure `allow_download` handles PYQs correctly based on db state. If PYQs are true in db, then this works perfectly. I will make `canDownload` solely return `resource.allow_download !== false`).
+2. **Create Centralized Storage Helper (`src/utils/storage.ts`)**
+   - Create a file with a `getStorageUrl` function that takes a `resource` object or bucket/path, returning the correct public URL.
+   - Use `supabase.storage.from(resource.storage_bucket).getPublicUrl(...)`.
 
-3. **Verify Permissions Helper Creation**
-   - Read the file `src/utils/permissions.ts` to confirm the permission helper was created correctly.
+3. **Verify Centralized Storage Helper**
+   - Run `read_file` to confirm that `src/utils/storage.ts` was created successfully and contains the correct logic.
 
-4. **Update Data Fetching Maps**
-   - Update `src/pages/resources/StudyNotes.tsx` to map `allow_download: item.allow_download`.
-   - Update `src/pages/resources/PdfViewer.tsx` to map `allow_download: data.allow_download` and `allow_download: item.allow_download` (for suggested).
-   - Update `src/pages/resources/Library.tsx` to map `allow_download: item.allow_download`.
-   - Update `src/pages/resources/ResourceDetails.tsx` to map `allow_download: data.allow_download` and `allow_download: item.allow_download` (for related).
+4. **Refactor Resource Fetching to Use Helper**
+   - Update `src/pages/resources/Library.tsx`
+   - Update `src/pages/resources/StudyNotes.tsx`
+   - Update `src/pages/resources/ResourceDetails.tsx`
+   - Update `src/pages/resources/PdfViewer.tsx`
+   - Import `getStorageUrl` and pass the storage_bucket.
+   - Verify changes using `cat` or `grep`.
 
-5. **Update Dashboard.tsx if Needed**
-   - Check and update `src/pages/user/Dashboard.tsx` to map `allow_download` if it maps learning resources to `Resource`.
+5. **Update Mock Data (`src/data/mock.ts`)**
+   - Add `storage_bucket: 'pdfs'` to each mock resource to satisfy the updated `Resource` interface.
+   - Verify changes using `cat` or `grep`.
 
-6. **Update `src/components/MaterialCard.tsx`**
-   - Import `canDownload`.
-   - Wrap the Download button:
-     `{resource.pdfUrl && canDownload(resource) && ( ... )}`
+6. **Refactor `scripts/seed_pdfs.js`**
+   - Update `seed_pdfs.js` to define `const bucketName = 'pdfs';` at the top and replace `from('pdfs')` with `from(bucketName)`.
+   - Verify changes using `cat`.
 
-7. **Update `src/pages/resources/PdfViewer.tsx`**
-   - Import `canDownload`.
-   - Wrap the Download button inside the three-dots menu with `{canDownload(resource) && ( <button ... > )}`
+7. **Ensure no hardcoded `from('pdfs')` remains in codebase.**
+   - Run `grep -rnw . -e "from('pdfs')" -e 'from("pdfs")'` to confirm all hardcoded strings have been removed from the application.
 
-8. **Protect Download Utility**
-   - In `src/utils/download.ts`, rename or update `handleDownload` to `downloadResource(resource, e?)`.
-   - Before proceeding with the blob download, exit immediately if `!canDownload(resource)`.
+8. **Regression Verification**
+   - Execute `npm run build` and `npm run lint` to confirm no regressions were introduced.
 
-9. **Verify System Integrity**
-   - Run `npm run build` and `npm run lint` to ensure no TypeScript errors and regressions are introduced.
-
-10. **Complete Pre Commit Steps**
+9. **Pre-commit Steps**
    - Complete pre-commit steps to ensure proper testing, verification, review, and reflection are done.
+
+10. **Submit Changes**
+   - Push branch and create PR if needed.
