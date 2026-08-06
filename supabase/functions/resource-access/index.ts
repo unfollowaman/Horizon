@@ -2,11 +2,38 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {
-  // 1. Check for authorization header (even though verify_jwt = true should block invalid ones, we need to extract it)
+  // Only accept POST requests
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // 1. Check for authorization header
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // 1b. Parse Request Body
+  let body;
+  try {
+    body = await req.json();
+  } catch (_e) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    return new Response(JSON.stringify({ success: false, error: "Invalid JSON" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { resource_id } = body;
+  if (resource_id === undefined || typeof resource_id !== "number") {
+    return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
+      status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -35,13 +62,56 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Return success response (Temporarily for Phase 5B)
+  // 4. Query the learning_resources table
+  const { data: resource, error: resourceError } = await supabase
+    .from("learning_resources")
+    .select("id, resource_type, storage_bucket, file_path, allow_download, is_active")
+    .eq("id", resource_id)
+    .single();
+
+  // 5. Verify the resource
+  if (resourceError || !resource) {
+    return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const isValid =
+    resource.id !== null &&
+    resource.id !== undefined &&
+    resource.storage_bucket !== null &&
+    resource.storage_bucket !== undefined &&
+    resource.file_path !== null &&
+    resource.file_path !== undefined &&
+    resource.resource_type !== null &&
+    resource.resource_type !== undefined &&
+    resource.is_active === true &&
+    resource.allow_download !== null &&
+    resource.allow_download !== undefined;
+
+  if (!isValid) {
+    return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // 6. Return metadata only
   return new Response(
     JSON.stringify({
       success: true,
-      user_id: user.id,
+      resource: {
+        id: resource.id,
+        resource_type: resource.resource_type,
+        storage_bucket: resource.storage_bucket,
+        file_path: resource.file_path,
+        allow_download: resource.allow_download,
+        is_active: resource.is_active,
+      },
     }),
     {
+      status: 200,
       headers: { "Content-Type": "application/json" },
     }
   );
