@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { handleDownload } from '../../utils/download';
 import { canDownload } from '../../utils/permissions';
 import { navLinks } from '../../data/navigation';
+import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -24,6 +25,8 @@ const PdfViewer: React.FC = () => {
   const { user } = useAuth();
 
   const [resource, setResource] = useState<Resource | null>(null);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -118,15 +121,48 @@ const PdfViewer: React.FC = () => {
           resource_type: data.resource_type,
           medium: data.medium,
           uploadDate: data.created_at || new Date().toISOString(),
-          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
+          pdfUrl: getResourceUrl(data),
           thumbnailUrl: data.thumbnail_url || '',
           student_class: data.student_class || undefined,
           subject: data.subject || undefined,
           chapter_id: data.chapter_id || null,
           chapters: data.chapters || null,
-          allow_download: data.allow_download ?? undefined
+          allow_download: data.allow_download ?? undefined,
+          storage_bucket: data.storage_bucket,
+          file_path: data.file_path
         };
         setResource(mappedResource);
+
+        if (isResourceProtected(mappedResource)) {
+          try {
+            const { data: edgeData, error: edgeError } = await supabase.functions.invoke('resource-access', {
+              body: { resource_id: mappedResource.id },
+            });
+            if (edgeError) {
+              if (edgeError.message.includes('401')) {
+                setPdfError('Unauthorized');
+                navigate('/login');
+                return;
+              } else if (edgeError.message.includes('404')) {
+                setPdfError('Resource not found');
+              } else {
+                setPdfError('Failed to load protected resource');
+              }
+            } else if (!edgeData?.success) {
+              if (edgeData?.error === 'Unauthorized') {
+                navigate('/login');
+                return;
+              }
+              setPdfError(edgeData?.error || 'Failed to load protected resource');
+            } else {
+              setSignedUrl(edgeData.signed_url);
+            }
+          } catch {
+            setPdfError('Error accessing protected resource');
+          }
+        } else {
+          setSignedUrl(mappedResource.pdfUrl);
+        }
 
         // Fetch suggested PDFs based on class and subject
         let query = supabase.from('learning_resources').select('*, chapters(*)').neq('id', data.id);
@@ -417,8 +453,52 @@ const PdfViewer: React.FC = () => {
 
   const closeMenu = () => setIsMobileMenuOpen(false);
 
+  const [retryCount, setRetryCount] = useState(0);
+
+  const fetchSignedUrl = useCallback(async () => {
+    if (!resource || !isResourceProtected(resource) || retryCount > 3) return;
+    try {
+      setRetryCount(prev => prev + 1);
+      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('resource-access', {
+        body: { resource_id: resource.id },
+      });
+      if (!edgeError && edgeData?.success) {
+        setSignedUrl(edgeData.signed_url);
+        setPdfError(null);
+        setRetryCount(0);
+      } else {
+        if (edgeData?.error === 'Unauthorized' || (edgeError && edgeError.message.includes('401'))) {
+           navigate('/login');
+        } else {
+           setPdfError(edgeData?.error || 'Failed to refresh signed URL');
+        }
+      }
+    } catch (_err) {
+      console.error("Failed to refresh signed URL", _err);
+    }
+  }, [resource, retryCount, navigate]);
+
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
+  }
+
+  function onDocumentLoadError(error: Error) {
+    console.error("Document Load Error:", error);
+    if (resource && isResourceProtected(resource) && error.message.includes('Setting up fake worker failed')) {
+        // Just generic catch-all for potential 403s on load if worker is trying to fetch.
+        // Realistically pdf.js throws specific errors for 403/404s we might want to catch.
+        // Let's just try to refresh the URL.
+        fetchSignedUrl();
+    } else if (resource && isResourceProtected(resource)) {
+      fetchSignedUrl();
+    }
+  }
+
+  function onDocumentSourceError(error: Error) {
+    console.error("Document Source Error:", error);
+    if (resource && isResourceProtected(resource)) {
+      fetchSignedUrl();
+    }
   }
 
   if (loading) {
@@ -567,8 +647,7 @@ const PdfViewer: React.FC = () => {
                         className={styles.iconBtn}
                         onClick={(e) => {
                           setIsThreeDotsMenuOpen(false);
-                          const url = resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl;
-                          handleDownload(url, resource, e);
+                          handleDownload(resource.pdfUrl, resource, e);
                         }}
                         aria-label="Download PDF"
                       >
@@ -602,9 +681,14 @@ const PdfViewer: React.FC = () => {
 
                 <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
                   <div className={styles.pdfScrollContainer}>
+                    {pdfError ? (
+                       <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
+                    ) : (
                     <Document
-                      file={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
+                      file={signedUrl}
                       onLoadSuccess={onDocumentLoadSuccess}
+                      onLoadError={onDocumentLoadError}
+                      onSourceError={onDocumentSourceError}
                       loading={<div className="p-4 font-bold flex justify-center w-full">Rendering PDF...</div>}
                       className={styles.pdfDocument}
                     >
@@ -626,6 +710,7 @@ const PdfViewer: React.FC = () => {
                         </div>
                       ))}
                     </Document>
+                    )}
                   </div>
                 </TransformComponent>
               </>
