@@ -97,18 +97,25 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 6. Return metadata only
+  // 6. Generate Signed URL (lifetime 60 seconds)
+  const { data: storageData, error: storageError } = await supabase.storage
+    .from(resource.storage_bucket)
+    .createSignedUrl(resource.file_path, 60);
+
+  if (storageError || !storageData) {
+    console.error("Storage error:", storageError);
+    return new Response(JSON.stringify({ success: false, error: "Storage failure" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // 7. Return signed URL only
   return new Response(
     JSON.stringify({
       success: true,
-      resource: {
-        id: resource.id,
-        resource_type: resource.resource_type,
-        storage_bucket: resource.storage_bucket,
-        file_path: resource.file_path,
-        allow_download: resource.allow_download,
-        is_active: resource.is_active,
-      },
+      signed_url: storageData.signedUrl,
+      expires_in: 60,
     }),
     {
       status: 200,

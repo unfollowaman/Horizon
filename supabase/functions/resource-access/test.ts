@@ -89,17 +89,24 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const { data: storageData, error: storageError } = await supabaseClient.storage
+    .from(resource.storage_bucket)
+    .createSignedUrl(resource.file_path, 60);
+
+  if (storageError || !storageData) {
+    return new Response(JSON.stringify({ success: false, error: "Storage failure" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   return new Response(
     JSON.stringify({
       success: true,
-      resource: {
-        id: resource.id,
-        resource_type: resource.resource_type,
-        storage_bucket: resource.storage_bucket,
-        file_path: resource.file_path,
-        allow_download: resource.allow_download,
-        is_active: resource.is_active,
-      },
+      signed_url: storageData.signedUrl,
+      expires_in: 60,
     }),
     {
       status: 200,
@@ -109,7 +116,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
 }
 
 // Mock Supabase Client Factory
-function createMockClient(mockUser: unknown, mockResource: unknown, mockResourceError: unknown = null) {
+function createMockClient(mockUser: unknown, mockResource: unknown, mockResourceError: unknown = null, mockStorageData: unknown = null, mockStorageError: unknown = null) {
   return {
     auth: {
       getUser: async () => ({ data: { user: mockUser }, error: null }),
@@ -124,6 +131,13 @@ function createMockClient(mockUser: unknown, mockResource: unknown, mockResource
         }),
       }),
     }),
+    storage: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      from: (_bucket: string) => ({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        createSignedUrl: async (_path: string, _expiresIn: number) => ({ data: mockStorageData, error: mockStorageError }),
+      }),
+    },
   };
 }
 
@@ -181,7 +195,7 @@ Deno.test("Inactive resource returns 404", async () => {
   assertEquals(res.status, 404);
 });
 
-Deno.test("Valid resource returns 200 with metadata", async () => {
+Deno.test("Storage failure returns 500", async () => {
   const req = new Request("http://localhost/", {
     method: "POST",
     headers: { Authorization: "Bearer valid-token" },
@@ -195,10 +209,34 @@ Deno.test("Valid resource returns 200 with metadata", async () => {
     allow_download: false,
     is_active: true,
   };
-  const mockClient = createMockClient({ id: "user1" }, mockResource);
+  const mockClient = createMockClient({ id: "user1" }, mockResource, null, null, new Error("Storage down"));
+  const res = await handleRequest(req, mockClient);
+  assertEquals(res.status, 500);
+  const data = await res.json();
+  assertEquals(data.success, false);
+  assertEquals(data.error, "Storage failure");
+});
+
+Deno.test("Valid resource returns 200 with signed URL", async () => {
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: { Authorization: "Bearer valid-token" },
+    body: JSON.stringify({ resource_id: 1 }),
+  });
+  const mockResource = {
+    id: 1,
+    resource_type: "notes",
+    storage_bucket: "pdfs",
+    file_path: "path/to/file.pdf",
+    allow_download: false,
+    is_active: true,
+  };
+  const mockStorageData = { signedUrl: "https://example.com/signed-url" };
+  const mockClient = createMockClient({ id: "user1" }, mockResource, null, mockStorageData);
   const res = await handleRequest(req, mockClient);
   assertEquals(res.status, 200);
   const data = await res.json();
   assertEquals(data.success, true);
-  assertEquals(data.resource, mockResource);
+  assertEquals(data.signed_url, "https://example.com/signed-url");
+  assertEquals(data.expires_in, 60);
 });
