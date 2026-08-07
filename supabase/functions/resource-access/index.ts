@@ -42,11 +42,15 @@ Deno.serve(async (req) => {
   // Get environment variables injected by Supabase Edge Runtime
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+  const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
   // Create a Supabase client configured to use the user's Authorization header
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: authHeader } },
   });
+
+  // Create an Admin client to bypass Storage RLS
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
   // 3. Get user using the recommended getUser() method
   const {
@@ -98,7 +102,7 @@ Deno.serve(async (req) => {
   }
 
   // 6. Generate Signed URL (lifetime 60 seconds)
-  const { data: storageData, error: storageError } = await supabase.storage
+  const { data: storageData, error: storageError } = await supabaseAdmin.storage
     .from(resource.storage_bucket)
     .createSignedUrl(resource.file_path, 60);
 
