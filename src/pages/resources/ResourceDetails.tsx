@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import type { Resource } from '../../types';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
+import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,6 +11,8 @@ const ResourceDetails: React.FC = () => {
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
@@ -36,13 +39,31 @@ const ResourceDetails: React.FC = () => {
           resource_type: data.resource_type,
           medium: data.medium,
           uploadDate: data.created_at || new Date().toISOString(),
-          pdfUrl: data.file_path ? supabase.storage.from('pdfs').getPublicUrl(data.file_path).data.publicUrl : (data.pdf_url || ''),
+          pdfUrl: getResourceUrl(data),
           thumbnailUrl: data.thumbnail_url || '',
           student_class: data.student_class || undefined,
           subject: data.subject || undefined,
           allow_download: data.allow_download ?? undefined,
+          storage_bucket: data.storage_bucket,
+          file_path: data.file_path,
         };
         setResource(mappedResource);
+
+        if (isResourceProtected(mappedResource)) {
+          supabase.functions.invoke('resource-access', {
+            body: { resource_id: mappedResource.id },
+          }).then(({ data: edgeData, error: edgeError }) => {
+            if (edgeError || !edgeData?.success) {
+              setPdfError(edgeData?.error || 'Failed to load protected resource');
+            } else {
+              setSignedUrl(edgeData.signed_url);
+            }
+          }).catch(() => {
+            setPdfError('Error accessing protected resource');
+          });
+        } else {
+          setSignedUrl(mappedResource.pdfUrl);
+        }
 
         // Fetch related
         const { data: relatedData, error: relatedError } = await supabase
@@ -62,11 +83,13 @@ const ResourceDetails: React.FC = () => {
                 resource_type: item.resource_type,
                 medium: item.medium,
                 uploadDate: item.created_at || new Date().toISOString(),
-                pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+                pdfUrl: getResourceUrl(item),
                 thumbnailUrl: item.thumbnail_url || '',
                 student_class: item.student_class || undefined,
                 subject: item.subject || undefined,
                 allow_download: item.allow_download ?? undefined,
+                storage_bucket: item.storage_bucket,
+                file_path: item.file_path,
             }));
             setRelatedResources(mappedRelated);
         }
@@ -113,13 +136,19 @@ const ResourceDetails: React.FC = () => {
 
           <div className="neu-card rounded-2xl p-4">
             <div className="h-[600px] neu-recessed rounded-xl p-2 flex flex-col items-center justify-center text-muted-foreground overflow-hidden">
-               <iframe
-                 src={resource.pdfUrl.startsWith('http') ? resource.pdfUrl : supabase.storage.from('pdfs').getPublicUrl(resource.pdfUrl).data.publicUrl}
-                 width="100%"
-                 height="100%"
-                 style={{ border: 'none' }}
-                 title={resource.title}
-               />
+               {pdfError ? (
+                 <div className="text-accent-red font-bold">{pdfError}</div>
+               ) : signedUrl ? (
+                 <iframe
+                   src={signedUrl}
+                   width="100%"
+                   height="100%"
+                   style={{ border: 'none' }}
+                   title={resource.title}
+                 />
+               ) : (
+                 <div>Loading PDF...</div>
+               )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Resource } from '../../types';
 import { supabase } from '../../services/supabase';
+import { getResourceUrl } from '../../utils/resourceHelper';
 import { Dropdown } from '../../components/Dropdown';
 import MaterialCard from '../../components/MaterialCard';
 import OtherResources from '../../components/OtherResources';
@@ -75,12 +76,14 @@ const Library: React.FC = () => {
             resource_type: item.resource_type,
             medium: item.medium,
             uploadDate: item.created_at || new Date().toISOString(),
-            pdfUrl: item.file_path ? supabase.storage.from('pdfs').getPublicUrl(item.file_path).data.publicUrl : (item.pdf_url || ''),
+            pdfUrl: getResourceUrl(item),
             thumbnailUrl: item.thumbnail_url || '',
             student_class: className,
             subject: item.subject,
             year: item.year ? item.year.toString() : undefined,
             allow_download: item.allow_download ?? undefined,
+            storage_bucket: item.storage_bucket,
+            file_path: item.file_path,
           };
         });
         setAllResources(mappedResources);

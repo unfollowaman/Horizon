@@ -13,6 +13,8 @@ export interface Resource {
   chapter_id?: string | null;
   chapters?: Chapter | null;
   allow_download?: boolean;
+  storage_bucket?: string | null;
+  file_path?: string | null;
 }
 
 export interface Announcement {
@@ -49,6 +51,7 @@ export type LearningResource = {
   created_at?: string;
   chapter_id?: string | null;
   allow_download?: boolean | null;
+  storage_bucket?: string | null;
 }
 
 export type Chapter = {
@@ -118,6 +121,7 @@ export interface Database {
           created_at?: string
           chapter_id?: string | null
           allow_download?: boolean | null
+          storage_bucket?: string | null
         }
         Update: {
           id?: string
@@ -134,6 +138,7 @@ export interface Database {
           created_at?: string
           chapter_id?: string | null
           allow_download?: boolean | null
+          storage_bucket?: string | null
         }
         Relationships: [
           {
