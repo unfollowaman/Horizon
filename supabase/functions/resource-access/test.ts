@@ -2,11 +2,21 @@ import { assertEquals } from "jsr:@std/assert";
 
 // We will test the core logic of the edge function by replicating its behavior in a testable function.
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 async function handleRequest(req: Request, supabaseClient: unknown): Promise<Response> {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -14,7 +24,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (!authHeader) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -25,7 +35,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   } catch (_e) {
     return new Response(JSON.stringify({ success: false, error: "Invalid JSON" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -33,7 +43,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (resource_id === undefined || typeof resource_id !== "number") {
     return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -50,7 +60,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (authError || !user) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -65,7 +75,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (resourceError || !resource) {
     return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -85,7 +95,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (!isValid) {
     return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -98,7 +108,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   if (storageError || !storageData) {
     return new Response(JSON.stringify({ success: false, error: "Storage failure" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -110,7 +120,7 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
     }),
     {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     }
   );
 }
@@ -239,4 +249,16 @@ Deno.test("Valid resource returns 200 with signed URL", async () => {
   assertEquals(data.success, true);
   assertEquals(data.signed_url, "https://example.com/signed-url");
   assertEquals(data.expires_in, 60);
+});
+
+
+Deno.test("OPTIONS request returns 200 with CORS headers", async () => {
+  const req = new Request("http://localhost/", {
+    method: "OPTIONS",
+  });
+  const mockClient = createMockClient(null, null);
+  const res = await handleRequest(req, mockClient);
+  assertEquals(res.status, 200);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
+  assertEquals(res.headers.get("Access-Control-Allow-Methods"), "POST, OPTIONS");
 });

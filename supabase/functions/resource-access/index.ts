@@ -1,12 +1,24 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+export const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   // Only accept POST requests
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -15,7 +27,7 @@ Deno.serve(async (req) => {
   if (!authHeader) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -26,7 +38,7 @@ Deno.serve(async (req) => {
   } catch (_e) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return new Response(JSON.stringify({ success: false, error: "Invalid JSON" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -34,7 +46,7 @@ Deno.serve(async (req) => {
   if (resource_id === undefined || typeof resource_id !== "number") {
     return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -62,7 +74,7 @@ Deno.serve(async (req) => {
     console.error("Auth error:", authError);
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -77,7 +89,7 @@ Deno.serve(async (req) => {
   if (resourceError || !resource) {
     return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -97,7 +109,7 @@ Deno.serve(async (req) => {
   if (!isValid) {
     return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -110,7 +122,7 @@ Deno.serve(async (req) => {
     console.error("Storage error:", storageError);
     return new Response(JSON.stringify({ success: false, error: "Storage failure" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
@@ -123,7 +135,7 @@ Deno.serve(async (req) => {
     }),
     {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     }
   );
 });
