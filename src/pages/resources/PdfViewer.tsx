@@ -21,7 +21,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [resource, setResource] = useState<Resource | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -97,7 +97,7 @@ const PdfViewer: React.FC = () => {
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
-      if (!id) return;
+      if (!id || authLoading) return;
       setLoading(true);
 
       const { data, error } = await supabase
@@ -133,21 +133,29 @@ const PdfViewer: React.FC = () => {
         setResource(mappedResource);
 
         if (isResourceProtected(mappedResource)) {
+          if (!user) {
+            setPdfError('401_UNAUTHORIZED');
+            setLoading(false);
+            return;
+          }
+
           try {
             const { data: edgeData, error: edgeError } = await supabase.functions.invoke('resource-access', {
               body: { resource_id: mappedResource.id },
             });
             if (edgeError) {
-              if (edgeError.message.includes('401')) {
+              const errorMessage = edgeError.message?.toLowerCase() || '';
+              if (errorMessage.includes('401') || errorMessage.includes('unauthorized')) {
                 setPdfError('401_UNAUTHORIZED');
                 return;
-              } else if (edgeError.message.includes('404')) {
+              } else if (errorMessage.includes('404')) {
                 setPdfError('Resource not found');
               } else {
                 setPdfError('403_FORBIDDEN');
               }
             } else if (!edgeData?.success) {
-              if (edgeData?.error === 'Unauthorized') {
+              const dataError = edgeData?.error?.toLowerCase() || '';
+              if (dataError.includes('unauthorized') || dataError.includes('401')) {
                 setPdfError('401_UNAUTHORIZED');
                 return;
               }
@@ -180,7 +188,7 @@ const PdfViewer: React.FC = () => {
     };
 
     fetchResourceAndRelated();
-  }, [id]);
+  }, [id, user, authLoading]);
 
   // Ref to track the latest page for the cleanup function
   const latestPageRef = useRef(currentPage);
@@ -491,7 +499,9 @@ const PdfViewer: React.FC = () => {
         setPdfError(null);
         setRetryCount(0);
       } else {
-        if (edgeData?.error === 'Unauthorized' || (edgeError && edgeError.message.includes('401'))) {
+        const errorMessage = edgeError?.message?.toLowerCase() || '';
+        const dataError = edgeData?.error?.toLowerCase() || '';
+        if (errorMessage.includes('401') || errorMessage.includes('unauthorized') || dataError.includes('unauthorized') || dataError.includes('401')) {
            setPdfError('401_UNAUTHORIZED');
         } else {
            setPdfError(edgeData?.error || 'Failed to refresh signed URL');
@@ -558,7 +568,7 @@ const PdfViewer: React.FC = () => {
       <div className={styles.pageContainer}>
         <div className="flex flex-col items-center justify-center p-8 neu-card rounded-2xl w-full max-w-lg mt-20 mx-auto text-center gap-4">
           <h2 className="text-h2 uppercase text-ink">Login required</h2>
-          <p className="text-ink text-lg font-medium mb-4">Please log in or create an account to view this resource.</p>
+          <p className="text-ink text-lg font-medium mb-4">To access notes please sign in or register</p>
           <div className="flex flex-col gap-3 w-full max-w-[300px]">
              <Link to="/login" className="block w-full p-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
                Log in
