@@ -372,12 +372,16 @@ const PdfViewer: React.FC = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
+    if (numPages === null || pdfError) {
+      setShowControls(true);
+      return;
+    }
     if (!isMobileMenuOpen && !isThreeDotsMenuOpen) {
       timerRef.current = setTimeout(() => {
         setShowControls(false);
       }, 5000);
     }
-  }, [isMobileMenuOpen, isThreeDotsMenuOpen]);
+  }, [isMobileMenuOpen, isThreeDotsMenuOpen, numPages, pdfError]);
 
   const handleInteraction = useCallback(() => {
     setShowControls(true);
@@ -501,6 +505,13 @@ const PdfViewer: React.FC = () => {
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
   }
+
+  // Automatically start the hide timer once the PDF is fully loaded
+  useEffect(() => {
+    if (numPages !== null && !pdfError) {
+      resetTimer();
+    }
+  }, [numPages, pdfError, resetTimer]);
 
   function onDocumentLoadError(error: Error) {
     console.error("Document Load Error:", error);
