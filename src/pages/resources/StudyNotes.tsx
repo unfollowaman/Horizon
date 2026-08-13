@@ -217,7 +217,7 @@ const StudyNotes: React.FC = () => {
           <img
             src="/assets/SVG Illustrations/no-content-available.svg"
             alt="No Content Available"
-            className="w-48 h-48 mb-6 object-contain"
+            className="w-48 h-48 mb-3 object-contain"
           />
           <p className="font-bold text-body1 mb-2">No study notes found.</p>
           <p className="text-caption">Try selecting a different class, subject, or medium.</p>
