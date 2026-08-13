@@ -213,7 +213,12 @@ const StudyNotes: React.FC = () => {
           <p className="font-bold text-body1">Loading resources...</p>
         </div>
       ) : filteredResources.length === 0 ? (
-        <div className="neu-recessed rounded-2xl p-8 text-center">
+        <div className="neu-raised rounded-2xl p-8 text-center flex flex-col items-center justify-center">
+          <img
+            src="/assets/SVG Illustrations/no-content-available.svg"
+            alt="No Content Available"
+            className="w-48 h-48 mb-3 object-contain"
+          />
           <p className="font-bold text-body1 mb-2">No study notes found.</p>
           <p className="text-caption">Try selecting a different class, subject, or medium.</p>
         </div>
