@@ -1,0 +1,20 @@
+--- src/components/MaterialCard.tsx
++++ src/components/MaterialCard.tsx
+@@ -26,13 +26,14 @@
+
+ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
++  const rawId = useId().replace(/:/g, '');
++
+   if (type === 'pyq') {
+     return (
+       <img
+         src="/assets/SVG Illustrations/pyq-papers.svg"
+         alt="PYQ Papers"
+         className="w-full h-full object-contain"
+       />
+     );
+   }
+
+-  const rawId = useId().replace(/:/g, '');
+   const gradId = `pyqGrad-${rawId}`;
+   const paperGrad = `url(#${gradId})`;
