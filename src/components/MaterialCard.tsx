@@ -37,6 +37,16 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
     );
   }
 
+  if (type === 'notes') {
+    return (
+      <img
+        src="/assets/SVG Illustrations/study-notes.svg"
+        alt="Study Notes Illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
   const gradId = `pyqGrad-${rawId}`;
   const paperGrad = `url(#${gradId})`;
 
