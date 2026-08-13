@@ -175,7 +175,7 @@ const HeroSection = () => (
       </h1>
 
       <p className={`animate-fade-rise-delay ${styles.heroSubtitle}`}>
-        Study notes, past papers, and practice materials — everything your class needs, in one place.
+        Study notes, past papers, and practice materials — everything for class 8th to 12th, in one place.
       </p>
 
       <HeroPhoneAnimation />
