@@ -9,6 +9,7 @@ import type { Resource } from '../../types';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { navLinks } from '../../data/navigation';
+import ProfilePopover from '../../components/ProfilePopover';
 import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
 
 // Initialize PDF.js worker
@@ -588,16 +589,14 @@ const PdfViewer: React.FC = () => {
         <div className={styles.menuContentWrapper}>
           <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
             <div className={styles.menuHeader}>
-              <div className={styles.menuBrandIcon}>
-                <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.menuBrandLogoImg} />
-              </div>
+              {user ? <div className={styles.menuProfileContainer}><ProfilePopover /></div> : <div style={{ width: '40px', height: '40px' }} />}
               <button onClick={closeMenu} className={styles.menuCloseBtn}>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <nav className={styles.menuNavLinks}>
+            <nav className={`${styles.menuNavLinks} ${user ? styles.menuNavLinksAuth : ''}`}>
               {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
                 <React.Fragment key={link.id || index}>
                   <Link
@@ -607,20 +606,20 @@ const PdfViewer: React.FC = () => {
                   >
                     {link.label}
                   </Link>
-                  {index < array.length - 1 && <div className={styles.menuDivider} style={{ borderBottom: '1px solid rgba(0,0,0,0.2)', margin: '4px var(--spacing-1)' }} />}
+                  {index < array.length - 1 && <div className={styles.menuDivider} />}
                 </React.Fragment>
               ))}
             </nav>
-            <div className={styles.menuActionButtons}>
-              {user ? (
-                <Link to="/dashboard" onClick={closeMenu} className={styles.menuSignInBtn}>Dashboard</Link>
-              ) : (
-                <>
-                  <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>Sign in</Link>
-                  <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>Get Started</Link>
-                </>
-              )}
-            </div>
+            {(!user) && (
+              <div className={styles.menuActionButtons}>
+                <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
+                  Sign in
+                </Link>
+                <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
