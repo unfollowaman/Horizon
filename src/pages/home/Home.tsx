@@ -288,52 +288,55 @@ const Footer = () => (
   <footer className={styles.footer}>
     <div className={styles.footerContainer}>
 
-      {/* Brand Column */}
+      {/* Brand Section */}
       <div className={styles.footerBrandCol}>
-        <h3 className={styles.footerBrandTitle}>Horizon</h3>
-        <p className={styles.footerBrandDesc}>
-          Your Path. Your Future.<br/>
-          Built for students.<br/>
-          Designed for success.
-        </p>
-        <div className={styles.footerSocials}>
-          {[1, 2, 3, 4].map((i) => (
-            <Link key={i} to="/" className={styles.footerSocialLink}>
-              <span className={styles.footerSocialIcon}></span>
-            </Link>
-          ))}
+        <div className={styles.footerBrandTitleWrapper}>
+          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.footerLogo} />
+          <h3 className={styles.footerBrandTitle}>Horizon</h3>
         </div>
       </div>
 
-      {/* Explore Links */}
-      <div className={styles.footerLinksCol}>
-        <h4 className={styles.footerLinksTitle}>Explore</h4>
-        <nav className={styles.footerNav}>
-          {navLinks.map((link, index) => (
-            <Link key={index} to={link.path} className={styles.footerNavLink}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+      <div className={styles.footerNavWrapper}>
+        {/* Explore Links */}
+        <div className={styles.footerLinksCol}>
+          <h4 className={styles.footerLinksTitle}>Explore</h4>
+          <nav className={styles.footerNav}>
+            {navLinks.map((link, index) => (
+              <Link key={index} to={link.path} className={styles.footerNavLink}>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* Info Links */}
+        <div className={styles.footerLinksCol}>
+          <h4 className={styles.footerLinksTitle}>Info</h4>
+          <nav className={styles.footerNav}>
+            <Link to="/" className={styles.footerNavLink}>Announcements</Link>
+            <Link to="/about" className={styles.footerNavLink}>About Us</Link>
+            <Link to="/" className={styles.footerNavLink}>Contact</Link>
+            <Link to="/privacy-policy" className={styles.footerNavLink}>Privacy Policy</Link>
+          </nav>
+        </div>
       </div>
 
-      {/* Info Links */}
-      <div className={styles.footerLinksCol}>
-        <h4 className={styles.footerLinksTitle}>Info</h4>
-        <nav className={styles.footerNav}>
-          <Link to="/" className={styles.footerNavLink}>Announcements</Link>
-          <Link to="/about" className={styles.footerNavLink}>About Us</Link>
-          <Link to="/" className={styles.footerNavLink}>Contact</Link>
-          <Link to="/privacy-policy" className={styles.footerNavLink}>Privacy Policy</Link>
-          <Link to="/" className={styles.footerNavLink}>Terms of Use</Link>
-        </nav>
+      {/* Socials */}
+      <div className={styles.footerSocials}>
+        <Link to="/" className={styles.footerSocialLink}>
+          <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.footerSocialIcon} />
+        </Link>
+        <Link to="/" className={styles.footerSocialLink}>
+          <img src="/assets/Social Links/twitter-x.png" alt="Twitter/X" className={styles.footerSocialIcon} />
+        </Link>
+        <Link to="/" className={styles.footerSocialLink}>
+          <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.footerSocialIcon} />
+        </Link>
+        <Link to="/" className={styles.footerSocialLink}>
+          <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.footerSocialIcon} />
+        </Link>
       </div>
 
-    </div>
-
-    {/* Copyright Strip */}
-    <div className={styles.footerCopyright}>
-      <p className={styles.footerCopyrightText}>© {new Date().getFullYear()} Horizon. All rights reserved.</p>
     </div>
   </footer>
 );
