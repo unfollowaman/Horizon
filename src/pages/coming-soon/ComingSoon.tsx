@@ -8,7 +8,12 @@ const ComingSoon: React.FC = () => {
       <p className="text-body1 text-muted-foreground max-w-lg mx-auto mb-8">
         We are working hard to bring you this feature. Stay tuned for updates!
       </p>
-      <Link to="/" className="neu-raised neu-raised-hover px-8 py-3 rounded-full text-ink text-body1 font-medium no-underline">
+      <img
+        src="/assets/SVG Illustrations/coming-soon.svg"
+        alt="Coming Soon"
+        className="w-full max-w-md h-auto mx-auto mb-8 object-contain"
+      />
+      <Link to="/" className="neu-raised neu-raised-hover px-6 py-2 rounded-full text-ink text-body1 font-medium no-underline">
         Back to Home
       </Link>
     </div>
