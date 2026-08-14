@@ -2,7 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProfileButton: React.FC = () => {
+interface ProfileButtonProps {
+  onClick?: () => void;
+  className?: string;
+}
+
+const ProfileButton: React.FC<ProfileButtonProps> = ({ onClick, className }) => {
   const { user, profile } = useAuth();
   const initials = profile?.name ? profile.name.substring(0, 2).toUpperCase() : 'U';
 
@@ -22,7 +27,8 @@ const ProfileButton: React.FC = () => {
   return (
     <Link
       to={user ? "/dashboard" : "/login"}
-      className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer no-underline overflow-hidden"
+      className={className || "w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer no-underline overflow-hidden"}
+      onClick={onClick}
       aria-label="Go to Profile"
     >
       {content}

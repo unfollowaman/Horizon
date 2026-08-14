@@ -9,7 +9,7 @@ import type { Resource } from '../../types';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { navLinks } from '../../data/navigation';
-import ProfilePopover from '../../components/ProfilePopover';
+import ProfileButton from '../../components/ProfileButton';
 import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
 
 // Initialize PDF.js worker
@@ -21,7 +21,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
 
   const [resource, setResource] = useState<Resource | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -632,7 +632,7 @@ const PdfViewer: React.FC = () => {
         <div className={styles.menuContentWrapper}>
           <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
             <div className={styles.menuHeader}>
-              {user ? <div className={styles.menuProfileContainer}><ProfilePopover /></div> : <div style={{ width: '40px', height: '40px' }} />}
+              {user ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
               <button onClick={closeMenu} className={styles.menuCloseBtn}>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -649,9 +649,32 @@ const PdfViewer: React.FC = () => {
                   >
                     {link.label}
                   </Link>
-                  {index < array.length - 1 && <div className={styles.menuDivider} />}
+                  {(index < array.length - 1 || user) && <div className={styles.menuDivider} />}
                 </React.Fragment>
               ))}
+
+              {user && (
+                <React.Fragment>
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMenu}
+                    className={styles.menuNavLink}
+                  >
+                    Profile
+                  </Link>
+                  <div className={styles.menuDivider} />
+                  <button
+                    onClick={async () => {
+                      closeMenu();
+                      await signOut();
+                      navigate('/');
+                    }}
+                    className={styles.menuSignOutBtn}
+                  >
+                    Log Out
+                  </button>
+                </React.Fragment>
+              )}
             </nav>
             {(!user) && (
               <div className={styles.menuActionButtons}>

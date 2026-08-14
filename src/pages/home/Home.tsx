@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { register } from '../../services/auth';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import ProfilePopover from '../../components/ProfilePopover';
+import ProfileButton from '../../components/ProfileButton';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Home.module.css';
 
 const Header = () => {
-  const { session, loading } = useAuth();
+  const { session, loading, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,7 +113,7 @@ const Header = () => {
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
                   {/* Logo */}
-                  {session ? <div className={styles.menuProfileContainer}><ProfilePopover /></div> : <div style={{ width: '40px', height: '40px' }} />}
+                  {session ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
                   {/* Close Button */}
                   <button onClick={closeMenu} className={styles.menuCloseBtn}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -130,9 +133,32 @@ const Header = () => {
                       >
                         {link.label}
                       </Link>
-                      {index < array.length - 1 && <div className={styles.menuDivider} />}
+                      {(index < array.length - 1 || session) && <div className={styles.menuDivider} />}
                     </React.Fragment>
                   ))}
+
+                  {session && (
+                    <React.Fragment>
+                      <Link
+                        to="/dashboard"
+                        onClick={closeMenu}
+                        className={styles.menuNavLink}
+                      >
+                        Profile
+                      </Link>
+                      <div className={styles.menuDivider} />
+                      <button
+                        onClick={async () => {
+                          closeMenu();
+                          await signOut();
+                          navigate('/');
+                        }}
+                        className={styles.menuSignOutBtn}
+                      >
+                        Log Out
+                      </button>
+                    </React.Fragment>
+                  )}
                 </nav>
 
                 {/* Action Buttons */}
