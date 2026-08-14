@@ -26,3 +26,13 @@ export const getResourceUrl = (item: any): string => {
     ? supabase.storage.from(item.storage_bucket || 'pdfs').getPublicUrl(item.file_path).data.publicUrl
     : (item.pdf_url || '');
 };
+
+/**
+ * Normalizes a class value to its canonical database format (e.g., "Class 10" -> "10").
+ */
+export const normalizeClassValue = (classValue: string | null | undefined): string => {
+  if (!classValue) return '';
+  const trimmed = classValue.trim();
+  const match = trimmed.match(/\d+/);
+  return match ? match[0] : trimmed;
+};
