@@ -1,5 +1,5 @@
 import { supabase } from '../services/supabase';
-import type { Resource } from '../types';
+import type { Resource, Medium } from '../types';
 
 /**
  * Checks whether a resource is protected.
@@ -35,4 +35,13 @@ export const normalizeClassValue = (classValue: string | null | undefined): stri
   const trimmed = classValue.trim();
   const match = trimmed.match(/\d+/);
   return match ? match[0] : trimmed;
+};
+
+/**
+ * Normalizes a study medium value to its lowercase database format (e.g., "English" -> "english").
+ */
+export const normalizeMediumValue = (mediumValue: string | null | undefined): Medium => {
+  if (!mediumValue) return 'english';
+  const normalized = mediumValue.trim().toLowerCase();
+  return (normalized === 'hindi' ? 'hindi' : 'english') as Medium;
 };
