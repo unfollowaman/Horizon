@@ -43,6 +43,7 @@ export const HeroPhoneAnimation: React.FC = () => {
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
+  const containerWidthRef = useRef(300);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -54,7 +55,9 @@ export const HeroPhoneAnimation: React.FC = () => {
 
     const observer = new ResizeObserver((entries) => {
       if (entries[0]) {
-        setContainerWidth(entries[0].contentRect.width);
+        const width = entries[0].contentRect.width;
+        setContainerWidth(width);
+        containerWidthRef.current = width;
       }
     });
 
@@ -63,13 +66,21 @@ export const HeroPhoneAnimation: React.FC = () => {
   }, []);
 
   const applyState = (t: number) => {
-    const scaleX = containerWidth / 300;
+    const currentContainerWidth = containerWidthRef.current;
+    const scaleX = currentContainerWidth / 300;
     const centerX = BASE_CENTER_X * scaleX;
-    const orbitRadius = BASE_ORBIT_RADIUS * scaleX;
-    const fadeStart = TOTAL - 300;
-    const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
 
     const iconSize = clamp(64 * scaleX, 44, 80);
+
+    let orbitRadius = BASE_ORBIT_RADIUS * scaleX;
+    if (scaleX > 1) {
+      // Constrain orbit radius on mobile to prevent clipping the icon and its drop shadow
+      const maxAllowedOrbitRadius = (currentContainerWidth / 2) - (iconSize / 2) - 16;
+      orbitRadius = Math.min(orbitRadius, maxAllowedOrbitRadius);
+    }
+
+    const fadeStart = TOTAL - 300;
+    const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
     const mascotSize = clamp(60 * scaleX, 45, 75);
     const glowSize = clamp(140 * scaleX, 110, 170);
     const wordmarkFontSize = clamp(15 * scaleX, 13, 17);
@@ -228,14 +239,23 @@ export const HeroPhoneAnimation: React.FC = () => {
     }
   }, [prefersReducedMotion]);
 
+  // Calculate matching properties for the React render of the SVG
+  const renderScaleX = containerWidth / 300;
+  const renderIconSize = clamp(64 * renderScaleX, 44, 80);
+  let renderOrbitRadius = BASE_ORBIT_RADIUS * renderScaleX;
+  if (renderScaleX > 1) {
+    const maxAllowedOrbitRadius = (containerWidth / 2) - (renderIconSize / 2) - 16;
+    renderOrbitRadius = Math.min(renderOrbitRadius, maxAllowedOrbitRadius);
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.phoneFrame}>
         <div ref={containerRef} className={styles.phoneInner}>
           <div ref={glowRef} className={styles.glow} style={{ opacity: 0 }} />
 
-          <svg ref={ringRef} className={styles.ring} viewBox="0 0 300 560" style={{ opacity: 0, width: '100%', height: '100%' }} preserveAspectRatio="xMidYMid slice">
-            <circle cx={BASE_CENTER_X} cy={CENTER_Y} r={BASE_ORBIT_RADIUS} transform={`scale(${containerWidth / 300}, 1)`} style={{ transformOrigin: `${BASE_CENTER_X}px ${CENTER_Y}px` }} />
+          <svg ref={ringRef} className={styles.ring} viewBox={`0 0 ${containerWidth} 560`} style={{ opacity: 0, width: '100%', height: '100%' }}>
+            <circle cx={containerWidth / 2} cy={CENTER_Y} r={renderOrbitRadius} />
           </svg>
 
           <img
