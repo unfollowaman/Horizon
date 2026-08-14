@@ -5,7 +5,7 @@ import { supabase } from '../../services/supabase';
 import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
-import { normalizeClassValue } from '../../utils/resourceHelper';
+import { normalizeClassValue, normalizeMediumValue } from '../../utils/resourceHelper';
 
 
 interface ProgressData {
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
           .select('chapter_id, subject')
           .eq('resource_type', 'notes')
           .eq('student_class', normalizedClass)
-          .eq('medium', profile.study_medium || 'english')
+          .eq('medium', normalizeMediumValue(profile.study_medium))
           .not('chapter_id', 'is', null);
 
         if (syllabusError) throw syllabusError;
