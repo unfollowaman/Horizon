@@ -269,7 +269,7 @@
   margin-bottom: 12px;
 }
 
-.menuProfileContainer button {
+.menuProfileContainer a {
   width: 40px !important;
   height: 40px !important;
 }
@@ -333,6 +333,29 @@
 
 .menuNavLinksAuth {
   margin-bottom: 0;
+}
+
+.menuSignOutBtn {
+  font-size: 12px; /* text-[12px] */
+  color: var(--muted-foreground);
+  transition: color 150ms;
+  --tw-radius: var(--radius-md);
+  border-radius: var(--radius-md); /* rounded-md */
+  padding: 0 var(--spacing-1); /* px-1 */
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: block;
+  width: 100%;
+}
+.menuSignOutBtn:hover {
+  color: var(--color-paper);
+}
+.menuSignOutBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-ink);
 }
 
 .menuActionButtons {
