@@ -87,25 +87,28 @@
   z-index: 2;
 }
 
-.wordmark {
+.brandPill {
   position: absolute;
-  top: 45px;
-  left: calc(50% - 85px);
-  font-family: 'Instrument Serif', serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #111827;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  --tw-radius: var(--radius-full);
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  height: var(--spacing-11);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
-.exploreLabel {
-  position: absolute;
-  top: 96px;
-  left: calc(50% - 116px);
+.brandPillText {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+  color: var(--color-ink);
   font-family: 'Instrument Serif', serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6B7280;
 }
 
 .iconContainer {
@@ -119,10 +122,23 @@
   z-index: 3;
 }
 
+.iconBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --tw-radius: var(--radius-xl);
+  border-radius: var(--radius-xl);
+  pointer-events: none;
+  z-index: 1; /* Keep it behind text and icon */
+}
+
 .iconImage {
   width: 64px;
   height: auto;
   filter: drop-shadow(0 10px 20px rgba(15,23,42,0.15));
+  z-index: 2;
+  transform-origin: center;
 }
 
 .iconLabel {
@@ -132,4 +148,5 @@
   margin-top: 6px;
   font-family: 'Instrument Serif', serif;
   text-align: center;
+  z-index: 2; /* Keep above iconBox */
 }

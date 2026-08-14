@@ -38,7 +38,6 @@ export const HeroPhoneAnimation: React.FC = () => {
   const mascotRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
-  const exploreRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<SVGSVGElement>(null);
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -83,8 +82,6 @@ export const HeroPhoneAnimation: React.FC = () => {
     const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
     const mascotSize = clamp(60 * scaleX, 45, 75);
     const glowSize = clamp(140 * scaleX, 110, 170);
-    const wordmarkFontSize = clamp(15 * scaleX, 13, 17);
-    const exploreFontSize = clamp(13 * scaleX, 11, 15);
     const labelFontSize = clamp(11 * scaleX, 9, 13);
     const labelMaxWidth = clamp(100 * scaleX, 70, 150);
 
@@ -109,10 +106,16 @@ export const HeroPhoneAnimation: React.FC = () => {
         mascotBlur = Math.max(0, lerp(20, 0, eased));
       }
 
-      const endX = containerWidth > 300 ? 60 : 40;
+      // Calculate landing spot inside the pill
+      // Since the pill text "Horizon" is around 60px wide, and the mascot is 28px wide.
+      // Total width = 60 + 28 + 8 (gap) = 96px.
+      // Left edge of the content inside the pill is (containerWidth / 2) - 48.
+      // Center of the mascot should be half its width (14px) from the left edge.
+      // endX = (containerWidth / 2) - 48 + 14 = (containerWidth / 2) - 34
+      const endX = containerWidth / 2 - 34;
       const x = lerp(centerX, endX, settle);
-      const y = lerp(CENTER_Y, 54, settle);
-      const scale = lerp(1, 24 / 60, settle) * mascotScaleMultiplier;
+      const y = lerp(CENTER_Y, 58, settle);
+      const scale = lerp(1, 28 / 60, settle) * mascotScaleMultiplier;
 
       mascotRef.current.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
       mascotRef.current.style.opacity = `${mascotOpacity * globalFade}`;
@@ -128,14 +131,9 @@ export const HeroPhoneAnimation: React.FC = () => {
       glowRef.current.style.height = `${glowSize}px`;
     }
 
-    // Wordmark & Explore
+    // Wordmark / Brand Pill
     if (wordmarkRef.current) {
       wordmarkRef.current.style.opacity = `${settle * globalFade}`;
-      wordmarkRef.current.style.fontSize = `${wordmarkFontSize}px`;
-    }
-    if (exploreRef.current) {
-      exploreRef.current.style.opacity = `${settle * globalFade}`;
-      exploreRef.current.style.fontSize = `${exploreFontSize}px`;
     }
 
     // Ring
@@ -203,7 +201,19 @@ export const HeroPhoneAnimation: React.FC = () => {
 
       const img = el.querySelector('img');
       if (img) {
-        img.style.width = `${iconSize}px`;
+        // Slightly scale down the icon when it settles into the box
+        const currentIconSize = lerp(iconSize, iconSize * 0.75, settle);
+        img.style.width = `${currentIconSize}px`;
+      }
+
+      const box = el.querySelector(`.${styles.iconBox}`) as HTMLDivElement;
+      if (box) {
+        box.style.opacity = `${settle}`;
+        const boxWidth = clamp(110 * scaleX, 85, 115);
+        const boxHeight = clamp(85 * scaleX, 65, 90);
+        box.style.width = `${boxWidth}px`;
+        box.style.height = `${boxHeight}px`;
+        // Transform is handled in CSS: translate(-50%, -50%)
       }
 
       const label = el.querySelector('.iconLabel') as HTMLDivElement;
@@ -266,11 +276,10 @@ export const HeroPhoneAnimation: React.FC = () => {
             style={{ opacity: 0 }}
           />
 
-          <div ref={wordmarkRef} className={styles.wordmark} style={{ opacity: 0 }}>
-            HORIZON
-          </div>
-          <div ref={exploreRef} className={styles.exploreLabel} style={{ opacity: 0 }}>
-            Explore
+          <div ref={wordmarkRef} className={`${styles.brandPill} neu-raised`} style={{ opacity: 0 }}>
+            {/* Invisible spacer div to ensure the text flexbox makes room for the absolute positioned mascot landing */}
+            <div style={{ width: '28px', height: '100%', flexShrink: 0 }}></div>
+            <span className={styles.brandPillText}>Horizon</span>
           </div>
 
           {iconsConfig.map((config, idx) => (
@@ -280,6 +289,7 @@ export const HeroPhoneAnimation: React.FC = () => {
               className={styles.iconContainer}
               style={{ opacity: 0 }}
             >
+              <div className={`${styles.iconBox} neu-raised`} style={{ opacity: 0 }} />
               <img
                 src={`/assets/hero/${config.asset}`}
                 alt={config.label}
