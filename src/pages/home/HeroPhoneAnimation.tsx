@@ -70,7 +70,7 @@ export const HeroPhoneAnimation: React.FC = () => {
     const globalFade = t > fadeStart ? clamp(1 - (t - fadeStart) / 300, 0, 1) : 1;
 
     const iconSize = clamp(64 * scaleX, 44, 80);
-    const mascotSize = clamp(45 * scaleX, 34, 54);
+    const mascotSize = clamp(60 * scaleX, 45, 75);
     const glowSize = clamp(140 * scaleX, 110, 170);
     const wordmarkFontSize = clamp(15 * scaleX, 13, 17);
     const exploreFontSize = clamp(13 * scaleX, 11, 15);
@@ -101,7 +101,7 @@ export const HeroPhoneAnimation: React.FC = () => {
       const endX = containerWidth > 300 ? 60 : 40;
       const x = lerp(centerX, endX, settle);
       const y = lerp(CENTER_Y, 54, settle);
-      const scale = lerp(1, 16 / 45, settle) * mascotScaleMultiplier;
+      const scale = lerp(1, 24 / 60, settle) * mascotScaleMultiplier;
 
       mascotRef.current.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
       mascotRef.current.style.opacity = `${mascotOpacity * globalFade}`;
