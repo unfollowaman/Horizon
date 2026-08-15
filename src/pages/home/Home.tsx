@@ -264,7 +264,11 @@ const HighlightsSection = () => {
         {isSuccess ? (
           <div className="text-center p-4">
             <h3 className="text-xl font-bold mb-2">Check your email</h3>
-            <p>Your account has been created successfully. Please check your email to verify your account before signing in.</p>
+            <p>
+              {email
+                ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
+                : 'We sent you a verification link. Open your email and tap the verification link to activate your account.'}
+            </p>
           </div>
         ) : (
           <>
