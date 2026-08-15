@@ -156,14 +156,14 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 2 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <h2 className="text-2xl font-bold text-center mb-6">Select your Class</h2>
-                <div className="grid gap-4">
+                <div className="grid gap-2">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
                     <button
                       key={cls}
                       onClick={() => setStudentClass(cls)}
-                      className={`p-4 rounded-xl transition-all ${
+                      className={`py-2 px-4 rounded-xl transition-all ${
                         studentClass === cls
                           ? 'neu-recessed text-accent font-bold'
                           : 'neu-raised neu-raised-hover'
@@ -184,14 +184,14 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 3 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <h2 className="text-2xl font-bold text-center mb-6">Study Medium</h2>
-                <div className="grid gap-4">
+                <div className="grid gap-2">
                   {['English', 'Hindi'].map((medium) => (
                     <button
                       key={medium}
                       onClick={() => setStudyMedium(medium)}
-                      className={`p-4 rounded-xl transition-all ${
+                      className={`py-2 px-4 rounded-xl transition-all ${
                         studyMedium === medium
                           ? 'neu-recessed text-accent font-bold'
                           : 'neu-raised neu-raised-hover'
