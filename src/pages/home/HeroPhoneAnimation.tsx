@@ -38,11 +38,13 @@ export const HeroPhoneAnimation: React.FC = () => {
   const mascotRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
   const ringRef = useRef<SVGSVGElement>(null);
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const containerWidthRef = useRef(300);
+  const textWidthRef = useRef(60); // Default to 60px as fallback
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -61,6 +63,27 @@ export const HeroPhoneAnimation: React.FC = () => {
     });
 
     observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!textRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        // Measure text width precisely
+        textWidthRef.current = entries[0].contentRect.width;
+      }
+    });
+
+    observer.observe(textRef.current);
+
+    // Initial check
+    const rect = textRef.current.getBoundingClientRect();
+    if (rect.width > 0) {
+      textWidthRef.current = rect.width;
+    }
+
     return () => observer.disconnect();
   }, []);
 
@@ -106,13 +129,17 @@ export const HeroPhoneAnimation: React.FC = () => {
         mascotBlur = Math.max(0, lerp(20, 0, eased));
       }
 
-      // Calculate landing spot inside the pill
-      // Since the pill text "Horizon" is around 60px wide, and the mascot is 28px wide.
-      // Total width = 60 + 28 + 8 (gap) = 96px.
-      // Left edge of the content inside the pill is (containerWidth / 2) - 48.
-      // Center of the mascot should be half its width (14px) from the left edge.
-      // endX = (containerWidth / 2) - 48 + 14 = (containerWidth / 2) - 34
-      const endX = containerWidth / 2 - 34;
+      // Calculate landing spot inside the pill dynamically
+      // The content inside the pill is flex centered.
+      // Total content width = textWidth + 28 (mascot width/spacer) + 8 (gap).
+      const textWidth = textWidthRef.current;
+      const totalWidth = textWidth + 28 + 8;
+
+      // The left edge of the content inside the centered pill is (containerWidth / 2) - (totalWidth / 2)
+      // The center of the mascot needs to land exactly halfway across its 28px spacer,
+      // which is 14px from the left edge of the content.
+      // endX = (containerWidth / 2) - (totalWidth / 2) + 14
+      const endX = (currentContainerWidth / 2) - (totalWidth / 2) + 14;
       const x = lerp(centerX, endX, settle);
       const y = lerp(CENTER_Y, 58, settle);
       const scale = lerp(1, 28 / 60, settle) * mascotScaleMultiplier;
@@ -279,7 +306,7 @@ export const HeroPhoneAnimation: React.FC = () => {
           <div ref={wordmarkRef} className={`${styles.brandPill} neu-raised`} style={{ opacity: 0 }}>
             {/* Invisible spacer div to ensure the text flexbox makes room for the absolute positioned mascot landing */}
             <div style={{ width: '28px', height: '100%', flexShrink: 0 }}></div>
-            <span className={styles.brandPillText}>Horizon</span>
+            <span ref={textRef} className={styles.brandPillText}>Horizon</span>
           </div>
 
           {iconsConfig.map((config, idx) => (
