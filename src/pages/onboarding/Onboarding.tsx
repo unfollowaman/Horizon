@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import type { Profile } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
+  const { refreshProfile } = useAuth();
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -82,6 +84,7 @@ const Onboarding: React.FC = () => {
     if (!userId) return;
     setSaving(true);
     await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', userId);
+    await refreshProfile();
     setSaving(false);
     navigate('/');
   };
