@@ -27,13 +27,20 @@ const Register: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8 text-center">
-        <h2>Check your email</h2>
-        <p style={{ marginTop: '1rem' }}>
-          {email
-            ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
-            : 'We sent you a verification link. Open your email and tap the verification link to activate your account.'}
-        </p>
+      <div className="flex flex-col items-center justify-center min-h-[70vh] p-2">
+        <div className="neu-card rounded-2xl p-8 w-full max-w-[400px] mx-auto text-center flex flex-col items-center">
+          <img
+            src="/assets/SVG Illustrations/confirm-email.svg"
+            alt="Confirm Email"
+            className="w-40 h-40 mb-4 object-contain"
+          />
+          <h2 className="text-h2">Check your email</h2>
+          <p style={{ marginTop: '1rem' }}>
+            {email
+              ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
+              : 'We sent you a verification link. Open your email and tap the verification link to activate your account.'}
+          </p>
+        </div>
       </div>
     );
   }
