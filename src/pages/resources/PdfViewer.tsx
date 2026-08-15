@@ -33,6 +33,14 @@ const PdfViewer: React.FC = () => {
   const [initialProgressFetched, setInitialProgressFetched] = useState<boolean>(false);
   const [showControls, setShowControls] = useState<boolean>(true);
 
+  // Slider State
+  const [isSliderVisible, setIsSliderVisible] = useState<boolean>(false);
+  const sliderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const sliderContainerRef = useRef<HTMLDivElement | null>(null);
+  const isDraggingSliderRef = useRef<boolean>(false);
+  const [isDraggingSlider, setIsDraggingSlider] = useState<boolean>(false);
+
   // Ref to container to calculate scale dynamically
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -396,6 +404,126 @@ const PdfViewer: React.FC = () => {
     resetTimer();
   }, [resetTimer]);
 
+  const resetSliderTimer = useCallback(() => {
+    if (sliderTimerRef.current) {
+      clearTimeout(sliderTimerRef.current);
+    }
+    sliderTimerRef.current = setTimeout(() => {
+      setIsSliderVisible(false);
+    }, 5000);
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // Only show slider if user is actually scrolling, not if we're automatically scrolling or dragging slider
+    if (!isDraggingSliderRef.current) {
+      setIsSliderVisible(true);
+      resetSliderTimer();
+    }
+
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const maxScroll = scrollHeight - clientHeight;
+
+    if (maxScroll > 0 && sliderContainerRef.current) {
+      const progress = scrollTop / maxScroll;
+      sliderContainerRef.current.style.top = `calc(10% + ${progress * 80}%)`;
+    }
+  }, [resetSliderTimer]);
+
+  // Handle Dragging of the Slider
+  const handleSliderDrag = useCallback((clientY: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const windowHeight = window.innerHeight;
+
+    // The CSS top is calculated as: 10% + (scrollProgress * 80)%
+    // So minimum physical Y is 10% of window height. Maximum is 90% of window height.
+    const minY = windowHeight * 0.1;
+    const maxY = windowHeight * 0.9;
+
+    const clampedY = Math.max(minY, Math.min(clientY, maxY));
+    const progress = (clampedY - minY) / (maxY - minY);
+
+    if (sliderContainerRef.current) {
+      sliderContainerRef.current.style.top = `calc(10% + ${progress * 80}%)`;
+    }
+
+    const maxScroll = container.scrollHeight - container.clientHeight;
+    container.scrollTop = progress * maxScroll;
+
+    resetSliderTimer();
+  }, [resetSliderTimer]);
+
+  const onSliderTouchStart = (e: React.TouchEvent) => {
+    isDraggingSliderRef.current = true;
+    setIsDraggingSlider(true);
+    handleSliderDrag(e.touches[0].clientY);
+    setIsSliderVisible(true);
+    if (sliderTimerRef.current) clearTimeout(sliderTimerRef.current);
+    // Prevent default scrolling on parent
+    e.stopPropagation();
+  };
+
+  const onSliderTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingSliderRef.current) return;
+    handleSliderDrag(e.touches[0].clientY);
+    e.preventDefault(); // Prevent scrolling while dragging
+    e.stopPropagation();
+  };
+
+  const onSliderTouchEnd = () => {
+    isDraggingSliderRef.current = false;
+    setIsDraggingSlider(false);
+    resetSliderTimer();
+  };
+
+  const onSliderMouseDown = (e: React.MouseEvent) => {
+    isDraggingSliderRef.current = true;
+    setIsDraggingSlider(true);
+    handleSliderDrag(e.clientY);
+    setIsSliderVisible(true);
+    if (sliderTimerRef.current) clearTimeout(sliderTimerRef.current);
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDraggingSliderRef.current) return;
+      handleSliderDrag(e.clientY);
+      e.preventDefault();
+    };
+
+    const handleMouseUp = () => {
+      if (isDraggingSliderRef.current) {
+        isDraggingSliderRef.current = false;
+        setIsDraggingSlider(false);
+        resetSliderTimer();
+      }
+    };
+
+    if (isDraggingSlider) {
+      document.addEventListener('mousemove', handleMouseMove, { passive: false });
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingSlider, handleSliderDrag, resetSliderTimer]);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (sliderTimerRef.current) {
+        clearTimeout(sliderTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleShare = async () => {
     const url = window.location.href;
     setIsThreeDotsMenuOpen(false);
@@ -695,6 +823,21 @@ const PdfViewer: React.FC = () => {
         </div>
       </div>
 
+      {/* Page Slider */}
+      <div
+        ref={sliderContainerRef}
+        className={`${styles.pageSliderContainer} ${isSliderVisible ? styles.sliderVisible : styles.sliderHidden}`}
+        style={{ top: '10%' }}
+        onTouchStart={onSliderTouchStart}
+        onTouchMove={onSliderTouchMove}
+        onTouchEnd={onSliderTouchEnd}
+        onMouseDown={onSliderMouseDown}
+      >
+        <div className={`${styles.pageSliderThumb} neu-raised neu-raised-hover`}>
+          <span className={styles.pageSliderText}>{currentPage}</span>
+        </div>
+      </div>
+
       {/* PDF Reader Container (Full screen) */}
       <div
         ref={containerRef}
@@ -768,7 +911,11 @@ const PdfViewer: React.FC = () => {
                 </div>
 
                 <TransformComponent wrapperClass={styles.transformWrapper} contentClass={styles.transformContent}>
-                  <div className={styles.pdfScrollContainer}>
+                  <div
+                    className={styles.pdfScrollContainer}
+                    ref={scrollContainerRef}
+                    onScroll={handleScroll}
+                  >
                     {pdfError ? (
                        <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
                     ) : (
