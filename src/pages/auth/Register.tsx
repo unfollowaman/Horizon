@@ -30,7 +30,9 @@ const Register: React.FC = () => {
       <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8 text-center">
         <h2>Check your email</h2>
         <p style={{ marginTop: '1rem' }}>
-          Your account has been created successfully. Please check your email to verify your account before signing in.
+          {email
+            ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
+            : 'We sent you a verification link. Open your email and tap the verification link to activate your account.'}
         </p>
       </div>
     );
