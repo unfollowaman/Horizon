@@ -566,8 +566,8 @@ const PdfViewer: React.FC = () => {
   if (pdfError === '401_UNAUTHORIZED') {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
-        <div className="flex flex-col items-center justify-center p-6 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] text-center gap-3 my-8">
-          <h2 className="text-h3 uppercase text-ink m-0">Login required</h2>
+        <div className="flex flex-col items-center justify-center p-2 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] text-center gap-3 my-8">
+          <h2 className="text-h2 uppercase text-ink m-0">Login required</h2>
           <p className="text-ink text-sm font-medium m-0">To access notes please sign in or register</p>
           <img
             src="/assets/SVG Illustrations/login-signin-page.svg"
