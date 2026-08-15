@@ -566,18 +566,23 @@ const PdfViewer: React.FC = () => {
   if (pdfError === '401_UNAUTHORIZED') {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
-        <div className="flex flex-col items-center justify-center p-8 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] text-center gap-4 my-8">
-          <h2 className="text-h2 uppercase text-ink">Login required</h2>
-          <p className="text-ink text-lg font-medium mb-4">To access notes please sign in or register</p>
-          <div className="flex flex-col gap-3 w-full max-w-[300px]">
-             <Link to="/login" className="block w-full p-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
+        <div className="flex flex-col items-center justify-center p-6 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] text-center gap-3 my-8">
+          <h2 className="text-h3 uppercase text-ink m-0">Login required</h2>
+          <p className="text-ink text-sm font-medium m-0">To access notes please sign in or register</p>
+          <img
+            src="/assets/SVG Illustrations/login-signin-page.svg"
+            alt="Login required"
+            className="w-40 h-auto my-2"
+          />
+          <div className="flex flex-col gap-2 w-full max-w-[300px]">
+             <Link to="/login" className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
                Log in
              </Link>
-             <Link to="/register" className="block w-full p-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
+             <Link to="/register" className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
                Create account
              </Link>
           </div>
-          <button onClick={() => navigate(-1)} className="mt-4 p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">
+          <button onClick={() => navigate(-1)} className="mt-2 p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink text-sm">
             Go Back
           </button>
         </div>
