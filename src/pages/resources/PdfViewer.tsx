@@ -5,12 +5,13 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { supabase } from '../../services/supabase';
+import { fetchLearningResourceById, fetchLearningResources } from '../../services/learningResourcesAPI';
 import type { Resource } from '../../types';
 import styles from './PdfViewer.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { navLinks } from '../../data/navigation';
 import ProfileButton from '../../components/ProfileButton';
-import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
+import { isResourceProtected } from '../../utils/resourceHelper';
 import PdfLoadingScreen from '../../components/PdfLoadingScreen';
 
 // Initialize PDF.js worker
@@ -113,11 +114,7 @@ const PdfViewer: React.FC = () => {
       if (!id || authLoading) return;
       setLoading(true);
 
-      const { data, error } = await supabase
-        .from('learning_resources')
-        .select('*, chapters(*)')
-        .eq('id', id)
-        .single();
+      const { data: mappedResource, rawData: data, error } = await fetchLearningResourceById(id, true);
 
       if (error) {
         console.error("Error fetching resource:", error);
@@ -125,24 +122,7 @@ const PdfViewer: React.FC = () => {
         return;
       }
 
-      if (data) {
-        const mappedResource: Resource = {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          resource_type: data.resource_type,
-          medium: data.medium,
-          uploadDate: data.created_at || new Date().toISOString(),
-          pdfUrl: getResourceUrl(data),
-          thumbnailUrl: data.thumbnail_url || '',
-          student_class: data.student_class || undefined,
-          subject: data.subject || undefined,
-          chapter_id: data.chapter_id || null,
-          chapters: data.chapters || null,
-          allow_download: data.allow_download ?? undefined,
-          storage_bucket: data.storage_bucket,
-          file_path: data.file_path
-        };
+      if (mappedResource && data) {
         setResource(mappedResource);
 
         if (isResourceProtected(mappedResource)) {
@@ -184,13 +164,15 @@ const PdfViewer: React.FC = () => {
         }
 
         // Fetch suggested PDFs based on class and subject
-        let query = supabase.from('learning_resources').select('*, chapters(*)').neq('id', data.id);
-        if (data.student_class) query = query.eq('student_class', data.student_class);
-        if (data.subject) query = query.eq('subject', data.subject);
-        if (data.medium) query = query.eq('medium', data.medium);
-        query = query.eq('resource_type', data.resource_type);
-
-        const { error: relatedError } = await query.limit(4);
+        const { error: relatedError } = await fetchLearningResources({
+          resource_type: mappedResource.resource_type,
+          student_class: mappedResource.student_class || undefined,
+          subject: mappedResource.subject || undefined,
+          medium: mappedResource.medium || undefined,
+          includeChapters: true,
+          neqId: mappedResource.id,
+          limit: 4
+        });
 
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);

@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Resource } from '../../types';
-import { supabase } from '../../services/supabase';
-import { getResourceUrl } from '../../utils/resourceHelper';
+import { fetchLearningResources } from '../../services/learningResourcesAPI';
+
 import { Dropdown } from '../../components/Dropdown';
 import MaterialCard from '../../components/MaterialCard';
 import OtherResources from '../../components/OtherResources';
@@ -45,48 +45,13 @@ const Library: React.FC = () => {
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('learning_resources').select('*').eq('resource_type', 'pyq');
+      const { data, error } = await fetchLearningResources({ resource_type: 'pyq' });
 
       if (error) {
         console.error('Error fetching resources:', error);
         setAllResources([]);
       } else if (data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mappedResources: Resource[] = data.map((item: any) => {
-          let className = item.student_class;
-          if (className) {
-            const strClass = String(className);
-            const trimmed = strClass.trim();
-            if (/^\d+$/.test(trimmed)) {
-              className = `Class ${trimmed}`;
-            } else if (/^class\s+\d+$/i.test(trimmed)) {
-              const numMatch = trimmed.match(/\d+/);
-              if (numMatch) {
-                className = `Class ${numMatch[0]}`;
-              }
-            } else {
-              className = trimmed;
-            }
-          }
-
-          return {
-            id: item.id,
-            title: item.title,
-            description: item.description,
-            resource_type: item.resource_type,
-            medium: item.medium,
-            uploadDate: item.created_at || new Date().toISOString(),
-            pdfUrl: getResourceUrl(item),
-            thumbnailUrl: item.thumbnail_url || '',
-            student_class: className,
-            subject: item.subject,
-            year: item.year ? item.year.toString() : undefined,
-            allow_download: item.allow_download ?? undefined,
-            storage_bucket: item.storage_bucket,
-            file_path: item.file_path,
-          };
-        });
-        setAllResources(mappedResources);
+        setAllResources(data);
       }
       setLoading(false);
     };
