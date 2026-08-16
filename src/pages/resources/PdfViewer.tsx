@@ -427,12 +427,15 @@ const PdfViewer: React.FC = () => {
     }
 
     const container = scrollContainerRef.current;
-    if (!container) return;
+    const viewer = containerRef.current;
+    if (!container || !viewer) return;
 
     // React-zoom-pan-pinch scales the content. The max scroll Y depends on the scaled height vs container height.
     // positionY is negative or 0.
     const { positionY, scale } = ref.state;
-    const { clientHeight } = container;
+    // We must use the viewerContainer's clientHeight (viewport) instead of the scrollContainer's clientHeight
+    // because the transform wrapper parent often expands.
+    const { clientHeight } = viewer;
     
     // transformContent scales its children, so the actual scrollable height is the content's scrollHeight * scale
     // BUT wait! react-zoom-pan-pinch uses a wrapper.
@@ -454,25 +457,29 @@ const PdfViewer: React.FC = () => {
 
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
-    if (!container) return;
+    const viewer = containerRef.current;
+    if (!container || !viewer) return;
 
     if (!isDraggingSliderRef.current) {
       setIsSliderVisible(true);
       resetSliderTimer();
     }
 
-    const { scrollTop, scrollHeight, clientHeight } = container;
+    const { scrollTop, scrollHeight } = container;
+    // Use viewer clientHeight to accurately gauge the visible window
+    const { clientHeight } = viewer;
     const maxScroll = Math.max(0, scrollHeight - clientHeight);
 
     if (maxScroll > 0 && sliderContainerRef.current) {
-      const progress = scrollTop / maxScroll;
+      const progress = Math.min(1, Math.max(0, scrollTop / maxScroll));
       sliderContainerRef.current.style.top = `calc(10% + ${progress * 80}%)`;
     }
   }, [resetSliderTimer]);
 
   const handleSliderDrag = useCallback((clientY: number) => {
     const container = scrollContainerRef.current;
-    if (!container || !setTransformRef.current) return;
+    const viewer = containerRef.current;
+    if (!container || !viewer || !setTransformRef.current) return;
 
     const windowHeight = window.innerHeight;
     
@@ -493,11 +500,19 @@ const PdfViewer: React.FC = () => {
     const { positionX, scale } = transformStateRef.current;
     const contentHeight = container.scrollHeight; // this is the unscaled content height
     const scaledContentHeight = contentHeight * scale;
-    const maxScrollY = Math.max(0, scaledContentHeight - container.clientHeight);
+    // Use viewer clientHeight to accurately gauge the visible window
+    const { clientHeight } = viewer;
+    const maxScrollY = Math.max(0, scaledContentHeight - clientHeight);
     
     const targetY = -(progress * maxScrollY);
     
-    setTransformRef.current(positionX, targetY, scale);
+    // For normal scrolling (scale = 1), just scroll the container directly
+    if (scale === 1) {
+      const targetScrollTop = progress * Math.max(0, contentHeight - clientHeight);
+      container.scrollTop = targetScrollTop;
+    } else {
+      setTransformRef.current(positionX, targetY, scale);
+    }
     
     resetSliderTimer();
   }, [resetSliderTimer]);

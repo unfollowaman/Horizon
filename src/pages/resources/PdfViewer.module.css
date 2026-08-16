@@ -67,8 +67,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 48px;
-  height: 60px;
+  width: 34px;
+  height: 44px;
   cursor: grab;
   touch-action: none; /* Prevent default touch actions while dragging */
 }
@@ -95,7 +95,10 @@
   width: 100%;
   height: 100%;
   background-color: var(--bg-base);
-  border-radius: 30px 0 0 30px; /* Semicircular on the left side */
+  border-radius: 9999px 0 0 9999px; /* Semicircular on the left side */
+  --tw-radius: 9999px;
+  --tw-radius-tr: 0px;
+  --tw-radius-br: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
