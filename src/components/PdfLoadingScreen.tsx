@@ -46,9 +46,13 @@ const PdfLoadingScreen: React.FC = () => {
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        // Create a wave effect moving diagonally
+        // Create a nearly randomized, organic cluster effect using sine waves based on coordinates
         // Using negative delay so animation is immediately active
-        const delay = -((c * 0.15) + (r * 0.15));
+        const timeFactorX = Math.sin(c * 0.3) * 2;
+        const timeFactorY = Math.cos(r * 0.3) * 2;
+        const organicNoise = Math.sin((c + r) * 0.5);
+
+        const delay = -(timeFactorX + timeFactorY + organicNoise + (c * 0.05) + (r * 0.05));
 
         generatedDots.push({
           id: `${r}-${c}`,
