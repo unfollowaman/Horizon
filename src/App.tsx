@@ -1,24 +1,28 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Pages
+// Core layout and non-lazy components
 import Home from './pages/home/Home';
 import MainLayout from './layouts/MainLayout';
-import Library from './pages/resources/Library';
-import ResourceDetails from './pages/resources/ResourceDetails';
-import Dashboard from './pages/user/Dashboard';
-import NotificationSettings from './pages/settings/NotificationSettings';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import Onboarding from './pages/onboarding/Onboarding';
+import ScrollToTop from './components/ScrollToTop';
+import AuthListener from './components/AuthListener';
+import { AuthProvider } from './context/AuthContext';
+import PageLoader from './components/loading/PageLoader';
+
+// Lazy loaded pages
+const Library = lazy(() => import('./pages/resources/Library'));
+const ResourceDetails = lazy(() => import('./pages/resources/ResourceDetails'));
+const Dashboard = lazy(() => import('./pages/user/Dashboard'));
+const NotificationSettings = lazy(() => import('./pages/settings/NotificationSettings'));
+const Login = lazy(() => import('./pages/auth/Login'));
+const Register = lazy(() => import('./pages/auth/Register'));
+const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import Attribution from './pages/attribution/Attribution';
-import ScrollToTop from './components/ScrollToTop';
-import PdfViewer from './pages/resources/PdfViewer';
-import StudyNotes from './pages/resources/StudyNotes';
-import AuthListener from './components/AuthListener';
-import ComingSoon from './pages/coming-soon/ComingSoon';
-import { AuthProvider } from './context/AuthContext';
+const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
+const StudyNotes = lazy(() => import('./pages/resources/StudyNotes'));
+const ComingSoon = lazy(() => import('./pages/coming-soon/ComingSoon'));
 
 function App() {
   return (
@@ -27,24 +31,28 @@ function App() {
         <AuthListener />
         <ScrollToTop />
         <Routes>
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/" element={<Home />} />
-        <Route element={<MainLayout />}>
-          <Route path="/about" element={<About />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/notes" element={<StudyNotes />} />
-          <Route path="/resource/:id" element={<ResourceDetails />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings/notifications" element={<NotificationSettings />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/attribution" element={<Attribution />} />
-          <Route path="/coming-soon" element={<ComingSoon />} />
-        </Route>
+          <Route path="/onboarding" element={<Suspense fallback={<PageLoader />}><Onboarding /></Suspense>} />
+          <Route path="/" element={<Home />} />
 
-        {/* Standalone PDF Viewer Route */}
-        <Route path="/view/:id" element={<PdfViewer />} />
+          <Route element={<MainLayout />}>
+            {/* Small static pages are intentionally kept in the main bundle. */}
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/attribution" element={<Attribution />} />
+
+            {/* Lazy-loaded heavy pages. MainLayout manages the suspense internally. */}
+            <Route path="/library" element={<Library />} />
+            <Route path="/notes" element={<StudyNotes />} />
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/settings/notifications" element={<NotificationSettings />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/coming-soon" element={<ComingSoon />} />
+          </Route>
+
+          {/* Standalone PDF Viewer Route */}
+          <Route path="/view/:id" element={<Suspense fallback={<PageLoader />}><PdfViewer /></Suspense>} />
 
           {/* Catch-all route for 404s */}
           <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
