@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../services/supabase';
+import { fetchSyllabusChapters } from '../../services/learningResourcesAPI';
 import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
@@ -31,13 +32,7 @@ const Dashboard: React.FC = () => {
       try {
         // Fetch syllabus: all chapters for the student's class
         const normalizedClass = normalizeClassValue(profile.student_class);
-        const { data: syllabusData, error: syllabusError } = await supabase
-          .from('learning_resources')
-          .select('chapter_id, subject')
-          .eq('resource_type', 'notes')
-          .eq('student_class', normalizedClass)
-          .eq('medium', normalizeMediumValue(profile.study_medium))
-          .not('chapter_id', 'is', null);
+        const { data: syllabusData, error: syllabusError } = await fetchSyllabusChapters(normalizedClass, normalizeMediumValue(profile.study_medium));
 
         if (syllabusError) throw syllabusError;
 

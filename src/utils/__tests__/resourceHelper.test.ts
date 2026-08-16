@@ -104,7 +104,7 @@ describe('resourceHelper', () => {
       const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
         getPublicUrl: getPublicUrlMock,
         // Add other mock methods if needed to satisfy types, but casting to any should be fine
-      } as any);
+      } as unknown as ReturnType<typeof supabase.storage.from>);
 
       expect(getResourceUrl(item)).toBe('https://supabase.com/public/path.pdf');
       expect(fromMock).toHaveBeenCalledWith('pdfs');
@@ -122,7 +122,7 @@ describe('resourceHelper', () => {
       });
       const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
         getPublicUrl: getPublicUrlMock,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.storage.from>);
 
       expect(getResourceUrl(item)).toBe('https://supabase.com/public/path.pdf');
       expect(fromMock).toHaveBeenCalledWith('pdfs');

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
+import { fetchLearningResourceById, fetchLearningResources } from '../../services/learningResourcesAPI';
 import type { Resource } from '../../types';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
-import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
+import { isResourceProtected } from '../../utils/resourceHelper';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,11 +20,7 @@ const ResourceDetails: React.FC = () => {
       if (!id) return;
       setLoading(true);
 
-      const { data, error } = await supabase
-        .from('learning_resources')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const { data: mappedResource, error } = await fetchLearningResourceById(id, false);
 
       if (error) {
         console.error("Error fetching resource:", error);
@@ -31,22 +28,7 @@ const ResourceDetails: React.FC = () => {
         return;
       }
 
-      if (data) {
-        const mappedResource: Resource = {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          resource_type: data.resource_type,
-          medium: data.medium,
-          uploadDate: data.created_at || new Date().toISOString(),
-          pdfUrl: getResourceUrl(data),
-          thumbnailUrl: data.thumbnail_url || '',
-          student_class: data.student_class || undefined,
-          subject: data.subject || undefined,
-          allow_download: data.allow_download ?? undefined,
-          storage_bucket: data.storage_bucket,
-          file_path: data.file_path,
-        };
+      if (mappedResource) {
         setResource(mappedResource);
 
         if (isResourceProtected(mappedResource)) {
@@ -66,32 +48,19 @@ const ResourceDetails: React.FC = () => {
         }
 
         // Fetch related
-        const { data: relatedData, error: relatedError } = await supabase
-          .from('learning_resources')
-          .select('*')
-          .eq('resource_type', data.resource_type)
-          .neq('id', data.id)
-          .limit(3);
+        const { data: relatedData, error: relatedError } = await fetchLearningResources({
+          resource_type: mappedResource.resource_type,
+          student_class: mappedResource.student_class || undefined,
+          subject: mappedResource.subject || undefined,
+          medium: mappedResource.medium || undefined,
+          neqId: mappedResource.id,
+          limit: 3
+        });
 
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);
         } else if (relatedData) {
-            const mappedRelated: Resource[] = relatedData.map(item => ({
-                id: item.id,
-                title: item.title,
-                description: item.description,
-                resource_type: item.resource_type,
-                medium: item.medium,
-                uploadDate: item.created_at || new Date().toISOString(),
-                pdfUrl: getResourceUrl(item),
-                thumbnailUrl: item.thumbnail_url || '',
-                student_class: item.student_class || undefined,
-                subject: item.subject || undefined,
-                allow_download: item.allow_download ?? undefined,
-                storage_bucket: item.storage_bucket,
-                file_path: item.file_path,
-            }));
-            setRelatedResources(mappedRelated);
+          setRelatedResources(relatedData);
         }
       }
       setLoading(false);
