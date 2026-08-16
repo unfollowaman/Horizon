@@ -347,6 +347,7 @@ const Footer = () => (
             <Link to="/about" className={styles.footerNavLink}>About Us</Link>
             <Link to="/" className={styles.footerNavLink}>Contact</Link>
             <Link to="/privacy-policy" className={styles.footerNavLink}>Privacy Policy</Link>
+            <Link to="/attribution" className={styles.footerNavLink}>Attribution</Link>
           </nav>
         </div>
       </div>

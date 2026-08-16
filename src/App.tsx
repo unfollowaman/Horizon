@@ -12,6 +12,7 @@ import Register from './pages/auth/Register';
 import Onboarding from './pages/onboarding/Onboarding';
 import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
+import Attribution from './pages/attribution/Attribution';
 import ScrollToTop from './components/ScrollToTop';
 import PdfViewer from './pages/resources/PdfViewer';
 import StudyNotes from './pages/resources/StudyNotes';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/attribution" element={<Attribution />} />
           <Route path="/coming-soon" element={<ComingSoon />} />
         </Route>
 
