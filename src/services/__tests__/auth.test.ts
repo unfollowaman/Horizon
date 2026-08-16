@@ -27,6 +27,7 @@ describe('auth service', () => {
   });
 
   afterEach(() => {
+    // @ts-ignore
     window.location = originalLocation;
   });
 
@@ -122,7 +123,7 @@ describe('auth service', () => {
 
     it('throws error when logout fails', async () => {
       const mockError = new Error('Logout failed');
-      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: mockError });
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: mockError as any });
       await expect(logout()).rejects.toThrow('Logout failed');
     });
   });
