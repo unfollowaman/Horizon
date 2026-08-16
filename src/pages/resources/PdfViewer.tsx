@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { navLinks } from '../../data/navigation';
 import ProfileButton from '../../components/ProfileButton';
 import { getResourceUrl, isResourceProtected } from '../../utils/resourceHelper';
+import PdfLoadingScreen from '../../components/PdfLoadingScreen';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -733,8 +734,9 @@ const PdfViewer: React.FC = () => {
   if (loading) {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
+        {/* We can leave the generic fetch loader or we could show PdfLoadingScreen here too. But let's only show PdfLoadingScreen when resource fetch is complete and signed URL is available, as instructed. */}
         <div className="text-center p-8 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-            <h2 className="text-h2 uppercase mb-4 text-ink">Loading PDF...</h2>
+            <h2 className="text-h2 uppercase mb-4 text-ink">Loading resource...</h2>
         </div>
       </div>
     );
@@ -797,6 +799,12 @@ const PdfViewer: React.FC = () => {
           Link copied to clipboard.
         </div>
       )}
+
+      {/* PDF Loading Animation Overlay */}
+      {numPages === null && !pdfError && signedUrl && (
+        <PdfLoadingScreen />
+      )}
+
       {/* Floating Controls */}
       <button
         onClick={() => navigate(-1)}
@@ -988,7 +996,7 @@ const PdfViewer: React.FC = () => {
                       onLoadSuccess={onDocumentLoadSuccess}
                       onLoadError={onDocumentLoadError}
                       onSourceError={onDocumentSourceError}
-                      loading={<div className="p-4 font-bold flex justify-center w-full">Rendering PDF...</div>}
+                      loading={<div style={{ display: 'none' }} />}
                       className={styles.pdfDocument}
                     >
                       {Array.from(new Array(numPages || 0), (_, index) => (
