@@ -38,6 +38,26 @@ describe('resourceHelper', () => {
     it('returns false if both storage_bucket is pdfs and resource_type is pyq', () => {
       expect(isResourceProtected({ storage_bucket: 'pdfs', resource_type: 'pyq' })).toBe(false);
     });
+
+    it('returns true if resource is empty (storage_bucket undefined, resource_type undefined)', () => {
+      expect(isResourceProtected({})).toBe(true);
+    });
+
+    it('returns true if storage_bucket is undefined and resource_type is not pyq', () => {
+      expect(isResourceProtected({ resource_type: 'notes' })).toBe(true);
+    });
+
+    it('returns false if storage_bucket is undefined and resource_type is pyq', () => {
+      expect(isResourceProtected({ resource_type: 'pyq' })).toBe(false);
+    });
+
+    it('returns true if resource_type is undefined and storage_bucket is not pdfs', () => {
+      expect(isResourceProtected({ storage_bucket: 'other' })).toBe(true);
+    });
+
+    it('returns false if resource_type is undefined and storage_bucket is pdfs', () => {
+      expect(isResourceProtected({ storage_bucket: 'pdfs' })).toBe(false);
+    });
   });
 
   describe('getResourceUrl', () => {
