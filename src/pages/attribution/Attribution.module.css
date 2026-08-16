@@ -51,24 +51,24 @@
 }
 
 .contentCard {
-  padding: var(--spacing-4) var(--spacing-3);
-  --tw-radius: var(--radius-xl);
-  border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5);
-}
-
-@media (min-width: 768px) {
-  .contentCard {
-    padding: var(--spacing-6) var(--spacing-5);
-  }
+  gap: var(--spacing-4);
 }
 
 .section {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+  padding: var(--spacing-4) var(--spacing-3);
+  --tw-radius: var(--radius-xl);
+  border-radius: var(--radius-xl);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: var(--spacing-6) var(--spacing-5);
+  }
 }
 
 .section h2 {

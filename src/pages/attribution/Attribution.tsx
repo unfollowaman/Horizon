@@ -22,10 +22,14 @@ const Attribution: React.FC = () => {
         <h1 className={styles.pageTitle}><span className={styles.textGradient}>Attribution</span></h1>
       </header>
 
-      <div className={`${styles.contentCard} neu-card`}>
-        <p>Horizon uses third-party illustrations and icons throughout the platform. We gratefully acknowledge the creators and services that provide these resources.</p>
+      <div className={styles.contentCard}>
+        <div className={`${styles.section} neu-raised`}>
+          <p style={{ color: 'var(--muted-foreground)', fontSize: '1.125rem', lineHeight: '1.7', margin: 0 }}>
+            Horizon uses third-party illustrations and icons throughout the platform. We gratefully acknowledge the creators and services that provide these resources.
+          </p>
+        </div>
 
-        <section className={styles.section}>
+        <section className={`${styles.section} neu-raised`}>
           <h2>Illustrations</h2>
           <h3>Storyset</h3>
           <ul>
@@ -62,7 +66,7 @@ const Attribution: React.FC = () => {
           </ul>
         </section>
 
-        <section className={styles.section}>
+        <section className={`${styles.section} neu-raised`}>
           <h2>Icons</h2>
           <h3>Icons8</h3>
           <p>
