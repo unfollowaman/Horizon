@@ -163,7 +163,7 @@ describe('auth service', () => {
       const result = await getCurrentUser();
 
       expect(supabase.from).toHaveBeenCalledWith('profiles');
-      expect(mockSelect).toHaveBeenCalledWith('*');
+      expect(mockSelect).toHaveBeenCalledWith('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at');
       expect(mockEq).toHaveBeenCalledWith('id', 'test-id');
       expect(mockSingle).toHaveBeenCalled();
       expect(result).toEqual(mockProfile);
