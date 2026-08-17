@@ -171,26 +171,32 @@ describe('auth service', () => {
       expect(result).toEqual(mockProfile);
     });
 
-    it('returns null if fetching profile fails', async () => {
+    it('returns null if fetching profile fails via chained supabase call', async () => {
       const mockUser = { id: 'test-id' };
       const mockProfileError = new Error('Profile not found');
 
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as never);
+      // Mocking supabase.auth.getUser
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
 
-      const mockSelect = vi.fn().mockReturnThis();
-      const mockEq = vi.fn().mockReturnThis();
+      // Mocking chained supabase.from().select().eq().single() to return an error
       const mockSingle = vi.fn().mockResolvedValue({ data: null, error: mockProfileError });
+      const mockEq = vi.fn().mockReturnValue({ single: mockSingle });
+      const mockSelect = vi.fn().mockReturnValue({ eq: mockEq });
 
       vi.mocked(supabase.from).mockReturnValue({
         select: mockSelect,
-        eq: mockEq,
-        single: mockSingle,
-      } as never);
+      } as any);
 
       // We need to spy on console.error since the function logs it
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const result = await getCurrentUser();
+
+      expect(supabase.auth.getUser).toHaveBeenCalled();
+      expect(supabase.from).toHaveBeenCalledWith('profiles');
+      expect(mockSelect).toHaveBeenCalledWith('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at');
+      expect(mockEq).toHaveBeenCalledWith('id', 'test-id');
+      expect(mockSingle).toHaveBeenCalled();
 
       expect(result).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith("Error fetching profile", mockProfileError);
