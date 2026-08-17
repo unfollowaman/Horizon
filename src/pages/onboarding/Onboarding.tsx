@@ -31,7 +31,7 @@ const Onboarding: React.FC = () => {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
         .eq('id', session.user.id)
         .single();
 
