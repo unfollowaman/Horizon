@@ -21,11 +21,15 @@ describe('auth service', () => {
     vi.clearAllMocks();
 
     // Setup window.location for register tests
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     delete window.location;
-    window.location = { origin: 'http://localhost' } as unknown as never;
+    window.location = { origin: 'http://localhost' } as never;
   });
 
   afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     window.location = originalLocation;
   });
 
@@ -35,7 +39,7 @@ describe('auth service', () => {
         data: { user: { id: 'test-id' }, session: { access_token: 'token' } },
         error: null,
       };
-      vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue(mockData as unknown as never);
+      vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue(mockData as never);
 
       const result = await login('test@example.com', 'password123');
 
@@ -51,7 +55,7 @@ describe('auth service', () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
         error: mockError,
-      } as unknown as never);
+      } as never);
 
       await expect(login('test@example.com', 'wrongpassword'))
         .rejects.toThrow('Invalid credentials');
@@ -70,7 +74,7 @@ describe('auth service', () => {
         error: null,
       };
 
-      vi.mocked(supabase.auth.signUp).mockResolvedValue(mockData as unknown as never);
+      vi.mocked(supabase.auth.signUp).mockResolvedValue(mockData as never);
 
       const result = await register('test@example.com', 'password123', 'Test User');
 
@@ -94,7 +98,7 @@ describe('auth service', () => {
           },
         },
         error: null,
-      } as unknown as never);
+      } as never);
 
       await expect(register('test@example.com', 'password123', 'Test User'))
         .rejects.toThrow('This email is already registered. Please sign in instead.');
@@ -105,7 +109,7 @@ describe('auth service', () => {
       vi.mocked(supabase.auth.signUp).mockResolvedValue({
         data: { user: null, session: null },
         error: mockError,
-      } as unknown as never);
+      } as never);
 
       await expect(register('test@example.com', 'password123', 'Test User'))
         .rejects.toThrow('Supabase error');
@@ -121,14 +125,14 @@ describe('auth service', () => {
 
     it('throws error when logout fails', async () => {
       const mockError = new Error('Logout failed');
-      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: mockError as unknown as never });
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: mockError as never });
       await expect(logout()).rejects.toThrow('Logout failed');
     });
   });
 
   describe('getCurrentUser', () => {
     it('returns null if no user is authenticated', async () => {
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as unknown as never);
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as never);
 
       const result = await getCurrentUser();
 
@@ -137,7 +141,7 @@ describe('auth service', () => {
 
     it('throws error if getting user fails', async () => {
       const mockError = new Error('Auth error');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: mockError } as unknown as never);
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: mockError } as never);
 
       await expect(getCurrentUser()).rejects.toThrow('Auth error');
     });
@@ -146,7 +150,7 @@ describe('auth service', () => {
       const mockUser = { id: 'test-id' };
       const mockProfile = { id: 'test-id', name: 'Test User' };
 
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as unknown as never);
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as never);
 
       const mockSelect = vi.fn().mockReturnThis();
       const mockEq = vi.fn().mockReturnThis();
@@ -156,7 +160,7 @@ describe('auth service', () => {
         select: mockSelect,
         eq: mockEq,
         single: mockSingle,
-      } as unknown as never);
+      } as never);
 
       const result = await getCurrentUser();
 
@@ -171,7 +175,7 @@ describe('auth service', () => {
       const mockUser = { id: 'test-id' };
       const mockProfileError = new Error('Profile not found');
 
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as unknown as never);
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as never);
 
       const mockSelect = vi.fn().mockReturnThis();
       const mockEq = vi.fn().mockReturnThis();
@@ -181,7 +185,7 @@ describe('auth service', () => {
         select: mockSelect,
         eq: mockEq,
         single: mockSingle,
-      } as unknown as never);
+      } as never);
 
       // We need to spy on console.error since the function logs it
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
