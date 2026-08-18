@@ -37,30 +37,24 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true
   );
 
-  const [selectedClass, setSelectedClass] = useState<string>(isDesktop ? 'Classes' : 'Class 10');
-  const [selectedSubject, setSelectedSubject] = useState<string>(isDesktop ? 'All Subjects' : 'Subjects');
-  const [selectedThirdFilter, setSelectedThirdFilter] = useState<string>(
-    isDesktop ? config.getThirdFilterDesktopLabel('') : config.getThirdFilterMobileLabel('')
-  );
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [selectedThirdFilter, setSelectedThirdFilter] = useState<string>('');
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
-      if (e.matches) {
-        setSelectedSubject(prev => prev === 'Subjects' ? 'All Subjects' : prev);
-        setSelectedThirdFilter(prev => prev === config.getThirdFilterMobileLabel('') ? config.getThirdFilterDesktopLabel('') : prev);
-        // Only switch Class 10 to Classes if it's considered the "default" transition.
-        setSelectedClass(prev => prev === 'Class 10' ? 'Classes' : prev);
-      } else {
-        setSelectedSubject(prev => prev === 'All Subjects' ? 'Subjects' : prev);
-        setSelectedThirdFilter(prev => prev === config.getThirdFilterDesktopLabel('') ? config.getThirdFilterMobileLabel('') : prev);
-        setSelectedClass(prev => prev === 'Classes' ? 'Class 10' : prev);
-      }
     };
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
-  }, [config]);
+  }, []);
+
+  const classAllLabel = isDesktop ? 'All Classes' : 'Classes';
+  const subjectAllLabel = isDesktop ? 'All Subjects' : 'Subjects';
+  const thirdFilterAllLabel = isDesktop
+    ? config.getThirdFilterDesktopLabel('')
+    : config.getThirdFilterMobileLabel('');
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -120,17 +114,21 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const filteredResources = useMemo(() => {
     let filtered = allResources;
 
-    if (selectedClass && selectedClass !== 'All Classes' && selectedClass !== 'Classes') {
+    if (selectedClass) {
       filtered = filtered.filter(r => r.student_class === selectedClass);
     }
-    if (selectedSubject !== 'Subjects' && selectedSubject !== 'All Subjects') {
+    if (selectedSubject) {
       filtered = filtered.filter(r => r.subject === selectedSubject);
     }
 
-    filtered = config.filterByThirdFilter(filtered, selectedThirdFilter);
+    // Pass the actual current label for "all" so `config.filterByThirdFilter` can ignore it.
+    // E.g., if selectedThirdFilter is '', pass `thirdFilterAllLabel` ('Years' or 'All Years').
+    // If it's something else, pass it through.
+    const effectiveThirdFilter = selectedThirdFilter || thirdFilterAllLabel;
+    filtered = config.filterByThirdFilter(filtered, effectiveThirdFilter);
 
     return config.sortResources(filtered);
-  }, [allResources, selectedClass, selectedSubject, selectedThirdFilter, config]);
+  }, [allResources, selectedClass, selectedSubject, selectedThirdFilter, thirdFilterAllLabel, config]);
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
@@ -157,25 +155,25 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       <div className="mb-[clamp(24px,4vw,40px)] flex w-full gap-[12px]">
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           <Dropdown
-            value={selectedClass}
-            onChange={setSelectedClass}
-            options={isDesktop ? ['Classes', ...uniqueClasses] : uniqueClasses}
+            value={selectedClass || classAllLabel}
+            onChange={(val) => setSelectedClass(val === classAllLabel ? '' : val)}
+            options={[classAllLabel, ...uniqueClasses]}
           />
         </div>
 
         <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
           <Dropdown
-            value={selectedSubject}
-            onChange={setSelectedSubject}
-            options={isDesktop ? ['All Subjects', ...uniqueSubjects] : ['Subjects', ...uniqueSubjects]}
+            value={selectedSubject || subjectAllLabel}
+            onChange={(val) => setSelectedSubject(val === subjectAllLabel ? '' : val)}
+            options={[subjectAllLabel, ...uniqueSubjects]}
           />
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           <Dropdown
-            value={selectedThirdFilter}
-            onChange={setSelectedThirdFilter}
-            options={isDesktop ? [config.getThirdFilterDesktopLabel(''), ...uniqueThirdFilterValues] : [config.getThirdFilterMobileLabel(''), ...uniqueThirdFilterValues]}
+            value={selectedThirdFilter || thirdFilterAllLabel}
+            onChange={(val) => setSelectedThirdFilter(val === thirdFilterAllLabel ? '' : val)}
+            options={[thirdFilterAllLabel, ...uniqueThirdFilterValues]}
           />
         </div>
       </div>
