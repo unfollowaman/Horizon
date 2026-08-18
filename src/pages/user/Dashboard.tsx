@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
           onClick={() => window.scrollTo(0, 0)}
           className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}
         >
-          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
+          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <span className={styles.heroBrandPillText}>Horizon</span>
         </Link>
         <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">Student Dashboard</h2>

@@ -297,7 +297,7 @@ export const HeroPhoneAnimation: React.FC = () => {
 
           <img
             ref={mascotRef}
-            src="/assets/favicon/logo.png"
+            src="/assets/favicon/logo.avif"
             alt="Mascot"
             className={styles.mascot}
             style={{ opacity: 0 }}
