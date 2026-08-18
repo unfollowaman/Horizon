@@ -7,7 +7,7 @@ import {
 } from '../notifications';
 
 describe('notifications service', () => {
-  let consoleLogSpy: any;
+  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     // Spy on console.log before each test

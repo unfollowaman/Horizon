@@ -176,7 +176,8 @@ describe('auth service', () => {
       const mockProfileError = new Error('Profile not found');
 
       // Mocking supabase.auth.getUser
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
+      // @ts-expect-error mockResolvedValue expects specific AuthError type
+      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null });
 
       // Mocking chained supabase.from().select().eq().single() to return an error
       const mockSingle = vi.fn().mockResolvedValue({ data: null, error: mockProfileError });
@@ -185,7 +186,7 @@ describe('auth service', () => {
 
       vi.mocked(supabase.from).mockReturnValue({
         select: mockSelect,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       // We need to spy on console.error since the function logs it
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
