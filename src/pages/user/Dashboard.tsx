@@ -166,7 +166,7 @@ const Dashboard: React.FC = () => {
           <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <span className={styles.heroBrandPillText}>Horizon</span>
         </Link>
-        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">Student Dashboard</h2>
+        <h1 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">Student Dashboard</h1>
       </div>
 
       {/* Main Layout Grid */}

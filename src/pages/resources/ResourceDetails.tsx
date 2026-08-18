@@ -73,7 +73,7 @@ const ResourceDetails: React.FC = () => {
   if (loading) {
     return (
         <div className="text-center p-8 neu-card rounded-2xl">
-            <h2 className="text-h2 uppercase mb-4 text-ink">Loading Resource...</h2>
+            <h1 className="text-h2 uppercase mb-4 text-ink">Loading Resource...</h1>
         </div>
     );
   }
@@ -84,7 +84,7 @@ const ResourceDetails: React.FC = () => {
   if (!resource) {
     return (
       <div className="text-center p-8 neu-card rounded-2xl">
-        <h2 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h2>
+        <h1 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h1>
         <Link to="/" className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Back to Home</Link>
       </div>
     );
@@ -100,7 +100,7 @@ const ResourceDetails: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="flex-[3] min-w-[300px]">
-          <h2 className="text-h1 uppercase mb-2">{resource.title}</h2>
+          <h1 className="text-h1 uppercase mb-2">{resource.title}</h1>
           <p className="text-body1 font-bold mb-8">{resource.description}</p>
 
           <div className="neu-card rounded-2xl p-4">

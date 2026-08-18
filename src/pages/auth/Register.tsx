@@ -34,7 +34,7 @@ const Register: React.FC = () => {
             alt="Confirm Email"
             className="w-40 h-40 mb-4 object-contain"
           />
-          <h2 className="text-h2">Check your email</h2>
+          <h1 className="text-h2">Check your email</h1>
           <p style={{ marginTop: '1rem' }}>
             {email
               ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
@@ -47,7 +47,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
-      <h2>Register</h2>
+      <h1>Register</h1>
       <p>Create a new account to access resources.</p>
 
       {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
