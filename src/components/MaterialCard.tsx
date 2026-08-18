@@ -1,6 +1,6 @@
 import React from 'react';
 import { useId } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import type { Resource } from '../types';
 import { handleDownload } from '../utils/download';
 import { canDownload } from '../utils/permissions';
@@ -183,35 +183,34 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
 };
 
 const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
-  const navigate = useNavigate();
-
   return (
-    <div
-      className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center cursor-pointer"
-      onClick={() => navigate(`/view/${resource.id}`)}
-    >
-      <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
-        {resource.thumbnailUrl ? (
-          <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
-        ) : (
-          <DefaultIllustration type={resource.resource_type} />
-        )}
-      </div>
-      <h3 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
-        {resource.resource_type === 'pyq'
-          ? `${resource.student_class} ${resource.subject} PYQ`
-          : resource.resource_type === 'notes' && resource.chapters
-            ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}`
-            : resource.title}
-      </h3>
-      <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
-        {resource.year || resource.subject}
-      </p>
+    <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
+      <Link
+        to={`/view/${resource.id}`}
+        className="w-full flex flex-col items-center text-center no-underline text-ink group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 rounded-md"
+      >
+        <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
+          {resource.thumbnailUrl ? (
+            <img src={resource.thumbnailUrl} alt={resource.title} className="w-full h-full object-cover" />
+          ) : (
+            <DefaultIllustration type={resource.resource_type} />
+          )}
+        </div>
+        <h3 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
+          {resource.resource_type === 'pyq'
+            ? `${resource.student_class} ${resource.subject} PYQ`
+            : resource.resource_type === 'notes' && resource.chapters
+              ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}`
+              : resource.title}
+        </h3>
+        <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
+          {resource.year || resource.subject}
+        </p>
+      </Link>
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
           to={`/view/${resource.id}`}
-          onClick={(e) => e.stopPropagation()}
-          className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
+          className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
         >
           <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <defs>
@@ -233,7 +232,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
           <button
             type="button"
             onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
-            className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center"
+            className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
           >
             <svg className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <defs>
