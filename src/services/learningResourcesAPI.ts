@@ -57,7 +57,7 @@ export interface FetchResourcesFilters {
 }
 
 export const fetchLearningResources = async (filters: FetchResourcesFilters = {}) => {
-  let query = supabase.from('learning_resources').select(filters.includeChapters ? 'id, title, resource_type, medium, created_at, pdf_url, thumbnail_url, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, pdf_url, thumbnail_url, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path');
+  let query = supabase.from('learning_resources').select(filters.includeChapters ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path');
 
   if (filters.resource_type) query = query.eq('resource_type', filters.resource_type);
   if (filters.student_class) query = query.eq('student_class', filters.student_class);
@@ -79,7 +79,7 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
 export const fetchLearningResourceById = async (id: string, includeChapters: boolean = false) => {
   const { data, error } = await supabase
     .from('learning_resources')
-    .select(includeChapters ? 'id, title, resource_type, medium, created_at, pdf_url, thumbnail_url, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, pdf_url, thumbnail_url, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path')
+    .select(includeChapters ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path')
     .eq('id', id)
     .single();
 
