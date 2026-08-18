@@ -10,7 +10,7 @@ import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
 
 // Lazy loaded pages
-const Library = lazy(() => import('./pages/resources/Library'));
+const Library = lazy(() => import('./pages/resources/LibraryRoute'));
 const ResourceDetails = lazy(() => import('./pages/resources/ResourceDetails'));
 const Dashboard = lazy(() => import('./pages/user/Dashboard'));
 const NotificationSettings = lazy(() => import('./pages/settings/NotificationSettings'));
@@ -21,7 +21,7 @@ import About from './pages/about/About';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import Attribution from './pages/attribution/Attribution';
 const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
-const StudyNotes = lazy(() => import('./pages/resources/StudyNotes'));
+const StudyNotes = lazy(() => import('./pages/resources/StudyNotesRoute'));
 const ComingSoon = lazy(() => import('./pages/coming-soon/ComingSoon'));
 
 function App() {
