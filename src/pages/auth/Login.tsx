@@ -32,7 +32,9 @@ const Login: React.FC = () => {
       {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
 
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+        <label htmlFor="login-email" className="sr-only">Email</label>
         <input
+          id="login-email"
           type="email"
           placeholder="Email"
           value={email}
@@ -40,7 +42,9 @@ const Login: React.FC = () => {
           required
           className="neu-recessed rounded-full p-3 px-5 text-ink outline-none"
         />
+        <label htmlFor="login-password" className="sr-only">Password</label>
         <input
+          id="login-password"
           type="password"
           placeholder="Password"
           value={password}

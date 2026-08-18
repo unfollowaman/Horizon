@@ -275,34 +275,40 @@ const HighlightsSection = () => {
             <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
             {error && <p className="text-red-500 mb-2">{error}</p>}
             <form className={styles.highlightsForm} onSubmit={handleSubscribe}>
+              <label htmlFor="newsletter-name" className="sr-only">Your name</label>
               <input
-            type="text"
-            placeholder="Your name"
-            required
-            value={name}
-            onChange={e => setName(e.target.value)}
-            className={`neu-recessed ${styles.highlightsInput}`}
-            style={{ marginBottom: '0.5rem' }}
-          />
-          <input
-            type="email"
-            placeholder="Your email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className={`neu-recessed ${styles.highlightsInput}`}
-            style={{ marginBottom: '0.5rem' }}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className={`neu-recessed ${styles.highlightsInput}`}
-            style={{ marginBottom: '0.5rem' }}
-          />
-          <button type="submit" disabled={loading} className={`neu-raised neu-raised-hover ${styles.highlightsSubmitBtn}`}>
+                id="newsletter-name"
+                type="text"
+                placeholder="Your name"
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className={`neu-recessed ${styles.highlightsInput}`}
+                style={{ marginBottom: '0.5rem' }}
+              />
+              <label htmlFor="newsletter-email" className="sr-only">Your email</label>
+              <input
+                id="newsletter-email"
+                type="email"
+                placeholder="Your email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className={`neu-recessed ${styles.highlightsInput}`}
+                style={{ marginBottom: '0.5rem' }}
+              />
+              <label htmlFor="newsletter-password" className="sr-only">Password</label>
+              <input
+                id="newsletter-password"
+                type="password"
+                placeholder="Password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className={`neu-recessed ${styles.highlightsInput}`}
+                style={{ marginBottom: '0.5rem' }}
+              />
+              <button type="submit" disabled={loading} className={`neu-raised neu-raised-hover ${styles.highlightsSubmitBtn}`}>
             {loading ? 'Subscribing...' : 'Subscribe'}
           </button>
         </form>
