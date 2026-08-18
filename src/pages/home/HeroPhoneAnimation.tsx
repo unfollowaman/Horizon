@@ -19,12 +19,12 @@ interface IconConfig {
 }
 
 const iconsConfig: IconConfig[] = [
-  { label: 'Notes', asset: 'notes.png', baseAngle: -90, arriveDelay: 0, grid: { x: 92, y: 160 } },
-  { label: 'PYQ Papers', asset: 'pyq-papers.png', baseAngle: -30, arriveDelay: 150, grid: { x: 208, y: 160 } },
-  { label: 'MCQ Sheets', asset: 'mcq-sheets.png', baseAngle: 30, arriveDelay: 300, grid: { x: 92, y: 235 } },
-  { label: 'Flashcards', asset: 'flashcards.png', baseAngle: 90, arriveDelay: 450, grid: { x: 208, y: 235 } },
-  { label: 'Announcements', asset: 'announcements.png', baseAngle: 150, arriveDelay: 600, grid: { x: 92, y: 310 } },
-  { label: 'Revision Sheets', asset: 'revision-sheets.png', baseAngle: 210, arriveDelay: 750, grid: { x: 208, y: 310 } },
+  { label: 'Notes', asset: 'notes.avif', baseAngle: -90, arriveDelay: 0, grid: { x: 92, y: 160 } },
+  { label: 'PYQ Papers', asset: 'pyq-papers.avif', baseAngle: -30, arriveDelay: 150, grid: { x: 208, y: 160 } },
+  { label: 'MCQ Sheets', asset: 'mcq-sheets.avif', baseAngle: 30, arriveDelay: 300, grid: { x: 92, y: 235 } },
+  { label: 'Flashcards', asset: 'flashcards.avif', baseAngle: 90, arriveDelay: 450, grid: { x: 208, y: 235 } },
+  { label: 'Announcements', asset: 'announcements.avif', baseAngle: 150, arriveDelay: 600, grid: { x: 92, y: 310 } },
+  { label: 'Revision Sheets', asset: 'revision-sheets.avif', baseAngle: 210, arriveDelay: 750, grid: { x: 208, y: 310 } },
 ];
 
 const easeOutBack = (x: number) => 1 + 2.70158 * Math.pow(x - 1, 3) + 1.70158 * Math.pow(x - 1, 2);
