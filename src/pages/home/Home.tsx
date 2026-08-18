@@ -55,7 +55,7 @@ const Header = () => {
       <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
         <Link to="/" className={`${styles.brandLogoDesktop} neu-raised`}>
-          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.brandLogoImg} />
+          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.brandLogoImg} />
           <div className={styles.brandLogoDivider}></div>
           <span className={styles.brandLogoText}>
             Horizon
@@ -190,7 +190,7 @@ const HeroSection = () => (
 
       {/* Brand Pill Logo */}
       <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
-        <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.heroBrandPillImg} />
+        <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.heroBrandPillImg} />
         <span className={styles.heroBrandPillText}>
           Horizon
         </span>
@@ -321,7 +321,7 @@ const Footer = () => (
       {/* Brand Section */}
       <div className={styles.footerBrandCol}>
         <div className={styles.footerBrandTitleWrapper}>
-          <img src="/assets/favicon/logo.png" alt="Horizon Logo" className={styles.footerLogo} />
+          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.footerLogo} />
           <h3 className={styles.footerBrandTitle}>Horizon</h3>
         </div>
       </div>
