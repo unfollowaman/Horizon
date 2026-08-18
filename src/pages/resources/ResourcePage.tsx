@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Resource } from '../../types';
+import type { Resource, ResourceType } from '../../types';
 import { fetchLearningResources } from '../../services/learningResourcesAPI';
 
 import { Dropdown } from '../../components/Dropdown';
@@ -9,7 +9,26 @@ import MaterialCard from '../../components/MaterialCard';
 import OtherResources from '../../components/OtherResources';
 import ProfileButton from '../../components/ProfileButton';
 
-const StudyNotes: React.FC = () => {
+export interface ResourcePageConfig {
+  resourceType: ResourceType;
+  title: string;
+  includeChapters?: boolean;
+  thirdFilterType: 'year' | 'medium';
+  emptyMessageTitle: string;
+  emptyMessageSubtitle: string;
+  otherResourcesCategory: ResourceType | 'updates';
+  getThirdFilterDesktopLabel: (defaultLabel: string) => string;
+  getThirdFilterMobileLabel: (defaultLabel: string) => string;
+  extractThirdFilterValues: (resources: Resource[]) => string[];
+  filterByThirdFilter: (resources: Resource[], filterValue: string) => Resource[];
+  sortResources: (resources: Resource[]) => Resource[];
+}
+
+interface ResourcePageProps {
+  config: ResourcePageConfig;
+}
+
+const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const navigate = useNavigate();
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +39,9 @@ const StudyNotes: React.FC = () => {
 
   const [selectedClass, setSelectedClass] = useState<string>(isDesktop ? 'Classes' : 'Class 10');
   const [selectedSubject, setSelectedSubject] = useState<string>(isDesktop ? 'All Subjects' : 'Subjects');
-  const [selectedMedium, setSelectedMedium] = useState<string>(isDesktop ? 'All Mediums' : 'Mediums');
+  const [selectedThirdFilter, setSelectedThirdFilter] = useState<string>(
+    isDesktop ? config.getThirdFilterDesktopLabel('') : config.getThirdFilterMobileLabel('')
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
@@ -28,22 +49,26 @@ const StudyNotes: React.FC = () => {
       setIsDesktop(e.matches);
       if (e.matches) {
         setSelectedSubject(prev => prev === 'Subjects' ? 'All Subjects' : prev);
-        setSelectedMedium(prev => prev === 'Mediums' ? 'All Mediums' : prev);
+        setSelectedThirdFilter(prev => prev === config.getThirdFilterMobileLabel('') ? config.getThirdFilterDesktopLabel('') : prev);
+        // Only switch Class 10 to Classes if it's considered the "default" transition.
         setSelectedClass(prev => prev === 'Class 10' ? 'Classes' : prev);
       } else {
         setSelectedSubject(prev => prev === 'All Subjects' ? 'Subjects' : prev);
-        setSelectedMedium(prev => prev === 'All Mediums' ? 'Mediums' : prev);
+        setSelectedThirdFilter(prev => prev === config.getThirdFilterDesktopLabel('') ? config.getThirdFilterMobileLabel('') : prev);
         setSelectedClass(prev => prev === 'Classes' ? 'Class 10' : prev);
       }
     };
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
+  }, [config]);
 
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
-      const { data, error } = await fetchLearningResources({ resource_type: 'notes', includeChapters: true });
+      const { data, error } = await fetchLearningResources({
+        resource_type: config.resourceType,
+        includeChapters: config.includeChapters
+      });
 
       if (error) {
         console.error('Error fetching resources:', error);
@@ -55,7 +80,7 @@ const StudyNotes: React.FC = () => {
     };
 
     fetchResources();
-  }, []);
+  }, [config.resourceType, config.includeChapters]);
 
   const uniqueClasses = useMemo(() => {
     const classes = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
@@ -88,10 +113,9 @@ const StudyNotes: React.FC = () => {
     return Array.from(subjects).sort();
   }, [allResources]);
 
-  const uniqueMediums = useMemo(() => {
-    const rawMediums = new Set(allResources.map(r => r.medium).filter(Boolean) as string[]);
-    return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
-  }, [allResources]);
+  const uniqueThirdFilterValues = useMemo(() => {
+    return config.extractThirdFilterValues(allResources);
+  }, [allResources, config]);
 
   const filteredResources = useMemo(() => {
     let filtered = allResources;
@@ -102,18 +126,11 @@ const StudyNotes: React.FC = () => {
     if (selectedSubject !== 'Subjects' && selectedSubject !== 'All Subjects') {
       filtered = filtered.filter(r => r.subject === selectedSubject);
     }
-    if (selectedMedium !== 'Mediums' && selectedMedium !== 'All Mediums') {
-      filtered = filtered.filter(r => r.medium && r.medium.toLowerCase() === selectedMedium.toLowerCase());
-    }
 
-    // Sort by chapter number if possible, else title
-    return filtered.sort((a, b) => {
-      if (a.chapters && b.chapters) {
-        return a.chapters.chapter_number - b.chapters.chapter_number;
-      }
-      return a.title.localeCompare(b.title);
-    });
-  }, [allResources, selectedClass, selectedSubject, selectedMedium]);
+    filtered = config.filterByThirdFilter(filtered, selectedThirdFilter);
+
+    return config.sortResources(filtered);
+  }, [allResources, selectedClass, selectedSubject, selectedThirdFilter, config]);
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
@@ -133,7 +150,7 @@ const StudyNotes: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
-        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">Study Notes</h2>
+        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">{config.title}</h2>
       </div>
 
       {/* Filter Controls */}
@@ -156,9 +173,9 @@ const StudyNotes: React.FC = () => {
 
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           <Dropdown
-            value={selectedMedium}
-            onChange={setSelectedMedium}
-            options={isDesktop ? ['All Mediums', ...uniqueMediums] : ['Mediums', ...uniqueMediums]}
+            value={selectedThirdFilter}
+            onChange={setSelectedThirdFilter}
+            options={isDesktop ? [config.getThirdFilterDesktopLabel(''), ...uniqueThirdFilterValues] : [config.getThirdFilterMobileLabel(''), ...uniqueThirdFilterValues]}
           />
         </div>
       </div>
@@ -175,8 +192,8 @@ const StudyNotes: React.FC = () => {
             alt="No Content Available"
             className="w-48 h-48 mb-3 object-contain"
           />
-          <p className="font-bold text-body1 mb-2">No study notes found.</p>
-          <p className="text-caption">Try selecting a different class, subject, or medium.</p>
+          <p className="font-bold text-body1 mb-2">{config.emptyMessageTitle}</p>
+          <p className="text-caption">{config.emptyMessageSubtitle}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
@@ -187,9 +204,9 @@ const StudyNotes: React.FC = () => {
       )}
 
       {/* Feature Tiles at the Bottom */}
-      <OtherResources currentCategoryId="notes" />
+      <OtherResources currentCategoryId={config.otherResourcesCategory} />
     </div>
   );
 };
 
-export default StudyNotes;
+export default ResourcePage;
