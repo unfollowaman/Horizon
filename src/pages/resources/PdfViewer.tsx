@@ -108,7 +108,7 @@ const PdfViewer: React.FC = () => {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
         <div className="text-center p-8 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-            <h2 className="text-h2 uppercase mb-4 text-ink">Loading resource...</h2>
+            <h1 className="text-h2 uppercase mb-4 text-ink">Loading resource...</h1>
         </div>
       </div>
     );
@@ -118,7 +118,7 @@ const PdfViewer: React.FC = () => {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
         <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-          <h2 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h2>
+          <h1 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h1>
           <button onClick={() => navigate(-1)} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Go Back</button>
         </div>
       </div>
@@ -129,7 +129,7 @@ const PdfViewer: React.FC = () => {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
         <div className="flex flex-col items-center justify-center p-2 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] text-center gap-3 my-8">
-          <h2 className="text-h2 uppercase text-ink m-0">Login required</h2>
+          <h1 className="text-h2 uppercase text-ink m-0">Login required</h1>
           <p className="text-ink text-sm font-medium m-0">To access notes please sign in or register</p>
           <img
             src="/assets/SVG Illustrations/login-signin-page.svg"
@@ -156,7 +156,7 @@ const PdfViewer: React.FC = () => {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
         <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-          <h2 className="text-h2 uppercase mb-4 text-accent-red">Access denied</h2>
+          <h1 className="text-h2 uppercase mb-4 text-accent-red">Access denied</h1>
           <p className="text-ink text-lg font-medium mb-4">You do not have permission to view this resource.</p>
           <button onClick={() => navigate(-1)} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Go Back</button>
         </div>

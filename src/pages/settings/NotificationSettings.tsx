@@ -3,7 +3,7 @@ import type React from 'react';
 const NotificationSettings: React.FC = () => {
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
-      <h2>Notification Settings</h2>
+      <h1>Notification Settings</h1>
       <p>Configure how you receive updates and alerts. (Push notifications coming soon)</p>
 
       <div className="neu-card rounded-2xl p-6 mt-6">

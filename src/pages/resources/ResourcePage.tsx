@@ -148,7 +148,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       </div>
 
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
-        <h2 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">{config.title}</h2>
+        <h1 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">{config.title}</h1>
       </div>
 
       {/* Filter Controls */}

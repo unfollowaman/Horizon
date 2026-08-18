@@ -34,7 +34,7 @@ const About: React.FC = () => {
       </script>
       <div className={styles.aboutContainer}>
         <header className={`${styles.aboutHeader} neu-raised`}>
-          <h2 className={styles.pageTitle}>About <span className={styles.textGradient}>Horizon</span></h2>
+          <h1 className={styles.pageTitle}>About <span className={styles.textGradient}>Horizon</span></h1>
           <p className={styles.pageSubtitle}>Empowering students through accessible, high-quality learning resources.</p>
         </header>
 

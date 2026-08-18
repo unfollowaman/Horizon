@@ -26,7 +26,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
-      <h2>Login</h2>
+      <h1>Login</h1>
       <p>Enter your credentials to access your account.</p>
 
       {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
