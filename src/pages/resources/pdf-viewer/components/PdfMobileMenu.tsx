@@ -21,7 +21,7 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
         <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
           <div className={styles.menuHeader}>
             {user ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
-            <button onClick={closeMenu} className={styles.menuCloseBtn}>
+            <button type="button" aria-label="Close menu" onClick={closeMenu} className={styles.menuCloseBtn}>
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
