@@ -115,7 +115,7 @@ const Header = () => {
                   {/* Logo */}
                   {session ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
                   {/* Close Button */}
-                  <button onClick={closeMenu} className={styles.menuCloseBtn}>
+                  <button type="button" aria-label="Close menu" onClick={closeMenu} className={styles.menuCloseBtn}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -273,7 +273,7 @@ const HighlightsSection = () => {
         ) : (
           <>
             <p className={styles.highlightsNewsletterDesc}>Subscribe to get the latest announcements and updates.</p>
-            {error && <p className="text-red-500 mb-2">{error}</p>}
+            {error && <p role="alert" className="text-red-500 mb-2">{error}</p>}
             <form className={styles.highlightsForm} onSubmit={handleSubscribe}>
               <label htmlFor="newsletter-name" className="sr-only">Your name</label>
               <input

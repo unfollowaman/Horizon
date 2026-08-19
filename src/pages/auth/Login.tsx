@@ -29,7 +29,7 @@ const Login: React.FC = () => {
       <h1>Login</h1>
       <p>Enter your credentials to access your account.</p>
 
-      {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+      {error && <div role="alert" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
 
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
         <label htmlFor="login-email" className="sr-only">Email</label>

@@ -50,7 +50,7 @@ const Register: React.FC = () => {
       <h1>Register</h1>
       <p>Create a new account to access resources.</p>
 
-      {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+      {error && <div role="alert" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
 
       <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
         <label htmlFor="register-name" className="sr-only">Full Name</label>
