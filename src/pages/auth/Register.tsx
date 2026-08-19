@@ -31,7 +31,7 @@ const Register: React.FC = () => {
         <div className="neu-card rounded-2xl p-8 w-full max-w-[400px] mx-auto text-center flex flex-col items-center">
           <img
             src="/assets/SVG Illustrations/confirm-email.svg"
-            alt="Confirm Email"
+            alt=""
             className="w-40 h-40 mb-4 object-contain"
           />
           <h1 className="text-h2">Check your email</h1>

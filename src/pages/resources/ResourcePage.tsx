@@ -187,7 +187,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         <div className="neu-raised rounded-2xl p-8 text-center flex flex-col items-center justify-center">
           <img
             src="/assets/SVG Illustrations/no-content-available.svg"
-            alt="No Content Available"
+            alt=""
             className="w-48 h-48 mb-3 object-contain"
           />
           <p className="font-bold text-body1 mb-2">{config.emptyMessageTitle}</p>

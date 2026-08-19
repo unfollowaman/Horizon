@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { register } from '../../services/auth';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import ProfilePopover from '../../components/ProfilePopover';
@@ -14,6 +13,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,16 +63,20 @@ const Header = () => {
         </Link>
 
         {/* Navigation */}
-        <nav className={`${styles.navGroup} neu-raised`}>
-          {navLinks.filter(link => link.showOnDesktop).map((link, index) => (
-            <Link
-              key={index}
-              to={link.path}
-              className={styles.navItem}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className={`${styles.navGroup} neu-raised`} aria-label="Main navigation">
+          {navLinks.filter(link => link.showOnDesktop).map((link, index) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Link
+                key={index}
+                to={link.path}
+                className={styles.navItem}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Get Started or Profile Popover */}
@@ -123,19 +127,23 @@ const Header = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className={`${styles.menuNavLinks} ${session ? styles.menuNavLinksAuth : ''}`}>
-                  {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
-                    <React.Fragment key={index}>
-                      <Link
-                        to={link.path}
-                        onClick={closeMenu}
-                        className={styles.menuNavLink}
-                      >
-                        {link.label}
-                      </Link>
-                      {(index < array.length - 1 || session) && <div className={styles.menuDivider} />}
-                    </React.Fragment>
-                  ))}
+                <nav className={`${styles.menuNavLinks} ${session ? styles.menuNavLinksAuth : ''}`} aria-label="Mobile navigation">
+                  {navLinks.filter(link => link.showOnMobile).map((link, index, array) => {
+                    const isActive = location.pathname === link.path;
+                    return (
+                      <React.Fragment key={index}>
+                        <Link
+                          to={link.path}
+                          onClick={closeMenu}
+                          className={styles.menuNavLink}
+                          aria-current={isActive ? 'page' : undefined}
+                        >
+                          {link.label}
+                        </Link>
+                        {(index < array.length - 1 || session) && <div className={styles.menuDivider} />}
+                      </React.Fragment>
+                    );
+                  })}
 
                   {session && (
                     <React.Fragment>
@@ -143,6 +151,7 @@ const Header = () => {
                         to="/dashboard"
                         onClick={closeMenu}
                         className={styles.menuNavLink}
+                        aria-current={location.pathname === '/dashboard' ? 'page' : undefined}
                       >
                         Profile
                       </Link>
@@ -320,46 +329,57 @@ const HighlightsSection = () => {
   );
 };
 
-const Footer = () => (
-  <footer className={styles.footer}>
-    <div className={styles.footerContainer}>
+const Footer = () => {
+  const location = useLocation();
 
-      {/* Brand Section */}
-      <div className={styles.footerBrandCol}>
-        <div className={styles.footerBrandTitleWrapper}>
-          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.footerLogo} />
-          <h3 className={styles.footerBrandTitle}>Horizon</h3>
-        </div>
-      </div>
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.footerContainer}>
 
-      <div className={styles.footerNavWrapper}>
-        {/* Explore Links */}
-        <div className={styles.footerLinksCol}>
-          <h4 className={styles.footerLinksTitle}>Explore</h4>
-          <nav className={styles.footerNav}>
-            {navLinks.map((link, index) => (
-              <Link key={index} to={link.path} className={styles.footerNavLink}>
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+        {/* Brand Section */}
+        <div className={styles.footerBrandCol}>
+          <div className={styles.footerBrandTitleWrapper}>
+            <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.footerLogo} />
+            <h3 className={styles.footerBrandTitle}>Horizon</h3>
+          </div>
         </div>
 
-        {/* Info Links */}
-        <div className={styles.footerLinksCol}>
-          <h4 className={styles.footerLinksTitle}>Info</h4>
-          <nav className={styles.footerNav}>
-            <Link to="/" className={styles.footerNavLink}>Announcements</Link>
-            <Link to="/about" className={styles.footerNavLink}>About Us</Link>
-            <Link to="/" className={styles.footerNavLink}>Contact</Link>
-            <Link to="/privacy-policy" className={styles.footerNavLink}>Privacy Policy</Link>
-            <Link to="/attribution" className={styles.footerNavLink}>Attribution</Link>
-          </nav>
-        </div>
-      </div>
+        <div className={styles.footerNavWrapper}>
+          {/* Explore Links */}
+          <div className={styles.footerLinksCol}>
+            <h4 className={styles.footerLinksTitle}>Explore</h4>
+            <nav className={styles.footerNav} aria-label="Explore navigation">
+              {navLinks.map((link, index) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={index}
+                    to={link.path}
+                    className={styles.footerNavLink}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
-      {/* Socials */}
-      <div className={styles.footerSocials}>
+          {/* Info Links */}
+          <div className={styles.footerLinksCol}>
+            <h4 className={styles.footerLinksTitle}>Info</h4>
+            <nav className={styles.footerNav} aria-label="Footer navigation">
+              <Link to="/" className={styles.footerNavLink} aria-current={location.pathname === '/' ? 'page' : undefined}>Announcements</Link>
+              <Link to="/about" className={styles.footerNavLink} aria-current={location.pathname === '/about' ? 'page' : undefined}>About Us</Link>
+              <Link to="/" className={styles.footerNavLink}>Contact</Link>
+              <Link to="/privacy-policy" className={styles.footerNavLink} aria-current={location.pathname === '/privacy-policy' ? 'page' : undefined}>Privacy Policy</Link>
+              <Link to="/attribution" className={styles.footerNavLink} aria-current={location.pathname === '/attribution' ? 'page' : undefined}>Attribution</Link>
+            </nav>
+          </div>
+        </div>
+
+        {/* Socials */}
+        <div className={styles.footerSocials}>
         <Link to="/" className={styles.footerSocialLink}>
           <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.footerSocialIcon} />
         </Link>
@@ -374,9 +394,10 @@ const Footer = () => (
         </Link>
       </div>
 
-    </div>
-  </footer>
-);
+      </div>
+    </footer>
+  );
+};
 
 const Home: React.FC = () => {
   const { session, loading } = useAuth();
