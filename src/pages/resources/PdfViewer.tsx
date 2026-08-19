@@ -133,7 +133,7 @@ const PdfViewer: React.FC = () => {
           <p className="text-ink text-sm font-medium m-0">To access notes please sign in or register</p>
           <img
             src="/assets/SVG Illustrations/login-signin-page.svg"
-            alt="Login required"
+            alt=""
             className="w-40 h-auto my-2"
           />
           <div className="flex flex-col gap-2 w-full max-w-[300px]">

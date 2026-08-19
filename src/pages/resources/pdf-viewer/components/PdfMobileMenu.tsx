@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ProfileButton from '../../../../components/ProfileButton';
 import { navLinks } from '../../../../data/navigation';
 import styles from '../../PdfViewer.module.css';
@@ -13,6 +13,7 @@ interface PdfMobileMenuProps {
 
 export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, closeMenu, user, signOut }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className={`${styles.menuOverlayWrapper} ${isMobileMenuOpen ? styles.menuOverlayVisible : styles.menuOverlayHidden}`}>
@@ -27,19 +28,23 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
               </svg>
             </button>
           </div>
-          <nav className={`${styles.menuNavLinks} ${user ? styles.menuNavLinksAuth : ''}`}>
-            {navLinks.filter(link => link.showOnMobile).map((link, index, array) => (
-              <React.Fragment key={link.id || index}>
-                <Link
-                  to={link.path}
-                  onClick={closeMenu}
-                  className={styles.menuNavLink}
-                >
-                  {link.label}
-                </Link>
-                {(index < array.length - 1 || user) && <div className={styles.menuDivider} />}
-              </React.Fragment>
-            ))}
+          <nav className={`${styles.menuNavLinks} ${user ? styles.menuNavLinksAuth : ''}`} aria-label="Mobile navigation">
+            {navLinks.filter(link => link.showOnMobile).map((link, index, array) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <React.Fragment key={link.id || index}>
+                  <Link
+                    to={link.path}
+                    onClick={closeMenu}
+                    className={styles.menuNavLink}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                  {(index < array.length - 1 || user) && <div className={styles.menuDivider} />}
+                </React.Fragment>
+              );
+            })}
 
             {user && (
               <React.Fragment>
@@ -47,6 +52,7 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
                   to="/dashboard"
                   onClick={closeMenu}
                   className={styles.menuNavLink}
+                  aria-current={location.pathname === '/dashboard' ? 'page' : undefined}
                 >
                   Profile
                 </Link>
