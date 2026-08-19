@@ -15,6 +15,8 @@ import { PdfMobileMenu } from './pdf-viewer/components/PdfMobileMenu';
 import { PdfPageSlider } from './pdf-viewer/components/PdfPageSlider';
 import { PdfTopControls } from './pdf-viewer/components/PdfFloatingControls';
 import { PdfDocumentRenderer } from './pdf-viewer/components/PdfDocumentRenderer';
+import { PdfRenderErrorFallback } from './pdf-viewer/components/PdfRenderErrorFallback';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 import { isResourceProtected } from '../../utils/resourceHelper';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -26,6 +28,7 @@ const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
+  const [renderResetKey, setRenderResetKey] = useState<number>(0);
 
   const { resource, signedUrl, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
 
@@ -200,25 +203,35 @@ const PdfViewer: React.FC = () => {
         onSliderMouseDown={onSliderMouseDown}
       />
 
-      <PdfDocumentRenderer
-        signedUrl={signedUrl}
-        pdfError={pdfError}
-        numPages={numPages}
-        containerRef={containerRef}
-        scrollContainerRef={scrollContainerRef}
-        pageRefs={pageRefs}
-        setTransformRef={setTransformRef}
-        handleTransformed={handleTransformed}
-        handleScroll={handleScroll}
-        onDocumentLoadSuccess={onDocumentLoadSuccess}
-        onDocumentLoadError={onDocumentLoadError}
-        onDocumentSourceError={onDocumentSourceError}
-        showControls={showControls}
-        isThreeDotsMenuOpen={isThreeDotsMenuOpen}
-        toggleThreeDotsMenu={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
-        handleShare={handleShare}
-        setCurrentPage={setCurrentPage}
-      />
+      <ErrorBoundary
+        key={renderResetKey}
+        fallback={
+          <PdfRenderErrorFallback
+            onRetry={() => setRenderResetKey((prev) => prev + 1)}
+            onGoBack={() => navigate(-1)}
+          />
+        }
+      >
+        <PdfDocumentRenderer
+          signedUrl={signedUrl}
+          pdfError={pdfError}
+          numPages={numPages}
+          containerRef={containerRef}
+          scrollContainerRef={scrollContainerRef}
+          pageRefs={pageRefs}
+          setTransformRef={setTransformRef}
+          handleTransformed={handleTransformed}
+          handleScroll={handleScroll}
+          onDocumentLoadSuccess={onDocumentLoadSuccess}
+          onDocumentLoadError={onDocumentLoadError}
+          onDocumentSourceError={onDocumentSourceError}
+          showControls={showControls}
+          isThreeDotsMenuOpen={isThreeDotsMenuOpen}
+          toggleThreeDotsMenu={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
+          handleShare={handleShare}
+          setCurrentPage={setCurrentPage}
+        />
+      </ErrorBoundary>
     </div>
   );
 };
