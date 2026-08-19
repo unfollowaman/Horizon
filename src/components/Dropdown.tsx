@@ -54,19 +54,24 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options }) 
       {isOpen && (
         <div className="absolute top-full left-0 w-full mt-2 z-50 neu-raised rounded-lg p-[4px]">
           <div className="max-h-60 overflow-y-auto rounded-md py-1">
-            {options.map((option) => (
-              <button
-                type="button"
-                key={option}
-                className={`w-full text-left px-[clamp(12px,2vw,16px)] py-1 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:outline-none text-[clamp(14px,1.5vw,18px)] font-medium ${value === option ? 'font-bold bg-black/5' : ''}`}
-                onClick={() => {
-                  onChange(option);
-                  setIsOpen(false);
-                }}
-              >
-                {option}
-              </button>
-            ))}
+            {options.map((option) => {
+              const isSelected = value === option;
+
+              return (
+                <button
+                  type="button"
+                  key={option}
+                  aria-pressed={isSelected}
+                  className={`w-full text-left px-[clamp(12px,2vw,16px)] py-1 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:outline-none text-[clamp(14px,1.5vw,18px)] font-medium ${isSelected ? 'font-bold bg-black/5' : ''}`}
+                  onClick={() => {
+                    onChange(option);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

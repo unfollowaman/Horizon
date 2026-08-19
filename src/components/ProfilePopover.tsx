@@ -10,22 +10,36 @@ const ProfilePopover: React.FC = () => {
   const navigate = useNavigate();
 
   const togglePopover = () => setIsOpen(!isOpen);
+  const closePopover = () => setIsOpen(false);
 
   const handleSignOut = async () => {
     await signOut();
-    setIsOpen(false);
+    closePopover();
     navigate('/');
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        closePopover();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closePopover();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   if (!user || !profile) return null;
 
@@ -63,7 +77,7 @@ const ProfilePopover: React.FC = () => {
             <Link
               to="/dashboard"
               className={styles.popoverLink}
-              onClick={() => setIsOpen(false)}
+              onClick={closePopover}
             >
               View Profile
             </Link>
