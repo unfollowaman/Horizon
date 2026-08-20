@@ -97,9 +97,10 @@ const PrivacyPolicy: React.FC = () => {
           <ul>
             <li><strong>Supabase Database & Storage:</strong> We use Supabase to securely store your account profile information and host our library of educational resources.</li>
             <li><strong>Cloudflare Pages:</strong> We use Cloudflare to host our website securely and deliver content to you quickly.</li>
+            <li><strong>Google Analytics (GA4):</strong> We use Google Analytics to measure site usage and performance to help improve our educational platform.</li>
           </ul>
           <p>
-            We explicitly <strong>do not</strong> use third-party analytics services (such as Google Analytics), tracking pixels, or third-party advertising networks.
+            We do not use tracking pixels for advertising, nor do we share personal user information with third-party advertising networks.
           </p>
         </section>
 
