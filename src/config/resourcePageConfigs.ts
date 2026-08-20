@@ -9,6 +9,7 @@ export const pyqConfig: ResourcePageConfig = {
   emptyMessageTitle: 'No previous year papers found.',
   emptyMessageSubtitle: 'Try selecting a different class, subject, or year.',
   otherResourcesCategory: 'pyq',
+  showInFeedAd: true,
   getThirdFilterDesktopLabel: () => 'All Years',
   getThirdFilterMobileLabel: () => 'Years',
   extractThirdFilterValues: (resources: Resource[]) => {
