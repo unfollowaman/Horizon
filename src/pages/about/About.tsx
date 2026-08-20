@@ -22,7 +22,7 @@ const About: React.FC = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Horizon",
-    "url": "https://horizon.com",
+    "url": "https://unfollowaman.tech",
     "description": "Horizon is a free learning platform dedicated to providing students with high-quality educational resources, including study notes and past papers.",
     "foundingDate": "2024"
   };
