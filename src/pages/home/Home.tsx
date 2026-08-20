@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { register } from '../../services/auth';
+import HomeAd from '../../components/HomeAd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
@@ -218,30 +219,66 @@ const HeroSection = () => (
   </section>
 );
 
-const FeaturesSection = () => (
-  <section className={styles.featuresSection}>
-    <div className={styles.featuresContainer}>
-      <div className={styles.featuresHeader}>
-        <h2 className={styles.featuresTitle}>Everything in <span className={styles.textGradient}>one</span> place</h2>
-      </div>
+const FeaturesSection = () => {
+  const [hasReachedFeatures, setHasReachedFeatures] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
-      <div className={styles.featuresGrid}>
-        {getAllFeatures().map((f, i) => (
-          <div key={i} className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
-            {f.path ? (
-              <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />
-            ) : null}
-            <div className={styles.featureCardInner} />
-            <div className={styles.featureCardContent}>
-              <h3 className={styles.featureCardTitle}>{f.title}</h3>
-              <p className={styles.featureCardDesc}>{f.desc}</p>
+  useEffect(() => {
+    if (hasReachedFeatures) return;
+
+    const node = sectionRef.current;
+    if (!node) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setHasReachedFeatures(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry && entry.isIntersecting) {
+          setHasReachedFeatures(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasReachedFeatures]);
+
+  return (
+    <section ref={sectionRef} className={styles.featuresSection}>
+      <div className={styles.featuresContainer}>
+        <div className={styles.featuresHeader}>
+          <h2 className={styles.featuresTitle}>Everything in <span className={styles.textGradient}>one</span> place</h2>
+        </div>
+
+        <div className={styles.featuresGrid}>
+          {getAllFeatures().map((f, i) => (
+            <div key={i} className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+              {f.path ? (
+                <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />
+              ) : null}
+              <div className={styles.featureCardInner} />
+              <div className={styles.featureCardContent}>
+                <h3 className={styles.featureCardTitle}>{f.title}</h3>
+                <p className={styles.featureCardDesc}>{f.desc}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {hasReachedFeatures && <HomeAd />}
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const HighlightsSection = () => {
   const [name, setName] = React.useState('');
