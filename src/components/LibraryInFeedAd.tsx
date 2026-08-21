@@ -28,7 +28,7 @@ const LibraryInFeedAd: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex items-center justify-center neu-raised p-4 rounded-xl min-h-[250px] overflow-hidden">
+    <div className="col-span-full w-full h-full flex items-center justify-center neu-raised p-4 rounded-xl min-h-[250px] overflow-hidden">
       <ins
         ref={adRef}
         className="adsbygoogle"
