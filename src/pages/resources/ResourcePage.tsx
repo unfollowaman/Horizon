@@ -205,9 +205,6 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
               </Fragment>
             );
           })}
-          {config.showInFeedAd && filteredResources.length > 0 && filteredResources.length < 3 && (
-            <LibraryInFeedAd key="library-in-feed-ad" />
-          )}
         </div>
       )}
 
