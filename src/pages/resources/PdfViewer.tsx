@@ -64,7 +64,6 @@ const PdfViewer: React.FC = () => {
   } = usePdfSlider({
     containerRef,
     scrollContainerRef,
-    setTransformRef,
     transformStateRef,
     pageRefs,
     numPages,

@@ -3,7 +3,6 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 interface UsePdfSliderProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
-  setTransformRef: React.MutableRefObject<((x: number, y: number, scale: number) => void) | null>;
   transformStateRef: React.MutableRefObject<{ positionX: number, positionY: number, scale: number }>;
   pageRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
   numPages: number | null;
@@ -14,7 +13,6 @@ interface UsePdfSliderProps {
 export const usePdfSlider = ({
   containerRef,
   scrollContainerRef,
-  setTransformRef,
   transformStateRef,
   pageRefs,
   numPages,
