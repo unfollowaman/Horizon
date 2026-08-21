@@ -52,6 +52,8 @@ const PdfViewer: React.FC = () => {
 
   const {
     isSliderVisible,
+    isDraggingSlider,
+    sliderTopPx,
     sliderContainerRef,
     onSliderTouchStart,
     onSliderTouchMove,
@@ -59,7 +61,16 @@ const PdfViewer: React.FC = () => {
     onSliderMouseDown,
     handleTransformed,
     handleScroll,
-  } = usePdfSlider(containerRef, scrollContainerRef, setTransformRef, transformStateRef);
+  } = usePdfSlider({
+    containerRef,
+    scrollContainerRef,
+    setTransformRef,
+    transformStateRef,
+    pageRefs,
+    numPages,
+    currentPage,
+    setCurrentPage,
+  });
 
   const [showToast, setShowToast] = useState(false);
 
@@ -197,6 +208,8 @@ const PdfViewer: React.FC = () => {
         sliderContainerRef={sliderContainerRef}
         isSliderVisible={isSliderVisible}
         currentPage={currentPage}
+        sliderTopPx={sliderTopPx}
+        isDraggingSlider={isDraggingSlider}
         onSliderTouchStart={onSliderTouchStart}
         onSliderTouchMove={onSliderTouchMove}
         onSliderTouchEnd={onSliderTouchEnd}

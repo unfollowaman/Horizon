@@ -5,6 +5,8 @@ interface PdfPageSliderProps {
   sliderContainerRef: React.RefObject<HTMLDivElement | null>;
   isSliderVisible: boolean;
   currentPage: number;
+  sliderTopPx: number;
+  isDraggingSlider: boolean;
   onSliderTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
   onSliderTouchMove: (e: React.TouchEvent<HTMLDivElement>) => void;
   onSliderTouchEnd: () => void;
@@ -15,6 +17,8 @@ export const PdfPageSlider: React.FC<PdfPageSliderProps> = ({
   sliderContainerRef,
   isSliderVisible,
   currentPage,
+  sliderTopPx,
+  isDraggingSlider,
   onSliderTouchStart,
   onSliderTouchMove,
   onSliderTouchEnd,
@@ -24,7 +28,10 @@ export const PdfPageSlider: React.FC<PdfPageSliderProps> = ({
     <div
       ref={sliderContainerRef}
       className={`${styles.pageSliderContainer} ${isSliderVisible ? styles.sliderVisible : styles.sliderHidden}`}
-      style={{ top: '10%' }}
+      style={{
+        top: `${sliderTopPx}px`,
+        transition: isDraggingSlider ? 'none' : undefined,
+      }}
       onTouchStart={onSliderTouchStart}
       onTouchMove={onSliderTouchMove}
       onTouchEnd={onSliderTouchEnd}

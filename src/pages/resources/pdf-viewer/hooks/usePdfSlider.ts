@@ -1,15 +1,44 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-export const usePdfSlider = (
-  containerRef: React.RefObject<HTMLDivElement | null>,
-  scrollContainerRef: React.RefObject<HTMLDivElement | null>,
-  setTransformRef: React.MutableRefObject<((x: number, y: number, scale: number) => void) | null>,
-  transformStateRef: React.MutableRefObject<{ positionX: number, positionY: number, scale: number }>
-) => {
+interface UsePdfSliderProps {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  setTransformRef: React.MutableRefObject<((x: number, y: number, scale: number) => void) | null>;
+  transformStateRef: React.MutableRefObject<{ positionX: number, positionY: number, scale: number }>;
+  pageRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  numPages: number | null;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+}
+
+export const usePdfSlider = ({
+  containerRef,
+  scrollContainerRef,
+  setTransformRef,
+  transformStateRef,
+  pageRefs,
+  numPages,
+  currentPage,
+  setCurrentPage,
+}: UsePdfSliderProps) => {
   const [isSliderVisible, setIsSliderVisible] = useState<boolean>(false);
+  const [isDraggingSlider, setIsDraggingSlider] = useState<boolean>(false);
+  const [dragTopPx, setDragTopPx] = useState<number | null>(null);
+  const [windowHeight, setWindowHeight] = useState<number>(
+    typeof window !== 'undefined' ? window.innerHeight : 800
+  );
+
   const sliderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isDraggingSliderRef = useRef<boolean>(false);
   const sliderContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const resetSliderTimer = useCallback(() => {
     if (sliderTimerRef.current) clearTimeout(sliderTimerRef.current);
@@ -28,6 +57,19 @@ export const usePdfSlider = (
     };
   }, []);
 
+  const topOffset = 80;
+  const bottomOffset = 80;
+  const indicatorHeight = 44;
+  const usableRange = Math.max(0, windowHeight - topOffset - bottomOffset - indicatorHeight);
+
+  const calculatedProgress = (!numPages || numPages <= 1)
+    ? 0
+    : Math.max(0, Math.min(1, (currentPage - 1) / (numPages - 1)));
+
+  const sliderTopPx = isDraggingSlider && dragTopPx !== null
+    ? dragTopPx
+    : topOffset + calculatedProgress * usableRange;
+
   const handleTransformed = useCallback((ref: { state: { positionX: number, positionY: number, scale: number }, instance?: { contentComponent?: HTMLElement | null } }) => {
     if (!ref.state) return;
     transformStateRef.current = ref.state;
@@ -35,37 +77,8 @@ export const usePdfSlider = (
     if (!isDraggingSliderRef.current) {
       setIsSliderVisible(true);
       resetSliderTimer();
-
-      const container = scrollContainerRef.current;
-      const viewer = containerRef.current;
-      if (container && viewer && sliderContainerRef.current) {
-        const { scale, positionY } = ref.state;
-        const contentHeight = container.scrollHeight;
-        const scaledContentHeight = contentHeight * scale;
-        const { clientHeight } = viewer;
-
-        const maxScrollY = Math.max(0, scaledContentHeight - clientHeight);
-        let progress: number;
-
-        if (scale === 1) {
-          const maxContainerScroll = Math.max(0, contentHeight - clientHeight);
-          progress = maxContainerScroll > 0 ? container.scrollTop / maxContainerScroll : 0;
-        } else {
-          progress = maxScrollY > 0 ? Math.abs(positionY) / maxScrollY : 0;
-        }
-
-        const sliderHeight = sliderContainerRef.current.clientHeight;
-        const thumbHeight = 44;
-        const maxSliderTop = sliderHeight - thumbHeight;
-
-        const thumbTop = progress * maxSliderTop;
-        const thumb = sliderContainerRef.current.firstChild as HTMLElement;
-        if (thumb) {
-          thumb.style.transform = `translateY(${thumbTop}px)`;
-        }
-      }
     }
-  }, [resetSliderTimer, containerRef, scrollContainerRef, transformStateRef]);
+  }, [resetSliderTimer, transformStateRef]);
 
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -75,72 +88,38 @@ export const usePdfSlider = (
     if (!isDraggingSliderRef.current) {
       setIsSliderVisible(true);
       resetSliderTimer();
-
-      const { scale } = transformStateRef.current;
-
-      if (scale === 1 && sliderContainerRef.current) {
-        const contentHeight = container.scrollHeight;
-        const { clientHeight } = viewer;
-        const maxScroll = Math.max(0, contentHeight - clientHeight);
-        const progress = maxScroll > 0 ? container.scrollTop / maxScroll : 0;
-
-        const sliderHeight = sliderContainerRef.current.clientHeight;
-        const thumbHeight = 44;
-        const maxSliderTop = sliderHeight - thumbHeight;
-
-        const thumbTop = progress * maxSliderTop;
-        const thumb = sliderContainerRef.current.firstChild as HTMLElement;
-        if (thumb) {
-          thumb.style.transform = `translateY(${thumbTop}px)`;
-        }
-      }
     }
-  }, [resetSliderTimer, containerRef, scrollContainerRef, transformStateRef]);
+  }, [resetSliderTimer, containerRef, scrollContainerRef]);
 
   const handleSliderDrag = useCallback((clientY: number) => {
     const container = scrollContainerRef.current;
-    const viewer = containerRef.current;
-    if (!container || !viewer || !setTransformRef.current) return;
+    if (!container) return;
 
-    const windowHeight = window.innerHeight;
-    const sliderTopOffset = windowHeight * 0.10;
-    const sliderHeight = windowHeight * 0.80;
+    const rawProgress = usableRange > 0
+      ? (clientY - topOffset - indicatorHeight / 2) / usableRange
+      : 0;
+    const dragProgress = Math.max(0, Math.min(1, rawProgress));
 
-    let progress: number;
-    progress = (clientY - sliderTopOffset) / sliderHeight;
-    progress = Math.max(0, Math.min(1, progress));
+    const currentTop = topOffset + dragProgress * usableRange;
+    setDragTopPx(currentTop);
 
-    const thumbHeight = 44;
-    const maxSliderTop = sliderHeight - thumbHeight;
-    const thumbTop = progress * maxSliderTop;
+    const total = numPages || 1;
+    const targetPage = Math.round(1 + dragProgress * (total - 1));
+    const clampedTargetPage = Math.max(1, Math.min(total, targetPage));
 
-    if (sliderContainerRef.current) {
-      const thumb = sliderContainerRef.current.firstChild as HTMLElement;
-      if (thumb) {
-        thumb.style.transform = `translateY(${thumbTop}px)`;
-      }
-    }
+    setCurrentPage(clampedTargetPage);
 
-    const { positionX, scale } = transformStateRef.current;
-    const contentHeight = container.scrollHeight;
-    const scaledContentHeight = contentHeight * scale;
-    const { clientHeight } = viewer;
-    const maxScrollY = Math.max(0, scaledContentHeight - clientHeight);
-
-    const targetY = -(progress * maxScrollY);
-
-    if (scale === 1) {
-      const targetScrollTop = progress * Math.max(0, contentHeight - clientHeight);
-      container.scrollTop = targetScrollTop;
-    } else {
-      setTransformRef.current(positionX, targetY, scale);
+    const targetEl = pageRefs.current[clampedTargetPage - 1];
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'auto', block: 'start' });
     }
 
     resetSliderTimer();
-  }, [resetSliderTimer, containerRef, scrollContainerRef, setTransformRef, transformStateRef]);
+  }, [usableRange, topOffset, indicatorHeight, numPages, setCurrentPage, pageRefs, scrollContainerRef, resetSliderTimer]);
 
   const onSliderTouchStart = (e: React.TouchEvent) => {
     isDraggingSliderRef.current = true;
+    setIsDraggingSlider(true);
     handleSliderDrag(e.touches[0].clientY);
     setIsSliderVisible(true);
     if (sliderTimerRef.current) clearTimeout(sliderTimerRef.current);
@@ -156,11 +135,14 @@ export const usePdfSlider = (
 
   const onSliderTouchEnd = () => {
     isDraggingSliderRef.current = false;
+    setIsDraggingSlider(false);
+    setDragTopPx(null);
     resetSliderTimer();
   };
 
   const onSliderMouseDown = (e: React.MouseEvent) => {
     isDraggingSliderRef.current = true;
+    setIsDraggingSlider(true);
     handleSliderDrag(e.clientY);
     setIsSliderVisible(true);
     if (sliderTimerRef.current) clearTimeout(sliderTimerRef.current);
@@ -177,6 +159,8 @@ export const usePdfSlider = (
     const handleMouseUp = () => {
       if (isDraggingSliderRef.current) {
         isDraggingSliderRef.current = false;
+        setIsDraggingSlider(false);
+        setDragTopPx(null);
         resetSliderTimer();
       }
     };
@@ -192,6 +176,8 @@ export const usePdfSlider = (
 
   return {
     isSliderVisible,
+    isDraggingSlider,
+    sliderTopPx,
     sliderContainerRef,
     onSliderTouchStart,
     onSliderTouchMove,
