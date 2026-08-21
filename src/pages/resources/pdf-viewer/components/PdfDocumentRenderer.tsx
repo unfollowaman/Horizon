@@ -59,32 +59,57 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
     return () => observer.disconnect();
   }, [containerRef]);
 
+  const calculateActivePage = React.useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container || !pageRefs.current || pageRefs.current.length === 0) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.top + containerRect.height / 2;
+
+    let bestPage = 1;
+    let maxVisibleHeight = -1;
+    let minDistanceToCenter = Infinity;
+
+    for (let i = 0; i < pageRefs.current.length; i++) {
+      const pageEl = pageRefs.current[i];
+      if (!pageEl) continue;
+
+      const rect = pageEl.getBoundingClientRect();
+      const visibleTop = Math.max(rect.top, containerRect.top);
+      const visibleBottom = Math.min(rect.bottom, containerRect.bottom);
+      const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      const pageCenter = rect.top + rect.height / 2;
+      const distanceToCenter = Math.abs(pageCenter - containerCenter);
+
+      if (visibleHeight > maxVisibleHeight + 5) {
+        maxVisibleHeight = visibleHeight;
+        minDistanceToCenter = distanceToCenter;
+        bestPage = i + 1;
+      } else if (Math.abs(visibleHeight - maxVisibleHeight) <= 5) {
+        if (distanceToCenter < minDistanceToCenter) {
+          minDistanceToCenter = distanceToCenter;
+          bestPage = i + 1;
+        }
+      }
+    }
+
+    setCurrentPage(bestPage);
+  }, [pageRefs, scrollContainerRef, setCurrentPage]);
+
   useEffect(() => {
     if (!numPages || pageRefs.current.length === 0) return;
+
+    calculateActivePage();
 
     const observerOptions = {
       root: scrollContainerRef.current,
       rootMargin: '0px',
-      threshold: 0.5,
+      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
     };
 
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      let maxIntersectionRatio = 0;
-      let visiblePage: number | null = null;
-
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio > maxIntersectionRatio) {
-          maxIntersectionRatio = entry.intersectionRatio;
-          const pageIndex = Number(entry.target.getAttribute('data-page-index'));
-          if (!isNaN(pageIndex)) {
-            visiblePage = pageIndex + 1;
-          }
-        }
-      });
-
-      if (visiblePage !== null) {
-        setCurrentPage(visiblePage);
-      }
+    const observerCallback: IntersectionObserverCallback = () => {
+      calculateActivePage();
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
@@ -98,7 +123,12 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
     return () => {
       observer.disconnect();
     };
-  }, [numPages, setCurrentPage, pageRefs, scrollContainerRef]);
+  }, [numPages, calculateActivePage, pageRefs, scrollContainerRef]);
+
+  const onScrollHandler = React.useCallback(() => {
+    handleScroll();
+    calculateActivePage();
+  }, [handleScroll, calculateActivePage]);
 
   return (
     <div
@@ -138,7 +168,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                   <div
                     className={styles.pdfScrollContainer}
                     ref={scrollContainerRef}
-                    onScroll={handleScroll}
+                    onScroll={onScrollHandler}
                   >
                     {pdfError ? (
                        <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>

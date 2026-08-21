@@ -60,10 +60,9 @@
 
 /* Page Slider */
 .pageSliderContainer {
-  position: absolute;
+  position: fixed;
   right: 0;
   z-index: 55;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -71,6 +70,7 @@
   height: 44px;
   cursor: grab;
   touch-action: none; /* Prevent default touch actions while dragging */
+  transition: top 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pageSliderContainer:active {
@@ -80,7 +80,7 @@
 .sliderVisible {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease, top 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   visibility: visible;
 }
 
@@ -88,11 +88,11 @@
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transition: opacity 1s ease, visibility 1s ease;
+  transition: opacity 1s ease, visibility 1s ease, top 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pageSliderThumb {
-  width: 100%;
+  width: calc(100% + 8px);
   height: 100%;
   background-color: var(--bg-base);
   border-radius: 9999px 0 0 9999px; /* Semicircular on the left side */
@@ -103,8 +103,15 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  /* neu-raised class handles the border and shadow */
   border-right: none; /* Seamless with the right edge */
+  margin-right: -8px;
+  padding-right: 8px;
+}
+
+.pageSliderThumb::before {
+  right: -10px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
 
 .pageSliderText {
