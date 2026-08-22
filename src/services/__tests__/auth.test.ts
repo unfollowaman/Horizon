@@ -200,7 +200,7 @@ describe('auth service', () => {
       expect(mockSingle).toHaveBeenCalled();
 
       expect(result).toBeNull();
-      expect(consoleSpy).toHaveBeenCalledWith("Error fetching profile", mockProfileError);
+      expect(consoleSpy).toHaveBeenCalledWith("Error fetching profile");
 
       consoleSpy.mockRestore();
     });
