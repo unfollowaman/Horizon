@@ -1,13 +1,12 @@
 import { supabase } from './supabase';
-import type { Resource, ResourceType, Medium } from '../types';
+import type { Resource, ResourceType, Medium, LearningResourceRow, Chapter } from '../types';
 import { getResourceUrl } from '../utils/resourceHelper';
 
 // Map database row to Resource object
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mapLearningResource = (item: any): Resource => {
-  let className = item.student_class;
-  if (className) {
-    const strClass = String(className);
+export const mapLearningResource = (item: LearningResourceRow): Resource => {
+  let className: string | null | undefined;
+  if (item.student_class) {
+    const strClass = String(item.student_class);
     const trimmed = strClass.trim();
     if (/^\d+$/.test(trimmed)) {
       className = `Class ${trimmed}`;
@@ -15,10 +14,14 @@ export const mapLearningResource = (item: any): Resource => {
       const numMatch = trimmed.match(/\d+/);
       if (numMatch) {
         className = `Class ${numMatch[0]}`;
+      } else {
+        className = trimmed;
       }
     } else {
       className = trimmed;
     }
+  } else {
+    className = item.student_class === null ? null : undefined;
   }
 
   let title = item.title;
@@ -39,7 +42,7 @@ export const mapLearningResource = (item: any): Resource => {
     subject: item.subject,
     year: item.year ? item.year.toString() : undefined,
     chapter_id: item.chapter_id,
-    chapters: item.chapters,
+    chapters: item.chapters as Chapter | null | undefined,
     allow_download: item.allow_download ?? undefined,
     storage_bucket: item.storage_bucket,
     file_path: item.file_path,
@@ -72,7 +75,7 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
     return { data: null, error };
   }
 
-  const mappedResources: Resource[] = data ? data.map(mapLearningResource) : [];
+  const mappedResources: Resource[] = data ? (data as unknown as LearningResourceRow[]).map(mapLearningResource) : [];
   return { data: mappedResources, error: null };
 };
 
@@ -87,7 +90,7 @@ export const fetchLearningResourceById = async (id: string, includeChapters: boo
     return { data: null, error };
   }
 
-  const mappedResource = data ? mapLearningResource(data) : null;
+  const mappedResource = data ? mapLearningResource(data as unknown as LearningResourceRow) : null;
   return { data: mappedResource, rawData: data, error: null };
 };
 

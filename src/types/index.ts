@@ -54,6 +54,29 @@ export type LearningResource = {
   storage_bucket?: string | null;
 }
 
+export type LearningResourceRow = {
+  id: string;
+  title: string;
+  description?: string | null;
+  student_class?: string | number | null;
+  resource_type: ResourceType;
+  medium: Medium;
+  file_path?: string | null;
+  pdf_url?: string | null;
+  thumbnail_url?: string | null;
+  subject?: string | null;
+  year?: number | string | null;
+  created_at?: string;
+  chapter_id?: string | null;
+  allow_download?: boolean | null;
+  storage_bucket?: string | null;
+  chapters?: {
+    id?: string;
+    chapter_number: number;
+    chapter_name: string;
+  } | Chapter | null;
+};
+
 export type Chapter = {
   id: string;
   student_class?: string | null;

@@ -22,8 +22,7 @@ vi.mock('../../../../services/supabase', () => ({
 
 interface TestComponentProps {
   user: User | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  profile: any | null;
+  profile: Record<string, unknown> | null;
   onUpdate: (data: { progressData: ProgressData | null; isLoadingProgress: boolean }) => void;
 }
 
@@ -100,11 +99,10 @@ describe('useDashboardProgress', () => {
       { chapter_id: 'ch-999' }, // Extra completion outside syllabus
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(learningResourcesAPI.fetchSyllabusChapters).mockResolvedValue({
       data: mockSyllabusData,
       error: null,
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof learningResourcesAPI.fetchSyllabusChapters>>);
 
     const mockEq = vi.fn().mockResolvedValue({
       data: mockCompletionsData,
@@ -150,19 +148,17 @@ describe('useDashboardProgress', () => {
   });
 
   it('handles empty syllabus data gracefully', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(learningResourcesAPI.fetchSyllabusChapters).mockResolvedValue({
       data: [],
       error: null,
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof learningResourcesAPI.fetchSyllabusChapters>>);
 
     const mockEq = vi.fn().mockResolvedValue({
       data: [{ chapter_id: 'ch-1' }],
       error: null,
     });
     const mockSelect = vi.fn().mockReturnValue({ eq: mockEq });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as any);
+    vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as unknown as ReturnType<typeof supabase.from>);
 
     let latestResult: { progressData: ProgressData | null; isLoadingProgress: boolean } = {
       progressData: null,
@@ -192,10 +188,9 @@ describe('useDashboardProgress', () => {
   });
 
   it('handles fetch errors without crashing', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(learningResourcesAPI.fetchSyllabusChapters).mockResolvedValue({
       data: null,
-      error: new Error('Network error') as any,
+      error: new Error('Network error') as unknown as null,
     });
 
     let latestResult: { progressData: ProgressData | null; isLoadingProgress: boolean } = {
