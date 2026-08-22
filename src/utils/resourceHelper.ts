@@ -1,5 +1,5 @@
 import { supabase } from '../services/supabase';
-import type { Resource, Medium } from '../types';
+import type { Resource, ResourceType, Medium } from '../types';
 
 /**
  * Checks whether a resource is protected.
@@ -10,14 +10,20 @@ export const isResourceProtected = (resource: Partial<Resource>): boolean => {
   return resource.storage_bucket !== 'pdfs' && resource.resource_type !== 'pyq';
 };
 
+export interface ResourceUrlItem {
+  storage_bucket?: string | null;
+  resource_type?: ResourceType | string | null;
+  file_path?: string | null;
+  pdf_url?: string | null;
+}
+
 /**
  * Returns the URL for a resource.
  * If public, generates a public URL via Supabase Storage.
  * If protected, returns the raw file_path to avoid exposing an invalid public URL,
  * or the pdf_url if the file path is not set.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getResourceUrl = (item: any): string => {
+export const getResourceUrl = (item: ResourceUrlItem): string => {
   if (item.storage_bucket && item.storage_bucket !== 'pdfs' && item.resource_type !== 'pyq') {
     return item.file_path || item.pdf_url || '';
   }
