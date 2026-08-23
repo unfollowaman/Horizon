@@ -6,6 +6,7 @@ import { fetchLearningResources } from '../../services/learningResourcesAPI';
 import { Dropdown } from '../../components/Dropdown';
 import LibraryInFeedAd from '../../components/LibraryInFeedAd';
 import MaterialCard from '../../components/MaterialCard';
+import MaterialCardSkeleton from '../../components/MaterialCardSkeleton';
 import OtherResources from '../../components/OtherResources';
 import ProfileButton from '../../components/ProfileButton';
 
@@ -181,8 +182,10 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
       {/* Grid */}
       {loading ? (
-        <div className="neu-recessed rounded-2xl p-8 text-center">
-          <p className="font-bold text-body1">Loading resources...</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <MaterialCardSkeleton key={idx} />
+          ))}
         </div>
       ) : filteredResources.length === 0 ? (
         <div className="neu-raised rounded-2xl p-8 text-center flex flex-col items-center justify-center">

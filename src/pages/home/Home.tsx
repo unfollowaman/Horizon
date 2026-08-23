@@ -193,6 +193,9 @@ const Header = () => {
 
 import { getAllFeatures } from '../../config/resources';
 
+const preloadLibrary = () => import('../resources/LibraryRoute');
+const preloadStudyNotes = () => import('../resources/StudyNotesRoute');
+
 const HeroSection = () => (
   <section className={styles.heroSection}>
     {/* Content */}
@@ -261,7 +264,18 @@ const FeaturesSection = () => {
 
         <div className={styles.featuresGrid}>
           {getAllFeatures().map((f, i) => (
-            <div key={i} className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}>
+            <div
+              key={i}
+              className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}
+              onMouseEnter={() => {
+                if (f.path === '/library') preloadLibrary();
+                if (f.path === '/notes') preloadStudyNotes();
+              }}
+              onTouchStart={() => {
+                if (f.path === '/library') preloadLibrary();
+                if (f.path === '/notes') preloadStudyNotes();
+              }}
+            >
               {f.path ? (
                 <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />
               ) : null}

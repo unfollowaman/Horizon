@@ -6,6 +6,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { useAuth } from '../../context/AuthContext';
 import styles from './PdfViewer.module.css';
 import PdfLoadingScreen from '../../components/PdfLoadingScreen';
+import PdfViewerSkeleton from '../../components/PdfViewerSkeleton';
 import { usePdfData } from './pdf-viewer/hooks/usePdfData';
 import { usePdfProgress } from './pdf-viewer/hooks/usePdfProgress';
 import { usePdfControls } from './pdf-viewer/hooks/usePdfControls';
@@ -118,13 +119,7 @@ const PdfViewer: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
-        <div className="text-center p-8 neu-card rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-            <h1 className="text-h2 uppercase mb-4 text-ink">Loading resource...</h1>
-        </div>
-      </div>
-    );
+    return <PdfViewerSkeleton />;
   }
 
   if (!resource) {
