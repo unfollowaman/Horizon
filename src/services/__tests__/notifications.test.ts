@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   requestNotificationPermission,
   subscribeToPushNotifications,
@@ -7,49 +7,31 @@ import {
 } from '../notifications';
 
 describe('notifications service', () => {
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-
-  beforeEach(() => {
-    // Spy on console.log before each test
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    // Restore the spy after each test
-    consoleLogSpy.mockRestore();
-  });
-
   describe('requestNotificationPermission', () => {
-    it('returns "default" and logs to console', async () => {
+    it('returns "default"', async () => {
       const result = await requestNotificationPermission();
 
       expect(result).toBe('default');
-      expect(consoleLogSpy).toHaveBeenCalledWith('Future implementation: Requesting browser notification permission');
     });
   });
 
   describe('subscribeToPushNotifications', () => {
-    it('logs to console', async () => {
-      await subscribeToPushNotifications();
-
-      expect(consoleLogSpy).toHaveBeenCalledWith('Future implementation: Subscribing device token to backend');
+    it('resolves without error', async () => {
+      await expect(subscribeToPushNotifications()).resolves.toBeUndefined();
     });
   });
 
   describe('unsubscribeFromPushNotifications', () => {
-    it('logs to console', async () => {
-      await unsubscribeFromPushNotifications();
-
-      expect(consoleLogSpy).toHaveBeenCalledWith('Future implementation: Unsubscribing device token from backend');
+    it('resolves without error', async () => {
+      await expect(unsubscribeFromPushNotifications()).resolves.toBeUndefined();
     });
   });
 
   describe('getInAppNotifications', () => {
-    it('returns empty array and logs to console', async () => {
+    it('returns empty array', async () => {
       const result = await getInAppNotifications();
 
       expect(result).toEqual([]);
-      expect(consoleLogSpy).toHaveBeenCalledWith('Future implementation: Fetching historical notifications for user');
     });
   });
 });

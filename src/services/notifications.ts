@@ -10,19 +10,19 @@
  */
 
 export const requestNotificationPermission = async () => {
-  console.log("Future implementation: Requesting browser notification permission");
+  // TODO: Request browser notification permission using Notification API
   return 'default'; // 'granted' | 'denied' | 'default'
 };
 
 export const subscribeToPushNotifications = async () => {
-  console.log("Future implementation: Subscribing device token to backend");
+  // TODO: Subscribe device token to backend
 };
 
 export const unsubscribeFromPushNotifications = async () => {
-  console.log("Future implementation: Unsubscribing device token from backend");
+  // TODO: Unsubscribe device token from backend
 };
 
 export const getInAppNotifications = async () => {
-  console.log("Future implementation: Fetching historical notifications for user");
+  // TODO: Fetch historical notifications for user
   return [];
 };
