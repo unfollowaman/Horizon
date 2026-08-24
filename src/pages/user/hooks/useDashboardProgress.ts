@@ -89,16 +89,25 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
         const completedChapterIds = new Set(completionsData?.map(c => c.chapter_id) || []);
 
         let syllabusCompletedChapters = 0;
-        const subjectCompleted: Record<string, number> = {};
+        const subjectProgress: Record<
+          string,
+          { total: number; completed: number; percentage: number }
+        > = {};
 
-        for (const subject of Object.keys(subjectTotals)) {
-          subjectCompleted[subject] = 0;
-          for (const chapterId of subjectTotals[subject]) {
+        for (const [subject, chapterSet] of Object.entries(subjectTotals)) {
+          let completed = 0;
+          for (const chapterId of chapterSet) {
             if (completedChapterIds.has(chapterId)) {
-              syllabusCompletedChapters++;
-              subjectCompleted[subject]++;
+              completed++;
             }
           }
+          syllabusCompletedChapters += completed;
+          const total = chapterSet.size;
+          subjectProgress[subject] = {
+            total,
+            completed,
+            percentage: total > 0 ? Math.round((completed / total) * 100) : 0
+          };
         }
 
         const syllabusTotalChapters = syllabusChapterIds.size;
@@ -106,20 +115,6 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
           syllabusTotalChapters > 0
             ? Math.round((syllabusCompletedChapters / syllabusTotalChapters) * 100)
             : 0;
-
-        const subjectProgress: Record<
-          string,
-          { total: number; completed: number; percentage: number }
-        > = {};
-        for (const subject of Object.keys(subjectTotals)) {
-          const total = subjectTotals[subject].size;
-          const completed = subjectCompleted[subject];
-          subjectProgress[subject] = {
-            total,
-            completed,
-            percentage: total > 0 ? Math.round((completed / total) * 100) : 0
-          };
-        }
 
         if (isMounted) {
           setProgressData({
