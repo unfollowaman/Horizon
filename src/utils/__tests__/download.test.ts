@@ -45,10 +45,8 @@ describe('handleDownload', () => {
 
     // Spy on document and element methods
     vi.spyOn(document, 'createElement');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+    vi.spyOn(document.body, 'appendChild').mockImplementation((node) => node);
+    vi.spyOn(document.body, 'removeChild').mockImplementation((node) => node);
   });
 
   afterEach(() => {
@@ -76,8 +74,7 @@ describe('handleDownload', () => {
     };
 
     // Make fetch fail to trigger fallback
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window.fetch as any).mockRejectedValue(new Error('Network error'));
+    vi.mocked(window.fetch).mockRejectedValue(new Error('Network error'));
 
     const mockAnchor = {
       href: '',
@@ -122,8 +119,7 @@ describe('handleDownload', () => {
     };
 
     // Make fetch fail to trigger fallback
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window.fetch as any).mockRejectedValue(new Error('Network error'));
+    vi.mocked(window.fetch).mockRejectedValue(new Error('Network error'));
 
     const mockAnchor = {
       href: '',
