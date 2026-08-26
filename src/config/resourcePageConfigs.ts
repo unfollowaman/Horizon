@@ -4,6 +4,8 @@ import type { Resource } from '../types';
 export const pyqConfig: ResourcePageConfig = {
   resourceType: 'pyq',
   title: 'PYQ Papers',
+  metaTitle: 'Previous Year Question Papers (PYQs) | Horizon - Free Student Library',
+  metaDescription: 'Access free previous year question papers (PYQs) for Class 8 to Class 12. Practice past exam papers by class, subject, and year to improve exam preparation and performance.',
   includeChapters: false,
   thirdFilterType: 'year',
   emptyMessageTitle: 'No previous year papers found.',
@@ -35,6 +37,8 @@ export const pyqConfig: ResourcePageConfig = {
 export const notesConfig: ResourcePageConfig = {
   resourceType: 'notes',
   title: 'Study Notes',
+  metaTitle: 'Comprehensive Study Notes | Horizon - Free Student Library',
+  metaDescription: 'Explore free, subject-wise study notes organized by syllabus chapters for Class 8 to Class 12 in English and Hindi medium. Master concepts with clear chapter outlines and revision notes.',
   includeChapters: true,
   thirdFilterType: 'medium',
   emptyMessageTitle: 'No study notes found.',
