@@ -19,6 +19,8 @@ const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
 const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 import About from './pages/about/About';
+import Contact from './pages/contact/Contact';
+import Terms from './pages/terms/Terms';
 import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import Attribution from './pages/attribution/Attribution';
 const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
@@ -38,6 +40,8 @@ function App() {
           <Route element={<MainLayout />}>
             {/* Small static pages are intentionally kept in the main bundle. */}
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/attribution" element={<Attribution />} />
 
