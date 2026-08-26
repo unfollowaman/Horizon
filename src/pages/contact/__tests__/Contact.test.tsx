@@ -44,7 +44,26 @@ describe('Contact Page', () => {
     const h2s = container?.querySelectorAll('h2');
     expect(h2s?.length).toBe(2);
     expect(h2s?.[0].textContent).toContain('How Can We Help?');
-    expect(h2s?.[1].textContent).toContain('Support & Assistance');
+    expect(h2s?.[1].textContent).toContain('Connect & Support');
+  });
+
+  it('renders all social links with correct hrefs', () => {
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <Contact />
+        </MemoryRouter>
+      );
+    });
+
+    const links = Array.from(container?.querySelectorAll('a') || []);
+    const hrefs = links.map(l => l.getAttribute('href'));
+
+    expect(hrefs).toContain('mailto:tryhorizon18@gmail.com');
+    expect(hrefs).toContain('https://x.com/unfollowaman');
+    expect(hrefs).toContain('https://github.com/unfollowaman');
+    expect(hrefs).toContain('https://www.instagram.com/unfollowaman_');
+    expect(hrefs).toContain('https://substack.com/@unfollowaman');
   });
 
   it('sets document title and meta description on mount', () => {
