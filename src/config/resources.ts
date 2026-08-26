@@ -29,8 +29,8 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
     path: '/coming-soon',
     isComingSoon: true,
     navLabel: 'Flashcards',
-    showOnMobile: true,
-    showOnDesktop: true,
+    showOnMobile: false,
+    showOnDesktop: false,
   },
   mcq: {
     id: 'mcq',
@@ -39,8 +39,8 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
     path: '/coming-soon',
     isComingSoon: true,
     navLabel: 'MCQ Sets',
-    showOnMobile: true,
-    showOnDesktop: true,
+    showOnMobile: false,
+    showOnDesktop: false,
   },
   revision_sheets: {
     id: 'revision_sheets',
@@ -49,8 +49,8 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
     path: '/coming-soon',
     isComingSoon: true,
     navLabel: 'Revision Sheets',
-    showOnMobile: true,
-    showOnDesktop: true,
+    showOnMobile: false,
+    showOnDesktop: false,
   },
   notes: {
     id: 'notes',
@@ -65,32 +65,36 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
 };
 
 export const SYSTEM_NAV_LINKS = [
-  { label: 'Updates', path: '/coming-soon', showOnMobile: true, showOnDesktop: true },
+  { label: 'Updates', path: '/coming-soon', showOnMobile: false, showOnDesktop: false },
 ];
 
 export const getAllFeatures = () => {
-  const resourceFeatures = Object.values(RESOURCE_CATEGORIES).map(cat => ({
-    title: cat.title,
-    desc: cat.isComingSoon ? `${cat.description} (Coming Soon)` : cat.description,
-    path: cat.path,
-    id: cat.id
-  }));
-  return [
-    ...resourceFeatures,
-    { title: "Updates", desc: "Stay updated with newly uploaded resources. (Coming Soon)", path: "/coming-soon", id: 'updates' }
-  ];
+  return Object.values(RESOURCE_CATEGORIES)
+    .filter(cat => !cat.isComingSoon)
+    .map(cat => ({
+      title: cat.title,
+      desc: cat.description,
+      path: cat.path,
+      id: cat.id
+    }));
 };
 
 export const getNavLinks = () => {
-  const resourceLinks = Object.values(RESOURCE_CATEGORIES).map(cat => ({
-    label: cat.navLabel,
-    path: cat.path,
-    showOnMobile: cat.showOnMobile,
-    showOnDesktop: cat.showOnDesktop,
-    id: cat.id
-  }));
+  const resourceLinks = Object.values(RESOURCE_CATEGORIES)
+    .filter(cat => cat.showOnMobile || cat.showOnDesktop)
+    .map(cat => ({
+      label: cat.navLabel,
+      path: cat.path,
+      showOnMobile: cat.showOnMobile,
+      showOnDesktop: cat.showOnDesktop,
+      id: cat.id
+    }));
+  const systemLinks = SYSTEM_NAV_LINKS
+    .filter(link => link.showOnMobile || link.showOnDesktop)
+    .map(link => ({...link, id: 'system_updates'}));
+
   return [
     ...resourceLinks,
-    ...SYSTEM_NAV_LINKS.map(link => ({...link, id: 'system_updates'}))
+    ...systemLinks
   ];
 };
