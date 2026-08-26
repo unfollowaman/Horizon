@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useMemo, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { Resource, ResourceType } from '../../types';
 import { fetchLearningResources } from '../../services/learningResourcesAPI';
+import {
+  slugToClass,
+  slugToMedium,
+  slugToSubject,
+  buildCategoryUrl,
+  isMediumSlug,
+} from '../../utils/urlHelper';
 
 import { Dropdown } from '../../components/Dropdown';
 import LibraryInFeedAd from '../../components/LibraryInFeedAd';
@@ -36,12 +43,17 @@ interface ResourcePageProps {
 
 const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams<{ classSlug?: string; mediumSlug?: string; subjectSlug?: string }>();
+
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true
   );
+
+  const basePath = config.resourceType === 'pyq' ? '/library' : '/notes';
 
   const [selectedClass, setSelectedClass] = useState<string>('');
   const [selectedSubject, setSelectedSubject] = useState<string>('');
@@ -63,21 +75,75 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     : config.getThirdFilterMobileLabel('');
 
   useEffect(() => {
-    if (config.metaTitle) {
-      document.title = config.metaTitle;
-    }
-    if (config.metaDescription) {
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', config.metaDescription);
-      } else {
-        const newMeta = document.createElement('meta');
-        newMeta.name = 'description';
-        newMeta.content = config.metaDescription;
-        document.head.appendChild(newMeta);
+    // Generate dynamic SEO Title and Meta Description based on selected filters
+    let pageTitle = config.metaTitle;
+    let pageDesc = config.metaDescription;
+
+    const filterParts: string[] = [];
+    if (selectedClass) filterParts.push(selectedClass);
+    if (selectedSubject) filterParts.push(selectedSubject);
+    if (selectedThirdFilter) {
+      if (config.thirdFilterType === 'medium') {
+        filterParts.push(`${selectedThirdFilter} Medium`);
+      } else if (config.thirdFilterType === 'year' && selectedThirdFilter !== 'Years' && selectedThirdFilter !== 'All Years') {
+        filterParts.push(`Year ${selectedThirdFilter}`);
       }
     }
-  }, [config.metaTitle, config.metaDescription]);
+
+    if (filterParts.length > 0) {
+      const resourceTypeName = config.resourceType === 'pyq' ? 'PYQ Papers' : 'Study Notes';
+      const categorySummary = filterParts.join(' ');
+      pageTitle = `${categorySummary} ${resourceTypeName} | Horizon`;
+      pageDesc = `Free ${categorySummary} ${resourceTypeName.toLowerCase()} for student exam preparation. Browse concepts, practice materials, and study guides on Horizon.`;
+    }
+
+    document.title = pageTitle;
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', pageDesc);
+    } else {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      metaDescription.setAttribute('content', pageDesc);
+      document.head.appendChild(metaDescription);
+    }
+
+    // Dynamic Canonical Link Tag
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    const currentCanonicalPath = buildCategoryUrl({
+      basePath,
+      studentClass: selectedClass,
+      medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+      subject: selectedSubject,
+      year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+    });
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://unfollowaman.tech';
+    const fullCanonicalUrl = `${origin}${currentCanonicalPath}`;
+
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    const originalCanonical = canonicalLink.href;
+    canonicalLink.href = fullCanonicalUrl;
+
+    return () => {
+      if (canonicalLink && originalCanonical) {
+        canonicalLink.href = originalCanonical;
+      }
+    };
+  }, [
+    config.metaTitle,
+    config.metaDescription,
+    config.resourceType,
+    config.thirdFilterType,
+    selectedClass,
+    selectedSubject,
+    selectedThirdFilter,
+    basePath,
+  ]);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -133,6 +199,96 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const uniqueThirdFilterValues = useMemo(() => {
     return config.extractThirdFilterValues(allResources);
   }, [allResources, config]);
+
+  // Synchronize URL parameters with filter state
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const qClass = searchParams.get('class');
+    const qMedium = searchParams.get('medium');
+    const qSubject = searchParams.get('subject');
+    const qYear = searchParams.get('year');
+
+    let targetClass = '';
+    let targetSubject = '';
+    let targetThirdFilter = '';
+
+    const pathClassSlug = params.classSlug;
+    const pathMediumSlug = params.mediumSlug;
+    const pathSubjectSlug = params.subjectSlug;
+
+    // 1. Resolve Class
+    if (qClass) {
+      targetClass = slugToClass(qClass, uniqueClasses) || '';
+    } else if (pathClassSlug) {
+      targetClass = slugToClass(pathClassSlug, uniqueClasses) || '';
+    }
+
+    // 2. Resolve Subject and Third Filter (Medium or Year)
+    if (config.thirdFilterType === 'medium') {
+      if (qMedium) {
+        targetThirdFilter = slugToMedium(qMedium, uniqueThirdFilterValues) || '';
+      } else if (pathMediumSlug && isMediumSlug(pathMediumSlug) && pathMediumSlug !== 'all-mediums') {
+        targetThirdFilter = slugToMedium(pathMediumSlug, uniqueThirdFilterValues) || '';
+      }
+
+      if (qSubject) {
+        targetSubject = slugToSubject(qSubject, uniqueSubjects) || '';
+      } else if (pathSubjectSlug) {
+        targetSubject = slugToSubject(pathSubjectSlug, uniqueSubjects) || '';
+      } else if (pathMediumSlug && !isMediumSlug(pathMediumSlug)) {
+        // Handle case where medium was omitted, e.g. /notes/class-10/geography
+        targetSubject = slugToSubject(pathMediumSlug, uniqueSubjects) || '';
+      }
+    } else if (config.thirdFilterType === 'year') {
+      if (qYear) {
+        targetThirdFilter = qYear;
+      } else if (pathMediumSlug && /^\d{4}$/.test(pathMediumSlug)) {
+        targetThirdFilter = pathMediumSlug;
+      } else if (pathMediumSlug && isMediumSlug(pathMediumSlug)) {
+        // e.g. /library/class-10/english-medium/geography (medium specified in path slug)
+        // If query has year, qYear handled above.
+      }
+
+      if (qSubject) {
+        targetSubject = slugToSubject(qSubject, uniqueSubjects) || '';
+      } else if (pathSubjectSlug) {
+        targetSubject = slugToSubject(pathSubjectSlug, uniqueSubjects) || '';
+      } else if (pathMediumSlug && !/^\d{4}$/.test(pathMediumSlug) && !isMediumSlug(pathMediumSlug)) {
+        // Handle case where 2nd slug is subject: /library/class-10/geography
+        targetSubject = slugToSubject(pathMediumSlug, uniqueSubjects) || '';
+      }
+    }
+
+    setSelectedClass(targetClass);
+    setSelectedSubject(targetSubject);
+    setSelectedThirdFilter(targetThirdFilter);
+
+    // If legacy query params were used, seamlessly convert to canonical URL
+    if (qClass || qSubject || qMedium || (qYear && config.thirdFilterType === 'year')) {
+      const canonicalUrl = buildCategoryUrl({
+        basePath,
+        studentClass: targetClass,
+        medium: config.thirdFilterType === 'medium' ? targetThirdFilter : undefined,
+        subject: targetSubject,
+        year: config.thirdFilterType === 'year' ? targetThirdFilter : undefined,
+      });
+      if (canonicalUrl !== `${location.pathname}${location.search}`) {
+        navigate(canonicalUrl, { replace: true });
+      }
+    }
+  }, [
+    location.pathname,
+    location.search,
+    params.classSlug,
+    params.mediumSlug,
+    params.subjectSlug,
+    uniqueClasses,
+    uniqueSubjects,
+    uniqueThirdFilterValues,
+    config.thirdFilterType,
+    basePath,
+    navigate,
+  ]);
 
   const filteredResources = useMemo(() => {
     let filtered = allResources;
@@ -197,7 +353,17 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedClass || classAllLabel}
-            onChange={(val) => setSelectedClass(val === classAllLabel ? '' : val)}
+            onChange={(val) => {
+              const newClass = val === classAllLabel ? '' : val;
+              const targetUrl = buildCategoryUrl({
+                basePath,
+                studentClass: newClass,
+                medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+                subject: selectedSubject,
+                year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+              });
+              navigate(targetUrl);
+            }}
             options={[classAllLabel, ...uniqueClasses]}
           />
         </div>
@@ -205,7 +371,17 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedSubject || subjectAllLabel}
-            onChange={(val) => setSelectedSubject(val === subjectAllLabel ? '' : val)}
+            onChange={(val) => {
+              const newSubject = val === subjectAllLabel ? '' : val;
+              const targetUrl = buildCategoryUrl({
+                basePath,
+                studentClass: selectedClass,
+                medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+                subject: newSubject,
+                year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+              });
+              navigate(targetUrl);
+            }}
             options={[subjectAllLabel, ...uniqueSubjects]}
           />
         </div>
@@ -213,7 +389,17 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedThirdFilter || thirdFilterAllLabel}
-            onChange={(val) => setSelectedThirdFilter(val === thirdFilterAllLabel ? '' : val)}
+            onChange={(val) => {
+              const newThirdFilter = val === thirdFilterAllLabel ? '' : val;
+              const targetUrl = buildCategoryUrl({
+                basePath,
+                studentClass: selectedClass,
+                medium: config.thirdFilterType === 'medium' ? newThirdFilter : undefined,
+                subject: selectedSubject,
+                year: config.thirdFilterType === 'year' ? newThirdFilter : undefined,
+              });
+              navigate(targetUrl);
+            }}
             options={[thirdFilterAllLabel, ...uniqueThirdFilterValues]}
           />
         </div>
