@@ -185,7 +185,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
   return (
     <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
       <Link
-        to={`/view/${resource.id}`}
+        to={`/resource/${resource.id}`}
         className="w-full flex flex-col items-center text-center no-underline text-ink group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 rounded-md"
       >
         <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
@@ -208,7 +208,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       </Link>
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
-          to={`/view/${resource.id}`}
+          to={`/resource/${resource.id}`}
           className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
         >
           <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
