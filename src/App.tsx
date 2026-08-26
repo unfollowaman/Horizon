@@ -47,7 +47,14 @@ function App() {
 
             {/* Lazy-loaded heavy pages. MainLayout manages the suspense internally. */}
             <Route path="/library" element={<Library />} />
+            <Route path="/library/:classSlug" element={<Library />} />
+            <Route path="/library/:classSlug/:mediumSlug" element={<Library />} />
+            <Route path="/library/:classSlug/:mediumSlug/:subjectSlug" element={<Library />} />
+
             <Route path="/notes" element={<StudyNotes />} />
+            <Route path="/notes/:classSlug" element={<StudyNotes />} />
+            <Route path="/notes/:classSlug/:mediumSlug" element={<StudyNotes />} />
+            <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<StudyNotes />} />
             <Route path="/resource/:id" element={<ResourceDetails />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings/notifications" element={<NotificationSettings />} />

@@ -5,6 +5,7 @@ import type { Resource } from '../../types';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { handleDownload } from '../../utils/download';
 import { canDownload } from '../../utils/permissions';
+import { buildCategoryUrl } from '../../utils/urlHelper';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -106,7 +107,16 @@ const ResourceDetails: React.FC = () => {
     );
   }
 
-  const backPath = resource && resource.resource_type ? RESOURCE_CATEGORIES[resource.resource_type]?.path || '/' : '/';
+  const categoryBasePath = resource && resource.resource_type ? RESOURCE_CATEGORIES[resource.resource_type]?.path || '/' : '/';
+  const backPath = resource
+    ? buildCategoryUrl({
+        basePath: categoryBasePath,
+        studentClass: resource.student_class,
+        medium: resource.medium,
+        subject: resource.subject,
+        year: resource.year,
+      })
+    : '/';
   const backText = resource && resource.resource_type ? `Back to ${RESOURCE_CATEGORIES[resource.resource_type]?.title || 'Library'}` : 'Back to Home';
 
   if (!resource) {
