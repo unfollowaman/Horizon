@@ -6,6 +6,5 @@ Disallow: /login
 Disallow: /register
 Disallow: /coming-soon
 Disallow: /view/
-Disallow: /resource/
 
 Sitemap: https://unfollowaman.tech/sitemap.xml
