@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './PrivacyPolicy.module.css';
 
 const PrivacyPolicy: React.FC = () => {
@@ -171,7 +172,7 @@ const PrivacyPolicy: React.FC = () => {
         <section className={styles.section}>
           <h2>15. Contact Information</h2>
           <p>
-            If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please feel free to reach out to us. You can find our contact details on the <a href="/" className={styles.inlineLink}>Contact</a> page of our website.
+            If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please feel free to reach out to us. You can find our contact details on the <Link to="/contact" className={styles.inlineLink}>Contact</Link> page of our website.
           </p>
         </section>
       </div>

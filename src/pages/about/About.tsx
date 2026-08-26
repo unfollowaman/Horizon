@@ -68,7 +68,7 @@ const About: React.FC = () => {
           <div className={`${styles.card} neu-raised`}>
             <h3 className={styles.sectionTitle}>Transparency & Quality</h3>
             <p className={styles.paragraph}>
-              Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <Link to="/" className={styles.inlineLink}>Contact</Link> page or watch our <Link to="/" className={styles.inlineLink}>Announcements</Link> for updates.
+              Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <Link to="/contact" className={styles.inlineLink}>Contact</Link> page or check back regularly for updates.
             </p>
           </div>
 

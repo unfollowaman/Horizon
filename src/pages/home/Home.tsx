@@ -420,9 +420,9 @@ const Footer = () => {
           <div className={styles.footerLinksCol}>
             <h4 className={styles.footerLinksTitle}>Info</h4>
             <nav className={styles.footerNav} aria-label="Footer navigation">
-              <Link to="/" className={styles.footerNavLink} aria-current={location.pathname === '/' ? 'page' : undefined}>Announcements</Link>
               <Link to="/about" className={styles.footerNavLink} aria-current={location.pathname === '/about' ? 'page' : undefined}>About Us</Link>
-              <Link to="/" className={styles.footerNavLink}>Contact</Link>
+              <Link to="/contact" className={styles.footerNavLink} aria-current={location.pathname === '/contact' ? 'page' : undefined}>Contact</Link>
+              <Link to="/terms" className={styles.footerNavLink} aria-current={location.pathname === '/terms' ? 'page' : undefined}>Terms of Service</Link>
               <Link to="/privacy-policy" className={styles.footerNavLink} aria-current={location.pathname === '/privacy-policy' ? 'page' : undefined}>Privacy Policy</Link>
               <Link to="/attribution" className={styles.footerNavLink} aria-current={location.pathname === '/attribution' ? 'page' : undefined}>Attribution</Link>
             </nav>
