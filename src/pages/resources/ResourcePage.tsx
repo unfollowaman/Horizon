@@ -9,10 +9,14 @@ import MaterialCard from '../../components/MaterialCard';
 import MaterialCardSkeleton from '../../components/MaterialCardSkeleton';
 import OtherResources from '../../components/OtherResources';
 import ProfileButton from '../../components/ProfileButton';
+import LibraryEducationalGuide from './components/LibraryEducationalGuide';
+import NotesEducationalGuide from './components/NotesEducationalGuide';
 
 export interface ResourcePageConfig {
   resourceType: ResourceType;
   title: string;
+  metaTitle: string;
+  metaDescription: string;
   includeChapters?: boolean;
   thirdFilterType: 'year' | 'medium';
   emptyMessageTitle: string;
@@ -57,6 +61,23 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const thirdFilterAllLabel = isDesktop
     ? config.getThirdFilterDesktopLabel('')
     : config.getThirdFilterMobileLabel('');
+
+  useEffect(() => {
+    if (config.metaTitle) {
+      document.title = config.metaTitle;
+    }
+    if (config.metaDescription) {
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', config.metaDescription);
+      } else {
+        const newMeta = document.createElement('meta');
+        newMeta.name = 'description';
+        newMeta.content = config.metaDescription;
+        document.head.appendChild(newMeta);
+      }
+    }
+  }, [config.metaTitle, config.metaDescription]);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -152,6 +173,24 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
         <h1 className="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">{config.title}</h1>
       </div>
+
+      {/* Educational Intro Section */}
+      {config.resourceType === 'pyq' && (
+        <LibraryEducationalGuide
+          allResources={allResources}
+          selectedClass={selectedClass}
+          selectedSubject={selectedSubject}
+          selectedYear={selectedThirdFilter}
+        />
+      )}
+      {config.resourceType === 'notes' && (
+        <NotesEducationalGuide
+          allResources={allResources}
+          selectedClass={selectedClass}
+          selectedSubject={selectedSubject}
+          selectedMedium={selectedThirdFilter}
+        />
+      )}
 
       {/* Filter Controls */}
       <div className="mb-[clamp(24px,4vw,40px)] flex w-full gap-[12px]">
