@@ -5,10 +5,25 @@ import {
   classToSlug,
   mediumToSlug,
   subjectToSlug,
-  STATIC_PAGES,
-  type SitemapResource,
-  type SitemapUrlEntry
-} from '../sitemapGenerator';
+  STATIC_PAGES
+} from '../../../scripts/generate-sitemap.js';
+
+export interface SitemapResource {
+  id: string | number;
+  student_class?: string | number | null;
+  medium?: string | null;
+  subject?: string | null;
+  resource_type?: string | null;
+  created_at?: string | null;
+  is_active?: boolean | null;
+}
+
+export interface SitemapUrlEntry {
+  loc: string;
+  changefreq: string;
+  priority: string;
+  lastmod?: string;
+}
 
 describe('Sitemap Generator Unit Tests', () => {
   describe('Slug conversion helpers', () => {
@@ -36,7 +51,7 @@ describe('Sitemap Generator Unit Tests', () => {
 
   describe('generateSitemapUrls', () => {
     it('includes all main static pages', () => {
-      const urls = generateSitemapUrls([]);
+      const urls: SitemapUrlEntry[] = generateSitemapUrls([]);
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
       expect(locs).toContain('https://unfollowaman.tech');
@@ -70,7 +85,7 @@ describe('Sitemap Generator Unit Tests', () => {
         }
       ];
 
-      const urls = generateSitemapUrls(mockResources);
+      const urls: SitemapUrlEntry[] = generateSitemapUrls(mockResources);
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
       // Public resource landing pages
@@ -104,7 +119,7 @@ describe('Sitemap Generator Unit Tests', () => {
         }
       ];
 
-      const urls = generateSitemapUrls(mockResources);
+      const urls: SitemapUrlEntry[] = generateSitemapUrls(mockResources);
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
       expect(locs).not.toContain('https://unfollowaman.tech/notes/class-10/sanskrit-medium/physics');
@@ -118,7 +133,7 @@ describe('Sitemap Generator Unit Tests', () => {
         { loc: 'https://unfollowaman.tech/resource/101', lastmod: '2026-08-01', changefreq: 'weekly', priority: '0.7' }
       ];
 
-      const xml = buildSitemapXml(sampleUrls);
+      const xml: string = buildSitemapXml(sampleUrls);
 
       expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
       expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
