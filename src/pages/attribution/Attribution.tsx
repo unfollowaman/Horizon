@@ -93,6 +93,11 @@ const Attribution: React.FC = () => {
                 GitHub — Icons8
               </a>
             </li>
+            <li>
+              <a href="https://icons8.com/icon/ios/substack" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Substack — Icons8
+              </a>
+            </li>
           </ul>
         </section>
 

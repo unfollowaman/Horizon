@@ -431,19 +431,22 @@ const Footer = () => {
 
         {/* Socials */}
         <div className={styles.footerSocials}>
-        <Link to="/" className={styles.footerSocialLink}>
-          <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.footerSocialIcon} />
-        </Link>
-        <Link to="/" className={styles.footerSocialLink}>
-          <img src="/assets/Social Links/twitter-x.png" alt="Twitter/X" className={styles.footerSocialIcon} />
-        </Link>
-        <Link to="/" className={styles.footerSocialLink}>
-          <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.footerSocialIcon} />
-        </Link>
-        <Link to="/" className={styles.footerSocialLink}>
-          <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.footerSocialIcon} />
-        </Link>
-      </div>
+          <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Instagram">
+            <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.footerSocialIcon} />
+          </a>
+          <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="X (formerly Twitter)">
+            <img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" className={styles.footerSocialIcon} />
+          </a>
+          <a href="mailto:tryhorizon18@gmail.com" className={styles.footerSocialLink} aria-label="Gmail">
+            <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.footerSocialIcon} />
+          </a>
+          <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="GitHub">
+            <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.footerSocialIcon} />
+          </a>
+          <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Substack">
+            <img src="/assets/Social Links/substack.png" alt="Substack" className={styles.footerSocialIcon} />
+          </a>
+        </div>
 
       </div>
     </footer>

@@ -60,11 +60,38 @@ const Contact: React.FC = () => {
           </section>
 
           <section className={`${styles.card} neu-raised`}>
-            <h2 className={styles.cardTitle}>Support & Assistance</h2>
+            <h2 className={styles.cardTitle}>Connect & Support</h2>
             <p className={styles.paragraph}>
-              Our team actively reviews platform reports and user input to continuously improve Horizon's study materials.
+              Reach out directly or connect with us on social media for updates, feedback, and support:
             </p>
-            <p className={styles.paragraph}>
+            <div className={styles.socialGrid}>
+              <a href="mailto:tryhorizon18@gmail.com" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
+                <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.socialIcon} />
+                <span className={styles.socialLabel}>Gmail</span>
+                <span className={styles.socialHandle}>tryhorizon18@gmail.com</span>
+              </a>
+              <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
+                <img src="/assets/Social Links/twitter-x.png" alt="X" className={styles.socialIcon} />
+                <span className={styles.socialLabel}>X</span>
+                <span className={styles.socialHandle}>@unfollowaman</span>
+              </a>
+              <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
+                <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.socialIcon} />
+                <span className={styles.socialLabel}>GitHub</span>
+                <span className={styles.socialHandle}>@unfollowaman</span>
+              </a>
+              <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
+                <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.socialIcon} />
+                <span className={styles.socialLabel}>Instagram</span>
+                <span className={styles.socialHandle}>@unfollowaman_</span>
+              </a>
+              <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
+                <img src="/assets/Social Links/substack.png" alt="Substack" className={styles.socialIcon} />
+                <span className={styles.socialLabel}>Substack</span>
+                <span className={styles.socialHandle}>@unfollowaman</span>
+              </a>
+            </div>
+            <p className={styles.paragraph} style={{ marginTop: 'var(--spacing-2)' }}>
               Before reaching out, you may also find quick answers regarding data privacy and platform operations on our <Link to="/privacy-policy" className={styles.inlineLink}>Privacy Policy</Link> page or learn more about our mission on the <Link to="/about" className={styles.inlineLink}>About Us</Link> page.
             </p>
           </section>
