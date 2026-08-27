@@ -1,10 +1,12 @@
 .contactContainer {
+  width: 100%;
   max-width: 1000px;
   margin: 0 auto;
   padding: var(--spacing-4) var(--spacing-3) 128px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-5);
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -14,7 +16,8 @@
 }
 
 .header {
-  padding: var(--spacing-5) var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-4) var(--spacing-3);
   --tw-radius: var(--radius-2xl);
   border-radius: var(--radius-2xl);
   text-align: center;
@@ -22,6 +25,13 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-2);
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: var(--spacing-5) var(--spacing-4);
+  }
 }
 
 .pageTitle {
@@ -65,12 +75,14 @@
 }
 
 .card {
-  padding: var(--spacing-4) var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-4) var(--spacing-3);
   --tw-radius: var(--radius-xl);
   border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -118,15 +130,24 @@
 }
 
 .socialItem {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-4);
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
   border-radius: var(--radius-lg);
   color: var(--color-ink);
   text-decoration: none;
   font-weight: 500;
   transition: transform 150ms ease, box-shadow 150ms ease;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .socialItem {
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+  }
 }
 
 .socialItem:hover {
@@ -144,12 +165,17 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-ink);
+  flex-shrink: 0;
 }
 
 .socialHandle {
   font-size: 0.875rem;
   color: var(--muted-foreground);
   margin-left: auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: right;
 }
 
 .inlineLink {

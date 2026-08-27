@@ -25,7 +25,7 @@ const MainLayout: React.FC = () => {
         </ErrorBoundary>
       </main>
 
-      <footer className="p-[12px] text-center text-muted-foreground neu-recessed mt-auto text-sm">
+      <footer className="p-[12px] text-center text-muted-foreground neu-recessed mt-auto text-sm overflow-hidden">
         <p className="m-0">&copy; {new Date().getFullYear()} Horizon Educational Platform. All rights reserved.</p>
       </footer>
     </div>
