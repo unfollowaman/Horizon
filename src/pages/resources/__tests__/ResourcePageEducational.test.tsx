@@ -149,6 +149,14 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
     // Check structured list guidelines
     const lists = guideSection?.querySelectorAll('ul');
     expect(lists && lists.length).toBe(2);
+
+    // Check JSON-LD CollectionPage structured data
+    const jsonLdScript = container?.querySelector('script[type="application/ld+json"]');
+    expect(jsonLdScript).not.toBeNull();
+    const jsonLdData = JSON.parse(jsonLdScript?.textContent || '{}');
+    expect(jsonLdData['@context']).toBe('https://schema.org');
+    expect(jsonLdData['@type']).toBe('CollectionPage');
+    expect(jsonLdData.provider.name).toBe('Horizon');
   });
 
   it('renders crawlable educational HTML section and sets SEO metadata on /notes', async () => {

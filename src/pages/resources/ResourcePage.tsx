@@ -145,6 +145,29 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     basePath,
   ]);
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://unfollowaman.tech';
+
+  const categoryCanonicalPath = buildCategoryUrl({
+    basePath,
+    studentClass: selectedClass,
+    medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+    subject: selectedSubject,
+    year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+  });
+
+  const categoryJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: document.title || config.metaTitle,
+    description: config.metaDescription,
+    url: `${origin}${categoryCanonicalPath}`,
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: origin,
+    },
+  };
+
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
@@ -311,6 +334,9 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
+      <script type="application/ld+json">
+        {JSON.stringify(categoryJsonLd)}
+      </script>
       {/* Page Header */}
       <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full">
         <button

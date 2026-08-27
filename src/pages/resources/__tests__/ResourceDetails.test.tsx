@@ -142,6 +142,26 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     expect(canonicalLink?.getAttribute('href')).toContain('/resource/note-101');
 
+    // Check JSON-LD EducationalResource structured data
+    const jsonLdScript = container?.querySelector('script[type="application/ld+json"]');
+    expect(jsonLdScript).not.toBeNull();
+    const jsonLdData = JSON.parse(jsonLdScript?.textContent || '{}');
+    expect(jsonLdData['@context']).toBe('https://schema.org');
+    expect(jsonLdData['@type']).toBe('EducationalResource');
+    expect(jsonLdData.name).toBe('Chapter 1: Resource and Development');
+    expect(jsonLdData.educationalLevel).toBe('Class 10');
+    expect(jsonLdData.about).toEqual({ '@type': 'Thing', name: 'Geography' });
+    expect(jsonLdData.inLanguage).toBe('en');
+    expect(jsonLdData.learningResourceType).toBe('Study Note');
+    expect(jsonLdData.url).toContain('/resource/note-101');
+    expect(jsonLdData.provider.name).toBe('Horizon');
+
+    // Ensure no sensitive or protected PDF details are exposed in JSON-LD
+    const jsonLdString = JSON.stringify(jsonLdData);
+    expect(jsonLdString).not.toContain('protected/notes');
+    expect(jsonLdString).not.toContain('file_path');
+    expect(jsonLdString).not.toContain('/view/');
+
     // Check related resources linking to public resource landing pages
     const relatedLink = container?.querySelector('a[href="/resource/note-102"]');
     expect(relatedLink).not.toBeNull();
@@ -175,6 +195,13 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     const ctaLink = container?.querySelector('a[href="/view/pyq-201"]');
     expect(ctaLink).not.toBeNull();
     expect(ctaLink?.textContent).toContain('View Full Resource');
+
+    // Check PYQ JSON-LD
+    const jsonLdScript = container?.querySelector('script[type="application/ld+json"]');
+    expect(jsonLdScript).not.toBeNull();
+    const jsonLdData = JSON.parse(jsonLdScript?.textContent || '{}');
+    expect(jsonLdData['@type']).toBe('EducationalResource');
+    expect(jsonLdData.learningResourceType).toBe('Previous Year Question Paper');
   });
 
   it('MaterialCard links to /resource/:id public landing page', async () => {
