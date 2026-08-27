@@ -1,12 +1,10 @@
 .contactContainer {
-  width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: var(--spacing-4) var(--spacing-3) 128px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-5);
-  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -16,8 +14,7 @@
 }
 
 .header {
-  width: 100%;
-  padding: var(--spacing-4) var(--spacing-3);
+  padding: var(--spacing-5) var(--spacing-4);
   --tw-radius: var(--radius-2xl);
   border-radius: var(--radius-2xl);
   text-align: center;
@@ -25,13 +22,6 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-2);
-  box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .header {
-    padding: var(--spacing-5) var(--spacing-4);
-  }
 }
 
 .pageTitle {
@@ -75,20 +65,12 @@
 }
 
 .card {
-  width: 100%;
-  padding: var(--spacing-4) var(--spacing-3);
+  padding: var(--spacing-4);
   --tw-radius: var(--radius-xl);
   border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
-  box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .card {
-    padding: var(--spacing-5);
-  }
 }
 
 .cardTitle {
