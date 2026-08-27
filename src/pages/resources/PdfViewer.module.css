@@ -1,7 +1,8 @@
 .pageContainer {
   height: 100vh;
   height: 100dvh; /* For mobile browsers */
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
   background-color: var(--bg-base);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   display: flex;

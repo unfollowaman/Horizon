@@ -375,8 +375,8 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       )}
 
       {/* Filter Controls */}
-      <div className="mb-[clamp(24px,4vw,40px)] flex w-full gap-[12px]">
-        <div className="flex-1 min-w-0 flex flex-col gap-2">
+      <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-1 sm:grid-cols-3 w-full gap-[12px]">
+        <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedClass || classAllLabel}
             onChange={(val) => {
@@ -394,7 +394,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           />
         </div>
 
-        <div className="flex-[1.5] min-w-0 flex flex-col gap-2">
+        <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedSubject || subjectAllLabel}
             onChange={(val) => {
@@ -412,7 +412,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           />
         </div>
 
-        <div className="flex-1 min-w-0 flex flex-col gap-2">
+        <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
             value={selectedThirdFilter || thirdFilterAllLabel}
             onChange={(val) => {
