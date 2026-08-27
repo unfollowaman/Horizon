@@ -101,7 +101,7 @@ const ResourceDetails: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-6xl mx-auto p-3.5 sm:p-6 md:p-8">
+      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
         <div className="text-center p-6 sm:p-12 neu-card rounded-2xl min-w-0">
           <div className="w-10 h-10 border-4 border-[#E91E8C]/20 border-t-[#E91E8C] rounded-full animate-spin mx-auto mb-4" />
           <h1 className="text-xl sm:text-h2 uppercase text-ink break-words">Loading Educational Landing Page...</h1>
@@ -123,7 +123,7 @@ const ResourceDetails: React.FC = () => {
 
   if (!resource) {
     return (
-      <div className="w-full max-w-6xl mx-auto p-3.5 sm:p-6 md:p-8">
+      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
         <div className="text-center p-6 sm:p-12 neu-card rounded-2xl min-w-0">
           <h1 className="text-xl sm:text-h2 uppercase text-accent-red mb-4 break-words">Resource not found</h1>
           <p className="text-sm sm:text-body1 mb-6 text-ink/80 break-words">The requested educational material could not be found or may have been moved.</p>
@@ -186,13 +186,13 @@ const ResourceDetails: React.FC = () => {
     !resource.title.toLowerCase().includes(resource.chapters.chapter_name.toLowerCase());
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-3.5 sm:p-6 md:p-8 space-y-5 sm:space-y-6 md:space-y-8 min-w-0">
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
       <script type="application/ld+json">
         {JSON.stringify(jsonLd)}
       </script>
 
       {/* Top Header Navigation */}
-      <div className="flex justify-between items-center w-full min-w-0">
+      <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full min-w-0">
         <button
           type="button"
           onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = backPath}
@@ -215,29 +215,23 @@ const ResourceDetails: React.FC = () => {
 
           {/* Chapter Header Card */}
           <article className="neu-card rounded-2xl px-4 py-3.5 sm:px-8 sm:py-6 md:px-10 md:py-7 space-y-3 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
-            {/* Soft pink ambient highlight */}
-            <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br from-[#E91E8C]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
-
             {/* Badges Row */}
             <div className="flex flex-nowrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full overflow-x-auto no-scrollbar">
               {resource.student_class && (
-                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 border-l-2 border-[#E91E8C] shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
                   {resource.student_class}
                 </span>
               )}
               {resource.subject && (
-                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
                   {resource.subject}
                 </span>
               )}
               {resource.medium && (
-                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase bg-black/5 shrink-0">
                   {resource.medium} MEDIUM
                 </span>
               )}
-              <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase shrink-0">
-                {resource.resource_type.replace('_', ' ')}
-              </span>
             </div>
 
             {/* Chapter Number & Title Header */}
