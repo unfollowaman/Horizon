@@ -177,8 +177,8 @@ const ResourceDetails: React.FC = () => {
       </script>
       {/* Breadcrumb Navigation */}
       <nav aria-label="Breadcrumb">
-        <Link to={backPath} className="inline-flex items-center h-11 px-4 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-sm">
-          &larr; {backText}
+        <Link to={backPath} className="inline-flex items-center h-11 px-4 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-sm max-w-full truncate">
+          <span className="truncate">&larr; {backText}</span>
         </Link>
       </nav>
 
@@ -188,29 +188,29 @@ const ResourceDetails: React.FC = () => {
         <main className="lg:col-span-2 space-y-6">
 
           {/* Primary Resource Header Card */}
-          <article className="neu-card rounded-2xl p-6 md:p-8 space-y-4">
-            <div className="flex flex-wrap gap-2 items-center">
+          <article className="neu-card rounded-2xl p-4 sm:p-6 md:p-8 space-y-4">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center justify-start">
               {resource.student_class && (
-                <span className="neu-recessed px-3 py-1 rounded-full text-caption font-bold text-ink/80">
+                <span className="neu-recessed px-2.5 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 shrink-0">
                   {resource.student_class}
                 </span>
               )}
               {resource.subject && (
-                <span className="neu-recessed px-3 py-1 rounded-full text-caption font-bold text-ink/80">
+                <span className="neu-recessed px-2.5 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 shrink-0">
                   {resource.subject}
                 </span>
               )}
               {resource.medium && (
-                <span className="neu-recessed px-3 py-1 rounded-full text-caption font-bold text-ink/80 uppercase">
+                <span className="neu-recessed px-2.5 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 uppercase shrink-0">
                   {resource.medium} Medium
                 </span>
               )}
-              <span className="neu-recessed px-3 py-1 rounded-full text-caption font-bold text-ink/80 uppercase">
+              <span className="neu-recessed px-2.5 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 uppercase shrink-0">
                 {resource.resource_type}
               </span>
             </div>
 
-            <h1 className="text-h1 uppercase text-ink leading-tight">
+            <h1 className="text-lg sm:text-2xl md:text-h1 font-bold uppercase text-ink leading-tight text-left break-words">
               {resource.title}
             </h1>
 
@@ -228,10 +228,10 @@ const ResourceDetails: React.FC = () => {
                   ? 'Access the complete interactive study note with structured chapter pages and reading progress tracking.'
                   : 'Open the full document in Horizon\'s reader for structured review and exam preparation.'}
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-2 w-full max-w-md mx-auto">
                 <Link
                   to={`/view/${resource.id}`}
-                  className="inline-flex items-center justify-center px-6 py-3 font-bold text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink min-w-[200px]"
+                  className="inline-flex items-center justify-center px-5 py-3 font-bold text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink w-full sm:w-auto text-center"
                 >
                   {isNotes ? 'Open Full Notes' : 'View Full Resource'} &rarr;
                 </Link>
@@ -239,7 +239,7 @@ const ResourceDetails: React.FC = () => {
                   <button
                     type="button"
                     onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
-                    className="inline-flex items-center justify-center px-6 py-3 font-bold text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink cursor-pointer"
+                    className="inline-flex items-center justify-center px-5 py-3 font-bold text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink w-full sm:w-auto text-center cursor-pointer"
                   >
                     Download Resource
                   </button>
@@ -333,36 +333,36 @@ const ResourceDetails: React.FC = () => {
             <h3 className="text-h2 uppercase text-ink pb-2 border-b border-ink/10">Resource Details</h3>
             <dl className="space-y-3 text-body1">
               {resource.student_class && (
-                <div className="flex justify-between items-center">
-                  <dt className="text-ink/70 font-bold">Class:</dt>
-                  <dd className="m-0 font-bold text-ink">{resource.student_class}</dd>
+                <div className="flex justify-between items-center gap-2">
+                  <dt className="text-ink/70 font-bold shrink-0">Class:</dt>
+                  <dd className="m-0 font-bold text-ink text-right truncate">{resource.student_class}</dd>
                 </div>
               )}
               {resource.subject && (
-                <div className="flex justify-between items-center">
-                  <dt className="text-ink/70 font-bold">Subject:</dt>
-                  <dd className="m-0 font-bold text-ink">{resource.subject}</dd>
+                <div className="flex justify-between items-center gap-2">
+                  <dt className="text-ink/70 font-bold shrink-0">Subject:</dt>
+                  <dd className="m-0 font-bold text-ink text-right truncate">{resource.subject}</dd>
                 </div>
               )}
               {resource.medium && (
-                <div className="flex justify-between items-center">
-                  <dt className="text-ink/70 font-bold">Medium:</dt>
-                  <dd className="m-0 font-bold text-ink capitalize">{resource.medium}</dd>
+                <div className="flex justify-between items-center gap-2">
+                  <dt className="text-ink/70 font-bold shrink-0">Medium:</dt>
+                  <dd className="m-0 font-bold text-ink capitalize text-right truncate">{resource.medium}</dd>
                 </div>
               )}
-              <div className="flex justify-between items-center">
-                <dt className="text-ink/70 font-bold">Type:</dt>
-                <dd className="m-0 font-bold text-ink capitalize">{resource.resource_type}</dd>
+              <div className="flex justify-between items-center gap-2">
+                <dt className="text-ink/70 font-bold shrink-0">Type:</dt>
+                <dd className="m-0 font-bold text-ink capitalize text-right truncate">{resource.resource_type}</dd>
               </div>
               {resource.year && (
-                <div className="flex justify-between items-center">
-                  <dt className="text-ink/70 font-bold">Academic Year:</dt>
-                  <dd className="m-0 font-bold text-ink">{resource.year}</dd>
+                <div className="flex justify-between items-center gap-2">
+                  <dt className="text-ink/70 font-bold shrink-0">Academic Year:</dt>
+                  <dd className="m-0 font-bold text-ink text-right truncate">{resource.year}</dd>
                 </div>
               )}
-              <div className="flex justify-between items-center">
-                <dt className="text-ink/70 font-bold">Added On:</dt>
-                <dd className="m-0 font-bold text-ink">{new Date(resource.uploadDate).toLocaleDateString()}</dd>
+              <div className="flex justify-between items-center gap-2">
+                <dt className="text-ink/70 font-bold shrink-0">Added On:</dt>
+                <dd className="m-0 font-bold text-ink text-right truncate">{new Date(resource.uploadDate).toLocaleDateString()}</dd>
               </div>
             </dl>
           </section>

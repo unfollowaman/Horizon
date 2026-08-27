@@ -209,7 +209,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
           to={`/resource/${resource.id}`}
-          className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+          className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
         >
           <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <defs>
@@ -225,13 +225,13 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
             <path d="M11 14h1.5a2 2 0 0 1 0 4H11v-4z" />
             <path d="M16 18v-4h2M16 16h1.5" />
           </svg>
-          <span className="shrink-0">View</span>
+          <span className="shrink-0 truncate">View</span>
         </Link>
         {resource.pdfUrl && canDownload(resource) && (
           <button
             type="button"
             onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
-            className="md:flex-1 md:min-w-0 p-[6px_12px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
+            className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
           >
             <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <defs>
@@ -245,7 +245,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" x2="12" y1="15" y2="3"/>
             </svg>
-            <span className="shrink-0">Download</span>
+            <span className="shrink-0 truncate">Download</span>
           </button>
         )}
       </div>
