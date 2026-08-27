@@ -5,6 +5,7 @@ import type { Resource } from '../../types';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { handleDownload } from '../../utils/download';
 import { canDownload } from '../../utils/permissions';
+import ProfileButton from '../../components/ProfileButton';
 import { buildCategoryUrl } from '../../utils/urlHelper';
 
 const ResourceDetails: React.FC = () => {
@@ -119,7 +120,6 @@ const ResourceDetails: React.FC = () => {
         year: resource.year,
       })
     : '/';
-  const backText = resource && resource.resource_type ? `Back to ${RESOURCE_CATEGORIES[resource.resource_type]?.title || 'Library'}` : 'Back to Home';
 
   if (!resource) {
     return (
@@ -191,16 +191,21 @@ const ResourceDetails: React.FC = () => {
         {JSON.stringify(jsonLd)}
       </script>
 
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="Breadcrumb" className="pt-1 sm:pt-2 min-w-0">
-        <Link
-          to={backPath}
-          className="inline-flex items-center gap-2 h-9 sm:h-10 px-3.5 sm:px-4 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm max-w-full group transition-all min-w-0"
+      {/* Top Header Navigation */}
+      <div className="flex justify-between items-center w-full min-w-0">
+        <button
+          type="button"
+          onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = backPath}
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0"
+          aria-label="Go Back"
         >
-          <span className="text-[#E91E8C] transition-transform group-hover:-translate-x-0.5 shrink-0">&larr;</span>
-          <span className="truncate min-w-0">{backText}</span>
-        </Link>
-      </nav>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <ProfileButton />
+      </div>
 
       {/* Editorial Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-8 items-start w-full min-w-0">
@@ -209,28 +214,28 @@ const ResourceDetails: React.FC = () => {
         <main className="lg:col-span-2 space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
 
           {/* Chapter Header Card */}
-          <article className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 relative overflow-hidden min-w-0 w-full">
+          <article className="neu-card rounded-2xl px-4 py-3.5 sm:px-8 sm:py-6 md:px-10 md:py-7 space-y-3 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
             {/* Soft pink ambient highlight */}
             <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br from-[#E91E8C]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
 
             {/* Badges Row */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full">
+            <div className="flex flex-nowrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full overflow-x-auto no-scrollbar">
               {resource.student_class && (
-                <span className="neu-recessed px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 border-l-2 border-[#E91E8C] shrink-0">
+                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 border-l-2 border-[#E91E8C] shrink-0">
                   {resource.student_class}
                 </span>
               )}
               {resource.subject && (
-                <span className="neu-recessed px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 shrink-0">
+                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 shrink-0">
                   {resource.subject}
                 </span>
               )}
               {resource.medium && (
-                <span className="neu-recessed px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 uppercase shrink-0">
-                  {resource.medium} Medium
+                <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase shrink-0">
+                  {resource.medium} MEDIUM
                 </span>
               )}
-              <span className="neu-recessed px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-caption font-bold text-ink/80 uppercase shrink-0">
+              <span className="neu-raised-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase shrink-0">
                 {resource.resource_type.replace('_', ' ')}
               </span>
             </div>
