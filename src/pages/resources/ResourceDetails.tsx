@@ -64,7 +64,8 @@ const ResourceDetails: React.FC = () => {
     const pageTitle = `${resource.title}${resource.student_class ? ` | ${resource.student_class}` : ''}${resource.subject ? ` ${resource.subject}` : ''} | Horizon`;
     document.title = pageTitle;
 
-    const descriptionText = `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${resource.student_class ? ` (${resource.student_class}` : ''}${resource.subject ? ` ${resource.subject})` : ')'}. Free learning materials on Horizon.`;
+    const detailsContext = [resource.student_class, resource.subject].filter(Boolean).join(' ');
+    const descriptionText = `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${detailsContext ? ` (${detailsContext})` : ''}. Free learning materials on Horizon.`;
 
     if (metaDesc) {
       metaDesc.setAttribute('content', descriptionText);
@@ -134,8 +135,46 @@ const ResourceDetails: React.FC = () => {
   const isNotes = resource.resource_type === 'notes';
   const isPYQ = resource.resource_type === 'pyq';
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://unfollowaman.tech';
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalResource',
+    name: resource.title,
+    description: resource.description || `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${[resource.student_class, resource.subject].filter(Boolean).join(' ') ? ` (${[resource.student_class, resource.subject].filter(Boolean).join(' ')})` : ''}. Free learning materials on Horizon.`,
+    url: `${origin}/resource/${resource.id}`,
+    ...(resource.student_class ? { educationalLevel: resource.student_class } : {}),
+    ...(resource.subject ? { about: { '@type': 'Thing', name: resource.subject } } : {}),
+    ...(resource.medium ? { inLanguage: resource.medium === 'hindi' ? 'hi' : 'en' } : {}),
+    learningResourceType:
+      resource.resource_type === 'notes'
+        ? 'Study Note'
+        : resource.resource_type === 'pyq'
+        ? 'Previous Year Question Paper'
+        : resource.resource_type === 'revision_sheets'
+        ? 'Revision Sheet'
+        : resource.resource_type === 'mcq'
+        ? 'Multiple Choice Questions'
+        : resource.resource_type === 'flashcards'
+        ? 'Flashcard'
+        : 'Educational Resource',
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: origin,
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Horizon',
+      url: origin,
+    },
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
+      <script type="application/ld+json">
+        {JSON.stringify(jsonLd)}
+      </script>
       {/* Breadcrumb Navigation */}
       <nav aria-label="Breadcrumb">
         <Link to={backPath} className="inline-flex items-center h-11 px-4 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-sm">
