@@ -120,7 +120,6 @@ const ResourceDetails: React.FC = () => {
         year: resource.year,
       })
     : '/';
-  const backText = resource && resource.resource_type ? `Back to ${RESOURCE_CATEGORIES[resource.resource_type]?.title || 'Library'}` : 'Back to Home';
 
   if (!resource) {
     return (
