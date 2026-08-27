@@ -266,11 +266,11 @@ const ResourceDetails: React.FC = () => {
           </article>
 
           {/* Protected PDF CTA Banner */}
-          <section className="neu-card rounded-2xl p-4 sm:p-8 space-y-3.5 sm:space-y-4 relative overflow-hidden border-l-4 border-l-[#E91E8C] min-w-0 w-full">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 pb-2 border-b border-ink/10 min-w-0">
+          <section className="neu-card rounded-2xl p-4 sm:p-8 space-y-3.5 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
+            <div className="flex items-center justify-between gap-3 sm:gap-4 pb-2 border-b border-ink/10 min-w-0">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] flex items-center justify-center text-white shrink-0 shadow-sm">
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <div className="w-11 h-11 rounded-full neu-raised flex items-center justify-center text-white shrink-0 before:bg-gradient-to-br before:from-[#E91E8C] before:via-[#C2185B] before:to-[#8B0A50]">
+                  <svg className="w-5 h-5 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
@@ -283,9 +283,6 @@ const ResourceDetails: React.FC = () => {
                   </h2>
                 </div>
               </div>
-              <span className="neu-recessed px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-ink/70 shrink-0">
-                Protected Horizon Reader
-              </span>
             </div>
 
             <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
