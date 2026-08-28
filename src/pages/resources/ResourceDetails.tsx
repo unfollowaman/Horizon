@@ -485,7 +485,7 @@ const ResourceDetails: React.FC = () => {
           </section>
 
           {/* Study Guidance & Preparation Tips Section */}
-          <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-6 min-w-0 w-full">
+          <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
               <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
@@ -495,11 +495,11 @@ const ResourceDetails: React.FC = () => {
 
             <div className="space-y-3 sm:space-y-4 min-w-0">
               {/* Step 01 */}
-              <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 neu-recessed rounded-xl min-w-0">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-sm mt-0.5">
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
                   01
                 </div>
-                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+                <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
                     Initial Review
                   </h3>
@@ -510,11 +510,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 02 */}
-              <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 neu-recessed rounded-xl min-w-0">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-sm mt-0.5">
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
                   02
                 </div>
-                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+                <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
                     Active Recall
                   </h3>
@@ -525,11 +525,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 03 */}
-              <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 neu-recessed rounded-xl min-w-0">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-sm mt-0.5">
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
                   03
                 </div>
-                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+                <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
                     Practice Questions
                   </h3>
@@ -540,11 +540,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 04 */}
-              <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 neu-recessed rounded-xl min-w-0">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-sm mt-0.5">
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
                   04
                 </div>
-                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+                <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
                     Interactive Note Viewing
                   </h3>
