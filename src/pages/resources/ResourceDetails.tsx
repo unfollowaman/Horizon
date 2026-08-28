@@ -495,9 +495,11 @@ const ResourceDetails: React.FC = () => {
 
             <div className="space-y-3 sm:space-y-4 min-w-0">
               {/* Step 01 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
-                  01
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
@@ -510,9 +512,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 02 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
-                  02
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
@@ -525,9 +529,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 03 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
-                  03
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
@@ -540,9 +546,11 @@ const ResourceDetails: React.FC = () => {
               </div>
 
               {/* Step 04 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] sm:text-xs text-ink">
-                  04
+              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
