@@ -11,6 +11,11 @@ import type { LearningResourceRow } from '../../types';
 vi.mock('../supabase', () => ({
   supabase: {
     from: vi.fn(),
+    storage: {
+      from: vi.fn().mockReturnValue({
+        getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/test.pdf' } }),
+      }),
+    },
   },
 }));
 
@@ -63,9 +68,10 @@ describe('learningResourcesAPI', () => {
       expect(mapLearningResource(undefinedInput).student_class).toBeUndefined();
     });
 
-    it('uses chapter title format when chapters data exists', () => {
+    it('uses chapter title format when resource_type is notes and chapters data exists', () => {
       const input: LearningResourceRow = {
         ...baseRow,
+        resource_type: 'notes',
         chapters: {
           chapter_number: 3,
           chapter_name: 'Polynomials',
@@ -74,6 +80,21 @@ describe('learningResourcesAPI', () => {
 
       const result = mapLearningResource(input);
       expect(result.title).toBe('Chapter 3: Polynomials');
+    });
+
+    it('preserves original title when resource_type is pyq even if chapters data exists', () => {
+      const input: LearningResourceRow = {
+        ...baseRow,
+        title: 'Class 10 History Board Paper 2024',
+        resource_type: 'pyq',
+        chapters: {
+          chapter_number: 1,
+          chapter_name: 'The Rise of Nationalism in Europe',
+        },
+      };
+
+      const result = mapLearningResource(input);
+      expect(result.title).toBe('Class 10 History Board Paper 2024');
     });
 
     it('uses default title when chapters data is missing', () => {
