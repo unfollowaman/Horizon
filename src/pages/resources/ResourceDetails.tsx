@@ -545,9 +545,9 @@ const ResourceDetails: React.FC = () => {
               Resource Details
             </h2>
 
-            <dl className="space-y-2.5 sm:space-y-3 text-xs sm:text-body1 m-0 min-w-0">
+            <dl className="space-y-2 text-xs sm:text-body1 m-0 min-w-0">
               {resource.student_class && (
-                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 border-b border-ink/5 min-w-0">
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
@@ -555,64 +555,64 @@ const ResourceDetails: React.FC = () => {
                     </svg>
                     Class:
                   </dt>
-                  <dd className="m-0 font-bold text-ink text-left xs:text-right break-words text-caption min-w-0">{resource.student_class}</dd>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.student_class}</dd>
                 </div>
               )}
 
               {resource.subject && (
-                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 border-b border-ink/5 min-w-0">
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                     Subject:
                   </dt>
-                  <dd className="m-0 font-bold text-ink text-left xs:text-right break-words text-caption min-w-0">{resource.subject}</dd>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.subject}</dd>
                 </div>
               )}
 
               {resource.medium && (
-                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 border-b border-ink/5 min-w-0">
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                     </svg>
                     Medium:
                   </dt>
-                  <dd className="m-0 font-bold text-ink capitalize text-left xs:text-right break-words text-caption min-w-0">{resource.medium}</dd>
+                  <dd className="m-0 font-bold text-ink capitalize text-right break-words text-caption min-w-0">{resource.medium}</dd>
                 </div>
               )}
 
-              <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 border-b border-ink/5 min-w-0">
+              <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                 <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 11h10M7 15h10M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
                   </svg>
                   Type:
                 </dt>
-                <dd className="m-0 font-bold text-ink capitalize text-left xs:text-right break-words text-caption min-w-0">{resource.resource_type.replace('_', ' ')}</dd>
+                <dd className="m-0 font-bold text-ink capitalize text-right break-words text-caption min-w-0">{resource.resource_type.replace('_', ' ')}</dd>
               </div>
 
               {resource.year && (
-                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 border-b border-ink/5 min-w-0">
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Academic Year:
                   </dt>
-                  <dd className="m-0 font-bold text-ink text-left xs:text-right break-words text-caption min-w-0">{resource.year}</dd>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.year}</dd>
                 </div>
               )}
 
-              <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 py-1 min-w-0">
+              <div className="flex flex-row items-center justify-between gap-2 py-1.5 min-w-0">
                 <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Added On:
                 </dt>
-                <dd className="m-0 font-bold text-ink text-left xs:text-right break-words text-caption min-w-0">{new Date(resource.uploadDate).toLocaleDateString()}</dd>
+                <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{new Date(resource.uploadDate).toLocaleDateString()}</dd>
               </div>
             </dl>
           </section>
