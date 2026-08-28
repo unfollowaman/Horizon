@@ -167,7 +167,7 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     expect(relatedLink).not.toBeNull();
 
     // Verify open book SVG icon and check/done SVG icons use w-2 h-2
-    const featureSvgs = container?.querySelectorAll('.w-11.h-11.neu-raised.rounded-full > svg.text-ink');
+    const featureSvgs = container?.querySelectorAll('.w-7.h-7.neu-raised.rounded-full > svg.text-ink');
     expect(featureSvgs && featureSvgs.length).toBeGreaterThan(0);
     featureSvgs?.forEach((svg) => {
       expect(svg.classList.contains('w-2')).toBe(true);

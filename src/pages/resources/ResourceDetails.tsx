@@ -263,7 +263,7 @@ const ResourceDetails: React.FC = () => {
           <section className="neu-card rounded-2xl p-4 sm:p-8 space-y-3.5 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
             <div className="flex items-center justify-between gap-3 sm:gap-4 pb-2 border-b border-ink/10 min-w-0">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                   <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
@@ -364,7 +364,7 @@ const ResourceDetails: React.FC = () => {
               {isNotes ? (
                 <>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -374,7 +374,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -384,7 +384,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -394,7 +394,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -407,7 +407,7 @@ const ResourceDetails: React.FC = () => {
               ) : isPYQ ? (
                 <>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -417,7 +417,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -427,7 +427,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -437,7 +437,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -450,7 +450,7 @@ const ResourceDetails: React.FC = () => {
               ) : (
                 <>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -460,7 +460,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -470,7 +470,7 @@ const ResourceDetails: React.FC = () => {
                     </span>
                   </div>
                   <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
-                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 neu-raised rounded-full flex items-center justify-center shrink-0">
                       <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
