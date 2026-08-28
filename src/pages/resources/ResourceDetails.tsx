@@ -263,23 +263,9 @@ const ResourceDetails: React.FC = () => {
           <section className="neu-card rounded-2xl p-4 sm:p-8 space-y-3.5 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
             <div className="flex items-center justify-between gap-3 sm:gap-4 pb-2 border-b border-ink/10 min-w-0">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                <div className="w-11 h-11 rounded-full neu-raised flex items-center justify-center shrink-0 before:bg-white before:border before:border-black/20">
-                  <svg className="w-[18px] h-[18px] relative z-10" viewBox="0 0 24 24" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="resourceBookPinkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#E91E8C" />
-                        <stop offset="50%" stopColor="#C2185B" />
-                        <stop offset="100%" stopColor="#8B0A50" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      fill="url(#resourceBookPinkGradient)"
-                      stroke="url(#resourceBookPinkGradient)"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
+                <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                  <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
                 <div className="min-w-0 flex-1">
@@ -377,33 +363,41 @@ const ResourceDetails: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 min-w-0">
               {isNotes ? (
                 <>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Fundamental definitions, laws, and core theoretical concepts.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Structured breakdown of key chapter subtopics and formulas.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       High-yield exam points and recurring conceptual questions.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Diagrams, illustrative examples, and chapter summaries.
@@ -412,33 +406,41 @@ const ResourceDetails: React.FC = () => {
                 </>
               ) : isPYQ ? (
                 <>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Multiple-choice and objective assessment questions.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Short-answer conceptual problems and numerical exercises.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Long-answer analytical and structured essay/diagram questions.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Direct insight into board exam question formats and weightage.
@@ -447,25 +449,31 @@ const ResourceDetails: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Comprehensive topic review and core definitions.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Practice questions and self-assessment exercises.
                     </span>
                   </div>
-                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 min-w-0">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#8B0A50] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 mt-0.5">
-                      ✓
+                  <div className="neu-recessed p-3 sm:p-4 rounded-xl flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 neu-raised rounded-full flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </div>
                     <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                       Key takeaways for quick revision before tests.
