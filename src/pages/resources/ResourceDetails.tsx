@@ -66,7 +66,9 @@ const ResourceDetails: React.FC = () => {
     document.title = pageTitle;
 
     const detailsContext = [resource.student_class, resource.subject].filter(Boolean).join(' ');
-    const descriptionText = `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${detailsContext ? ` (${detailsContext})` : ''}. Free learning materials on Horizon.`;
+    const descriptionText = resource.chapter_summary
+      ? resource.chapter_summary.slice(0, 155) + (resource.chapter_summary.length > 155 ? '...' : '')
+      : `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${detailsContext ? ` (${detailsContext})` : ''}. Free learning materials on Horizon.`;
 
     if (metaDesc) {
       metaDesc.setAttribute('content', descriptionText);
@@ -142,7 +144,7 @@ const ResourceDetails: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'EducationalResource',
     name: resource.title,
-    description: resource.description || `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${[resource.student_class, resource.subject].filter(Boolean).join(' ') ? ` (${[resource.student_class, resource.subject].filter(Boolean).join(' ')})` : ''}. Free learning materials on Horizon.`,
+    description: resource.chapter_summary || resource.description || `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${[resource.student_class, resource.subject].filter(Boolean).join(' ') ? ` (${[resource.student_class, resource.subject].filter(Boolean).join(' ')})` : ''}. Free learning materials on Horizon.`,
     url: `${origin}/resource/${resource.id}`,
     ...(resource.student_class ? { educationalLevel: resource.student_class } : {}),
     ...(resource.subject ? { about: { '@type': 'Thing', name: resource.subject } } : {}),
@@ -319,31 +321,41 @@ const ResourceDetails: React.FC = () => {
             </div>
 
             <div className="space-y-3 sm:space-y-4 text-xs sm:text-body1 leading-relaxed text-ink/90 min-w-0">
-              <p className="break-words m-0">
-                {isNotes ? (
-                  <>
-                    This study note covers <strong>{resource.title}</strong> for {resource.student_class || 'students'} studying {resource.subject || 'this subject'} in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Prepared according to the prescribed curriculum, it synthesizes essential theoretical foundations, definitions, and key exam concepts to streamline student revision and improve subject mastery.
-                  </>
-                ) : isPYQ ? (
-                  <>
-                    This Previous Year Question (PYQ) paper for {resource.student_class || 'students'} {resource.subject || ''} {resource.year ? `(${resource.year})` : ''} provides authentic board exam questions in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Practicing with past examination papers enables students to analyze question patterns, time management, and mark distribution.
-                  </>
-                ) : (
-                  <>
-                    This educational resource for {resource.student_class || 'students'} {resource.subject || ''} offers structured learning material in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Designed to support active learning and exam preparation for school assessments.
-                  </>
-                )}
-              </p>
+              {resource.chapter_summary ? (
+                resource.chapter_summary.split(/\n\n|\n/).filter(Boolean).map((para, idx) => (
+                  <p key={idx} className="break-words m-0">
+                    {para.trim()}
+                  </p>
+                ))
+              ) : (
+                <>
+                  <p className="break-words m-0">
+                    {isNotes ? (
+                      <>
+                        This study note covers <strong>{resource.title}</strong> for {resource.student_class || 'students'} studying {resource.subject || 'this subject'} in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Prepared according to the prescribed curriculum, it synthesizes essential theoretical foundations, definitions, and key exam concepts to streamline student revision and improve subject mastery.
+                      </>
+                    ) : isPYQ ? (
+                      <>
+                        This Previous Year Question (PYQ) paper for {resource.student_class || 'students'} {resource.subject || ''} {resource.year ? `(${resource.year})` : ''} provides authentic board exam questions in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Practicing with past examination papers enables students to analyze question patterns, time management, and mark distribution.
+                      </>
+                    ) : (
+                      <>
+                        This educational resource for {resource.student_class || 'students'} {resource.subject || ''} offers structured learning material in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Designed to support active learning and exam preparation for school assessments.
+                      </>
+                    )}
+                  </p>
 
-              {resource.description && (
-                <blockquote className="neu-recessed p-3 sm:p-4 rounded-xl text-xs sm:text-body1 text-ink/80 italic border-l-4 border-l-[#E91E8C] my-3 sm:my-4 break-words min-w-0">
-                  "{resource.description}"
-                </blockquote>
+                  {resource.description && (
+                    <blockquote className="neu-recessed p-3 sm:p-4 rounded-xl text-xs sm:text-body1 text-ink/80 italic border-l-4 border-l-[#E91E8C] my-3 sm:my-4 break-words min-w-0">
+                      "{resource.description}"
+                    </blockquote>
+                  )}
+
+                  <p className="break-words m-0">
+                    Designed as a comprehensive revision companion, this resource presents complex academic topics with clarity and structured emphasis on key syllabus objectives, enabling students to perform active recall and retain core subject matter effectively.
+                  </p>
+                </>
               )}
-
-              <p className="break-words m-0">
-                Designed as a comprehensive revision companion, this resource presents complex academic topics with clarity and structured emphasis on key syllabus objectives, enabling students to perform active recall and retain core subject matter effectively.
-              </p>
             </div>
           </section>
 
@@ -361,126 +373,163 @@ const ResourceDetails: React.FC = () => {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 min-w-0">
-              {isNotes ? (
-                <>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+              {(() => {
+                const topicsList: string[] = [];
+                if (Array.isArray(resource.topics) && resource.topics.length > 0) {
+                  resource.topics.forEach(t => {
+                    if (typeof t === 'string') topicsList.push(t);
+                    else if (t && typeof t === 'object' && 'title' in t) topicsList.push(String((t as { title: string }).title));
+                  });
+                }
+                if (Array.isArray(resource.key_concepts) && resource.key_concepts.length > 0) {
+                  resource.key_concepts.forEach(k => {
+                    if (typeof k === 'string') topicsList.push(k);
+                    else if (k && typeof k === 'object' && 'title' in k) topicsList.push(String((k as { title: string }).title));
+                  });
+                }
+                if (Array.isArray(resource.important_terms) && resource.important_terms.length > 0) {
+                  resource.important_terms.forEach(term => {
+                    if (typeof term === 'string') topicsList.push(term);
+                    else if (term && typeof term === 'object' && 'term' in term) topicsList.push(String((term as { term: string }).term));
+                  });
+                }
+
+                if (topicsList.length > 0) {
+                  return topicsList.map((topicItem, idx) => (
+                    <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        {topicItem}
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Fundamental definitions, laws, and core theoretical concepts.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                  ));
+                }
+
+                return isNotes ? (
+                  <>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Fundamental definitions, laws, and core theoretical concepts.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Structured breakdown of key chapter subtopics and formulas.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Structured breakdown of key chapter subtopics and formulas.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      High-yield exam points and recurring conceptual questions.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        High-yield exam points and recurring conceptual questions.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Diagrams, illustrative examples, and chapter summaries.
-                    </span>
-                  </div>
-                </>
-              ) : isPYQ ? (
-                <>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Diagrams, illustrative examples, and chapter summaries.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Multiple-choice and objective assessment questions.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                  </>
+                ) : isPYQ ? (
+                  <>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Multiple-choice and objective assessment questions.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Short-answer conceptual problems and numerical exercises.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Short-answer conceptual problems and numerical exercises.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Long-answer analytical and structured essay/diagram questions.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Long-answer analytical and structured essay/diagram questions.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Direct insight into board exam question formats and weightage.
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Direct insight into board exam question formats and weightage.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Comprehensive topic review and core definitions.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                  </>
+                ) : (
+                  <>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Comprehensive topic review and core definitions.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Practice questions and self-assessment exercises.
-                    </span>
-                  </div>
-                  <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                    <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                      <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Practice questions and self-assessment exercises.
+                      </span>
                     </div>
-                    <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                      Key takeaways for quick revision before tests.
-                    </span>
-                  </div>
-                </>
-              )}
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                        Key takeaways for quick revision before tests.
+                      </span>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </section>
 
@@ -494,73 +543,103 @@ const ResourceDetails: React.FC = () => {
             </div>
 
             <div className="space-y-3 sm:space-y-4 min-w-0">
-              {/* Step 01 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <div className="space-y-0.5 min-w-0 flex-1">
-                  <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
-                    Initial Review
-                  </h3>
-                  <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
-                    Read through the chapter overview to establish a clear conceptual framework before delving into details.
-                  </p>
-                </div>
-              </div>
+              {(() => {
+                if (Array.isArray(resource.study_guidance) && resource.study_guidance.length > 0) {
+                  return resource.study_guidance.map((stepItem, idx) => {
+                    const stepTitle = typeof stepItem === 'string' ? `Step ${idx + 1}` : (stepItem.title || `Step ${idx + 1}`);
+                    const stepDesc = typeof stepItem === 'string' ? stepItem : stepItem.description;
+                    return (
+                      <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            {stepTitle}
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            {stepDesc}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  });
+                }
 
-              {/* Step 02 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <div className="space-y-0.5 min-w-0 flex-1">
-                  <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
-                    Active Recall
-                  </h3>
-                  <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
-                    Test yourself on key definitions and concepts without looking at the reference material.
-                  </p>
-                </div>
-              </div>
+                return (
+                  <>
+                    {/* Step 01 */}
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          Initial Review
+                        </h3>
+                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          Read through the chapter overview to establish a clear conceptual framework before delving into details.
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Step 03 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <div className="space-y-0.5 min-w-0 flex-1">
-                  <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
-                    Practice Questions
-                  </h3>
-                  <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
-                    Work through example problems and practice questions under timed conditions.
-                  </p>
-                </div>
-              </div>
+                    {/* Step 02 */}
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          Active Recall
+                        </h3>
+                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          Test yourself on key definitions and concepts without looking at the reference material.
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Step 04 */}
-              <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                  <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <div className="space-y-0.5 min-w-0 flex-1">
-                  <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
-                    Interactive Note Viewing
-                  </h3>
-                  <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
-                    Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.
-                  </p>
-                </div>
-              </div>
+                    {/* Step 03 */}
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          Practice Questions
+                        </h3>
+                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          Work through example problems and practice questions under timed conditions.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Step 04 */}
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          Interactive Note Viewing
+                        </h3>
+                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </section>
 

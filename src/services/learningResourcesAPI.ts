@@ -29,6 +29,16 @@ export const mapLearningResource = (item: LearningResourceRow): Resource => {
     title = `Chapter ${item.chapters.chapter_number}: ${item.chapters.chapter_name}`;
   }
 
+  const chapterObj = item.chapters as Chapter | null | undefined;
+
+  const chapterSummary = item.chapter_summary || chapterObj?.chapter_summary || null;
+  const topics = (item.topics || chapterObj?.topics || null) as Resource['topics'];
+  const keyConcepts = (item.key_concepts || chapterObj?.key_concepts || null) as Resource['key_concepts'];
+  const importantTerms = (item.important_terms || chapterObj?.important_terms || null) as Resource['important_terms'];
+  const learningObjectives = (item.learning_objectives || chapterObj?.learning_objectives || null) as Resource['learning_objectives'];
+  const examRelevantThemes = (item.exam_relevant_themes || chapterObj?.exam_relevant_themes || null) as Resource['exam_relevant_themes'];
+  const studyGuidance = (item.study_guidance || chapterObj?.study_guidance || null) as Resource['study_guidance'];
+
   return {
     id: item.id,
     title: title,
@@ -42,10 +52,17 @@ export const mapLearningResource = (item: LearningResourceRow): Resource => {
     subject: item.subject,
     year: item.year ? item.year.toString() : undefined,
     chapter_id: item.chapter_id,
-    chapters: item.chapters as Chapter | null | undefined,
+    chapters: chapterObj,
     allow_download: item.allow_download ?? undefined,
     storage_bucket: item.storage_bucket,
     file_path: item.file_path,
+    chapter_summary: chapterSummary,
+    topics: topics,
+    key_concepts: keyConcepts,
+    important_terms: importantTerms,
+    learning_objectives: learningObjectives,
+    exam_relevant_themes: examRelevantThemes,
+    study_guidance: studyGuidance,
   };
 };
 
@@ -60,7 +77,11 @@ export interface FetchResourcesFilters {
 }
 
 export const fetchLearningResources = async (filters: FetchResourcesFilters = {}) => {
-  let query = supabase.from('learning_resources').select(filters.includeChapters ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path');
+  const selectQuery = filters.includeChapters
+    ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
+    : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance';
+
+  let query = supabase.from('learning_resources').select(selectQuery);
 
   if (filters.resource_type) query = query.eq('resource_type', filters.resource_type);
   if (filters.student_class) query = query.eq('student_class', filters.student_class);
@@ -80,17 +101,40 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
 };
 
 export const fetchLearningResourceById = async (id: string, includeChapters: boolean = false) => {
-  const { data, error } = await supabase
+  const expandedSelect = includeChapters
+    ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
+    : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance';
+
+  const { data: initialData, error: initialError } = await supabase
     .from('learning_resources')
-    .select(includeChapters ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)' : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path')
+    .select(expandedSelect)
     .eq('id', id)
     .single();
+
+  let data: LearningResourceRow | null = initialData as unknown as LearningResourceRow | null;
+  let error = initialError;
+
+  // Fallback to legacy schema if newly added columns do not exist in database yet (PostgREST error 42703 or PGRST204)
+  if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('column'))) {
+    const legacySelect = includeChapters
+      ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)'
+      : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path';
+
+    const legacyResult = await supabase
+      .from('learning_resources')
+      .select(legacySelect)
+      .eq('id', id)
+      .single();
+
+    data = legacyResult.data as unknown as LearningResourceRow | null;
+    error = legacyResult.error;
+  }
 
   if (error) {
     return { data: null, error };
   }
 
-  const mappedResource = data ? mapLearningResource(data as unknown as LearningResourceRow) : null;
+  const mappedResource = data ? mapLearningResource(data) : null;
   return { data: mappedResource, rawData: data, error: null };
 };
 

@@ -74,6 +74,11 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
+
+    vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
+      data: mockRelatedResources,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResources>>);
   });
 
   afterEach(() => {
@@ -233,5 +238,229 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     // Ensure no direct links to /view/ on the card
     const viewLinks = container?.querySelectorAll('a[href="/view/note-101"]');
     expect(viewLinks && viewLinks.length).toBe(0);
+  });
+
+  it('renders chapter-specific content for Geography chapter (Resource and Development)', async () => {
+    const geoResource: Resource = {
+      ...mockNoteResource,
+      id: 'geo-1',
+      title: 'Chapter 1: Resource and Development',
+      subject: 'Geography',
+      chapter_summary: 'Resources are vital for human survival and development. They are classified into biotic, abiotic, renewable, non-renewable, national, and international categories.\n\nSustainable development requires planned land utilization, soil conservation, and mitigating soil erosion caused by deforestation and overgrazing.',
+      topics: [
+        'Types and Classification of Resources',
+        'Land Resources and Land Use Pattern in India',
+        'Soil Erosion and Conservation Methods',
+        'Sustainable Development Goals'
+      ],
+      study_guidance: [
+        { title: 'Concept Mapping', description: 'Draw a flowchart classifying renewable vs non-renewable resources.' },
+        { title: 'Map Practice', description: 'Locate major soil types across India on the outline map.' }
+      ]
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: geoResource,
+      rawData: geoResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/geo-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Chapter & Resource Overview');
+    expect(container?.textContent).toContain('Resources are vital for human survival and development.');
+    expect(container?.textContent).toContain('Soil Erosion and Conservation Methods');
+    expect(container?.textContent).toContain('Draw a flowchart classifying renewable vs non-renewable resources.');
+  });
+
+  it('renders chapter-specific content for History chapter (The Rise of Nationalism in Europe)', async () => {
+    const historyResource: Resource = {
+      ...mockNoteResource,
+      id: 'hist-1',
+      title: 'Chapter 1: The Rise of Nationalism in Europe',
+      subject: 'History',
+      chapter_summary: 'The 19th century witnessed the emergence of nationalism which transformed Europe from multi-national dynastic empires to modern nation-states. Key milestones include the French Revolution of 1789, Napoleonic Code, revolutions of 1848, and the unification of Italy and Germany.',
+      topics: [
+        'The French Revolution and the Idea of the Nation',
+        'The Making of Nationalism in Europe',
+        'The Age of Revolutions: 1830–1848',
+        'Unification of Germany and Italy'
+      ]
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: historyResource,
+      rawData: historyResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/hist-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Chapter 1: The Rise of Nationalism in Europe');
+    expect(container?.textContent).toContain('French Revolution of 1789');
+    expect(container?.textContent).toContain('Unification of Germany and Italy');
+  });
+
+  it('renders chapter-specific content for Civics chapter (Power Sharing)', async () => {
+    const civicsResource: Resource = {
+      ...mockNoteResource,
+      id: 'civ-1',
+      title: 'Chapter 1: Power Sharing',
+      subject: 'Civics',
+      chapter_summary: 'Power sharing is the essence of democracy. Comparing ethnic compositions in Belgium and Sri Lanka demonstrates why moral and prudential power-sharing arrangements prevent social conflict and preserve national integrity.',
+      topics: [
+        'Ethnic Composition in Belgium and Sri Lanka',
+        'Majoritarianism in Sri Lanka vs Accommodation in Belgium',
+        'Why Power Sharing is Desirable (Prudential vs Moral)',
+        'Forms of Power Sharing (Horizontal, Vertical, Social, Coalition)'
+      ]
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: civicsResource,
+      rawData: civicsResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/civ-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Chapter 1: Power Sharing');
+    expect(container?.textContent).toContain('ethnic compositions in Belgium and Sri Lanka');
+    expect(container?.textContent).toContain('Forms of Power Sharing');
+  });
+
+  it('renders chapter-specific content for Economics chapter (Development)', async () => {
+    const ecoResource: Resource = {
+      ...mockNoteResource,
+      id: 'eco-1',
+      title: 'Chapter 1: Development',
+      subject: 'Economics',
+      chapter_summary: 'Development encompasses different goals for different groups of people. Beyond income (Per Capita Income), human development depends on health indicators (BMI, Infant Mortality Rate), literacy rate, and environmental sustainability.',
+      topics: [
+        'What Development Promises - Different People, Different Goals',
+        'Income and Other Goals',
+        'National Development and Per Capita Income',
+        'Human Development Index (HDI) and Sustainability'
+      ]
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: ecoResource,
+      rawData: ecoResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/eco-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Chapter 1: Development');
+    expect(container?.textContent).toContain('Human Development Index (HDI)');
+  });
+
+  it('renders Hindi-medium chapter with long Hindi title without truncation or escaping issues', async () => {
+    const hindiResource: Resource = {
+      ...mockNoteResource,
+      id: 'hindi-geo-1',
+      title: 'अध्याय 1: संसाधन एवं विकास - भारत में प्राकृतिक संसाधन और मृदा संरक्षण की विस्तृत अध्ययन सामग्री',
+      medium: 'hindi',
+      subject: 'भूगोल',
+      chapter_summary: 'संसाधन वे सभी तत्व हैं जो मानव आवश्यकताओं की पूर्ति करते हैं। इस अध्याय में संसाधनों के वर्गीकरण (उत्पत्ति, समाप्यता, स्वामित्व और विकास के स्तर के आधार पर) और उनके सतत पोषणीय विकास का विस्तृत अध्ययन किया गया है।\n\nमृदा अपरदन को रोकने के लिए समोच्च जुताई, पट्टिका कृषि और रक्षक मेखला जैसी संरक्षण तकनीकों को समझना परीक्षा की दृष्टि से अत्यंत महत्वपूर्ण है।',
+      topics: [
+        'संसाधनों के प्रकार एवं उनका वर्गीकरण',
+        'भारत में भू-उपयोग प्रारूप एवं संसाधन नियोजन',
+        'मृदा अपरदन के कारण एवं संरक्षण के उपाय',
+        'सतत पोषणीय विकास की अवधारणा'
+      ],
+      study_guidance: [
+        { title: 'अवधारणात्मक पुनरावृत्ति', description: 'नवीकरणीय और अनवीकरणीय संसाधनों के अंतर का चार्ट बनाएं।' },
+        { title: 'मानचित्र अभ्यास', description: 'भारत के रेखा मानचित्र पर जलोढ़ और काली मृदा के क्षेत्रों को चिह्नित करें।' }
+      ]
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: hindiResource,
+      rawData: hindiResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/hindi-geo-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const h1 = container?.querySelector('h1');
+    expect(h1?.textContent).toContain('संसाधन एवं विकास');
+    expect(container?.textContent).toContain('संसाधनों के प्रकार एवं उनका वर्गीकरण');
+    expect(container?.textContent).toContain('अवधारणात्मक पुनरावृत्ति');
+    expect(container?.textContent?.toLowerCase()).toContain('hindi medium');
+  });
+
+  it('handles chapters with missing optional fields gracefully using fallback layout', async () => {
+    const sparseResource: Resource = {
+      ...mockNoteResource,
+      id: 'sparse-1',
+      title: 'Chapter 5: Consumer Rights',
+      chapter_summary: null,
+      topics: null,
+      study_guidance: null
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: sparseResource,
+      rawData: sparseResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/sparse-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    // Validates that overview, topics, guidance fallback cleanly without crashing or displaying empty broken boxes
+    expect(container?.textContent).toContain('Chapter & Resource Overview');
+    expect(container?.textContent).toContain('Topics Covered & Key Concepts');
+    expect(container?.textContent).toContain('Study Guidance & Preparation Tips');
+    expect(container?.textContent).toContain('Fundamental definitions, laws, and core theoretical concepts.');
   });
 });
