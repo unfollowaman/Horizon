@@ -25,7 +25,7 @@ export const mapLearningResource = (item: LearningResourceRow): Resource => {
   }
 
   let title = item.title;
-  if (item.chapters) {
+  if (item.resource_type === 'notes' && item.chapters) {
     title = `Chapter ${item.chapters.chapter_number}: ${item.chapters.chapter_name}`;
   }
 
@@ -63,6 +63,9 @@ export const mapLearningResource = (item: LearningResourceRow): Resource => {
     learning_objectives: learningObjectives,
     exam_relevant_themes: examRelevantThemes,
     study_guidance: studyGuidance,
+    total_pages: item.total_pages || null,
+    total_marks: item.total_marks || null,
+    duration: item.duration || null,
   };
 };
 

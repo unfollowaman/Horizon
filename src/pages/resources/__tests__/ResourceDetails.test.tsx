@@ -186,10 +186,17 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     });
   });
 
-  it('renders public HTML educational landing page for PYQs with View Full Resource CTA', async () => {
+  it('renders public HTML educational landing page for PYQs with PYQ-specific terminology, sections, and CTA', async () => {
+    const detailedPyqResource: Resource = {
+      ...mockPyqResource,
+      total_pages: 12,
+      total_marks: 80,
+      duration: '3 Hours'
+    };
+
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
-      data: mockPyqResource,
-      rawData: mockPyqResource,
+      data: detailedPyqResource,
+      rawData: detailedPyqResource,
       error: null
     } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
 
@@ -211,9 +218,31 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     const h1 = container?.querySelector('h1');
     expect(h1?.textContent).toContain('Class 10 Geography Board Paper 2023');
 
+    // Kicker & headings
+    expect(container?.textContent).toContain('Class 10 Geography — PREVIOUS-YEAR QUESTION PAPER');
+    expect(container?.textContent).toContain('Paper Overview');
+    expect(container?.textContent).toContain('Subject Areas & Question Coverage');
+    expect(container?.textContent).toContain('How to Use This Paper');
+    expect(container?.textContent).toContain('Ready to Practice?');
+    expect(container?.textContent).toContain('Related Practice Resources');
+
+    // PYQ specific guidance steps
+    expect(container?.textContent).toContain('Closed-Book Attempt');
+    expect(container?.textContent).toContain('Timed Practice');
+    expect(container?.textContent).toContain('Self-Evaluation');
+
+    // Metadata details card
+    expect(container?.textContent).toContain('Total Pages:');
+    expect(container?.textContent).toContain('12');
+    expect(container?.textContent).toContain('Total Marks:');
+    expect(container?.textContent).toContain('80');
+    expect(container?.textContent).toContain('Duration:');
+    expect(container?.textContent).toContain('3 Hours');
+
+    // CTA Link
     const ctaLink = container?.querySelector('a[href="/view/pyq-201"]');
     expect(ctaLink).not.toBeNull();
-    expect(ctaLink?.textContent).toContain('View Full Resource');
+    expect(ctaLink?.textContent).toContain('Open Question Paper');
 
     // Check PYQ JSON-LD
     const jsonLdScript = container?.querySelector('script[type="application/ld+json"]');

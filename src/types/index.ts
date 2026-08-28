@@ -27,6 +27,9 @@ export interface Resource {
   learning_objectives?: string[] | null;
   exam_relevant_themes?: string[] | null;
   study_guidance?: StudyGuidanceStep[] | string[] | null;
+  total_pages?: number | null;
+  total_marks?: number | null;
+  duration?: string | null;
 }
 
 export interface Announcement {
@@ -71,6 +74,9 @@ export type LearningResource = {
   learning_objectives?: string[] | Json | null;
   exam_relevant_themes?: string[] | Json | null;
   study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
+  total_pages?: number | null;
+  total_marks?: number | null;
+  duration?: string | null;
 }
 
 export type LearningResourceRow = {
@@ -96,6 +102,9 @@ export type LearningResourceRow = {
   learning_objectives?: string[] | Json | null;
   exam_relevant_themes?: string[] | Json | null;
   study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
+  total_pages?: number | null;
+  total_marks?: number | null;
+  duration?: string | null;
   chapters?: {
     id?: string;
     chapter_number: number;

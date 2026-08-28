@@ -173,16 +173,17 @@ const ResourceDetails: React.FC = () => {
     },
   };
 
-  // Chapter Kicker calculations
-  const chapterKicker = resource.chapters?.chapter_number
-    ? `CHAPTER ${resource.chapters.chapter_number}`
-    : isNotes
-    ? 'STUDY NOTE'
+  // Kicker calculations
+  const kickerText = isNotes
+    ? (resource.chapters?.chapter_number ? `CHAPTER ${resource.chapters.chapter_number}` : 'STUDY NOTE')
     : isPYQ
-    ? 'BOARD EXAM RESOURCE'
+    ? (resource.student_class && resource.subject
+        ? `${resource.student_class} ${resource.subject} — PREVIOUS-YEAR QUESTION PAPER`
+        : 'PREVIOUS-YEAR QUESTION PAPER')
     : 'EDUCATIONAL RESOURCE';
 
   const showSubtitle =
+    isNotes &&
     resource.chapters &&
     resource.chapters.chapter_name &&
     !resource.title.toLowerCase().includes(resource.chapters.chapter_name.toLowerCase());
@@ -236,10 +237,10 @@ const ResourceDetails: React.FC = () => {
               )}
             </div>
 
-            {/* Chapter Number & Title Header */}
+            {/* Resource Identity & Title Header */}
             <header className="space-y-1.5 sm:space-y-2 relative z-10 min-w-0">
               <p className="text-[11px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase break-words">
-                {chapterKicker}
+                {kickerText}
               </p>
               <h1 className="text-xl sm:text-3xl md:text-4xl font-bold uppercase text-ink leading-snug sm:leading-tight text-left break-words min-w-0">
                 {resource.title}
@@ -272,10 +273,10 @@ const ResourceDetails: React.FC = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block truncate">
-                    FULL STUDY RESOURCE
+                    {isNotes ? 'FULL STUDY RESOURCE' : isPYQ ? 'EXAM PRACTICE PAPER' : 'FULL STUDY RESOURCE'}
                   </span>
                   <h2 className="text-base sm:text-h2 font-bold text-ink uppercase m-0 leading-snug break-words min-w-0">
-                    {isNotes ? 'Open Complete Study Notes' : 'Access Full Document'}
+                    {isNotes ? 'Open Complete Study Notes' : isPYQ ? 'Open Question Paper' : 'Access Full Document'}
                   </h2>
                 </div>
               </div>
@@ -284,6 +285,8 @@ const ResourceDetails: React.FC = () => {
             <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
               {isNotes
                 ? 'Access the complete interactive study note in Horizon\'s reader featuring full-page rendering, structured subtopics, and reading progress tracking.'
+                : isPYQ
+                ? 'Open the complete question paper in Horizon\'s dedicated reader for full-screen practice, zooming, and examination review.'
                 : 'Open the full document in Horizon\'s reader for structured review, zooming, and comprehensive exam revision.'}
             </p>
 
@@ -292,7 +295,7 @@ const ResourceDetails: React.FC = () => {
                 to={`/view/${resource.id}`}
                 className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0"
               >
-                <span className="truncate">{isNotes ? 'Open Full Notes' : 'View Full Resource'}</span>
+                <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
                 <span className="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
               </Link>
 
@@ -311,12 +314,12 @@ const ResourceDetails: React.FC = () => {
             </div>
           </section>
 
-          {/* Chapter & Resource Overview Section */}
+          {/* Chapter & Resource Overview Section / Paper Overview */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-3.5 sm:space-y-4 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
               <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
-                Chapter & Resource Overview
+                {isPYQ ? 'Paper Overview' : 'Chapter & Resource Overview'}
               </h2>
             </div>
 
@@ -327,16 +330,28 @@ const ResourceDetails: React.FC = () => {
                     {para.trim()}
                   </p>
                 ))
+              ) : isPYQ ? (
+                <>
+                  <p className="break-words m-0">
+                    This previous-year question paper contains official questions for {resource.student_class || 'students'} {resource.subject || 'subject'} {resource.year ? `(${resource.year})` : ''} based on the prescribed curriculum in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. It can be used to understand question patterns, practice written answers, and assess examination readiness.
+                  </p>
+
+                  {resource.description && (
+                    <blockquote className="neu-recessed p-3 sm:p-4 rounded-xl text-xs sm:text-body1 text-ink/80 italic border-l-4 border-l-[#E91E8C] my-3 sm:my-4 break-words min-w-0">
+                      "{resource.description}"
+                    </blockquote>
+                  )}
+
+                  <p className="break-words m-0">
+                    Solving past examination papers builds familiarity with question distribution, time allocation, and recurring exam concepts, serving as an effective diagnostic tool before major tests.
+                  </p>
+                </>
               ) : (
                 <>
                   <p className="break-words m-0">
                     {isNotes ? (
                       <>
                         This study note covers <strong>{resource.title}</strong> for {resource.student_class || 'students'} studying {resource.subject || 'this subject'} in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Prepared according to the prescribed curriculum, it synthesizes essential theoretical foundations, definitions, and key exam concepts to streamline student revision and improve subject mastery.
-                      </>
-                    ) : isPYQ ? (
-                      <>
-                        This Previous Year Question (PYQ) paper for {resource.student_class || 'students'} {resource.subject || ''} {resource.year ? `(${resource.year})` : ''} provides authentic board exam questions in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. Practicing with past examination papers enables students to analyze question patterns, time management, and mark distribution.
                       </>
                     ) : (
                       <>
@@ -359,17 +374,19 @@ const ResourceDetails: React.FC = () => {
             </div>
           </section>
 
-          {/* Topics Covered & Key Concepts Section */}
+          {/* Topics Covered & Key Concepts Section / Subject Areas & Question Coverage */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
               <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
-                Topics Covered & Key Concepts
+                {isPYQ ? 'Subject Areas & Question Coverage' : 'Topics Covered & Key Concepts'}
               </h2>
             </div>
 
             <p className="text-xs sm:text-body1 text-ink/80 break-words m-0">
-              Key syllabus areas addressed in this educational resource include:
+              {isPYQ
+                ? 'Subject areas and question types represented in this question paper include:'
+                : 'Key syllabus areas addressed in this educational resource include:'}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 min-w-0">
@@ -471,7 +488,7 @@ const ResourceDetails: React.FC = () => {
                         </svg>
                       </div>
                       <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                        Short-answer conceptual problems and numerical exercises.
+                        Short-answer conceptual problems and core syllabus coverage.
                       </span>
                     </div>
                     <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
@@ -481,7 +498,7 @@ const ResourceDetails: React.FC = () => {
                         </svg>
                       </div>
                       <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                        Long-answer analytical and structured essay/diagram questions.
+                        Long-answer analytical and structured essay questions.
                       </span>
                     </div>
                     <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
@@ -491,7 +508,7 @@ const ResourceDetails: React.FC = () => {
                         </svg>
                       </div>
                       <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
-                        Direct insight into board exam question formats and weightage.
+                        Direct insight into examination question formats and marking weightage.
                       </span>
                     </div>
                   </>
@@ -533,12 +550,12 @@ const ResourceDetails: React.FC = () => {
             </div>
           </section>
 
-          {/* Study Guidance & Preparation Tips Section */}
+          {/* Study Guidance & Preparation Tips Section / How to Use This Paper */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
               <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
-                Study Guidance & Preparation Tips
+                {isPYQ ? 'How to Use This Paper' : 'Study Guidance & Preparation Tips'}
               </h2>
             </div>
 
@@ -566,6 +583,97 @@ const ResourceDetails: React.FC = () => {
                       </div>
                     );
                   });
+                }
+
+                if (isPYQ) {
+                  return (
+                    <>
+                      {/* PYQ Step 01 */}
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            Closed-Book Attempt
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            Attempt the paper without referring to notes or textbooks to test true recall.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* PYQ Step 02 */}
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            Timed Practice
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            Follow the prescribed time limit where available to improve speed and exam stamina.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* PYQ Step 03 */}
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            Self-Evaluation
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            Review incorrect or incomplete answers systematically to spot knowledge gaps.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* PYQ Step 04 */}
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            Identify Patterns
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            Identify recurring concepts and high-weightage question formats across multiple years.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* PYQ Step 05 */}
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                            Targeted Revision
+                          </h3>
+                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                            Revisit relevant chapter notes for topics where errors occurred during practice.
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  );
                 }
 
                 return (
@@ -692,6 +800,20 @@ const ResourceDetails: React.FC = () => {
                 </div>
               )}
 
+              {isNotes && resource.chapters && (
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
+                  <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Chapter:
+                  </dt>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">
+                    Chapter {resource.chapters.chapter_number}
+                  </dd>
+                </div>
+              )}
+
               <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                 <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -699,7 +821,9 @@ const ResourceDetails: React.FC = () => {
                   </svg>
                   Type:
                 </dt>
-                <dd className="m-0 font-bold text-ink capitalize text-right break-words text-caption min-w-0">{resource.resource_type.replace('_', ' ')}</dd>
+                <dd className="m-0 font-bold text-ink capitalize text-right break-words text-caption min-w-0">
+                  {isPYQ ? 'Previous Year Paper' : resource.resource_type.replace('_', ' ')}
+                </dd>
               </div>
 
               {resource.year && (
@@ -708,9 +832,45 @@ const ResourceDetails: React.FC = () => {
                     <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Academic Year:
+                    {isPYQ ? 'Exam Year:' : 'Academic Year:'}
                   </dt>
                   <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.year}</dd>
+                </div>
+              )}
+
+              {resource.total_pages && (
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
+                  <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Total Pages:
+                  </dt>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.total_pages}</dd>
+                </div>
+              )}
+
+              {isPYQ && resource.total_marks && (
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
+                  <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Total Marks:
+                  </dt>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.total_marks}</dd>
+                </div>
+              )}
+
+              {isPYQ && resource.duration && (
+                <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
+                  <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Duration:
+                  </dt>
+                  <dd className="m-0 font-bold text-ink text-right break-words text-caption min-w-0">{resource.duration}</dd>
                 </div>
               )}
 
@@ -726,7 +886,7 @@ const ResourceDetails: React.FC = () => {
             </dl>
           </section>
 
-          {/* Ready to Study CTA Card */}
+          {/* Ready to Study / Practice CTA Card */}
           <section className="neu-card rounded-2xl p-4 sm:p-6 text-center space-y-2.5 sm:space-y-3 bg-gradient-to-br from-[#E91E8C]/10 via-[#C2185B]/5 to-transparent border border-[#E91E8C]/20 relative overflow-hidden min-w-0 w-full">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white flex items-center justify-center mx-auto shadow-md shrink-0">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -734,16 +894,18 @@ const ResourceDetails: React.FC = () => {
               </svg>
             </div>
             <h2 className="text-base sm:text-h2 uppercase text-ink m-0 break-words">
-              Ready to Study?
+              {isPYQ ? 'Ready to Practice?' : 'Ready to Study?'}
             </h2>
             <p className="text-caption text-ink/80 max-w-xs mx-auto break-words">
-              Open the full notes in Horizon's dedicated reader to start studying now.
+              {isPYQ
+                ? 'Open the question paper in Horizon\'s dedicated reader to start practicing now.'
+                : 'Open the full notes in Horizon\'s dedicated reader to start studying now.'}
             </p>
             <Link
               to={`/view/${resource.id}`}
               className="inline-flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center text-xs sm:text-sm border-2 border-[#E91E8C]/20 group min-w-0"
             >
-              <span className="truncate">{isNotes ? 'Open Full Notes' : 'View Full Resource'}</span>
+              <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
               <span className="text-[#E91E8C] transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
             </Link>
           </section>
@@ -751,7 +913,7 @@ const ResourceDetails: React.FC = () => {
           {/* Related Resources Card */}
           <section className="neu-card rounded-2xl p-4 sm:p-6 space-y-3.5 sm:space-y-4 min-w-0 w-full">
             <h2 className="text-base sm:text-h2 uppercase text-ink pb-2 border-b border-ink/10 break-words">
-              Related Resources
+              {isPYQ ? 'Related Practice Resources' : 'Related Resources'}
             </h2>
 
             {relatedResources.length > 0 ? (
