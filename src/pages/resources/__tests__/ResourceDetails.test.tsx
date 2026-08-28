@@ -165,6 +165,20 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     // Check related resources linking to public resource landing pages
     const relatedLink = container?.querySelector('a[href="/resource/note-102"]');
     expect(relatedLink).not.toBeNull();
+
+    // Verify open book SVG icon and check/done SVG icons use w-2 h-2
+    const featureSvgs = container?.querySelectorAll('.w-11.h-11.neu-raised.rounded-full > svg.text-ink');
+    expect(featureSvgs && featureSvgs.length).toBeGreaterThan(0);
+    featureSvgs?.forEach((svg) => {
+      expect(svg.classList.contains('w-2')).toBe(true);
+      expect(svg.classList.contains('h-2')).toBe(true);
+      expect(svg.classList.contains('w-4')).toBe(false);
+      expect(svg.classList.contains('h-4')).toBe(false);
+      expect(svg.classList.contains('w-5')).toBe(false);
+      expect(svg.classList.contains('h-5')).toBe(false);
+      expect(svg.classList.contains('w-6')).toBe(false);
+      expect(svg.classList.contains('h-6')).toBe(false);
+    });
   });
 
   it('renders public HTML educational landing page for PYQs with View Full Resource CTA', async () => {
