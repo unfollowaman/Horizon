@@ -1,3 +1,8 @@
+export type StudyGuidanceStep = {
+  title?: string;
+  description: string;
+};
+
 export interface Resource {
   id: string;
   title: string;
@@ -15,6 +20,13 @@ export interface Resource {
   allow_download?: boolean;
   storage_bucket?: string | null;
   file_path?: string | null;
+  chapter_summary?: string | null;
+  topics?: string[] | null;
+  key_concepts?: string[] | null;
+  important_terms?: string[] | null;
+  learning_objectives?: string[] | null;
+  exam_relevant_themes?: string[] | null;
+  study_guidance?: StudyGuidanceStep[] | string[] | null;
 }
 
 export interface Announcement {
@@ -52,6 +64,13 @@ export type LearningResource = {
   chapter_id?: string | null;
   allow_download?: boolean | null;
   storage_bucket?: string | null;
+  chapter_summary?: string | null;
+  topics?: string[] | Json | null;
+  key_concepts?: string[] | Json | null;
+  important_terms?: string[] | Json | null;
+  learning_objectives?: string[] | Json | null;
+  exam_relevant_themes?: string[] | Json | null;
+  study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
 }
 
 export type LearningResourceRow = {
@@ -70,10 +89,24 @@ export type LearningResourceRow = {
   chapter_id?: string | null;
   allow_download?: boolean | null;
   storage_bucket?: string | null;
+  chapter_summary?: string | null;
+  topics?: string[] | Json | null;
+  key_concepts?: string[] | Json | null;
+  important_terms?: string[] | Json | null;
+  learning_objectives?: string[] | Json | null;
+  exam_relevant_themes?: string[] | Json | null;
+  study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
   chapters?: {
     id?: string;
     chapter_number: number;
     chapter_name: string;
+    chapter_summary?: string | null;
+    topics?: string[] | Json | null;
+    key_concepts?: string[] | Json | null;
+    important_terms?: string[] | Json | null;
+    learning_objectives?: string[] | Json | null;
+    exam_relevant_themes?: string[] | Json | null;
+    study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
   } | Chapter | null;
 };
 
@@ -86,6 +119,13 @@ export type Chapter = {
   display_order: number;
   is_active: boolean;
   created_at?: string;
+  chapter_summary?: string | null;
+  topics?: string[] | Json | null;
+  key_concepts?: string[] | Json | null;
+  important_terms?: string[] | Json | null;
+  learning_objectives?: string[] | Json | null;
+  exam_relevant_themes?: string[] | Json | null;
+  study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
 }
 
 export type ReadingProgress = {
