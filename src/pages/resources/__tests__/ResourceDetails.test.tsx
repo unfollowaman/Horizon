@@ -166,12 +166,14 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     const relatedLink = container?.querySelector('a[href="/resource/note-102"]');
     expect(relatedLink).not.toBeNull();
 
-    // Verify open book SVG icon and check/done SVG icons use w-5 h-5
+    // Verify open book SVG icon and check/done SVG icons use w-4 h-4
     const featureSvgs = container?.querySelectorAll('.w-11.h-11.neu-raised.rounded-full > svg.text-ink');
     expect(featureSvgs && featureSvgs.length).toBeGreaterThan(0);
     featureSvgs?.forEach((svg) => {
-      expect(svg.classList.contains('w-5')).toBe(true);
-      expect(svg.classList.contains('h-5')).toBe(true);
+      expect(svg.classList.contains('w-4')).toBe(true);
+      expect(svg.classList.contains('h-4')).toBe(true);
+      expect(svg.classList.contains('w-5')).toBe(false);
+      expect(svg.classList.contains('h-5')).toBe(false);
       expect(svg.classList.contains('w-6')).toBe(false);
       expect(svg.classList.contains('h-6')).toBe(false);
     });
