@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import type { Profile } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import PageLoader from '../../components/loading/PageLoader';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -116,7 +117,11 @@ const Onboarding: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[var(--bg-base)]">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-base)]">
+        <PageLoader />
+      </div>
+    );
   }
 
   return (

@@ -5,7 +5,6 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useAuth } from '../../context/AuthContext';
 import styles from './PdfViewer.module.css';
-import PdfLoadingScreen from '../../components/PdfLoadingScreen';
 import PdfViewerSkeleton from '../../components/PdfViewerSkeleton';
 import { usePdfData } from './pdf-viewer/hooks/usePdfData';
 import { usePdfProgress } from './pdf-viewer/hooks/usePdfProgress';
@@ -118,8 +117,8 @@ const PdfViewer: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <PdfViewerSkeleton />;
+  if (loading || (signedUrl && numPages === null && !pdfError)) {
+    return <PdfViewerSkeleton title={resource?.title} />;
   }
 
   if (!resource) {
@@ -178,10 +177,6 @@ const PdfViewer: React.FC = () => {
         <div className={styles.toast}>
           Link copied to clipboard.
         </div>
-      )}
-
-      {numPages === null && !pdfError && signedUrl && (
-        <PdfLoadingScreen />
       )}
 
       <PdfTopControls

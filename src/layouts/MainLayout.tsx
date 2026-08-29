@@ -3,6 +3,13 @@ import { Outlet, useLocation } from 'react-router-dom';
 import PageLoader from '../components/loading/PageLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouteErrorFallback from '../components/RouteErrorFallback';
+import { useDelayedLoading } from '../hooks/useDelayedLoading';
+
+const DelayedPageLoader: React.FC = () => {
+  const showLoading = useDelayedLoading(true, 250);
+  if (!showLoading) return null;
+  return <PageLoader />;
+};
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
@@ -19,7 +26,7 @@ const MainLayout: React.FC = () => {
           key={`${location.pathname}-${resetKey}`}
           fallback={<RouteErrorFallback onRetry={handleRetry} />}
         >
-          <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<DelayedPageLoader />}>
             <Outlet />
           </Suspense>
         </ErrorBoundary>
