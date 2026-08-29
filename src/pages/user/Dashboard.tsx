@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import styles from './Dashboard.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { useDashboardProgress } from './hooks/useDashboardProgress';
+import DashboardSkeleton from '../../components/DashboardSkeleton';
 
 const Dashboard: React.FC = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -17,13 +18,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="neu-card rounded-2xl p-8 text-center max-w-md animate-fade-rise">
-          <p className="font-bold text-body1 text-ink">Loading Dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // Fallback for names/initials

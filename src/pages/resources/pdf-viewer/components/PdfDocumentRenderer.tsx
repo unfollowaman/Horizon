@@ -194,7 +194,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                             scale={1}
                             renderTextLayer={false}
                             renderAnnotationLayer={false}
-                            loading={<div className="h-64 w-full animate-pulse bg-gray-200 rounded-md"></div>}
+                            loading={<div className="h-64 w-full animate-pulse neu-recessed rounded-xl"></div>}
                           />
                         </div>
                       ))}

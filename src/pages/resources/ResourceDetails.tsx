@@ -6,6 +6,8 @@ import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { handleDownload } from '../../utils/download';
 import { canDownload } from '../../utils/permissions';
 import ProfileButton from '../../components/ProfileButton';
+import Spinner from '../../components/loading/Spinner';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { buildCategoryUrl } from '../../utils/urlHelper';
 
 const ResourceDetails: React.FC = () => {
@@ -14,6 +16,7 @@ const ResourceDetails: React.FC = () => {
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useDelayedLoading(loading, 200);
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
@@ -102,10 +105,13 @@ const ResourceDetails: React.FC = () => {
   }, [resource]);
 
   if (loading) {
+    if (!showLoading) {
+      return null;
+    }
     return (
       <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
-        <div className="text-center p-6 sm:p-12 neu-card rounded-2xl min-w-0">
-          <div className="w-10 h-10 border-4 border-[#E91E8C]/20 border-t-[#E91E8C] rounded-full animate-spin mx-auto mb-4" />
+        <div className="text-center p-6 sm:p-12 neu-card rounded-2xl min-w-0 flex flex-col items-center justify-center">
+          <Spinner size="lg" className="mb-4" />
           <h1 className="text-xl sm:text-h2 uppercase text-ink break-words">Loading Educational Landing Page...</h1>
         </div>
       </div>
