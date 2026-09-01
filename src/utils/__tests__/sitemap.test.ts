@@ -44,7 +44,7 @@ describe('Sitemap Generator Unit Tests', () => {
     it('correctly converts subject strings to slugs', () => {
       expect(subjectToSlug('Geography')).toBe('geography');
       expect(subjectToSlug('Social Science')).toBe('social-science');
-      expect(subjectToSlug('Political Science')).toBe('political-science');
+      expect(subjectToSlug('Civics')).toBe('civics');
       expect(subjectToSlug(null)).toBeNull();
     });
   });

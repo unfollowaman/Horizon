@@ -329,36 +329,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://unfollowaman.tech/resource/70</loc>
-    <lastmod>2026-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://unfollowaman.tech/resource/71</loc>
-    <lastmod>2026-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://unfollowaman.tech/resource/72</loc>
-    <lastmod>2026-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://unfollowaman.tech/resource/73</loc>
-    <lastmod>2026-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://unfollowaman.tech/resource/74</loc>
-    <lastmod>2026-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://unfollowaman.tech/resource/75</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -433,6 +403,36 @@
   <url>
     <loc>https://unfollowaman.tech/resource/87</loc>
     <lastmod>2026-08-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/70</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/71</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/72</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/73</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/74</loc>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -542,11 +542,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://unfollowaman.tech/notes/class-10/hindi-medium/political-science</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://unfollowaman.tech/notes/class-10/hindi-medium/geography</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -563,6 +558,11 @@
   </url>
   <url>
     <loc>https://unfollowaman.tech/notes/class-10/english-medium/geography</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/notes/class-10/hindi-medium/civics</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
