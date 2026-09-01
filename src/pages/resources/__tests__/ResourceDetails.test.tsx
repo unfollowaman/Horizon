@@ -465,6 +465,7 @@ describe('ResourceDetails Public Educational Landing Page', () => {
       ...mockNoteResource,
       id: 'sparse-1',
       title: 'Chapter 5: Consumer Rights',
+      description: '',
       chapter_summary: null,
       topics: null,
       study_guidance: null
@@ -491,5 +492,67 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     expect(container?.textContent).toContain('Topics Covered & Key Concepts');
     expect(container?.textContent).toContain('Study Guidance & Preparation Tips');
     expect(container?.textContent).toContain('Fundamental definitions, laws, and core theoretical concepts.');
+  });
+
+  it('renders custom database description in header card when present', async () => {
+    const customDescResource: Resource = {
+      ...mockNoteResource,
+      id: 'hindi-notes-1',
+      title: 'Chapter 1: विकास',
+      description: 'यह अध्याय 1 (विकास) की संक्षिप्त एवं महत्वपूर्ण अवधारणाओं का संग्रह है।',
+      medium: 'hindi',
+      student_class: 'Class 10',
+      subject: 'Geography'
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: customDescResource,
+      rawData: customDescResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/hindi-notes-1']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const headerCard = container?.querySelector('article');
+    expect(headerCard?.textContent).toContain('यह अध्याय 1 (विकास) की संक्षिप्त एवं महत्वपूर्ण अवधारणाओं का संग्रह है।');
+  });
+
+  it('falls back to default description in header card when database description is empty or null', async () => {
+    const nullDescResource: Resource = {
+      ...mockNoteResource,
+      id: 'null-desc-notes',
+      title: 'Chapter 1: विकास',
+      description: '',
+      medium: 'hindi',
+      student_class: 'Class 10',
+      subject: 'Geography'
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: nullDescResource,
+      rawData: nullDescResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/null-desc-notes']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const fallbackHeaderCard = container?.querySelector('article');
+    expect(fallbackHeaderCard?.textContent).toContain('Comprehensive study material for Class 10 covering essential theory');
   });
 });

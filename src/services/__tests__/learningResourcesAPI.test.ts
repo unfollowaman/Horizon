@@ -145,6 +145,20 @@ describe('learningResourcesAPI', () => {
       expect(result.topics).toEqual(['Topic 1', 'Topic 2']);
       expect(result.study_guidance).toEqual([{ title: 'Tip 1', description: 'Do practice questions.' }]);
     });
+
+    it('maps description field correctly when present or null', () => {
+      const inputWithDesc: LearningResourceRow = {
+        ...baseRow,
+        description: 'यह एक हिंदी माध्यम का अध्याय विवरण है।',
+      };
+      const inputWithNullDesc: LearningResourceRow = {
+        ...baseRow,
+        description: null,
+      };
+
+      expect(mapLearningResource(inputWithDesc).description).toBe('यह एक हिंदी माध्यम का अध्याय विवरण है।');
+      expect(mapLearningResource(inputWithNullDesc).description).toBe('');
+    });
   });
 
   describe('fetchLearningResources', () => {
@@ -178,7 +192,7 @@ describe('learningResourcesAPI', () => {
 
       expect(supabase.from).toHaveBeenCalledWith('learning_resources');
       expect(mockSelect).toHaveBeenCalledWith(
-        'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance'
+        'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance'
       );
       expect(response.error).toBeNull();
       expect(response.data).toHaveLength(1);
@@ -218,7 +232,7 @@ describe('learningResourcesAPI', () => {
       });
 
       expect(mockSelect).toHaveBeenCalledWith(
-        'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
+        'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
       );
       expect(mockEq).toHaveBeenCalledWith('resource_type', 'notes');
       expect(mockEq).toHaveBeenCalledWith('student_class', 'Class 10');
@@ -268,7 +282,7 @@ describe('learningResourcesAPI', () => {
 
       expect(supabase.from).toHaveBeenCalledWith('learning_resources');
       expect(mockSelect).toHaveBeenCalledWith(
-        'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
+        'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
       );
       expect(mockEq).toHaveBeenCalledWith('id', 'res-1');
       expect(mockSingle).toHaveBeenCalled();

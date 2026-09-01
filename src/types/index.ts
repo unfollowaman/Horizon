@@ -6,7 +6,7 @@ export type StudyGuidanceStep = {
 export interface Resource {
   id: string;
   title: string;
-  description: string;
+  description?: string | null;
   resource_type: ResourceType;
   medium: Medium;
   uploadDate: string;
@@ -54,7 +54,7 @@ export type Medium = 'english' | 'hindi';
 export type LearningResource = {
   id: string;
   title: string;
-  description: string;
+  description?: string | null;
   student_class?: string | null;
   resource_type: ResourceType;
   medium: Medium;
@@ -181,7 +181,7 @@ export interface Database {
         Insert: {
           id?: string
           title: string
-          description: string
+          description?: string | null
           student_class?: string | null
           resource_type: ResourceType
           medium: Medium
@@ -198,7 +198,7 @@ export interface Database {
         Update: {
           id?: string
           title?: string
-          description?: string
+          description?: string | null
           student_class?: string | null
           resource_type?: ResourceType
           medium?: Medium
