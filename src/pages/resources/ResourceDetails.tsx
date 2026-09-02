@@ -69,8 +69,9 @@ const ResourceDetails: React.FC = () => {
     document.title = pageTitle;
 
     const detailsContext = [resource.student_class, resource.subject].filter(Boolean).join(' ');
-    const descriptionText = resource.chapter_summary
-      ? resource.chapter_summary.slice(0, 155) + (resource.chapter_summary.length > 155 ? '...' : '')
+    const summaryOrDesc = resource.description || resource.chapter_summary;
+    const descriptionText = summaryOrDesc
+      ? summaryOrDesc.slice(0, 155) + (summaryOrDesc.length > 155 ? '...' : '')
       : `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${detailsContext ? ` (${detailsContext})` : ''}. Free learning materials on Horizon.`;
 
     if (metaDesc) {
@@ -150,7 +151,7 @@ const ResourceDetails: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'EducationalResource',
     name: resource.title,
-    description: resource.chapter_summary || resource.description || `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${[resource.student_class, resource.subject].filter(Boolean).join(' ') ? ` (${[resource.student_class, resource.subject].filter(Boolean).join(' ')})` : ''}. Free learning materials on Horizon.`,
+    description: resource.description || resource.chapter_summary || `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${[resource.student_class, resource.subject].filter(Boolean).join(' ') ? ` (${[resource.student_class, resource.subject].filter(Boolean).join(' ')})` : ''}. Free learning materials on Horizon.`,
     url: `${origin}/resource/${resource.id}`,
     ...(resource.student_class ? { educationalLevel: resource.student_class } : {}),
     ...(resource.subject ? { about: { '@type': 'Thing', name: resource.subject } } : {}),
@@ -259,13 +260,11 @@ const ResourceDetails: React.FC = () => {
             </header>
 
             {/* Introductory Description */}
-            <p className="text-sm sm:text-body1 text-ink/80 leading-relaxed max-w-2xl pt-2 sm:pt-3 border-t border-ink/5 relative z-10 break-words min-w-0">
-              {resource.description || (
-                isNotes
-                  ? `Comprehensive study material for ${resource.student_class || 'students'} covering essential theory, board exam concepts, and syllabus notes for ${resource.subject || 'this subject'}.`
-                  : `Official ${resource.student_class || ''} ${resource.subject || ''} ${resource.year ? `(${resource.year})` : ''} learning resource curated for guided study and exam preparation.`
-              )}
-            </p>
+            {resource.description && (
+              <p className="text-sm sm:text-body1 text-ink/80 leading-relaxed max-w-2xl pt-2 sm:pt-3 border-t border-ink/5 relative z-10 break-words min-w-0">
+                {resource.description}
+              </p>
+            )}
           </article>
 
           {/* Protected PDF CTA Banner */}
@@ -342,12 +341,6 @@ const ResourceDetails: React.FC = () => {
                     This previous-year question paper contains official questions for {resource.student_class || 'students'} {resource.subject || 'subject'} {resource.year ? `(${resource.year})` : ''} based on the prescribed curriculum in {resource.medium === 'hindi' ? 'Hindi' : 'English'} medium. It can be used to understand question patterns, practice written answers, and assess examination readiness.
                   </p>
 
-                  {resource.description && (
-                    <blockquote className="neu-recessed p-3 sm:p-4 rounded-xl text-xs sm:text-body1 text-ink/80 italic border-l-4 border-l-[#E91E8C] my-3 sm:my-4 break-words min-w-0">
-                      "{resource.description}"
-                    </blockquote>
-                  )}
-
                   <p className="break-words m-0">
                     Solving past examination papers builds familiarity with question distribution, time allocation, and recurring exam concepts, serving as an effective diagnostic tool before major tests.
                   </p>
@@ -365,12 +358,6 @@ const ResourceDetails: React.FC = () => {
                       </>
                     )}
                   </p>
-
-                  {resource.description && (
-                    <blockquote className="neu-recessed p-3 sm:p-4 rounded-xl text-xs sm:text-body1 text-ink/80 italic border-l-4 border-l-[#E91E8C] my-3 sm:my-4 break-words min-w-0">
-                      "{resource.description}"
-                    </blockquote>
-                  )}
 
                   <p className="break-words m-0">
                     Designed as a comprehensive revision companion, this resource presents complex academic topics with clarity and structured emphasis on key syllabus objectives, enabling students to perform active recall and retain core subject matter effectively.

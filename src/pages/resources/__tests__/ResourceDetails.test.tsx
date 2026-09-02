@@ -142,7 +142,7 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     // Check SEO metadata
     expect(document.title).toBe('Chapter 1: Resource and Development | Class 10 Geography | Horizon');
     const metaDesc = document.querySelector('meta[name="description"]');
-    expect(metaDesc?.getAttribute('content')).toContain('Resource and Development');
+    expect(metaDesc?.getAttribute('content')).toContain('A comprehensive study note covering land resources');
 
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     expect(canonicalLink?.getAttribute('href')).toContain('/resource/note-101');
@@ -525,7 +525,7 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     expect(headerCard?.textContent).toContain('यह अध्याय 1 (विकास) की संक्षिप्त एवं महत्वपूर्ण अवधारणाओं का संग्रह है।');
   });
 
-  it('falls back to default description in header card when database description is empty or null', async () => {
+  it('omits description paragraph in header card when database description is empty or null', async () => {
     const nullDescResource: Resource = {
       ...mockNoteResource,
       id: 'null-desc-notes',
@@ -553,6 +553,56 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     });
 
     const fallbackHeaderCard = container?.querySelector('article');
-    expect(fallbackHeaderCard?.textContent).toContain('Comprehensive study material for Class 10 covering essential theory');
+    // Article should render badges and header title, but no introductory description paragraph
+    expect(fallbackHeaderCard?.querySelector('p.border-t')).toBeNull();
+  });
+
+  it('renders BOTH short description and chapter_summary in exact visual hierarchy order when both exist', async () => {
+    const dualDescResource: Resource = {
+      ...mockNoteResource,
+      id: 'dual-desc-notes',
+      title: 'Chapter 1: Motion in a Straight Line',
+      description: 'Short introductory lead description for motion in a straight line.',
+      chapter_summary: 'Paragraph 1 of full chapter summary overview.\n\nParagraph 2 of full chapter summary overview.',
+      student_class: 'Class 11',
+      subject: 'Physics',
+      resource_type: 'notes'
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: dualDescResource,
+      rawData: dualDescResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/dual-desc-notes']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const fullPageText = container?.textContent || '';
+
+    // 1. Chapter Title
+    const titleIndex = fullPageText.indexOf('Chapter 1: Motion in a Straight Line');
+    // 2. Short chapter description
+    const descIndex = fullPageText.indexOf('Short introductory lead description for motion in a straight line.');
+    // 3. Chapter & Resource Overview heading and summary content
+    const overviewHeadingIndex = fullPageText.indexOf('Chapter & Resource Overview');
+    const summaryIndex = fullPageText.indexOf('Paragraph 1 of full chapter summary overview.');
+
+    expect(titleIndex).toBeGreaterThan(-1);
+    expect(descIndex).toBeGreaterThan(-1);
+    expect(overviewHeadingIndex).toBeGreaterThan(-1);
+    expect(summaryIndex).toBeGreaterThan(-1);
+
+    // Verify exact visual hierarchy order: Title -> Description -> Overview Heading -> Chapter Summary
+    expect(titleIndex).toBeLessThan(descIndex);
+    expect(descIndex).toBeLessThan(overviewHeadingIndex);
+    expect(overviewHeadingIndex).toBeLessThan(summaryIndex);
   });
 });
