@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useAuth } from '../../context/AuthContext';
 import styles from './PdfViewer.module.css';
-import PdfLoadingScreen from '../../components/PdfLoadingScreen';
+import PdfViewerSkeleton from '../../components/PdfViewerSkeleton';
 import { usePdfData } from './pdf-viewer/hooks/usePdfData';
 import { usePdfProgress } from './pdf-viewer/hooks/usePdfProgress';
 import { usePdfControls } from './pdf-viewer/hooks/usePdfControls';
@@ -29,13 +29,8 @@ const PdfViewer: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const [renderResetKey, setRenderResetKey] = useState<number>(0);
-  const [isDocumentReady, setIsDocumentReady] = useState(false);
 
   const { resource, signedUrl, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
-
-  useEffect(() => {
-    setIsDocumentReady(false);
-  }, [signedUrl]);
 
   const [numPages, setNumPages] = useState<number | null>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -81,7 +76,6 @@ const PdfViewer: React.FC = () => {
   const onDocumentLoadSuccess = (pdf: { numPages: number }) => {
     setNumPages(pdf.numPages);
     pageRefs.current = new Array(pdf.numPages).fill(null);
-    setIsDocumentReady(true);
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -124,7 +118,7 @@ const PdfViewer: React.FC = () => {
   };
 
   if (loading) {
-    return <PdfLoadingScreen />;
+    return <PdfViewerSkeleton title={resource?.title} />;
   }
 
   if (!resource) {
@@ -240,7 +234,6 @@ const PdfViewer: React.FC = () => {
           setCurrentPage={setCurrentPage}
         />
       </ErrorBoundary>
-      {!pdfError && !isDocumentReady && <PdfLoadingScreen />}
     </div>
   );
 };
