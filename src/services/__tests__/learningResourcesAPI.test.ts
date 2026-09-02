@@ -244,7 +244,7 @@ describe('learningResourcesAPI', () => {
       expect(response.error).toBeNull();
     });
 
-    it('returns error when query fails', async () => {
+    it('returns error when query fails with non-missing-column error', async () => {
       const mockError = { message: 'Database error', code: '500' };
 
       const mockSelect = vi.fn().mockResolvedValue({ data: null, error: mockError });
@@ -257,6 +257,112 @@ describe('learningResourcesAPI', () => {
 
       expect(response.data).toBeNull();
       expect(response.error).toEqual(mockError);
+    });
+
+    it('retries with legacy query on 42703 missing column error and returns mapped resources', async () => {
+      const missingColumnError = { message: 'column chapter_summary does not exist', code: '42703' };
+      const legacyRows: LearningResourceRow[] = [
+        {
+          id: 'res-legacy-1',
+          title: 'Legacy Resource',
+          resource_type: 'notes',
+          medium: 'english',
+          student_class: '10',
+          created_at: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const selectCalls: string[] = [];
+
+      vi.mocked(supabase.from).mockImplementation(() => {
+        return {
+          select: (selectStr: string) => {
+            selectCalls.push(selectStr);
+            if (selectCalls.length === 1) {
+              return Promise.resolve({ data: null, error: missingColumnError });
+            } else {
+              return Promise.resolve({ data: legacyRows, error: null });
+            }
+          },
+        } as unknown as ReturnType<typeof supabase.from>;
+      });
+
+      const response = await fetchLearningResources();
+
+      expect(selectCalls).toHaveLength(2);
+      expect(selectCalls[0]).toContain('chapter_summary');
+      expect(selectCalls[1]).not.toContain('chapter_summary');
+      expect(response.error).toBeNull();
+      expect(response.data).toHaveLength(1);
+      expect(response.data?.[0].id).toBe('res-legacy-1');
+      expect(response.data?.[0].title).toBe('Legacy Resource');
+    });
+
+    it('re-applies filters on legacy fallback query when 42703 error occurs', async () => {
+      const missingColumnError = { message: 'column chapter_summary does not exist', code: '42703' };
+      const legacyRows: LearningResourceRow[] = [
+        {
+          id: 'res-legacy-filtered',
+          title: 'Filtered Legacy Resource',
+          resource_type: 'notes',
+          medium: 'english',
+          student_class: '10',
+        },
+      ];
+
+      let callCount = 0;
+      const primaryMockEq = vi.fn();
+      const legacyMockEq = vi.fn();
+
+      vi.mocked(supabase.from).mockImplementation(() => {
+        callCount++;
+        if (callCount === 1) {
+          const chain = {
+            eq: primaryMockEq.mockImplementation(() => chain),
+            then: (resolve: (arg: { data: null; error: typeof missingColumnError }) => void) =>
+              resolve({ data: null, error: missingColumnError }),
+          };
+          return { select: vi.fn().mockReturnValue(chain) } as unknown as ReturnType<typeof supabase.from>;
+        } else {
+          const chain = {
+            eq: legacyMockEq.mockImplementation(() => chain),
+            then: (resolve: (arg: { data: LearningResourceRow[]; error: null }) => void) =>
+              resolve({ data: legacyRows, error: null }),
+          };
+          return { select: vi.fn().mockReturnValue(chain) } as unknown as ReturnType<typeof supabase.from>;
+        }
+      });
+
+      const response = await fetchLearningResources({ resource_type: 'notes', medium: 'english' });
+
+      expect(callCount).toBe(2);
+      expect(primaryMockEq).toHaveBeenCalledWith('resource_type', 'notes');
+      expect(primaryMockEq).toHaveBeenCalledWith('medium', 'english');
+      expect(legacyMockEq).toHaveBeenCalledWith('resource_type', 'notes');
+      expect(legacyMockEq).toHaveBeenCalledWith('medium', 'english');
+      expect(response.error).toBeNull();
+      expect(response.data).toHaveLength(1);
+      expect(response.data?.[0].id).toBe('res-legacy-filtered');
+    });
+
+    it('does not trigger legacy query retry for unrelated errors (e.g. 500 or auth error)', async () => {
+      const genericError = { message: 'Internal server error', code: '500' };
+      const selectCalls: string[] = [];
+
+      vi.mocked(supabase.from).mockImplementation(() => {
+        return {
+          select: (selectStr: string) => {
+            selectCalls.push(selectStr);
+            return Promise.resolve({ data: null, error: genericError });
+          },
+        } as unknown as ReturnType<typeof supabase.from>;
+      });
+
+      const response = await fetchLearningResources();
+
+      expect(selectCalls).toHaveLength(1);
+      expect(response.data).toBeNull();
+      expect(response.error).toEqual(genericError);
     });
   });
 
