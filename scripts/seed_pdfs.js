@@ -1,36 +1,55 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+/**
+ * Recursively lists all PDF files in a Supabase storage bucket concurrently.
+ *
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabaseClient
+ * @param {string} path
+ * @returns {Promise<Array<{name: string, path: string}>>}
+ */
+export async function findFiles(supabaseClient, path = '') {
+  const { data, error } = await supabaseClient.storage.from('pdfs').list(path);
+  if (error) {
+    console.error("Error at", path, error);
+    return [];
+  }
+  if (!data) return [];
 
-async function run() {
   const allPDFs = [];
+  const subfolderPromises = [];
 
-  async function findFiles(path) {
-    const { data, error } = await supabase.storage.from('pdfs').list(path);
-    if (error) {
-      console.error("Error at", path, error);
-      return;
-    }
-    for (const item of data) {
-      if (item.id === null) {
-        const nextPath = path ? `${path}/${item.name}` : item.name;
-        await findFiles(nextPath);
-      } else {
-        if (item.name.endsWith('.pdf')) {
-          allPDFs.push({
-            name: item.name,
-            path: path ? `${path}/${item.name}` : item.name
-          });
-        }
-      }
+  for (const item of data) {
+    if (item.id === null) {
+      const nextPath = path ? `${path}/${item.name}` : item.name;
+      subfolderPromises.push(findFiles(supabaseClient, nextPath));
+    } else if (item.name.endsWith('.pdf')) {
+      allPDFs.push({
+        name: item.name,
+        path: path ? `${path}/${item.name}` : item.name
+      });
     }
   }
 
-  await findFiles('');
+  if (subfolderPromises.length > 0) {
+    const subfolderResults = await Promise.all(subfolderPromises);
+    for (const pdfs of subfolderResults) {
+      allPDFs.push(...pdfs);
+    }
+  }
+
+  return allPDFs;
+}
+
+export async function run() {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const allPDFs = await findFiles(supabase, '');
   console.log(`Found ${allPDFs.length} PDFs`);
 
   const { data: existingData, error: existingError } = await supabase.from('learning_resources').select('file_path');
@@ -104,4 +123,7 @@ async function run() {
   }
 }
 
-run();
+const currentFilePath = fileURLToPath(import.meta.url);
+if (process.argv[1] && currentFilePath === process.argv[1]) {
+  run();
+}
