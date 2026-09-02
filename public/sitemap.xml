@@ -395,12 +395,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://unfollowaman.tech/resource/87</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://unfollowaman.tech/resource/70</loc>
     <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -433,6 +427,12 @@
   <url>
     <loc>https://unfollowaman.tech/resource/81</loc>
     <lastmod>2026-08-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unfollowaman.tech/resource/87</loc>
+    <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -552,17 +552,17 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://unfollowaman.tech/notes/class-10/hindi-medium/civics</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://unfollowaman.tech/notes/class-10/english-medium</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unfollowaman.tech/notes/class-10/english-medium/geography</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://unfollowaman.tech/notes/class-10/hindi-medium/civics</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

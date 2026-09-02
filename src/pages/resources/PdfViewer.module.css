@@ -41,7 +41,7 @@
 
 .transformContent {
   width: 100% !important;
-  height: max-content !important;
+  height: 100% !important;
   display: flex !important;
   justify-content: center;
   align-items: flex-start;
