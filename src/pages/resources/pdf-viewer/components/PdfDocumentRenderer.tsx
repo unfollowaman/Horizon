@@ -44,20 +44,40 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
   setCurrentPage
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [currentScale, setCurrentScale] = useState<number>(1);
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container = scrollContainerRef.current || containerRef.current;
     if (!container) return;
 
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setContainerWidth(entry.contentRect.width);
+    const updateWidth = () => {
+      const width = container.clientWidth || container.getBoundingClientRect().width;
+      if (width > 0) {
+        setContainerWidth(Math.floor(width));
       }
+    };
+
+    updateWidth();
+
+    if (typeof ResizeObserver === 'undefined') return;
+
+    const observer = new ResizeObserver(() => {
+      updateWidth();
     });
 
     observer.observe(container);
     return () => observer.disconnect();
-  }, [containerRef]);
+  }, [containerRef, scrollContainerRef]);
+
+  const onTransformHandler = React.useCallback(
+    (ref: { state: { positionX: number; positionY: number; scale: number }; instance?: { contentComponent?: HTMLElement | null } }) => {
+      handleTransformed(ref);
+      if (ref.state) {
+        setCurrentScale(ref.state.scale);
+      }
+    },
+    [handleTransformed]
+  );
 
   const calculateActivePage = React.useCallback(() => {
     const container = scrollContainerRef.current;
@@ -102,6 +122,8 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
 
     calculateActivePage();
 
+    if (typeof IntersectionObserver === 'undefined') return;
+
     const observerOptions = {
       root: scrollContainerRef.current,
       rootMargin: '0px',
@@ -143,13 +165,22 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
           minScale={1}
           maxScale={4}
           centerOnInit
+          limitToBounds={true}
+          disablePadding={currentScale <= 1.01}
           wheel={{
             wheelDisabled: false,
             activationKeys: ['Control', 'Shift', 'Meta', 'Alt']
           }}
-          panning={{ excluded: ['a', 'button', 'input'] }}
-          trackPadPanning={{ disabled: false }}
-          onTransform={handleTransformed}
+          panning={{
+            disabled: currentScale <= 1.01,
+            lockAxisX: currentScale <= 1.01,
+            excluded: ['a', 'button', 'input']
+          }}
+          trackPadPanning={{
+            disabled: currentScale <= 1.01,
+            lockAxisX: currentScale <= 1.01
+          }}
+          onTransform={onTransformHandler}
         >
           {({ zoomIn, zoomOut, setTransform }) => {
             setTransformRef.current = setTransform;
@@ -169,6 +200,9 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                     className={styles.pdfScrollContainer}
                     ref={scrollContainerRef}
                     onScroll={onScrollHandler}
+                    style={{
+                      touchAction: currentScale <= 1.01 ? 'pan-y' : 'pan-x pan-y'
+                    }}
                   >
                     {pdfError ? (
                        <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>

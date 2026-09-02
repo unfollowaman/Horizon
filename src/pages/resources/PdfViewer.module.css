@@ -9,6 +9,7 @@
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  overscroll-behavior-x: none;
 }
 
 .viewerContainer {
@@ -19,6 +20,7 @@
   padding: 0;
   position: relative;
   overflow: hidden;
+  overscroll-behavior-x: none;
 }
 
 .transformWrapperContainer {
@@ -27,11 +29,14 @@
   position: relative;
   overflow: hidden;
   height: 100%;
+  overscroll-behavior-x: none;
 }
 
 .transformWrapper {
   width: 100% !important;
   height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior-x: none;
 }
 
 .transformContent {
@@ -41,6 +46,8 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pdfScrollContainer {
@@ -48,6 +55,8 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .pdfDocument {
@@ -55,6 +64,9 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
   /* Remove page gaps to make it feel like a seamless reader */
   gap: 0;
 }
@@ -128,15 +140,31 @@
 .reactPdfPage {
   margin-bottom: 8px; /* Slight gap between pages */
   width: 100%;
+  max-width: 100%;
   display: flex;
   justify-content: center;
   background: white;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .reactPdfPage canvas {
   width: 100% !important;
   height: auto !important;
   max-width: 100%;
+  box-sizing: border-box;
+}
+
+.reactPdfPage :global(.react-pdf__Page) {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.reactPdfPage :global(.react-pdf__Page__canvas) {
+  max-width: 100% !important;
+  height: auto !important;
+  box-sizing: border-box !important;
 }
 
 /* Floating Controls */
