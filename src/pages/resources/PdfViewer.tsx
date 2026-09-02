@@ -117,7 +117,7 @@ const PdfViewer: React.FC = () => {
     }
   };
 
-  if (loading || (signedUrl && numPages === null && !pdfError)) {
+  if (loading) {
     return <PdfViewerSkeleton title={resource?.title} />;
   }
 
