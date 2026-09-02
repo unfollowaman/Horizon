@@ -1,74 +1,63 @@
-.container {
+.screen {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 40; /* Below controls (50) but above background */
+  z-index: 100;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto minmax(3rem, 10vh);
+  place-items: center;
   overflow: hidden;
-  background-color: transparent;
+  background: #fff;
+  color: #080808;
 }
 
-.dotGrid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+.composition {
+  grid-row: 1;
+  width: min(66vw, 640px);
+  min-width: 300px;
+  align-self: end;
+  transform: translateY(5%);
 }
 
-.textContainer {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-body-base-weight), sans-serif;
-  font-weight: 700;
-  color: var(--color-ink);
-  font-size: 1.125rem; /* 18px */
-  letter-spacing: 0.02em;
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 8px 16px;
-  border-radius: 8px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  /* The text should be clearly readable over the dots */
-}
+.artwork { display: block; width: 100%; height: auto; overflow: visible; }
+.label { grid-row: 2; margin: 0; font: 700 clamp(1.65rem, 3.1vw, 2.55rem)/1.15 Arial, sans-serif; letter-spacing: -.035em; }
 
-.dot {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  margin-left: -3px;
-  background-color: var(--color-accent);
-  border-radius: 50%;
-  opacity: 0.1;
-  transform: scale(0.6);
-  animation: pinkWave 4s infinite ease-in-out;
-  will-change: transform, opacity;
+/* Entry motion is intentionally shared only by the document's independent layers. */
+.pdfDepth, .pdfBody, .pdfIconography {
+  transform-origin: 400px 365px;
+  animation: documentEnter 950ms cubic-bezier(.16, .9, .25, 1) both;
 }
+.pdfDepth { animation-delay: 10ms; }
+.pdfIconography { animation-delay: 28ms; }
+.rearStreaks { animation: rearFlow 1.9s linear infinite; }
+.foregroundStreaks { transform-origin: 400px 405px; animation: foregroundFlow 2.35s ease-in-out infinite; }
+.thermalGlow { animation: glowSettle 1.1s cubic-bezier(.16, .9, .25, 1) both, thermalBreath 2.7s 1.1s ease-in-out infinite; }
+.thermalWisps { transform-origin: 400px 545px; animation: thermalEnter 900ms 330ms cubic-bezier(.16, .9, .25, 1) both, wispFlicker 2.2s 1.23s ease-in-out infinite; }
+.thermalCore { transform-origin: 400px 555px; animation: thermalEnter 850ms 250ms cubic-bezier(.16, .9, .25, 1) both, coreFlicker 1.8s 1.1s ease-in-out infinite; }
+.particles { transform-origin: 400px 530px; animation: particlePulse 1.8s 900ms ease-in-out infinite; }
+.hoverShadow { transform-origin: 400px 632px; animation: shadowSettle 1s cubic-bezier(.16, .9, .25, 1) both, shadowBreathe 2.7s 1s ease-in-out infinite; }
 
-@keyframes pinkWave {
-  0% {
-    opacity: 0.1;
-    transform: scale(0.6);
-  }
-  20% {
-    opacity: 0.5;
-    transform: scale(1.6);
-  }
-  40% {
-    opacity: 0.1;
-    transform: scale(0.6);
-  }
-  100% {
-    opacity: 0.1;
-    transform: scale(0.6);
-  }
+@keyframes documentEnter {
+  0% { opacity: 0; transform: translateY(-150px) scale(.88) rotate(-2deg); }
+  48% { opacity: 1; transform: translateY(22px) scale(1.025) rotate(.35deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes rearFlow { 0%, 100% { opacity: .72; transform: translateY(-12px); } 50% { opacity: 1; transform: translateY(17px); } }
+@keyframes foregroundFlow { 0%, 100% { opacity: .75; transform: translateY(-3px) scaleY(.96); } 50% { opacity: 1; transform: translateY(7px) scaleY(1.04); } }
+@keyframes thermalEnter { 0% { opacity: 0; transform: translateY(18px) scaleX(.72); } 100% { opacity: 1; transform: translateY(0) scaleX(1); } }
+@keyframes glowSettle { 0% { opacity: 0; transform: scaleX(.48); } 100% { opacity: .34; transform: scaleX(1); } }
+@keyframes thermalBreath { 0%,100% { opacity: .28; transform: scaleX(.96) scaleY(.9); } 50% { opacity: .44; transform: scaleX(1.06) scaleY(1.08); } }
+@keyframes wispFlicker { 0%,100% { transform: translateY(0) scaleY(.96); opacity: .76; } 50% { transform: translateY(-6px) scaleY(1.07); opacity: 1; } }
+@keyframes coreFlicker { 0%,100% { transform: translateY(0) scaleX(.98); } 50% { transform: translateY(-4px) scaleX(1.025); } }
+@keyframes particlePulse { 0%,100% { opacity: .45; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.07) translateY(3px); } }
+@keyframes shadowSettle { 0% { opacity: 0; transform: scaleX(.56); } 100% { opacity: .36; transform: scaleX(1); } }
+@keyframes shadowBreathe { 0%,100% { opacity: .3; transform: scaleX(.94); } 50% { opacity: .42; transform: scaleX(1.05); } }
+
+@media (max-width: 560px) {
+  .screen { grid-template-rows: minmax(0, 1fr) auto minmax(2.3rem, 7vh); }
+  .composition { width: min(112vw, 510px); transform: translateY(7%); }
+  .label { font-size: 1.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dot {
-    animation: none !important;
-    opacity: 0.15;
-    transform: scale(0.8);
-  }
+  .artwork, .artwork * { animation: none !important; }
 }
