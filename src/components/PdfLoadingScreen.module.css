@@ -1,74 +1,323 @@
-.container {
-  position: absolute;
+/* MAIN VIEWPORT CONTAINER */
+.viewportContainer {
+  position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
-  z-index: 40; /* Below controls (50) but above background */
+  z-index: 9999;
   overflow: hidden;
-  background-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.dotGrid {
+/* 16:9 CANVAS STAGE */
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .stage {
+    width: 100vw;
+    height: calc(100vw * 9 / 16);
+  }
+}
+
+.layer {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
-.textContainer {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-body-base-weight), sans-serif;
-  font-weight: 700;
-  color: var(--color-ink);
-  font-size: 1.125rem; /* 18px */
-  letter-spacing: 0.02em;
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 8px 16px;
-  border-radius: 8px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  /* The text should be clearly readable over the dots */
+/* 1. REAR & FOREGROUND VELOCITY STREAKS ANIMATION */
+.rearStreaks {
+  z-index: 1;
+  animation: streakStream 1.2s linear infinite;
+  will-change: transform;
 }
 
-.dot {
+.frontStreaks {
+  z-index: 4;
+  animation: streakStream 0.8s linear infinite;
+  will-change: transform;
+}
+
+@keyframes streakStream {
+  0% {
+    transform: translateY(-80px);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(120px);
+    opacity: 0.2;
+  }
+}
+
+/* 2. GROUNDING HOVER SHADOW ANIMATION */
+.shadowContainer {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  margin-left: -3px;
-  background-color: var(--color-accent);
+  top: 76%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hoverShadow {
+  width: 220px;
+  height: 24px;
+  background: radial-gradient(ellipse at center, rgba(225, 29, 72, 0.28) 0%, rgba(244, 114, 182, 0.12) 50%, rgba(255, 255, 255, 0) 75%);
   border-radius: 50%;
-  opacity: 0.1;
-  transform: scale(0.6);
-  animation: pinkWave 4s infinite ease-in-out;
+  filter: blur(8px);
+  animation: shadowPulse 2.4s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
 
-@keyframes pinkWave {
+@keyframes shadowPulse {
   0% {
-    opacity: 0.1;
-    transform: scale(0.6);
-  }
-  20% {
-    opacity: 0.5;
-    transform: scale(1.6);
-  }
-  40% {
-    opacity: 0.1;
-    transform: scale(0.6);
+    transform: scale(0.92);
+    opacity: 0.6;
   }
   100% {
-    opacity: 0.1;
-    transform: scale(0.6);
+    transform: scale(1.08);
+    opacity: 0.9;
   }
 }
 
+/* 3. CENTRAL PDF COMPOSITION & ENTRY MOTION */
+.pdfComposition {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+  animation: pdfEntryHover 2.4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes pdfEntryHover {
+  0% {
+    transform: translateY(-8px) scale(0.98);
+  }
+  100% {
+    transform: translateY(4px) scale(1.02);
+  }
+}
+
+.thermalBaseGlow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 180px;
+  background: radial-gradient(ellipse at center, rgba(244, 114, 182, 0.35) 0%, rgba(251, 207, 232, 0.15) 55%, rgba(255, 255, 255, 0) 80%);
+  filter: blur(20px);
+  pointer-events: none;
+  animation: glowFlicker 1.8s ease-in-out infinite alternate;
+  will-change: opacity, transform;
+}
+
+@keyframes glowFlicker {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(0.95);
+  }
+  100% {
+    opacity: 0.95;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.pdfObjectWrapper {
+  position: relative;
+  width: 260px;
+  height: 310px;
+  transform: rotate(-7deg) translateY(-10px);
+  transform-origin: center center;
+  animation: subtleTilt 3.6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes subtleTilt {
+  0% {
+    transform: rotate(-7.5deg) translateY(-10px);
+  }
+  100% {
+    transform: rotate(-6.2deg) translateY(-8px);
+  }
+}
+
+.pdfSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* RADIAL / ANGULAR VELOCITY LINES FLICKER */
+.angularVelocityLines {
+  animation: angularFlicker 0.6s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+@keyframes angularFlicker {
+  0% { opacity: 0.4; }
+  100% { opacity: 0.85; }
+}
+
+/* 4. THERMAL FLAMES & WISPS ANIMATION */
+.thermalWispsSvg {
+  position: absolute;
+  bottom: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 150px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.wispOuterLeft {
+  animation: flameWispLeft 0.7s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+.wispOuterRight {
+  animation: flameWispRight 0.8s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+.flameTongue1 { animation: flamePulse 0.45s ease-in-out infinite alternate; transform-origin: bottom center; }
+.flameTongue2 { animation: flamePulse 0.6s ease-in-out infinite alternate 0.1s; transform-origin: bottom center; }
+.flameTongue3 { animation: flamePulse 0.5s ease-in-out infinite alternate 0.2s; transform-origin: bottom center; }
+.flameTongue4 { animation: flamePulse 0.55s ease-in-out infinite alternate 0.15s; transform-origin: bottom center; }
+
+@keyframes flameWispLeft {
+  0% { transform: scaleY(0.9) skewX(-2deg); opacity: 0.6; }
+  100% { transform: scaleY(1.1) skewX(2deg); opacity: 0.9; }
+}
+
+@keyframes flameWispRight {
+  0% { transform: scaleY(1.08) skewX(2deg); opacity: 0.85; }
+  100% { transform: scaleY(0.88) skewX(-2deg); opacity: 0.65; }
+}
+
+@keyframes flamePulse {
+  0% { transform: scaleY(0.85) scaleX(0.92); opacity: 0.75; }
+  100% { transform: scaleY(1.15) scaleX(1.08); opacity: 1; }
+}
+
+.thermalContactHighlight {
+  animation: highlightGlow 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes highlightGlow {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* 5. PARTICLE / SPARK SYSTEM ANIMATION */
+.particleSystem {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 100px;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #F472B6;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #E11D48;
+  opacity: 0.85;
+  animation: sparkRise 1.4s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.spark1 { left: 15%; bottom: 60px; width: 5px; height: 5px; animation-delay: 0s; animation-duration: 1.2s; }
+.spark2 { left: 30%; bottom: 85px; width: 3px; height: 3px; animation-delay: 0.3s; animation-duration: 1.5s; }
+.spark3 { left: 45%; bottom: 95px; width: 6px; height: 6px; background-color: #FFF1F2; animation-delay: 0.6s; animation-duration: 1.1s; }
+.spark4 { left: 60%; bottom: 70px; width: 4px; height: 4px; animation-delay: 0.2s; animation-duration: 1.3s; }
+.spark5 { left: 78%; bottom: 80px; width: 5px; height: 5px; animation-delay: 0.5s; animation-duration: 1.4s; }
+.spark6 { left: 88%; bottom: 50px; width: 3px; height: 3px; animation-delay: 0.1s; animation-duration: 1.6s; }
+.spark7 { left: 22%; bottom: 40px; width: 4px; height: 4px; animation-delay: 0.4s; animation-duration: 1.25s; }
+.spark8 { left: 68%; bottom: 45px; width: 5px; height: 5px; animation-delay: 0.7s; animation-duration: 1.35s; }
+
+@keyframes sparkRise {
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-60px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* 6. GROUNDED TEXT LABEL (STATIC BLACK TEXT) */
+.textContainer {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  text-align: center;
+}
+
+.renderingText {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.625rem; /* ~26px */
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.01em;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+/* ACCESSIBILITY: REDUCED MOTION OVERRIDE */
 @media (prefers-reduced-motion: reduce) {
-  .dot {
+  .rearStreaks,
+  .frontStreaks,
+  .hoverShadow,
+  .pdfComposition,
+  .thermalBaseGlow,
+  .pdfObjectWrapper,
+  .angularVelocityLines,
+  .wispOuterLeft,
+  .wispOuterRight,
+  .flameTongue1,
+  .flameTongue2,
+  .flameTongue3,
+  .flameTongue4,
+  .thermalContactHighlight,
+  .spark {
     animation: none !important;
-    opacity: 0.15;
-    transform: scale(0.8);
   }
 }
