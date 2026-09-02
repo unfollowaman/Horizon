@@ -260,7 +260,7 @@ const ResourceDetails: React.FC = () => {
             </header>
 
             {/* Introductory Description */}
-            {resource.description && (
+            {isNotes && resource.description && (
               <p className="text-sm sm:text-body1 text-ink/80 leading-relaxed max-w-2xl pt-2 sm:pt-3 border-t border-ink/5 relative z-10 break-words min-w-0">
                 {resource.description}
               </p>

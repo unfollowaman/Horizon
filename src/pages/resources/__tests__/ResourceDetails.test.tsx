@@ -605,4 +605,31 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     expect(descIndex).toBeLessThan(overviewHeadingIndex);
     expect(overviewHeadingIndex).toBeLessThan(summaryIndex);
   });
+
+  it('does not render introductory description in header card for PYQ resources', async () => {
+    const pyqWithDesc: Resource = {
+      ...mockPyqResource,
+      id: 'pyq-desc-test',
+      description: 'PYQ description text that should not appear in header card'
+    };
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: pyqWithDesc,
+      rawData: pyqWithDesc,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/pyq-desc-test']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const headerCard = container?.querySelector('article');
+    expect(headerCard?.querySelector('p.border-t')).toBeNull();
+  });
 });
