@@ -93,13 +93,36 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
   if (filters.neqId) query = query.neq('id', filters.neqId);
   if (filters.limit) query = query.limit(filters.limit);
 
-  const { data, error } = await query;
+  const { data: initialData, error: initialError } = await query;
+
+  let data: LearningResourceRow[] | null = initialData as unknown as LearningResourceRow[] | null;
+  let error = initialError;
+
+  // Fallback to legacy schema if newly added columns do not exist in database yet (PostgREST error 42703 or PGRST204)
+  if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('column'))) {
+    const legacySelect = filters.includeChapters
+      ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)'
+      : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path';
+
+    let legacyQuery = supabase.from('learning_resources').select(legacySelect);
+
+    if (filters.resource_type) legacyQuery = legacyQuery.eq('resource_type', filters.resource_type);
+    if (filters.student_class) legacyQuery = legacyQuery.eq('student_class', filters.student_class);
+    if (filters.subject) legacyQuery = legacyQuery.eq('subject', filters.subject);
+    if (filters.medium) legacyQuery = legacyQuery.eq('medium', filters.medium);
+    if (filters.neqId) legacyQuery = legacyQuery.neq('id', filters.neqId);
+    if (filters.limit) legacyQuery = legacyQuery.limit(filters.limit);
+
+    const legacyResult = await legacyQuery;
+    data = legacyResult.data as unknown as LearningResourceRow[] | null;
+    error = legacyResult.error;
+  }
 
   if (error) {
     return { data: null, error };
   }
 
-  const mappedResources: Resource[] = data ? (data as unknown as LearningResourceRow[]).map(mapLearningResource) : [];
+  const mappedResources: Resource[] = data ? data.map(mapLearningResource) : [];
   return { data: mappedResources, error: null };
 };
 
@@ -120,8 +143,8 @@ export const fetchLearningResourceById = async (id: string, includeChapters: boo
   // Fallback to legacy schema if newly added columns do not exist in database yet (PostgREST error 42703 or PGRST204)
   if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('column'))) {
     const legacySelect = includeChapters
-      ? 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)'
-      : 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path';
+      ? 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapters(id, chapter_number, chapter_name)'
+      : 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path';
 
     const legacyResult = await supabase
       .from('learning_resources')
