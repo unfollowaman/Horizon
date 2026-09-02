@@ -192,4 +192,29 @@ describe('PdfDocumentRenderer Scrolling & Touch Lock Behavior', () => {
     const scrollContainer = scrollContainerRef.current;
     expect(scrollContainer.style.touchAction).toBe('pan-y');
   });
+
+  it('renders pdfScrollContainer inside TransformComponent to support vertical scrolling', () => {
+    const containerRef = { current: container };
+    const scrollContainerRef = { current: null };
+
+    act(() => {
+      root?.render(
+        <PdfDocumentRenderer
+          {...defaultProps}
+          containerRef={containerRef}
+          scrollContainerRef={scrollContainerRef}
+        />
+      );
+    });
+
+    const transformComponent = container?.querySelector('[data-testid="mock-transform-component"]');
+    expect(transformComponent).not.toBeNull();
+
+    const scrollContainer = scrollContainerRef.current as HTMLElement | null;
+    expect(scrollContainer).not.toBeNull();
+    expect(scrollContainer?.className).toContain('pdfScrollContainer');
+
+    const documentEl = scrollContainer?.querySelector('[data-testid="mock-document"]');
+    expect(documentEl).not.toBeNull();
+  });
 });
