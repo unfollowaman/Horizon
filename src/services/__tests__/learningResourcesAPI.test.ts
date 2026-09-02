@@ -146,6 +146,27 @@ describe('learningResourcesAPI', () => {
       expect(result.study_guidance).toEqual([{ title: 'Tip 1', description: 'Do practice questions.' }]);
     });
 
+    it('prefers resource-level chapter_summary and topics over linked chapter fallback', () => {
+      const input: LearningResourceRow = {
+        ...baseRow,
+        id: '87',
+        title: 'Resource and Development',
+        medium: 'english',
+        chapter_summary: 'English resource summary text.',
+        topics: ['English Topic 1', 'English Topic 2'],
+        chapters: {
+          chapter_number: 1,
+          chapter_name: 'संसाधन और विकास',
+          chapter_summary: 'हिंदी अध्याय सारांश पाठ',
+          topics: ['हिंदी विषय 1', 'हिंदी विषय 2'],
+        },
+      };
+
+      const result = mapLearningResource(input);
+      expect(result.chapter_summary).toBe('English resource summary text.');
+      expect(result.topics).toEqual(['English Topic 1', 'English Topic 2']);
+    });
+
     it('maps description field correctly when present or null', () => {
       const inputWithDesc: LearningResourceRow = {
         ...baseRow,
