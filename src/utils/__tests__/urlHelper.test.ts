@@ -96,6 +96,38 @@ describe('urlHelper', () => {
       });
       expect(url).toBe('/library/class-10/english-medium/geography?year=2024');
     });
+
+    it('handles query parameters for medium, subject, and year when class is missing or empty', () => {
+      expect(
+        buildCategoryUrl({
+          basePath: '/notes',
+          medium: 'English',
+        })
+      ).toBe('/notes?medium=english-medium');
+
+      expect(
+        buildCategoryUrl({
+          basePath: '/notes',
+          subject: 'Geography',
+        })
+      ).toBe('/notes?subject=geography');
+
+      expect(
+        buildCategoryUrl({
+          basePath: '/notes',
+          medium: 'Hindi',
+          subject: 'Social Science',
+        })
+      ).toBe('/notes?medium=hindi-medium&subject=social-science');
+
+      expect(
+        buildCategoryUrl({
+          basePath: '/library',
+          subject: 'Mathematics',
+          year: '2024',
+        })
+      ).toBe('/library?subject=mathematics&year=2024');
+    });
   });
 
   describe('slug detection helpers', () => {

@@ -118,13 +118,27 @@ export function buildCategoryUrl(params: CategoryUrlParams): string {
   const base = basePath.startsWith('/') ? basePath : `/${basePath}`;
 
   const cSlug = classToSlug(studentClass);
-  const mSlug = mediumToSlug(medium);
-  const sSlug = subjectToSlug(subject);
 
-  const segments: string[] = [];
+  const getValidMediumSlug = (m: string | null | undefined): string | null => {
+    if (!m || m === 'Mediums' || m === 'All Mediums') return null;
+    const slug = mediumToSlug(m);
+    if (!slug || slug === 'all-mediums' || slug === 'mediums') return null;
+    return slug;
+  };
+
+  const getValidSubjectSlug = (s: string | null | undefined): string | null => {
+    if (!s || s === 'Subjects' || s === 'All Subjects') return null;
+    const slug = subjectToSlug(s);
+    if (!slug || slug === 'subjects' || slug === 'all-subjects') return null;
+    return slug;
+  };
+
+  const mSlug = getValidMediumSlug(medium);
+  const sSlug = getValidSubjectSlug(subject);
+  const hasValidYear = year && year !== 'Years' && year !== 'All Years';
 
   if (cSlug) {
-    segments.push(cSlug);
+    const segments: string[] = [cSlug];
     if (mSlug) {
       segments.push(mSlug);
       if (sSlug) {
@@ -134,19 +148,27 @@ export function buildCategoryUrl(params: CategoryUrlParams): string {
       // If class and subject are present without medium
       segments.push('all-mediums', sSlug);
     }
+
+    let path = `${base}/${segments.join('/')}`;
+    if (hasValidYear) {
+      path += `?year=${encodeURIComponent(year)}`;
+    }
+    return path;
   }
 
-  let path = base;
-  if (segments.length > 0) {
-    path += '/' + segments.join('/');
+  const searchParams = new URLSearchParams();
+  if (mSlug) {
+    searchParams.set('medium', mSlug);
+  }
+  if (sSlug) {
+    searchParams.set('subject', sSlug);
+  }
+  if (hasValidYear) {
+    searchParams.set('year', year);
   }
 
-  // Append year as query param if present and year filter is active
-  if (year && year !== 'Years' && year !== 'All Years') {
-    path += `?year=${encodeURIComponent(year)}`;
-  }
-
-  return path;
+  const queryString = searchParams.toString();
+  return queryString ? `${base}?${queryString}` : base;
 }
 
 /**

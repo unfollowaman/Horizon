@@ -138,4 +138,22 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
 
     expect(container?.textContent).toContain('Class 10 Geography PYQ');
   });
+
+  it('filters resources correctly when subject or medium is selected without a class on /notes', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes?medium=english-medium&subject=geography']}>
+          <Routes>
+            <Route path="/notes" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<ResourcePage config={notesConfig} />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Chapter 1: Resources and Development');
+    expect(document.title).toContain('Geography English Medium Study Notes');
+  });
 });
