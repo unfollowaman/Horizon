@@ -81,7 +81,7 @@ export type LearningResource = {
 
 export type LearningResourceRow = {
   id: string;
-  title: string;
+  title?: string | null;
   description?: string | null;
   student_class?: string | number | null;
   resource_type: ResourceType;

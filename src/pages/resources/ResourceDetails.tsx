@@ -189,11 +189,25 @@ const ResourceDetails: React.FC = () => {
         : 'PREVIOUS-YEAR QUESTION PAPER')
     : 'EDUCATIONAL RESOURCE';
 
-  const showSubtitle =
+  const chapterName = resource.chapters?.chapter_name;
+  const chapterNum = resource.chapters?.chapter_number;
+  const titleLower = resource.title.toLowerCase();
+  const chapterNameLower = chapterName?.toLowerCase() || '';
+
+  const titleAlreadyHasChapterNum = chapterNum !== undefined && chapterNum !== null && (
+    titleLower.startsWith(`chapter ${chapterNum}:`) ||
+    titleLower.startsWith(`chapter ${chapterNum}`)
+  );
+  const titleAlreadyHasChapterName = chapterNameLower ? titleLower.includes(chapterNameLower) : false;
+  const isLanguageMismatch = resource.medium === 'english' && Boolean(chapterName && /[\u0900-\u097F]/.test(chapterName));
+
+  const showSubtitle = Boolean(
     isNotes &&
-    resource.chapters &&
-    resource.chapters.chapter_name &&
-    !resource.title.toLowerCase().includes(resource.chapters.chapter_name.toLowerCase());
+    chapterName &&
+    !titleAlreadyHasChapterName &&
+    !titleAlreadyHasChapterNum &&
+    !isLanguageMismatch
+  );
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">

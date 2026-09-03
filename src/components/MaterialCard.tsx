@@ -198,9 +198,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
         <h3 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
           {resource.resource_type === 'pyq'
             ? `${resource.student_class} ${resource.subject} PYQ`
-            : resource.resource_type === 'notes' && resource.chapters
-              ? `Chapter ${resource.chapters.chapter_number}: ${resource.chapters.chapter_name}`
-              : resource.title}
+            : resource.title}
         </h3>
         <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
           {resource.year || resource.subject}
