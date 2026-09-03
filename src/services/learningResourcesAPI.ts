@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Resource, ResourceType, Medium, LearningResourceRow, Chapter } from '../types';
+import type { Resource, ResourceType, Medium, LearningResourceRow, Chapter, SyllabusChapterHierarchy, SyllabusTopicWithResources } from '../types';
 import { getResourceUrl } from '../utils/resourceHelper';
 
 // Map database row to Resource object
@@ -188,4 +188,90 @@ export const fetchSyllabusChapters = async (studentClass: string, medium: Medium
     .not('chapter_id', 'is', null);
 
   return { data, error };
+};
+
+/**
+ * Fetches the relational syllabus hierarchy (Chapters -> Topics -> Multi-medium Resources)
+ * for a specific Class and Subject.
+ */
+export const fetchSyllabusHierarchy = async (
+  studentClass: string,
+  subject: string
+): Promise<{ data: SyllabusChapterHierarchy[] | null; error: unknown }> => {
+  // Query active chapters for class & subject ordered by display_order
+  const { data: chapters, error: chErr } = await supabase
+    .from('chapters')
+    .select('*')
+    .eq('student_class', studentClass)
+    .eq('subject', subject)
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+
+  if (chErr) {
+    return { data: null, error: chErr };
+  }
+
+  if (!chapters || chapters.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const chapterIds = chapters.map(c => c.id);
+
+  // Fetch active topics for these chapters ordered by display_order
+  const { data: topics, error: topErr } = await supabase
+    .from('syllabus_topics')
+    .select('*')
+    .in('chapter_id', chapterIds)
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+
+  if (topErr) {
+    // If syllabus_topics table isn't accessible or present yet
+    return {
+      data: chapters.map(c => ({ ...c, topics: [] })),
+      error: topErr
+    };
+  }
+
+  const topicIds = (topics || []).map(t => t.id);
+  const topicResourcesMap: Record<string, Resource[]> = {};
+
+  if (topicIds.length > 0) {
+    const { data: junctions, error: jncErr } = await supabase
+      .from('syllabus_topic_resources')
+      .select('topic_id, learning_resources(*)')
+      .in('topic_id', topicIds)
+      .order('display_order', { ascending: true });
+
+    if (!jncErr && junctions) {
+      for (const j of junctions) {
+        if (!topicResourcesMap[j.topic_id]) {
+          topicResourcesMap[j.topic_id] = [];
+        }
+        if (j.learning_resources) {
+          const rawRes = j.learning_resources as unknown as LearningResourceRow;
+          topicResourcesMap[j.topic_id].push(mapLearningResource(rawRes));
+        }
+      }
+    }
+  }
+
+  // Construct relational hierarchy
+  const topicsByChapter: Record<string, SyllabusTopicWithResources[]> = {};
+  for (const t of topics || []) {
+    if (!topicsByChapter[t.chapter_id]) {
+      topicsByChapter[t.chapter_id] = [];
+    }
+    topicsByChapter[t.chapter_id].push({
+      ...t,
+      resources: topicResourcesMap[t.id] || []
+    });
+  }
+
+  const hierarchy: SyllabusChapterHierarchy[] = chapters.map(c => ({
+    ...c,
+    topics: topicsByChapter[c.id] || []
+  }));
+
+  return { data: hierarchy, error: null };
 };
