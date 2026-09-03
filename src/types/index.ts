@@ -137,6 +137,33 @@ export type Chapter = {
   study_guidance?: StudyGuidanceStep[] | string[] | Json | null;
 }
 
+export type SyllabusTopic = {
+  id: string;
+  chapter_id: string;
+  title: string;
+  description?: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type SyllabusTopicResource = {
+  id: string;
+  topic_id: string;
+  resource_id: string;
+  display_order: number;
+  created_at?: string;
+};
+
+export interface SyllabusTopicWithResources extends SyllabusTopic {
+  resources: Resource[];
+}
+
+export interface SyllabusChapterHierarchy extends Omit<Chapter, 'topics'> {
+  topics: SyllabusTopicWithResources[];
+}
+
 export type ReadingProgress = {
   id: string;
   user_id: string;
@@ -244,6 +271,68 @@ export interface Database {
           created_at?: string
         }
         Relationships: []
+      }
+      syllabus_topics: {
+        Row: SyllabusTopic
+        Insert: {
+          id?: string
+          chapter_id: string
+          title: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          chapter_id?: string
+          title?: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syllabus_topics_chapter_id_fkey"
+            columns: ["chapter_id"]
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      syllabus_topic_resources: {
+        Row: SyllabusTopicResource
+        Insert: {
+          id?: string
+          topic_id: string
+          resource_id: string
+          display_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          topic_id?: string
+          resource_id?: string
+          display_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syllabus_topic_resources_topic_id_fkey"
+            columns: ["topic_id"]
+            referencedRelation: "syllabus_topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "syllabus_topic_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            referencedRelation: "learning_resources"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       reading_progress: {
         Row: ReadingProgress
