@@ -58,21 +58,75 @@ describe('prerender script unit tests', () => {
   it('maps raw database row to Resource structure correctly', () => {
     const mappedNote = mapLearningResource(sampleNoteResourceRow);
     expect(mappedNote.id).toBe('56');
-    expect(mappedNote.title).toBe('Chapter 1: Fundamental Unit of Life');
+    expect(mappedNote.title).toBe('Chapter 1: Cell Biology Notes');
     expect(mappedNote.student_class).toBe('Class 10');
     expect(mappedNote.description).toBe('Detailed study note covering cellular structure and organelles.');
     expect(mappedNote.topics).toEqual(['Mitochondria', 'Nucleus', 'Cell Membrane']);
+  });
+
+  it('prerenders English Resource 87 with English title and without Hindi subtitle', () => {
+    const englishResource87Row = {
+      id: '87',
+      title: 'Resources and Development',
+      description: 'Comprehensive study note covering natural resources, land use, and soil classification.',
+      student_class: '10',
+      subject: 'Geography',
+      medium: 'english',
+      resource_type: 'notes',
+      created_at: '2025-01-01T00:00:00.000Z',
+      file_path: 'notes/geography/class-10/resources-and-development.pdf',
+      storage_bucket: 'protected-resources',
+      chapters: {
+        chapter_number: 1,
+        chapter_name: 'संसाधन और विकास',
+      },
+    };
+
+    const mapped = mapLearningResource(englishResource87Row);
+    expect(mapped.title).toBe('Chapter 1: Resources and Development');
+
+    const html = generateResourceHtml(mapped, sampleTemplateHtml, []);
+    expect(html).toContain('<title>Chapter 1: Resources and Development | Class 10 Geography | Horizon</title>');
+    expect(html).toContain('Chapter 1: Resources and Development');
+    expect(html).toContain('ENGLISH MEDIUM');
+    expect(html).not.toContain('संसाधन और विकास');
+  });
+
+  it('prerenders Hindi Resource 81 with Hindi title', () => {
+    const hindiResource81Row = {
+      id: '81',
+      title: 'संसाधन और विकास',
+      description: 'प्राकृतिक संसाधनों और विकास का विस्तृत अध्ययन नोट।',
+      student_class: '10',
+      subject: 'Geography',
+      medium: 'hindi',
+      resource_type: 'notes',
+      created_at: '2025-01-01T00:00:00.000Z',
+      file_path: 'notes/geography/class-10/sansadhan.pdf',
+      storage_bucket: 'protected-resources',
+      chapters: {
+        chapter_number: 1,
+        chapter_name: 'संसाधन और विकास',
+      },
+    };
+
+    const mapped = mapLearningResource(hindiResource81Row);
+    expect(mapped.title).toBe('Chapter 1: संसाधन और विकास');
+
+    const html = generateResourceHtml(mapped, sampleTemplateHtml, []);
+    expect(html).toContain('Chapter 1: संसाधन और विकास');
+    expect(html).toContain('HINDI MEDIUM');
   });
 
   it('generates rich static HTML for study notes without leaking protected info', () => {
     const mappedNote = mapLearningResource(sampleNoteResourceRow);
     const html = generateResourceHtml(mappedNote, sampleTemplateHtml, []);
 
-    expect(html).toContain('<title>Chapter 1: Fundamental Unit of Life | Class 10 Science | Horizon</title>');
+    expect(html).toContain('<title>Chapter 1: Cell Biology Notes | Class 10 Science | Horizon</title>');
     expect(html).toContain('<meta name="description" content="Detailed study note covering cellular structure and organelles.">');
     expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/resource/56">');
     expect(html).toContain('"@type": "EducationalResource"');
-    expect(html).toContain('Chapter 1: Fundamental Unit of Life');
+    expect(html).toContain('Chapter 1: Cell Biology Notes');
     expect(html).toContain('Class 10');
     expect(html).toContain('Science');
     expect(html).toContain('ENGLISH MEDIUM');

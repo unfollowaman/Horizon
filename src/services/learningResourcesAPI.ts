@@ -24,9 +24,23 @@ export const mapLearningResource = (item: LearningResourceRow): Resource => {
     className = item.student_class === null ? null : undefined;
   }
 
-  let title = item.title;
-  if (item.resource_type === 'notes' && item.chapters) {
-    title = `Chapter ${item.chapters.chapter_number}: ${item.chapters.chapter_name}`;
+  let title = item.title ?? '';
+  if (item.resource_type === 'notes') {
+    const rawTitle = item.title ? String(item.title).trim() : '';
+    const chapterObj = item.chapters as Chapter | null | undefined;
+    const chapterNum = chapterObj?.chapter_number;
+
+    if (rawTitle) {
+      if (/^chapter\s+[^:]+:/i.test(rawTitle)) {
+        title = item.title ?? '';
+      } else if (chapterNum !== undefined && chapterNum !== null) {
+        title = `Chapter ${chapterNum}: ${item.title}`;
+      } else {
+        title = item.title ?? '';
+      }
+    } else if (chapterObj && chapterNum !== undefined && chapterNum !== null) {
+      title = `Chapter ${chapterNum}: ${chapterObj.chapter_name}`;
+    }
   }
 
   const chapterObj = item.chapters as Chapter | null | undefined;

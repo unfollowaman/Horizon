@@ -100,9 +100,23 @@ export function mapLearningResource(item) {
     className = item.student_class === null ? null : undefined;
   }
 
-  let title = item.title;
-  if (item.resource_type === 'notes' && item.chapters) {
-    title = `Chapter ${item.chapters.chapter_number}: ${item.chapters.chapter_name}`;
+  let title = item.title ?? '';
+  if (item.resource_type === 'notes') {
+    const rawTitle = item.title ? String(item.title).trim() : '';
+    const chapterObj = item.chapters || null;
+    const chapterNum = chapterObj?.chapter_number;
+
+    if (rawTitle) {
+      if (/^chapter\s+[^:]+:/i.test(rawTitle)) {
+        title = item.title ?? '';
+      } else if (chapterNum !== undefined && chapterNum !== null) {
+        title = `Chapter ${chapterNum}: ${item.title}`;
+      } else {
+        title = item.title ?? '';
+      }
+    } else if (chapterObj && chapterNum !== undefined && chapterNum !== null) {
+      title = `Chapter ${chapterNum}: ${chapterObj.chapter_name}`;
+    }
   }
 
   const chapterObj = item.chapters || null;
@@ -205,11 +219,25 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
         : 'PREVIOUS-YEAR QUESTION PAPER')
     : 'EDUCATIONAL RESOURCE';
 
-  const showSubtitle =
+  const chapterName = resource.chapters?.chapter_name;
+  const chapterNum = resource.chapters?.chapter_number;
+  const titleLower = resource.title.toLowerCase();
+  const chapterNameLower = chapterName?.toLowerCase() || '';
+
+  const titleAlreadyHasChapterNum = chapterNum !== undefined && chapterNum !== null && (
+    titleLower.startsWith(`chapter ${chapterNum}:`) ||
+    titleLower.startsWith(`chapter ${chapterNum}`)
+  );
+  const titleAlreadyHasChapterName = chapterNameLower ? titleLower.includes(chapterNameLower) : false;
+  const isLanguageMismatch = resource.medium === 'english' && Boolean(chapterName && /[\u0900-\u097F]/.test(chapterName));
+
+  const showSubtitle = Boolean(
     isNotes &&
-    resource.chapters &&
-    resource.chapters.chapter_name &&
-    !resource.title.toLowerCase().includes(resource.chapters.chapter_name.toLowerCase());
+    chapterName &&
+    !titleAlreadyHasChapterName &&
+    !titleAlreadyHasChapterNum &&
+    !isLanguageMismatch
+  );
 
   // Topics HTML construction
   const topicsList = [];

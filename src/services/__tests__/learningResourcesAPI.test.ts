@@ -68,25 +68,76 @@ describe('learningResourcesAPI', () => {
       expect(mapLearningResource(undefinedInput).student_class).toBeUndefined();
     });
 
-    it('uses chapter title format when resource_type is notes and chapters data exists', () => {
+    it('CASE 1: notes + Hindi resource title + chapter', () => {
       const input: LearningResourceRow = {
         ...baseRow,
+        title: 'संसाधन और विकास',
         resource_type: 'notes',
+        medium: 'hindi',
         chapters: {
-          chapter_number: 3,
-          chapter_name: 'Polynomials',
+          chapter_number: 1,
+          chapter_name: 'संसाधन और विकास',
         },
       };
 
       const result = mapLearningResource(input);
-      expect(result.title).toBe('Chapter 3: Polynomials');
+      expect(result.title).toBe('Chapter 1: संसाधन और विकास');
     });
 
-    it('preserves original title when resource_type is pyq even if chapters data exists', () => {
+    it('CASE 2: notes + English resource title + chapter', () => {
+      const input: LearningResourceRow = {
+        ...baseRow,
+        title: 'Resources and Development',
+        resource_type: 'notes',
+        medium: 'english',
+        chapters: {
+          chapter_number: 1,
+          chapter_name: 'संसाधन और विकास',
+        },
+      };
+
+      const result = mapLearningResource(input);
+      expect(result.title).toBe('Chapter 1: Resources and Development');
+    });
+
+    it('CASE 3: notes + missing/null resource title + chapter fallback', () => {
+      const input: LearningResourceRow = {
+        ...baseRow,
+        title: null,
+        resource_type: 'notes',
+        medium: 'english',
+        chapters: {
+          chapter_number: 1,
+          chapter_name: 'संसाधन और विकास',
+        },
+      };
+
+      const result = mapLearningResource(input);
+      expect(result.title).toBe('Chapter 1: संसाधन और विकास');
+    });
+
+    it('CASE 4: notes + title already starts with Chapter 1:', () => {
+      const input: LearningResourceRow = {
+        ...baseRow,
+        title: 'Chapter 1: Resources and Development',
+        resource_type: 'notes',
+        medium: 'english',
+        chapters: {
+          chapter_number: 1,
+          chapter_name: 'संसाधन और विकास',
+        },
+      };
+
+      const result = mapLearningResource(input);
+      expect(result.title).toBe('Chapter 1: Resources and Development');
+    });
+
+    it('CASE 5: non-notes resource preserves existing title', () => {
       const input: LearningResourceRow = {
         ...baseRow,
         title: 'Class 10 History Board Paper 2024',
         resource_type: 'pyq',
+        medium: 'english',
         chapters: {
           chapter_number: 1,
           chapter_name: 'The Rise of Nationalism in Europe',
