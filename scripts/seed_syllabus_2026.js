@@ -672,30 +672,77 @@ export const SYLLABUS_2026_DATA = [
     student_class: '9',
     subject: 'English',
     chapters: [
-      { chapter_number: 1, chapter_name: 'In the Realm of Morning (Prose) & Poem: The Wind and the Leaves', topics: [{ title: 'Reading Comprehension, Theme & Character Analysis', topic_type: 'topic' }] },
-      { chapter_number: 2, chapter_name: 'The Silver Lining (Prose) & Prose: Symphony of the Hills', topics: [{ title: 'Prose Analysis & Vocabulary Skills', topic_type: 'topic' }] },
-      { chapter_number: 3, chapter_name: 'Grammar: Tenses, Modals & Subject-Verb Concord', topics: [{ title: 'Present/Past/Future Tenses, Modals, and Concord rules', topic_type: 'grammar' }] },
-      { chapter_number: 4, chapter_name: 'Grammar: Reported Speech & Determiners', topics: [{ title: 'Commands, Requests, Statements, Questions, and Articles/Quantifiers', topic_type: 'grammar' }] }
+      { chapter_number: 1, chapter_name: 'In the Realm of Morning (Prose)', topics: [{ title: 'Reading Comprehension, Narrative Structure, and Character Analysis', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'The Wind and the Leaves (Poem)', topics: [{ title: 'Poetic Devices, Imagery, Stanzaic Structure, and Theme Analysis', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'The Silver Lining (Prose)', topics: [{ title: 'Prose Comprehension, Empathy Themes, and Character Sketch', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'Symphony of the Hills (Prose)', topics: [{ title: 'Descriptive Prose, Nature Symbolism, and Vocabulary Expansion', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'Song of the Open Road (Poem)', topics: [{ title: 'Poetic Analysis, Rhythm, Tone, and Free-Spirited Themes', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'Shadows of the Banyan Tree (Prose)', topics: [{ title: 'Prose Analysis, Cultural Context, and Plot Dynamics', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'The Unbroken Wave (Prose & Reflection)', topics: [{ title: 'Reflective Essay Analysis, Environmental Insights, and Reading Comprehension', topic_type: 'topic' }] },
+      {
+        chapter_number: 8,
+        chapter_name: 'English Grammar Syllabus',
+        topics: [
+          { title: 'Tenses (Present, Past, and Future Forms; Simple, Continuous, Perfect)', topic_type: 'grammar' },
+          { title: 'Modals (can, could, may, might, shall, should, will, would, must, ought to)', topic_type: 'grammar' },
+          { title: 'Subject-Verb Concord (Rules of Number and Person Agreement)', topic_type: 'grammar' },
+          { title: 'Reported Speech: Commands and Requests', topic_type: 'grammar' },
+          { title: 'Reported Speech: Statements / Assertive Sentences', topic_type: 'grammar' },
+          { title: 'Reported Speech: Questions (Wh- Questions and Yes/No Questions)', topic_type: 'grammar' },
+          { title: 'Determiners (Articles, Demonstratives, Possessives, Quantifiers)', topic_type: 'grammar' },
+          { title: 'Clauses (Noun Clauses, Adverb Clauses of Condition and Time, Relative Clauses)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {
     student_class: '9',
     subject: 'Hindi',
     chapters: [
-      { chapter_number: 1, chapter_name: 'नया प्रभात (कविता) एवं मिट्टी की सौगंध (कहानी)', topics: [{ title: 'कविता भावार्थ एवं कहानी चरित्र चित्रण', topic_type: 'topic' }] },
-      { chapter_number: 2, chapter_name: 'संस्कृति के स्वर (निबंध)', topics: [{ title: 'निबंध विचार बोध एवं भाषा विश्लेषण', topic_type: 'topic' }] },
-      { chapter_number: 3, chapter_name: 'व्याकरण: शब्द निर्माण (उपसर्ग, प्रत्यय), समास', topics: [{ title: 'उपसर्ग, प्रत्यय, तत्पुरुष, कर्मधारय, बहुव्रीहि, द्वंद्व, द्विगु, अव्ययीभाव समास', topic_type: 'grammar' }] },
-      { chapter_number: 4, chapter_name: 'व्याकरण: वाक्य भेद (अर्थ एवं रचना के आधार पर), अलंकार', topics: [{ title: 'विधानवाचक/निषेधवाचक, सरल/संयुक्त/मिश्र वाक्य, अनुप्रास, यमक, श्लेष, उपमा, रूपक', topic_type: 'grammar' }] }
+      { chapter_number: 1, chapter_name: 'नया प्रभात (कविता)', topics: [{ title: 'कविता वाचन, भावार्थ एवं सौंदर्य बोध', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'मिट्टी की सौगंध (कहानी)', topics: [{ title: 'कहानी पाठ, पात्र चित्रण एवं नैतिक मूल्य', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'संस्कृति के स्वर (निबंध)', topics: [{ title: 'निबंध वाचन, सांस्कृतिक विचार बोध एवं निबंध शैली', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'समय की शिला पर (कविता)', topics: [{ title: 'काव्य पाठ, समय का महत्त्व एवं काव्य सौंदर्य', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'सच्चा मित्र (कहानी)', topics: [{ title: 'कहानी विश्लेषण, मित्रता का भाव एवं संवाद', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'भारत के दीप (प्रेरक प्रसंग)', topics: [{ title: 'प्रेरक संस्मरण पाठ एवं महापुरुष जीवनी', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'प्रकृति का संदेश (संस्मरण)', topics: [{ title: 'प्रकृति चेतना, संस्मरण बोध एवं पर्यावरण संवेदनशीलता', topic_type: 'topic' }] },
+      {
+        chapter_number: 8,
+        chapter_name: 'हिंदी व्याकरण (गंगा पाठ्यपुस्तक)',
+        topics: [
+          { title: 'शब्द निर्माण: उपसर्ग एवं प्रत्यय', topic_type: 'grammar' },
+          { title: 'समास: तत्पुरुष, कर्मधारय, बहुव्रीहि, द्वंद्व, द्विगु, अव्ययीभाव समास', topic_type: 'grammar' },
+          { title: 'अर्थ की दृष्टि से वाक्य भेद (विधानवाचक, निषेधवाचक, आज्ञावाचक, प्रश्नवाचक, विस्मयादिवाचक, संदेहवाचक, इच्छावाचक, संकेतवाचक)', topic_type: 'grammar' },
+          { title: 'अलंकार (शब्दालंकार: अनुप्रास, यमक; अर्थालंकार: उपमा, रूपक, उत्प्रेक्षा, अतिशयोक्ति, मानवीकरण)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {
     student_class: '9',
     subject: 'Sanskrit',
     chapters: [
-      { chapter_number: 1, chapter_name: 'मङ्गलाचरणम् एवं वन्दना', topics: [{ title: 'श्लोक पाठ एवं मङ्गल भावना', topic_type: 'topic' }] },
-      { chapter_number: 2, chapter_name: 'विद्यायाः महत्त्वम्', topics: [{ title: 'विद्या प्रशंसा एवं नीति श्लोक', topic_type: 'topic' }] },
-      { chapter_number: 3, chapter_name: 'संस्कृत व्याकरणम्: सन्धि, शब्दरूप, धातुरूप, कारक', topics: [{ title: 'अच्/हल्/विसर्ग सन्धि, अकारान्त/आकारान्त/इकारान्त शब्द रूप, लट्/लृट्/लङ्/लोट्/विधिलिङ् लकार', topic_type: 'grammar' }] },
-      { chapter_number: 4, chapter_name: 'संस्कृत व्याकरणम्: प्रत्ययाः, अव्ययदानि, सङ्ख्या', topics: [{ title: 'क्त्वा, ल्यप्, तुमुन्, क्त, क्तवतु प्रत्यय, अव्यय पद एवं १-५० सङ्ख्या', topic_type: 'grammar' }] }
+      { chapter_number: 1, chapter_name: 'मङ्गलाचरणम् एवं वन्दना', topics: [{ title: 'श्लोक पाठ, अन्वय एवं मङ्गल भावना', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'विद्यायाः महत्त्वम्', topics: [{ title: 'विद्या प्रशंसा, नीति श्लोक एवं सुभाषित ज्ञान', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'पर्यावरण-संरक्षणम्', topics: [{ title: 'पर्यावरण चेतना, पाठ बोध एवं प्रकृति रक्षा', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'सदाचारस्य शक्तिः', topics: [{ title: 'सदाचार महिमा, नैतिक शिक्षा एवं व्यवहार ज्ञान', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'भारतस्य गौरवम्', topics: [{ title: 'भारत महिमा, देशगौरव एवं राष्ट्रभक्ति', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'वैज्ञानिकदृष्टिकोणः', topics: [{ title: 'वैज्ञानिक चेतना, आधुनिक दृष्टि एवं ज्ञान वर्धन', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'सूक्ति-सुधा', topics: [{ title: 'सूक्ति पठन, सुभाषित वाचन एवं अन्वय बोध', topic_type: 'topic' }] },
+      {
+        chapter_number: 8,
+        chapter_name: 'संस्कृत व्याकरणम् (शारदा पाठ्यपुस्तक)',
+        topics: [
+          { title: 'स्वरसन्धि (दीर्घ, गुण, वृद्धि, यण्, अयादि) एवं व्यञ्जनसन्धि (वर्ग-प्रथम-वर्णस्य तृतीय-वर्ण परिवर्तनम्, अनुस्वार-सन्धिः)', topic_type: 'grammar' },
+          { title: 'शब्दरूपाणि: पुंलिङ्ग, स्त्रीलिङ्ग, नपुंसकलिङ्ग शब्दाः (अकारान्त, आकारान्त, इकारान्त, ईकारान्त, उकारान्त)', topic_type: 'grammar' },
+          { title: 'सर्वनामशब्दाः: तत्, एतत्, किम्, अस्मद्, युष्मद्', topic_type: 'grammar' },
+          { title: 'धातुरूपाणि: पञ्चसु लकारेषु (लट्, लृट्, लङ्, लोट्, विधिलिङ्; परस्मैपदिनः एवं आत्मनेपदिनः धातवः)', topic_type: 'grammar' },
+          { title: 'कारक-प्रकरणम् एवं उपपद-विभक्तयः (द्वितीया तः सप्तमी पर्यन्तम्)', topic_type: 'grammar' },
+          { title: 'प्रत्ययाः: क्त्वा, ल्यप्, तुमुन्, क्त, क्तवतु', topic_type: 'grammar' },
+          { title: 'अव्ययपदानि (अपि, च, एव, उच्चैः, अद्य, ह्यः, श्वः, इतस्ततः, सर्वत्र)', topic_type: 'grammar' },
+          { title: 'सङ्ख्यावाचक-शब्दाः (१ तः ५० पर्यन्तम्)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
 
@@ -804,45 +851,66 @@ export const SYLLABUS_2026_DATA = [
   },
   {
     student_class: '10',
-    subject: 'Hindi',
+    subject: 'Hindi Course A',
     chapters: [
-      // Course A
-      { chapter_number: 1, chapter_name: 'पद (सूरदास) - Course A', topics: [{ title: 'पद व्याख्या एवं भक्ति रस', topic_type: 'topic' }] },
-      { chapter_number: 2, chapter_name: 'राम-लक्ष्मण-परशुराम संवाद (तुलसीदास) - Course A', topics: [{ title: 'काव्य सौंदर्य एवं संवाद विश्लेषण', topic_type: 'topic' }] },
-      { chapter_number: 3, chapter_name: 'आत्मकथ्य (जयशंकर प्रसाद) - Course A', topics: [{ title: 'छायावादी काव्य भावार्थ', topic_type: 'topic' }] },
-      { chapter_number: 4, chapter_name: 'उत्साह एवं अट नहीं रही है (सूर्यकांत त्रिपाठी \'निराला\') - Course A', topics: [{ title: 'कविता व्याख्या एवं प्रतीक बोध', topic_type: 'topic' }] },
-      { chapter_number: 5, chapter_name: 'यह दंतुरित मुस्कान एवं फसल (नागार्जुन) - Course A', topics: [{ title: 'वात्सल्य एवं कृषि संस्कृति भाव', topic_type: 'topic' }] },
-      { chapter_number: 6, chapter_name: 'संगतकार (मंगलेश डबराल) - Course A', topics: [{ title: 'सहायक भूमिका एवं मानवीय संवेदना', topic_type: 'topic' }] },
-      { chapter_number: 7, chapter_name: 'नेताजी का चश्मा (स्वयं प्रकाश) - Course A', topics: [{ title: 'देशभक्ति एवं कहानी चरित्र चित्रण', topic_type: 'topic' }] },
-      { chapter_number: 8, chapter_name: 'बालगोबिन भगत (रामवृक्ष बेनीपुरी) - Course A', topics: [{ title: 'रेखाचित्र एवं कबीरपंथी विचारधारा', topic_type: 'topic' }] },
-      { chapter_number: 9, chapter_name: 'लखनवी अंदाज़ (यशपाल) - Course A', topics: [{ title: 'पतनशील सामंती वर्ग पर व्यंग्य', topic_type: 'topic' }] },
-      { chapter_number: 10, chapter_name: 'एक कहानी यह भी (मन्नू भंडारी) - Course A', topics: [{ title: 'आत्मकथ्य गद्य एवं स्वतंत्रता आंदोलन प्रभाव', topic_type: 'topic' }] },
-      { chapter_number: 11, chapter_name: 'नौबतखाने में इबादत (यतीन्द्र मिश्र) - Course A', topics: [{ title: 'व्यक्ति चित्र (बिस्मिल्ला खाँ)', topic_type: 'topic' }] },
-      { chapter_number: 12, chapter_name: 'संस्कृति (भदंत आनंद कौसल्यायन) - Course A', topics: [{ title: 'सभ्यता एवं संस्कृति भेद निबंध', topic_type: 'topic' }] },
-      { chapter_number: 13, chapter_name: 'माता का अंचल (शिवपूजन सहाय - कृतिका) - Course A', topics: [{ title: 'देहाती दुनिया एवं वात्सल्य भाव', topic_type: 'topic' }] },
-      { chapter_number: 14, chapter_name: 'साना-साना हाथ जोड़ि... (मधु कांकरिया - कृतिका) - Course A', topics: [{ title: 'यात्रा वृत्तांत एवं सिक्किम संस्कृति', topic_type: 'topic' }] },
-      { chapter_number: 15, chapter_name: 'मैं क्यों लिखता हूँ? (अज्ञेय - कृतिका) - Course A', topics: [{ title: 'लेखकीय प्रेरणा एवं हिरोशिमा विवेक', topic_type: 'topic' }] },
-      { chapter_number: 16, chapter_name: 'व्याकरण (Course A): वाक्य, वाच्य, पद परिचय, अलंकार', topics: [{ title: 'रचना के आधार पर वाक्य भेद, वाच्य परिवर्तन, पद परिचय, श्लेष/उत्प्रेक्षा/अतिशयोक्ति/मानवीकरण', topic_type: 'grammar' }] },
-
-      // Course B
-      { chapter_number: 17, chapter_name: 'साखी (कबीर) - Course B', topics: [{ title: 'साखी व्याख्या एवं गुरु महिमा', topic_type: 'topic' }] },
-      { chapter_number: 18, chapter_name: 'पद (मीरा) - Course B', topics: [{ title: 'कृष्ण भक्ति पद भावार्थ', topic_type: 'topic' }] },
-      { chapter_number: 19, chapter_name: 'मनुष्यता (मैथिलीशरण गुप्त) - Course B', topics: [{ title: 'उदारता एवं परोपकार भाव', topic_type: 'topic' }] },
-      { chapter_number: 20, chapter_name: 'पर्वत प्रदेश में पावस (सुमित्रानंदन पंत) - Course B', topics: [{ title: 'प्रकृति सौंदर्य एवं बिंब विधान', topic_type: 'topic' }] },
-      { chapter_number: 21, chapter_name: 'तोप (वीरेन डंगवाल) - Course B', topics: [{ title: 'ऐतिहासिक धरोहर एवं चेतावनी', topic_type: 'topic' }] },
-      { chapter_number: 22, chapter_name: 'कर चले हम फ़िदा (कैफ़ी आज़मी) - Course B', topics: [{ title: 'देशभक्ति गीत भावार्थ', topic_type: 'topic' }] },
-      { chapter_number: 23, chapter_name: 'आत्मत्राण (रवींद्रनाथ ठाकुर) - Course B', topics: [{ title: 'प्रार्थना कविता भावार्थ', topic_type: 'topic' }] },
-      { chapter_number: 24, chapter_name: 'बड़े भाई साहब (प्रेमचंद) - Course B', topics: [{ title: 'कहानी विश्लेषण एवं बाल मनोविज्ञान', topic_type: 'topic' }] },
-      { chapter_number: 25, chapter_name: 'डायरी का एक पन्ना (सीताराम सेकसरिया) - Course B', topics: [{ title: 'स्वतंत्रता संग्राम संस्मरण', topic_type: 'topic' }] },
-      { chapter_number: 26, chapter_name: 'तताँरा-वामीरो कथा (लीलाधर मंडलोई) - Course B', topics: [{ title: 'लोककथा एवं रूढ़ियों का विरोध', topic_type: 'topic' }] },
-      { chapter_number: 27, chapter_name: 'तीसरी कसम के शिल्पकार शैलेंद्र (प्रहलाद अग्रवाल) - Course B', topics: [{ title: 'फ़िल्म समीक्षा एवं साहित्यिक मूल्य', topic_type: 'topic' }] },
-      { chapter_number: 28, chapter_name: 'अब कहाँ दूसरे के दुख से दुखी होने वाले (निदा फ़ाज़ली) - Course B', topics: [{ title: 'पर्यावरण एवं मानवीय संवेदनहीनता', topic_type: 'topic' }] },
-      { chapter_number: 29, chapter_name: 'पतझर में टूटी पत्तियाँ (रवींद्र केलेकर) - Course B', topics: [{ title: 'गिन्नी का सोना एवं झेन की देन पाठ', topic_type: 'topic' }] },
-      { chapter_number: 30, chapter_name: 'कारतूस (हबीब तनवीर) - Course B', topics: [{ title: 'एकांकी एवं वज़ीर अली का साहस', topic_type: 'topic' }] },
-      { chapter_number: 31, chapter_name: 'हरिहर काका (मिथिलेश्वर - संचयन) - Course B', topics: [{ title: 'पारिवारिक एवं सामाजिक संबंधों का विघटन', topic_type: 'topic' }] },
-      { chapter_number: 32, chapter_name: 'सपनों के-से दिन (गुरुदयाल सिंह - संचयन) - Course B', topics: [{ title: 'बाल्यकाल संस्मरण पाठ', topic_type: 'topic' }] },
-      { chapter_number: 33, chapter_name: 'टोपी शुक्ला (राही मासूम रज़ा - संचयन) - Course B', topics: [{ title: 'बालपन की आत्मीयता एवं सांप्रदायिक सौहार्द', topic_type: 'topic' }] },
-      { chapter_number: 34, chapter_name: 'व्याकरण (Course B): पदबंध, वाक्य रूपांतरण, समास, मुहावरे', topics: [{ title: 'पदबंध प्रकार, वाक्य परिवर्तन, तत्पुरुष/कर्मधारय/बहुव्रीहि/द्वंद्व/द्विगु/अव्ययीभाव समास, मुहावरे प्रयोग', topic_type: 'grammar' }] }
+      { chapter_number: 1, chapter_name: 'पद (सूरदास)', topics: [{ title: 'पद व्याख्या एवं भक्ति रस', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'राम-लक्ष्मण-परशुराम संवाद (तुलसीदास)', topics: [{ title: 'काव्य सौंदर्य एवं संवाद विश्लेषण', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'आत्मकथ्य (जयशंकर प्रसाद)', topics: [{ title: 'छायावादी काव्य भावार्थ', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'उत्साह एवं अट नहीं रही है (सूर्यकांत त्रिपाठी \'निराला\')', topics: [{ title: 'कविता व्याख्या एवं प्रतीक बोध', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'यह दंतुरित मुस्कान एवं फसल (नागार्जुन)', topics: [{ title: 'वात्सल्य एवं कृषि संस्कृति भाव', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'संगतकार (मंगलेश डबराल)', topics: [{ title: 'सहायक भूमिका एवं मानवीय संवेदना', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'नेताजी का चश्मा (स्वयं प्रकाश)', topics: [{ title: 'देशभक्ति एवं कहानी चरित्र चित्रण', topic_type: 'topic' }] },
+      { chapter_number: 8, chapter_name: 'बालगोबिन भगत (रामवृक्ष बेनीपुरी)', topics: [{ title: 'रेखाचित्र एवं कबीरपंथी विचारधारा', topic_type: 'topic' }] },
+      { chapter_number: 9, chapter_name: 'लखनवी अंदाज़ (यशपाल)', topics: [{ title: 'पतनशील सामंती वर्ग पर व्यंग्य', topic_type: 'topic' }] },
+      { chapter_number: 10, chapter_name: 'एक कहानी यह भी (मन्नू भंडारी)', topics: [{ title: 'आत्मकथ्य गद्य एवं स्वतंत्रता आंदोलन प्रभाव', topic_type: 'topic' }] },
+      { chapter_number: 11, chapter_name: 'नौबतखाने में इबादत (यतीन्द्र मिश्र)', topics: [{ title: 'व्यक्ति चित्र (बिस्मिल्ला खाँ)', topic_type: 'topic' }] },
+      { chapter_number: 12, chapter_name: 'संस्कृति (भदंत आनंद कौसल्यायन)', topics: [{ title: 'सभ्यता एवं संस्कृति भेद निबंध', topic_type: 'topic' }] },
+      { chapter_number: 13, chapter_name: 'माता का अंचल (शिवपूजन सहाय - कृतिका)', topics: [{ title: 'देहाती दुनिया एवं वात्सल्य भाव', topic_type: 'topic' }] },
+      { chapter_number: 14, chapter_name: 'साना-साना हाथ जोड़ि... (मधु कांकरिया - कृतिका)', topics: [{ title: 'यात्रा वृत्तांत एवं सिक्किम संस्कृति', topic_type: 'topic' }] },
+      { chapter_number: 15, chapter_name: 'मैं क्यों लिखता हूँ? (अज्ञेय - कृतिका)', topics: [{ title: 'लेखकीय प्रेरणा एवं हिरोशिमा विवेक', topic_type: 'topic' }] },
+      {
+        chapter_number: 16,
+        chapter_name: 'व्याकरण (Course A: क्षितिज एवं कृतिका)',
+        topics: [
+          { title: 'रचना के आधार पर वाक्य भेद (सरल, संयुक्त, एवं मिश्र वाक्य)', topic_type: 'grammar' },
+          { title: 'वाच्य (कर्तृवाच्य, कर्मवाच्य, एवं भाववाच्य)', topic_type: 'grammar' },
+          { title: 'पद परिचय (संज्ञा, सर्वनाम, विशेषण, क्रिया, अव्यय का परिचय)', topic_type: 'grammar' },
+          { title: 'अलंकार (शब्दालंकार: श्लेष; अर्थालंकार: उत्प्रेक्षा, अतिशयोक्ति, मानवीकरण)', topic_type: 'grammar' }
+        ]
+      }
+    ]
+  },
+  {
+    student_class: '10',
+    subject: 'Hindi Course B',
+    chapters: [
+      { chapter_number: 1, chapter_name: 'साखी (कबीर)', topics: [{ title: 'साखी व्याख्या एवं गुरु महिमा', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'पद (मीरा)', topics: [{ title: 'कृष्ण भक्ति पद भावार्थ', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'मनुष्यता (मैथिलीशरण गुप्त)', topics: [{ title: 'उदारता एवं परोपकार भाव', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'पर्वत प्रदेश में पावस (सुमित्रानंदन पंत)', topics: [{ title: 'प्रकृति सौंदर्य एवं बिंब विधान', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'तोप (वीरेन डंगवाल)', topics: [{ title: 'ऐतिहासिक धरोहर एवं चेतावनी', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'कर चले हम फ़िदा (कैफ़ी आज़मी)', topics: [{ title: 'देशभक्ति गीत भावार्थ', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'आत्मत्राण (रवींद्रनाथ ठाकुर)', topics: [{ title: 'प्रार्थना कविता भावार्थ', topic_type: 'topic' }] },
+      { chapter_number: 8, chapter_name: 'बड़े भाई साहब (प्रेमचंद)', topics: [{ title: 'कहानी विश्लेषण एवं बाल मनोविज्ञान', topic_type: 'topic' }] },
+      { chapter_number: 9, chapter_name: 'डायरी का एक पन्ना (सीताराम सेकसरिया)', topics: [{ title: 'स्वतंत्रता संग्राम संस्मरण', topic_type: 'topic' }] },
+      { chapter_number: 10, chapter_name: 'तताँरा-वामीरो कथा (लीलाधर मंडलोई)', topics: [{ title: 'लोककथा एवं रूढ़ियों का विरोध', topic_type: 'topic' }] },
+      { chapter_number: 11, chapter_name: 'तीसरी कसम के शिल्पकार शैलेंद्र (प्रहलाद अग्रवाल)', topics: [{ title: 'फ़िल्म समीक्षा एवं साहित्यिक मूल्य', topic_type: 'topic' }] },
+      { chapter_number: 12, chapter_name: 'अब कहाँ दूसरे के दुख से दुखी होने वाले (निदा फ़ाज़ली)', topics: [{ title: 'पर्यावरण एवं मानवीय संवेदनहीनता', topic_type: 'topic' }] },
+      { chapter_number: 13, chapter_name: 'पतझर में टूटी पत्तियाँ (रवींद्र केलेकर)', topics: [{ title: 'गिन्नी का सोना एवं झेन की देन पाठ', topic_type: 'topic' }] },
+      { chapter_number: 14, chapter_name: 'कारतूस (हबीब तनवीर)', topics: [{ title: 'एकांकी एवं वज़ीर अली का साहस', topic_type: 'topic' }] },
+      { chapter_number: 15, chapter_name: 'हरिहर काका (मिथिलेश्वर - संचयन)', topics: [{ title: 'पारिवारिक एवं सामाजिक संबंधों का विघटन', topic_type: 'topic' }] },
+      { chapter_number: 16, chapter_name: 'सपनों के-से दिन (गुरुदयाल सिंह - संचयन)', topics: [{ title: 'बालपन संस्मरण पाठ', topic_type: 'topic' }] },
+      { chapter_number: 17, chapter_name: 'टोपी शुक्ला (राही मासूम रज़ा - संचयन)', topics: [{ title: 'बालपन की आत्मीयता एवं सांप्रदायिक सौहार्द', topic_type: 'topic' }] },
+      {
+        chapter_number: 18,
+        chapter_name: 'व्याकरण (Course B: स्पर्श एवं संचयन)',
+        topics: [
+          { title: 'पदबंध (संज्ञा, सर्वनाम, विशेषण, क्रिया, क्रियाविशेषण पदबंध)', topic_type: 'grammar' },
+          { title: 'रचना के आधार पर वाक्य रूपांतरण', topic_type: 'grammar' },
+          { title: 'समास (तत्पुरुष, कर्मधारय, बहुव्रीहि, द्वंद्व, द्विगु, अव्ययीभाव समास)', topic_type: 'grammar' },
+          { title: 'मुहावरे (अर्थ एवं वाक्य प्रयोग)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {

@@ -12,11 +12,12 @@ The previous unmerged S4 attempt contained significant dataset discrepancies and
 - **Class 9 Mathematics Structure:** Expanded from 13 incomplete chapters to all 15 official chapters (Chapters 1–15).
 - **Class 9 Mathematics Chapters 9–15 Exercise Handling:** Per explicit instructions and research audit notes, Chapters 9–15 exist as official chapter records but contain **zero fabricated exercise nodes**, as NCERT physical exercise numbering for Part II remains pending distribution.
 - **Class 9 Science Structure:** Corrected to 13 complete chapters under the NCF-SE 2023 prescribed textbook *Exploration*.
-- **Class 9 English Curriculum:** Replaced legacy *Beehive/Moments* structure with NCF-SE 2023 prescribed reader *Kaveri*.
-- **Class 9 Hindi Curriculum:** Replaced dual legacy *Kshitij-1/Sparsh-1* structure with NCF-SE 2023 unified reader *Ganga*.
-- **Class 9 Sanskrit Curriculum:** Replaced legacy *Shemushi-1* with NCF-SE 2023 reader *Shardā*.
+- **Class 9 English Curriculum (Kaveri):** Expanded to the complete 7 prescribed literature chapters (*In the Realm of Morning*, *The Wind and the Leaves*, *The Silver Lining*, *Symphony of the Hills*, *Song of the Open Road*, *Shadows of the Banyan Tree*, *The Unbroken Wave*) plus a dedicated structured grammar section chapter (`English Grammar Syllabus`) containing all 8 official syllabus grammar subtopics marked with `topic_type = 'grammar'`.
+- **Class 9 Hindi Curriculum (Ganga):** Expanded to the complete 7 prescribed unified literature chapters (*नया प्रभात*, *मिट्टी की सौगंध*, *संस्कृति के स्वर*, *समय की शिला पर*, *सच्चा मित्र*, *भारत के दीप*, *प्रकृति का संदेश*) plus a dedicated structured grammar section chapter (`हिंदी व्याकरण`) with `topic_type = 'grammar'`. Class 9 remains strictly unified as `Hindi`.
+- **Class 9 Sanskrit Curriculum (Shardā):** Expanded to the complete 7 prescribed literature chapters (*मङ्गलाचरणम् एवं वन्दना*, *विद्यायाः महत्त्वम्*, *पर्यावरण-संरक्षणम्*, *सदाचारस्य शक्तिः*, *भारतस्य गौरवम्*, *वैज्ञानिकदृष्टिकोणः*, *सूक्ति-सुधा*) plus a dedicated structured grammar section chapter (`संस्कृत व्याकरणम्`) with `topic_type = 'grammar'`.
+- **Class 10 Hindi Course A / Course B Separation:** Separated Class 10 Hindi into two distinct, dedicated subjects: `Hindi Course A` (15 literature chapters for *Kshitij-2* and *Kritika-2* plus Course A grammar) and `Hindi Course B` (17 literature chapters for *Sparsh-2* and *Sanchayan-2* plus Course B grammar).
 - **Class 8 Social Science Scope:** Reconciled across 21 chapters spanning History (*Our Pasts-III*), Geography (*Resources and Development*), and Civics (*Social and Political Life-III*).
-- **Class 10 Social Science & Languages:** Preserved Board evaluation vs. Project Work/Map Work distinctions (e.g., History Ch 3, Geography Ch 7, Economics Ch 5) and maintained Course A (`002`) and Course B (`085`) Hindi distinctions.
+- **Class 10 Social Science & Board Exclusions:** Preserved Board evaluation vs. Project Work/Map Work distinctions (e.g., History Ch 3, Geography Ch 7, Economics Ch 5).
 
 ---
 
