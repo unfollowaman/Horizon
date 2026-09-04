@@ -189,3 +189,79 @@ export const fetchSyllabusChapters = async (studentClass: string, medium: Medium
 
   return { data, error };
 };
+
+export const fetchSyllabusHierarchy = async (studentClass: string, subject: string) => {
+  const normalizedClass = studentClass.replace(/^class\s+/i, '').trim();
+
+  const { data, error } = await supabase
+    .from('chapters')
+    .select(`
+      *,
+      syllabus_topics (
+        *,
+        syllabus_topic_resources (
+          resource_id,
+          learning_resources (*)
+        )
+      )
+    `)
+    .or(`student_class.eq.${normalizedClass},student_class.eq.Class ${normalizedClass}`)
+    .eq('subject', subject)
+    .eq('is_active', true)
+    .order('chapter_number', { ascending: true });
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  type RawTopicResource = {
+    resource_id: string;
+    learning_resources: LearningResourceRow | null;
+  };
+
+  type RawSyllabusTopic = {
+    id: string;
+    chapter_id: string;
+    title: string;
+    description?: string | null;
+    topic_type: string;
+    display_order: number;
+    is_active: boolean;
+    created_at?: string;
+    syllabus_topic_resources?: RawTopicResource[];
+  };
+
+  type RawChapterWithTopics = Chapter & {
+    syllabus_topics?: RawSyllabusTopic[];
+  };
+
+  const formattedChapters = (data as unknown as RawChapterWithTopics[] | null || []).map((chapter) => {
+    const rawTopics = chapter.syllabus_topics || [];
+    const sortedTopics = [...rawTopics].sort((a, b) => a.display_order - b.display_order);
+
+    const syllabusTopics = sortedTopics.map((topic) => {
+      const topicResources = (topic.syllabus_topic_resources || [])
+        .map((tr) => (tr.learning_resources ? mapLearningResource(tr.learning_resources) : null))
+        .filter((r): r is Resource => r !== null);
+
+      return {
+        id: topic.id,
+        chapter_id: topic.chapter_id,
+        title: topic.title,
+        description: topic.description,
+        topic_type: topic.topic_type,
+        display_order: topic.display_order,
+        is_active: topic.is_active,
+        created_at: topic.created_at,
+        resources: topicResources,
+      };
+    });
+
+    return {
+      ...chapter,
+      syllabus_topics: syllabusTopics,
+    };
+  });
+
+  return { data: formattedChapters, error: null };
+};

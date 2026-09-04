@@ -165,6 +165,30 @@ export type Profile = {
   created_at?: string;
 }
 
+// Stage 4 Syllabus Types
+export type SyllabusTopic = {
+  id: string;
+  chapter_id: string;
+  title: string;
+  description?: string | null;
+  topic_type: string; // e.g. 'exercise', 'topic', 'grammar', 'section'
+  display_order: number;
+  is_active: boolean;
+  created_at?: string;
+  resources?: Resource[];
+};
+
+export type SyllabusTopicResource = {
+  id: string;
+  topic_id: string;
+  resource_id: string;
+  created_at?: string;
+};
+
+export type SyllabusChapterHierarchy = Chapter & {
+  syllabus_topics: SyllabusTopic[];
+};
+
 export type Json =
   | string
   | number
@@ -320,6 +344,66 @@ export interface Database {
           created_at?: string
         }
         Relationships: []
+      }
+      syllabus_topics: {
+        Row: SyllabusTopic
+        Insert: {
+          id?: string
+          chapter_id: string
+          title: string
+          description?: string | null
+          topic_type?: string
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          chapter_id?: string
+          title?: string
+          description?: string | null
+          topic_type?: string
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syllabus_topics_chapter_id_fkey"
+            columns: ["chapter_id"]
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      syllabus_topic_resources: {
+        Row: SyllabusTopicResource
+        Insert: {
+          id?: string
+          topic_id: string
+          resource_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          topic_id?: string
+          resource_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syllabus_topic_resources_topic_id_fkey"
+            columns: ["topic_id"]
+            referencedRelation: "syllabus_topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "syllabus_topic_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            referencedRelation: "learning_resources"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
