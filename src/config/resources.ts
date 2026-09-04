@@ -1,7 +1,7 @@
 import type { ResourceType } from '../types';
 
 export interface ResourceCategoryConfig {
-  id: ResourceType;
+  id: ResourceType | 'syllabus';
   title: string;
   description: string;
   path: string;
@@ -64,12 +64,23 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
   }
 };
 
+export const SYLLABUS_NAV_CONFIG: ResourceCategoryConfig = {
+  id: 'syllabus',
+  title: 'Syllabus',
+  description: 'NCERT & CBSE syllabus directory and hierarchy.',
+  path: '/syllabus',
+  isComingSoon: false,
+  navLabel: 'Syllabus',
+  showOnMobile: true,
+  showOnDesktop: true,
+};
+
 export const SYSTEM_NAV_LINKS = [
   { label: 'Updates', path: '/coming-soon', showOnMobile: false, showOnDesktop: false },
 ];
 
 export const getAllFeatures = () => {
-  return Object.values(RESOURCE_CATEGORIES)
+  const activeCategories = Object.values(RESOURCE_CATEGORIES)
     .filter(cat => !cat.isComingSoon)
     .map(cat => ({
       title: cat.title,
@@ -77,6 +88,16 @@ export const getAllFeatures = () => {
       path: cat.path,
       id: cat.id
     }));
+
+  return [
+    ...activeCategories,
+    {
+      title: SYLLABUS_NAV_CONFIG.title,
+      desc: SYLLABUS_NAV_CONFIG.description,
+      path: SYLLABUS_NAV_CONFIG.path,
+      id: SYLLABUS_NAV_CONFIG.id,
+    }
+  ];
 };
 
 export const getNavLinks = () => {
@@ -89,12 +110,22 @@ export const getNavLinks = () => {
       showOnDesktop: cat.showOnDesktop,
       id: cat.id
     }));
+
+  const syllabusLink = {
+    label: SYLLABUS_NAV_CONFIG.navLabel,
+    path: SYLLABUS_NAV_CONFIG.path,
+    showOnMobile: SYLLABUS_NAV_CONFIG.showOnMobile,
+    showOnDesktop: SYLLABUS_NAV_CONFIG.showOnDesktop,
+    id: SYLLABUS_NAV_CONFIG.id,
+  };
+
   const systemLinks = SYSTEM_NAV_LINKS
     .filter(link => link.showOnMobile || link.showOnDesktop)
     .map(link => ({...link, id: 'system_updates'}));
 
   return [
     ...resourceLinks,
+    syllabusLink,
     ...systemLinks
   ];
 };
