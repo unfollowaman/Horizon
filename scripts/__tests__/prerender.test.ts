@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   mapLearningResource,
   generateResourceHtml,
+  generateStaticPageHtml,
+  PUBLIC_STATIC_PAGES,
   assertSecurityCompliance,
   escapeHtml,
 } from '../prerender.js';
@@ -174,5 +176,50 @@ describe('prerender script unit tests', () => {
 
   it('escapes html entities safely', () => {
     expect(escapeHtml('Science & Technology <Class 10>')).toBe('Science &amp; Technology &lt;Class 10&gt;');
+  });
+
+  it('prerenders static information pages with valid titles, canonicals, json-ld, and body content', () => {
+    expect(PUBLIC_STATIC_PAGES).toHaveLength(6);
+    const paths = PUBLIC_STATIC_PAGES.map((p) => p.path);
+    expect(paths).toEqual(['/', '/about', '/contact', '/terms', '/privacy-policy', '/attribution']);
+
+    for (const pageConfig of PUBLIC_STATIC_PAGES) {
+      const html = generateStaticPageHtml(pageConfig, sampleTemplateHtml);
+
+      expect(html).toContain(`<title>${escapeHtml(pageConfig.title)}</title>`);
+      expect(html).toContain(`<meta name="description" content="${escapeHtml(pageConfig.description)}">`);
+
+      const expectedCanonical = `https://unfollowaman.tech${pageConfig.path === '/' ? '' : pageConfig.path}`;
+      expect(html).toContain(`<link rel="canonical" href="${expectedCanonical}">`);
+
+      if (pageConfig.jsonLd) {
+        expect(html).toContain('"@context": "https://schema.org"');
+      }
+
+      expect(html).toContain('<div id="root">');
+
+      if (pageConfig.path === '/') {
+        expect(html).toContain('Resources for <em>every</em> learner.');
+        expect(html).toContain('Everything in <span class="text-gradient">one</span> place');
+      } else if (pageConfig.path === '/about') {
+        expect(html).toContain('About <span class="text-gradient">Horizon</span>');
+        expect(html).toContain('Our Mission');
+      } else if (pageConfig.path === '/contact') {
+        expect(html).toContain('Contact <span class="text-gradient">Horizon</span>');
+        expect(html).toContain('How Can We Help?');
+      } else if (pageConfig.path === '/terms') {
+        expect(html).toContain('Terms of <span class="text-gradient">Service</span>');
+        expect(html).toContain('1. Acceptance of Terms');
+      } else if (pageConfig.path === '/privacy-policy') {
+        expect(html).toContain('Privacy <span class="text-gradient">Policy</span>');
+        expect(html).toContain('1. Introduction');
+      } else if (pageConfig.path === '/attribution') {
+        expect(html).toContain('Attribution');
+        expect(html).toContain('Storyset');
+      }
+
+      // Security check
+      expect(() => assertSecurityCompliance(html)).not.toThrow();
+    }
   });
 });
