@@ -25,6 +25,7 @@ import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
 import Attribution from './pages/attribution/Attribution';
 const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
 const StudyNotes = lazy(() => import('./pages/resources/StudyNotesRoute'));
+const SyllabusPage = lazy(() => import('./pages/syllabus/SyllabusPage'));
 const ComingSoon = lazy(() => import('./pages/coming-soon/ComingSoon'));
 
 function App() {
@@ -55,6 +56,12 @@ function App() {
             <Route path="/notes/:classSlug" element={<StudyNotes />} />
             <Route path="/notes/:classSlug/:mediumSlug" element={<StudyNotes />} />
             <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<StudyNotes />} />
+
+            {/* Syllabus routes */}
+            <Route path="/syllabus" element={<SyllabusPage />} />
+            <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+            <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+
             <Route path="/resource/:id" element={<ResourceDetails />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings/notifications" element={<NotificationSettings />} />
