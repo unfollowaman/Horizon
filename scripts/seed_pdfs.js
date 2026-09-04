@@ -46,7 +46,13 @@ export async function findFiles(supabaseClient, path = '') {
 
 export async function run() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseKey) {
+    console.error("Error: SUPABASE_SERVICE_ROLE_KEY environment variable is required for seed_pdfs.js.");
+    return;
+  }
+
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   const allPDFs = await findFiles(supabase, '');

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { findFiles } from '../seed_pdfs.js';
+import { findFiles, run } from '../seed_pdfs.js';
 
 type StorageItem = { id: string | null; name: string };
 
@@ -153,5 +153,25 @@ describe('seed_pdfs findFiles', () => {
 
     // Concurrent traversal should be significantly faster than sequential traversal
     expect(concDuration).toBeLessThan(seqDuration / 2);
+  });
+});
+
+describe('seed_pdfs run execution requirement', () => {
+  it('should log an error and exit if SUPABASE_SERVICE_ROLE_KEY is missing', async () => {
+    const originalKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await run();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Error: SUPABASE_SERVICE_ROLE_KEY environment variable is required for seed_pdfs.js.'
+    );
+
+    consoleErrorSpy.mockRestore();
+    if (originalKey !== undefined) {
+      process.env.SUPABASE_SERVICE_ROLE_KEY = originalKey;
+    }
   });
 });
