@@ -1367,6 +1367,455 @@ export async function main() {
   }
 
   console.log(`Pre-rendering complete! Successfully generated ${generatedCount} static resource pages in dist/resource/<id>/index.html.`);
+
+  console.log('Pre-rendering public category listing pages...');
+  const categoryRoutes = generateCategoryUrls(mappedResources.map(m => m.mapped));
+  let categoryCount = 0;
+
+  for (const catConfig of categoryRoutes) {
+    const pageHtml = generateCategoryHtml(catConfig, templateHtml, mappedResources.map(m => m.mapped));
+    const relPath = catConfig.path.startsWith('/') ? catConfig.path.slice(1) : catConfig.path;
+    const categoryDir = path.join(distDir, relPath);
+    fs.mkdirSync(categoryDir, { recursive: true });
+
+    const categoryOutputFile = path.join(categoryDir, 'index.html');
+    fs.writeFileSync(categoryOutputFile, pageHtml, 'utf-8');
+    categoryCount++;
+  }
+
+  console.log(`Pre-rendering complete! Successfully generated ${categoryCount} static category listing pages.`);
+}
+
+export function generateCategoryUrls(resources = []) {
+  const categoryMap = new Map();
+
+  const addCategory = (routePath, basePath, resourceType, studentClass = null, medium = null, subject = null) => {
+    const cleanPath = routePath.startsWith('/') ? routePath : `/${routePath}`;
+    if (!categoryMap.has(cleanPath)) {
+      categoryMap.set(cleanPath, {
+        path: cleanPath,
+        basePath,
+        resourceType,
+        studentClass,
+        medium,
+        subject
+      });
+    }
+  };
+
+  addCategory('/library', '/library', 'pyq');
+  addCategory('/notes', '/notes', 'notes');
+
+  resources.forEach(resource => {
+    const isNotes = resource.resource_type === 'notes';
+    const basePath = isNotes ? '/notes' : '/library';
+    const resType = isNotes ? 'notes' : 'pyq';
+
+    const rawClass = resource.student_class;
+    const rawMedium = resource.medium;
+    const rawSubject = resource.subject;
+
+    const cSlug = classToSlug(rawClass);
+    const mSlug = mediumToSlug(rawMedium);
+    const sSlug = subjectToSlug(rawSubject);
+
+    if (cSlug) {
+      addCategory(`${basePath}/${cSlug}`, basePath, resType, rawClass, null, null);
+
+      if (mSlug) {
+        addCategory(`${basePath}/${cSlug}/${mSlug}`, basePath, resType, rawClass, rawMedium, null);
+
+        if (sSlug) {
+          addCategory(`${basePath}/${cSlug}/${mSlug}/${sSlug}`, basePath, resType, rawClass, rawMedium, rawSubject);
+        }
+      } else if (sSlug) {
+        addCategory(`${basePath}/${cSlug}/all-mediums/${sSlug}`, basePath, resType, rawClass, null, rawSubject);
+      }
+    }
+  });
+
+  return Array.from(categoryMap.values());
+}
+
+export function filterResourcesForCategory(allResources, categoryConfig) {
+  const { resourceType, studentClass, medium, subject } = categoryConfig;
+
+  const filtered = allResources.filter(r => {
+    const isNotes = r.resource_type === 'notes';
+    if (resourceType === 'notes' && !isNotes) return false;
+    if (resourceType === 'pyq' && isNotes) return false;
+
+    if (studentClass) {
+      if (!r.student_class) return false;
+      if (classToSlug(r.student_class) !== classToSlug(studentClass)) return false;
+    }
+
+    if (medium) {
+      if (!r.medium) return false;
+      if (mediumToSlug(r.medium) !== mediumToSlug(medium)) return false;
+    }
+
+    if (subject) {
+      if (!r.subject) return false;
+      if (subjectToSlug(r.subject) !== subjectToSlug(subject)) return false;
+    }
+
+    return true;
+  });
+
+  if (resourceType === 'pyq') {
+    filtered.sort((a, b) => {
+      const yearA = a.year ? parseInt(a.year, 10) : 0;
+      const yearB = b.year ? parseInt(b.year, 10) : 0;
+      if (yearB !== yearA) return yearB - yearA;
+      return (a.title || '').localeCompare(b.title || '');
+    });
+  } else {
+    filtered.sort((a, b) => {
+      const chA = a.chapters?.chapter_number ?? 999;
+      const chB = b.chapters?.chapter_number ?? 999;
+      if (chA !== chB) return chA - chB;
+      return (a.title || '').localeCompare(b.title || '');
+    });
+  }
+
+  return filtered;
+}
+
+export function renderLibraryEducationalGuide(allResources, selectedClass, selectedSubject, selectedYear) {
+  const availableClasses = Array.from(new Set(allResources.map(r => r.student_class).filter(Boolean))).sort((a, b) => {
+    const numA = parseInt(String(a).replace(/\D/g, '') || '0', 10);
+    const numB = parseInt(String(b).replace(/\D/g, '') || '0', 10);
+    return numA - numB;
+  });
+
+  const availableSubjects = Array.from(new Set(allResources.map(r => r.subject).filter(Boolean))).sort();
+
+  const years = allResources.map(r => (r.year ? parseInt(r.year, 10) : NaN)).filter(y => !isNaN(y));
+  let yearRange = null;
+  if (years.length > 0) {
+    const min = Math.min(...years);
+    const max = Math.max(...years);
+    yearRange = min === max ? `${min}` : `${min}–${max}`;
+  }
+
+  const parts = [];
+  if (selectedClass) parts.push(selectedClass);
+  if (selectedSubject) parts.push(selectedSubject);
+  if (selectedYear) parts.push(`Year ${selectedYear}`);
+
+  const contextualFilterSummary = parts.length > 0
+    ? `Currently displaying previous year question papers filtered for ${escapeHtml(parts.join(' • '))}.`
+    : null;
+
+  return `
+    <section aria-label="Library Overview and Exam Preparation Guide" class="neu-raised rounded-2xl p-[clamp(16px,3vw,28px)] mb-[clamp(20px,3vw,32px)] text-ink">
+      <div class="space-y-4">
+        <div>
+          <h2 class="text-[clamp(18px,2.5vw,22px)] font-bold mb-2">
+            Horizon Previous Year Question Papers (PYQs)
+          </h2>
+          <p class="text-body2 text-muted-foreground leading-relaxed">
+            The Horizon Library provides a structured repository of official previous year question papers designed to help students prepare for upcoming board and school examinations. Practicing with past papers offers direct insight into exam question formats, topic weightage, marking schemes, and time management strategies.
+          </p>
+        </div>
+
+        ${contextualFilterSummary ? `<div class="neu-inset rounded-xl p-3 text-caption font-medium text-ink bg-opacity-50">${contextualFilterSummary}</div>` : ''}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="neu-inset rounded-xl p-4">
+            <h3 class="text-body1 font-semibold mb-2">Available Resource Categories</h3>
+            <p class="text-caption text-muted-foreground mb-3 leading-relaxed">
+              Our library is systematically organized to enable efficient browsing across academic levels, subjects, and examination years:
+            </p>
+            <ul class="list-disc list-inside text-caption text-muted-foreground space-y-1.5">
+              <li>
+                <strong>Classes Covered:</strong> ${escapeHtml(availableClasses.length > 0 ? availableClasses.join(', ') : 'Secondary & Higher Secondary grades')}
+              </li>
+              <li>
+                <strong>Subjects Available:</strong> ${escapeHtml(availableSubjects.length > 0 ? availableSubjects.join(', ') : 'Mathematics, Science, Social Sciences')}
+              </li>
+              ${yearRange ? `<li><strong>Examination Years:</strong> ${escapeHtml(yearRange)} past exam papers</li>` : ''}
+            </ul>
+          </div>
+
+          <div class="neu-inset rounded-xl p-4">
+            <h3 class="text-body1 font-semibold mb-2">How to Use PYQs for Revision</h3>
+            <ul class="list-disc list-inside text-caption text-muted-foreground space-y-1.5 leading-relaxed">
+              <li>
+                <strong>Simulate Exam Conditions:</strong> Solve complete past papers within the designated time limit to build speed and accuracy.
+              </li>
+              <li>
+                <strong>Identify High-Frequency Topics:</strong> Analyze recurring question types and essential core concepts across multiple years.
+              </li>
+              <li>
+                <strong>Assess Knowledge Gaps:</strong> Cross-check your answers against standard solutions to spot areas needing further study.
+              </li>
+              <li>
+                <strong>Refine Writing Technique:</strong> Practice structured answer presentation, numerical steps, and labeled diagrams.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+export function renderNotesEducationalGuide(allResources, selectedClass, selectedSubject, selectedMedium) {
+  const availableClasses = Array.from(new Set(allResources.map(r => r.student_class).filter(Boolean))).sort((a, b) => {
+    const numA = parseInt(String(a).replace(/\D/g, '') || '0', 10);
+    const numB = parseInt(String(b).replace(/\D/g, '') || '0', 10);
+    return numA - numB;
+  });
+
+  const availableSubjects = Array.from(new Set(allResources.map(r => r.subject).filter(Boolean))).sort();
+
+  const availableMediums = Array.from(new Set(allResources.map(r => r.medium).filter(Boolean)))
+    .map(m => m.charAt(0).toUpperCase() + m.slice(1))
+    .sort();
+
+  const chapterCount = new Set(allResources.map(r => r.chapter_id).filter(Boolean)).size;
+
+  const parts = [];
+  if (selectedClass) parts.push(selectedClass);
+  if (selectedSubject) parts.push(selectedSubject);
+  if (selectedMedium) parts.push(`${selectedMedium.charAt(0).toUpperCase() + selectedMedium.slice(1)} Medium`);
+
+  const contextualFilterSummary = parts.length > 0
+    ? `Currently displaying study notes filtered for ${escapeHtml(parts.join(' • '))}.`
+    : null;
+
+  return `
+    <section aria-label="Study Notes Overview and Learning Guide" class="neu-raised rounded-2xl p-[clamp(16px,3vw,28px)] mb-[clamp(20px,3vw,32px)] text-ink">
+      <div class="space-y-4">
+        <div>
+          <h2 class="text-[clamp(18px,2.5vw,22px)] font-bold mb-2">
+            Horizon Comprehensive Study Notes
+          </h2>
+          <p class="text-body2 text-muted-foreground leading-relaxed">
+            Horizon Study Notes provide clear, chapter-wise concept summaries and structured academic guides designed to simplify learning and strengthen fundamental understanding. Each note module breaks down complex textbook topics into clear explanations, key formulas, essential definitions, and step-by-step topic outlines.
+          </p>
+        </div>
+
+        ${contextualFilterSummary ? `<div class="neu-inset rounded-xl p-3 text-caption font-medium text-ink bg-opacity-50">${contextualFilterSummary}</div>` : ''}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="neu-inset rounded-xl p-4">
+            <h3 class="text-body1 font-semibold mb-2">Notes Organization &amp; Coverage</h3>
+            <p class="text-caption text-muted-foreground mb-3 leading-relaxed">
+              Notes are mapped sequentially to official curriculum chapters to support structured study throughout the academic year:
+            </p>
+            <ul class="list-disc list-inside text-caption text-muted-foreground space-y-1.5">
+              <li>
+                <strong>Classes Supported:</strong> ${escapeHtml(availableClasses.length > 0 ? availableClasses.join(', ') : 'Middle & High School grades')}
+              </li>
+              <li>
+                <strong>Subjects Covered:</strong> ${escapeHtml(availableSubjects.length > 0 ? availableSubjects.join(', ') : 'Science, Social Studies, Mathematics')}
+              </li>
+              <li>
+                <strong>Study Mediums:</strong> ${escapeHtml(availableMediums.length > 0 ? availableMediums.join(', ') : 'English and Hindi medium')}
+              </li>
+              ${chapterCount > 0 ? `<li><strong>Syllabus Chapters:</strong> Covers over ${chapterCount} curriculum chapters</li>` : ''}
+            </ul>
+          </div>
+
+          <div class="neu-inset rounded-xl p-4">
+            <h3 class="text-body1 font-semibold mb-2">Study &amp; Revision Strategy</h3>
+            <ul class="list-disc list-inside text-caption text-muted-foreground space-y-1.5 leading-relaxed">
+              <li>
+                <strong>Pre-Class Preparation:</strong> Read note summaries before classroom lectures to familiarize yourself with key terminology.
+              </li>
+              <li>
+                <strong>Active Concept Review:</strong> Revisit core formulas, definitions, and diagrams during weekly study sessions.
+              </li>
+              <li>
+                <strong>Self-Assessment:</strong> Test your recall by explaining concepts in your own words after completing each chapter outline.
+              </li>
+              <li>
+                <strong>Accessing Full Documents:</strong> Detailed interactive note materials can be accessed seamlessly. Complete protected document access may require logging into your free Horizon account.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+export function renderMaterialCardHtml(resource) {
+  const isPYQ = resource.resource_type === 'pyq';
+  const cardTitle = isPYQ
+    ? `${resource.student_class || ''} ${resource.subject || ''} PYQ`.trim()
+    : resource.title;
+  const cardSubtitle = resource.year || resource.subject || '';
+
+  const illustrationSrc = isPYQ
+    ? '/assets/SVG Illustrations/pyq-papers.svg'
+    : '/assets/SVG Illustrations/study-notes.svg';
+
+  return `
+    <div class="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center min-w-0">
+      <a href="/resource/${escapeHtml(resource.id)}" class="w-full flex flex-col items-center text-center no-underline text-ink group min-w-0">
+        <div class="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
+          <img src="${illustrationSrc}" alt="${escapeHtml(cardTitle)}" class="w-full h-full object-contain" />
+        </div>
+        <h3 class="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center break-words">
+          ${escapeHtml(cardTitle)}
+        </h3>
+        <p class="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center truncate">
+          ${escapeHtml(cardSubtitle)}
+        </p>
+      </a>
+      <div class="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
+        <a href="/resource/${escapeHtml(resource.id)}" class="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center">
+          <span class="shrink-0 truncate">View</span>
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+export function renderEmptyStateHtml(categoryType) {
+  const emptyTitle = categoryType === 'pyq' ? 'No previous year papers found.' : 'No study notes found.';
+  const emptySubtitle = categoryType === 'pyq'
+    ? 'Try selecting a different class, subject, or year.'
+    : 'Try selecting a different class, subject, or medium.';
+
+  return `
+    <div class="neu-raised rounded-2xl p-8 text-center flex flex-col items-center justify-center">
+      <img src="/assets/SVG Illustrations/no-content-available.svg" alt="" class="w-48 h-48 mb-3 object-contain" />
+      <p class="font-bold text-body1 mb-2">${escapeHtml(emptyTitle)}</p>
+      <p class="text-caption">${escapeHtml(emptySubtitle)}</p>
+    </div>
+  `;
+}
+
+export function renderOtherResourcesHtml(currentCategoryId) {
+  const features = [
+    { id: 'pyq', title: 'PYQ Papers', desc: 'Past papers to help you prepare effectively.', path: '/library' },
+    { id: 'notes', title: 'Study Notes', desc: 'Comprehensive notes for all subjects.', path: '/notes' },
+  ].filter(f => f.id !== currentCategoryId);
+
+  const items = features.map(f => `
+    <div class="neu-card p-4 sm:p-6 rounded-2xl relative">
+      <a href="${escapeHtml(f.path)}" class="absolute inset-0 z-20" aria-label="Go to ${escapeHtml(f.title)}"></a>
+      <h3 class="text-lg sm:text-xl font-bold text-ink mb-1.5">${escapeHtml(f.title)}</h3>
+      <p class="text-xs sm:text-body2 text-ink/80 m-0">${escapeHtml(f.desc)}</p>
+    </div>
+  `).join('');
+
+  return `
+    <div class="mt-8 pt-8 border-t border-ink/10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        ${items}
+      </div>
+    </div>
+  `;
+}
+
+export function generateCategoryHtml(categoryConfig, templateHtml, allResources = []) {
+  const { path: routePath, basePath, resourceType, studentClass, medium, subject } = categoryConfig;
+  const isPYQ = resourceType === 'pyq';
+
+  const catResources = allResources.filter(r => isPYQ ? r.resource_type !== 'notes' : r.resource_type === 'notes');
+  const filteredResources = filterResourcesForCategory(allResources, categoryConfig);
+
+  const filterParts = [];
+  if (studentClass) filterParts.push(studentClass);
+  if (subject) filterParts.push(subject);
+  if (medium) filterParts.push(`${medium.charAt(0).toUpperCase() + medium.slice(1)} Medium`);
+
+  let pageTitle = isPYQ
+    ? 'Previous Year Question Papers (PYQs) | Horizon - Free Student Library'
+    : 'Comprehensive Study Notes | Horizon - Free Student Library';
+
+  let pageDesc = isPYQ
+    ? 'Access free previous year question papers (PYQs) for Class 8 to Class 12. Practice past exam papers by class, subject, and year to improve exam preparation and performance.'
+    : 'Explore free, subject-wise study notes organized by syllabus chapters for Class 8 to Class 12 in English and Hindi medium. Master concepts with clear chapter outlines and revision notes.';
+
+  if (filterParts.length > 0) {
+    const resourceTypeName = isPYQ ? 'PYQ Papers' : 'Study Notes';
+    const categorySummary = filterParts.join(' ');
+    pageTitle = `${categorySummary} ${resourceTypeName} | Horizon`;
+    pageDesc = `Free ${categorySummary} ${resourceTypeName.toLowerCase()} for student exam preparation. Browse concepts, practice materials, and study guides on Horizon.`;
+  }
+
+  const canonicalUrl = `${BASE_URL}${routePath}`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    description: pageDesc,
+    url: canonicalUrl,
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: BASE_URL,
+    },
+  };
+
+  const educationalGuideHtml = isPYQ
+    ? renderLibraryEducationalGuide(catResources, studentClass, subject, null)
+    : renderNotesEducationalGuide(catResources, studentClass, subject, medium);
+
+  const gridContentHtml = filteredResources.length > 0
+    ? `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
+        ${filteredResources.map(r => renderMaterialCardHtml(r)).join('')}
+       </div>`
+    : renderEmptyStateHtml(resourceType);
+
+  const categoryTitle = isPYQ ? 'PYQ PAPERS' : 'STUDY NOTES';
+
+  const appContentHtml = `
+    <div class="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
+      <div class="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full min-w-0">
+        <a href="/" class="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 no-underline text-ink" aria-label="Go Back">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(12px,3vw,20px)]">
+        <h1 class="text-[clamp(36px,5vw,56px)] leading-tight uppercase text-ink">${escapeHtml(categoryTitle)}</h1>
+      </div>
+
+      ${educationalGuideHtml}
+
+      <div class="mb-[clamp(24px,4vw,40px)] grid grid-cols-1 sm:grid-cols-3 w-full gap-[12px]">
+        <div class="neu-raised p-3 rounded-xl font-bold text-ink text-center">${escapeHtml(studentClass || 'All Classes')}</div>
+        <div class="neu-raised p-3 rounded-xl font-bold text-ink text-center">${escapeHtml(subject || 'All Subjects')}</div>
+        <div class="neu-raised p-3 rounded-xl font-bold text-ink text-center">${escapeHtml(medium ? `${medium.charAt(0).toUpperCase() + medium.slice(1)} Medium` : (isPYQ ? 'All Years' : 'All Mediums'))}</div>
+      </div>
+
+      ${gridContentHtml}
+
+      ${renderOtherResourcesHtml(resourceType)}
+    </div>
+  `;
+
+  const fullContentHtml = wrapInMainLayout(appContentHtml);
+
+  let outputHtml = templateHtml;
+  outputHtml = outputHtml.replace(/<title>.*?<\/title>/i, `<title>${escapeHtml(pageTitle)}</title>`);
+
+  const headAdditions = `
+    <meta name="description" content="${escapeHtml(pageDesc)}">
+    <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+    </script>
+  `;
+
+  outputHtml = outputHtml.replace('</head>', `${headAdditions}\n  </head>`);
+  outputHtml = outputHtml.replace('<div id="root"></div>', `<div id="root">${fullContentHtml}</div>`);
+
+  assertSecurityCompliance(outputHtml, {});
+
+  return outputHtml;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

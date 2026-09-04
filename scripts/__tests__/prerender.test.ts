@@ -6,6 +6,9 @@ import {
   PUBLIC_STATIC_PAGES,
   assertSecurityCompliance,
   escapeHtml,
+  generateCategoryUrls,
+  filterResourcesForCategory,
+  generateCategoryHtml,
 } from '../prerender.js';
 
 describe('prerender script unit tests', () => {
@@ -221,5 +224,104 @@ describe('prerender script unit tests', () => {
       // Security check
       expect(() => assertSecurityCompliance(html)).not.toThrow();
     }
+  });
+
+  it('generates public category URLs from resources correctly', () => {
+    const sampleResources = [
+      mapLearningResource(sampleNoteResourceRow),
+      mapLearningResource(samplePyqResourceRow),
+    ];
+
+    const categoryUrls = generateCategoryUrls(sampleResources);
+    const paths = categoryUrls.map(c => c.path);
+
+    expect(paths).toContain('/library');
+    expect(paths).toContain('/notes');
+    expect(paths).toContain('/notes/class-10');
+    expect(paths).toContain('/notes/class-10/english-medium');
+    expect(paths).toContain('/notes/class-10/english-medium/science');
+    expect(paths).toContain('/library/class-12');
+    expect(paths).toContain('/library/class-12/hindi-medium');
+    expect(paths).toContain('/library/class-12/hindi-medium/history');
+  });
+
+  it('filters resources for category route correctly', () => {
+    const noteMapped = mapLearningResource(sampleNoteResourceRow);
+    const pyqMapped = mapLearningResource(samplePyqResourceRow);
+    const allMapped = [noteMapped, pyqMapped];
+
+    const pyqCategoryConfig = {
+      path: '/library/class-12',
+      basePath: '/library',
+      resourceType: 'pyq',
+      studentClass: 'Class 12',
+      medium: null,
+      subject: null,
+    };
+
+    const pyqFiltered = filterResourcesForCategory(allMapped, pyqCategoryConfig);
+    expect(pyqFiltered).toHaveLength(1);
+    expect(pyqFiltered[0].id).toBe('57');
+
+    const notesCategoryConfig = {
+      path: '/notes/class-10/english-medium/science',
+      basePath: '/notes',
+      resourceType: 'notes',
+      studentClass: 'Class 10',
+      medium: 'english',
+      subject: 'Science',
+    };
+
+    const notesFiltered = filterResourcesForCategory(allMapped, notesCategoryConfig);
+    expect(notesFiltered).toHaveLength(1);
+    expect(notesFiltered[0].id).toBe('56');
+  });
+
+  it('generates static HTML for category listing pages with SEO metadata, guide, and resource cards', () => {
+    const noteMapped = mapLearningResource(sampleNoteResourceRow);
+    const pyqMapped = mapLearningResource(samplePyqResourceRow);
+    const allMapped = [noteMapped, pyqMapped];
+
+    const rootLibraryConfig = {
+      path: '/library',
+      basePath: '/library',
+      resourceType: 'pyq',
+      studentClass: null,
+      medium: null,
+      subject: null,
+    };
+
+    const html = generateCategoryHtml(rootLibraryConfig, sampleTemplateHtml, allMapped);
+
+    expect(html).toContain('<title>Previous Year Question Papers (PYQs) | Horizon - Free Student Library</title>');
+    expect(html).toContain('<meta name="description" content="Access free previous year question papers (PYQs) for Class 8 to Class 12. Practice past exam papers by class, subject, and year to improve exam preparation and performance.">');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/library">');
+    expect(html).toContain('"@type": "CollectionPage"');
+    expect(html).toContain('PYQ PAPERS');
+    expect(html).toContain('Horizon Previous Year Question Papers (PYQs)');
+    expect(html).toContain('Class 12 History PYQ');
+    expect(html).toContain('href="/resource/57"');
+
+    expect(() => assertSecurityCompliance(html)).not.toThrow();
+  });
+
+  it('generates valid empty state HTML when a category has zero matching resources', () => {
+    const pyqMapped = mapLearningResource(samplePyqResourceRow);
+    const allMapped = [pyqMapped];
+
+    const emptyCategoryConfig = {
+      path: '/library/class-8',
+      basePath: '/library',
+      resourceType: 'pyq',
+      studentClass: 'Class 8',
+      medium: null,
+      subject: null,
+    };
+
+    const html = generateCategoryHtml(emptyCategoryConfig, sampleTemplateHtml, allMapped);
+
+    expect(html).toContain('No previous year papers found.');
+    expect(html).toContain('Try selecting a different class, subject, or year.');
+    expect(() => assertSecurityCompliance(html)).not.toThrow();
   });
 });
