@@ -124,6 +124,70 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
     });
   });
 
+  describe('Class 8 Languages Grammar Representation', () => {
+    it('Class 8 English literature chapters have no attached grammar topics, and grammar is isolated in Chapter 17', () => {
+      const c8Eng = SYLLABUS_2026_DATA.find((item) => item.student_class === '8' && item.subject === 'English');
+      expect(c8Eng).toBeDefined();
+      expect(c8Eng?.chapters.length).toBe(17); // 16 lit + 1 grammar
+
+      // Check first 16 chapters have topic_type === 'topic'
+      for (let i = 0; i < 16; i++) {
+        expect(c8Eng?.chapters[i].topics.every((t) => t.topic_type === 'topic')).toBe(true);
+      }
+
+      const grammarCh = c8Eng?.chapters[16];
+      expect(grammarCh?.chapter_name).toBe('English Grammar Syllabus');
+      expect(grammarCh?.topics.length).toBe(9);
+      expect(grammarCh?.topics.every((t) => t.topic_type === 'grammar')).toBe(true);
+    });
+
+    it('Class 8 Hindi contains dedicated Chapter 14 with complete 10 grammar topics from PDF', () => {
+      const c8Hindi = SYLLABUS_2026_DATA.find((item) => item.student_class === '8' && item.subject === 'Hindi');
+      expect(c8Hindi).toBeDefined();
+      expect(c8Hindi?.chapters.length).toBe(14); // 13 lit + 1 grammar
+
+      const grammarCh = c8Hindi?.chapters[13];
+      expect(grammarCh?.chapter_name).toBe('हिंदी व्याकरण (वसंत भाग–3)');
+      expect(grammarCh?.topics.length).toBe(10);
+      expect(grammarCh?.topics.every((t) => t.topic_type === 'grammar')).toBe(true);
+    });
+
+    it('Class 8 Sanskrit contains dedicated Chapter 15 with complete 8 grammar topics from PDF', () => {
+      const c8San = SYLLABUS_2026_DATA.find((item) => item.student_class === '8' && item.subject === 'Sanskrit');
+      expect(c8San).toBeDefined();
+      expect(c8San?.chapters.length).toBe(15); // 14 lit + 1 grammar
+
+      const grammarCh = c8San?.chapters[14];
+      expect(grammarCh?.chapter_name).toBe('संस्कृत व्याकरणम् (रुचिरा भाग–3)');
+      expect(grammarCh?.topics.length).toBe(8);
+      expect(grammarCh?.topics.every((t) => t.topic_type === 'grammar')).toBe(true);
+    });
+  });
+
+  describe('Class 10 Languages Grammar Representation', () => {
+    it('Class 10 English Chapter 19 contains 7 individual grammar topics from PDF', () => {
+      const c10Eng = SYLLABUS_2026_DATA.find((item) => item.student_class === '10' && item.subject === 'English');
+      expect(c10Eng).toBeDefined();
+      expect(c10Eng?.chapters.length).toBe(19);
+
+      const grammarCh = c10Eng?.chapters[18];
+      expect(grammarCh?.chapter_name).toBe('English Grammar Syllabus');
+      expect(grammarCh?.topics.length).toBe(7);
+      expect(grammarCh?.topics.every((t) => t.topic_type === 'grammar')).toBe(true);
+    });
+
+    it('Class 10 Sanskrit Chapter 11 contains 7 individual grammar topics from PDF', () => {
+      const c10San = SYLLABUS_2026_DATA.find((item) => item.student_class === '10' && item.subject === 'Sanskrit');
+      expect(c10San).toBeDefined();
+      expect(c10San?.chapters.length).toBe(11);
+
+      const grammarCh = c10San?.chapters[10];
+      expect(grammarCh?.chapter_name).toBe('संस्कृत व्याकरणम् (शेमुषी भाग–2)');
+      expect(grammarCh?.topics.length).toBe(7);
+      expect(grammarCh?.topics.every((t) => t.topic_type === 'grammar')).toBe(true);
+    });
+  });
+
   describe('Class 8 Social Science Structure', () => {
     it('Class 8 Social Science contains 21 chapters covering History, Geography, and Civics', () => {
       const c8Sst = SYLLABUS_2026_DATA.find((item) => item.student_class === '8' && item.subject === 'Social Science');

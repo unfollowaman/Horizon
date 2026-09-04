@@ -322,22 +322,37 @@ export const SYLLABUS_2026_DATA = [
     student_class: '8',
     subject: 'English',
     chapters: [
-      { chapter_number: 1, chapter_name: 'The Best Christmas Present in the World & Poem: The Ant and the Cricket', topics: [{ title: 'Syllabus Grammar: Tenses & Active-Passive Voice', topic_type: 'grammar' }] },
-      { chapter_number: 2, chapter_name: 'The Tsunami & Poem: Geography Lesson', topics: [{ title: 'Syllabus Grammar: Direct and Indirect Speech', topic_type: 'grammar' }] },
-      { chapter_number: 3, chapter_name: 'Glimpses of the Past & Poem: Macavity: The Mystery Cat', topics: [{ title: 'Syllabus Grammar: Prepositions and Conjunctions', topic_type: 'grammar' }] },
-      { chapter_number: 4, chapter_name: 'Bepin Choudhury\'s Lapse of Memory & Poem: The Last Bargain', topics: [{ title: 'Syllabus Grammar: Modals and Conditionals', topic_type: 'grammar' }] },
-      { chapter_number: 5, chapter_name: 'The Summit Within & Poem: The School Boy', topics: [{ title: 'Syllabus Grammar: Subject-Verb Agreement', topic_type: 'grammar' }] },
-      { chapter_number: 6, chapter_name: 'This is Jody\'s Fawn', topics: [{ title: 'Syllabus Grammar: Determiners and Noun Clauses', topic_type: 'grammar' }] },
-      { chapter_number: 7, chapter_name: 'A Visit to Cambridge & Poem: When I Set Out for Lyonnesse', topics: [{ title: 'Syllabus Grammar: Relative Clauses', topic_type: 'grammar' }] },
-      { chapter_number: 8, chapter_name: 'A Short Monsoon Diary & Poem: On the Grasshopper and Cricket', topics: [{ title: 'Syllabus Grammar: Participles and Infinitives', topic_type: 'grammar' }] },
-      { chapter_number: 9, chapter_name: 'How the Camel Got His Hump (It So Happened)', topics: [{ title: 'Reading Comprehension & Vocabulary Skills', topic_type: 'topic' }] },
-      { chapter_number: 10, chapter_name: 'Children at Work (It So Happened)', topics: [{ title: 'Reading Comprehension & Character Sketch', topic_type: 'topic' }] },
-      { chapter_number: 11, chapter_name: 'The Selfish Giant (It So Happened)', topics: [{ title: 'Reading Comprehension & Theme Analysis', topic_type: 'topic' }] },
-      { chapter_number: 12, chapter_name: 'The Treasure Within (It So Happened)', topics: [{ title: 'Reading Comprehension & Direct Text Analysis', topic_type: 'topic' }] },
-      { chapter_number: 13, chapter_name: 'Princess September (It So Happened)', topics: [{ title: 'Reading Comprehension & Moral Insights', topic_type: 'topic' }] },
-      { chapter_number: 14, chapter_name: 'The Fight (It So Happened)', topics: [{ title: 'Reading Comprehension & Vocabulary Building', topic_type: 'topic' }] },
-      { chapter_number: 15, chapter_name: 'Jalebis (It So Happened)', topics: [{ title: 'Reading Comprehension & Narrative Structure', topic_type: 'topic' }] },
-      { chapter_number: 16, chapter_name: 'Ancient Education System of India (It So Happened)', topics: [{ title: 'Reading Comprehension & Informational Prose Analysis', topic_type: 'topic' }] }
+      { chapter_number: 1, chapter_name: 'The Best Christmas Present in the World & Poem: The Ant and the Cricket', topics: [{ title: 'Textual Reading Comprehension, Theme, and Plot Analysis', topic_type: 'topic' }] },
+      { chapter_number: 2, chapter_name: 'The Tsunami & Poem: Geography Lesson', topics: [{ title: 'Textual Reading Comprehension and Poetic Analysis', topic_type: 'topic' }] },
+      { chapter_number: 3, chapter_name: 'Glimpses of the Past & Poem: Macavity: The Mystery Cat', topics: [{ title: 'Historical Prose Analysis and Poetic Devices', topic_type: 'topic' }] },
+      { chapter_number: 4, chapter_name: 'Bepin Choudhury\'s Lapse of Memory & Poem: The Last Bargain', topics: [{ title: 'Prose Narrative and Poetic Themes', topic_type: 'topic' }] },
+      { chapter_number: 5, chapter_name: 'The Summit Within & Poem: The School Boy', topics: [{ title: 'Autobiographical Essay and Poetic Stanza Analysis', topic_type: 'topic' }] },
+      { chapter_number: 6, chapter_name: 'This is Jody\'s Fawn', topics: [{ title: 'Prose Analysis, Character Compassion, and Reading Comprehension', topic_type: 'topic' }] },
+      { chapter_number: 7, chapter_name: 'A Visit to Cambridge & Poem: When I Set Out for Lyonnesse', topics: [{ title: 'Interview Prose Analysis and Poetic Devices', topic_type: 'topic' }] },
+      { chapter_number: 8, chapter_name: 'A Short Monsoon Diary & Poem: On the Grasshopper and Cricket', topics: [{ title: 'Journalistic Nature Prose and Sonnet Structure', topic_type: 'topic' }] },
+      { chapter_number: 9, chapter_name: 'How the Camel Got His Hump (It So Happened)', topics: [{ title: 'Supplementary Fable Comprehension', topic_type: 'topic' }] },
+      { chapter_number: 10, chapter_name: 'Children at Work (It So Happened)', topics: [{ title: 'Supplementary Social Realism Prose', topic_type: 'topic' }] },
+      { chapter_number: 11, chapter_name: 'The Selfish Giant (It So Happened)', topics: [{ title: 'Supplementary Fairy Tale Analysis', topic_type: 'topic' }] },
+      { chapter_number: 12, chapter_name: 'The Treasure Within (It So Happened)', topics: [{ title: 'Supplementary Interview Analysis', topic_type: 'topic' }] },
+      { chapter_number: 13, chapter_name: 'Princess September (It So Happened)', topics: [{ title: 'Supplementary Narrative Prose', topic_type: 'topic' }] },
+      { chapter_number: 14, chapter_name: 'The Fight (It So Happened)', topics: [{ title: 'Supplementary Character Dynamics Prose', topic_type: 'topic' }] },
+      { chapter_number: 15, chapter_name: 'Jalebis (It So Happened)', topics: [{ title: 'Supplementary Humor Prose', topic_type: 'topic' }] },
+      { chapter_number: 16, chapter_name: 'Ancient Education System of India (It So Happened)', topics: [{ title: 'Informational Heritage Prose Analysis', topic_type: 'topic' }] },
+      {
+        chapter_number: 17,
+        chapter_name: 'English Grammar Syllabus',
+        topics: [
+          { title: 'Tenses (Simple, Continuous, Perfect, and Perfect Continuous Aspects)', topic_type: 'grammar' },
+          { title: 'Active and Passive Voice Transformations', topic_type: 'grammar' },
+          { title: 'Direct and Indirect Speech (Reporting Declarative and Interrogative Sentences)', topic_type: 'grammar' },
+          { title: 'Modals (can, could, may, might, shall, should, will, would, must, ought to)', topic_type: 'grammar' },
+          { title: 'Subject-Verb Agreement (Concord Rules)', topic_type: 'grammar' },
+          { title: 'Determiners and Articles', topic_type: 'grammar' },
+          { title: 'Conjunctions and Sentence Connectors', topic_type: 'grammar' },
+          { title: 'Prepositions (Time, Place, and Direction)', topic_type: 'grammar' },
+          { title: 'Clauses (Noun, Relative, and Adverbial Clauses)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {
@@ -357,10 +372,22 @@ export const SYLLABUS_2026_DATA = [
       { chapter_number: 11, chapter_name: 'सूरदास के पद (सूरदास)', topics: [{ title: 'पद व्याख्या एवं वात्सल्य भाव', topic_type: 'topic' }] },
       { chapter_number: 12, chapter_name: 'पानी की कहानी (रामचन्द्र तिवारी)', topics: [{ title: 'वैज्ञानिक निबंध एवं जल चक्र ज्ञान', topic_type: 'topic' }] },
       { chapter_number: 13, chapter_name: 'बाज और साँप (निर्मल वर्मा)', topics: [{ title: 'प्रतीकात्मक कहानी एवं स्वतंत्रता बोध', topic_type: 'topic' }] },
-      { chapter_number: 14, chapter_name: 'व्याकरण: भाषा, बोली, लिपि और व्याकरण', topics: [{ title: 'भाषा एवं वर्ण विचार', topic_type: 'grammar' }] },
-      { chapter_number: 15, chapter_name: 'व्याकरण: शब्द विचार, समास, एवं संधि', topics: [{ title: 'शब्द भेद, तत्पुरुष/द्वंद्व समास, स्वर संधि', topic_type: 'grammar' }] },
-      { chapter_number: 16, chapter_name: 'व्याकरण: संज्ञा, सर्वनाम, विशेषण, क्रिया', topics: [{ title: 'पद परिचय एवं प्रयोग नियम', topic_type: 'grammar' }] },
-      { chapter_number: 17, chapter_name: 'व्याकरण: अशुद्धि संशोधन एवं मुहावरे', topics: [{ title: 'वाक्य शुद्धि एवं मुहावरे/लोकोक्तियाँ', topic_type: 'grammar' }] }
+      {
+        chapter_number: 14,
+        chapter_name: 'हिंदी व्याकरण (वसंत भाग–3)',
+        topics: [
+          { title: 'वर्ण विचार एवं वर्तनी शुद्धि', topic_type: 'grammar' },
+          { title: 'स्वर संधि (दीर्घ, गुण, वृद्धि, यण्, अयादि संधि)', topic_type: 'grammar' },
+          { title: 'शब्द विचार (तत्सम, तद्भव, देशज, आगत/विदेशज शब्द)', topic_type: 'grammar' },
+          { title: 'शब्द रचना: उपसर्ग एवं प्रत्यय', topic_type: 'grammar' },
+          { title: 'समास (तत्पुरुष, कर्मधारय, द्विगु, द्वंद्व समास)', topic_type: 'grammar' },
+          { title: 'संज्ञा, सर्वनाम, विशेषण, क्रिया एवं काल', topic_type: 'grammar' },
+          { title: 'शब्द भंडार: पर्यायवाची, विलोम, अनेकार्थ शब्द, वाक्यांश के लिए एक शब्द', topic_type: 'grammar' },
+          { title: 'मुहावरे एवं लोकोक्तियाँ', topic_type: 'grammar' },
+          { title: 'वाक्य विचार (रचना एवं अर्थ के आधार पर वाक्य भेद)', topic_type: 'grammar' },
+          { title: 'अशुद्धि शोधन (पद एवं वाक्यगत अशुद्धियाँ)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {
@@ -381,7 +408,20 @@ export const SYLLABUS_2026_DATA = [
       { chapter_number: 12, chapter_name: 'कः रक्षति कः रक्षितः', topics: [{ title: 'पर्यावरण संरक्षण एवं स्वच्छता', topic_type: 'topic' }] },
       { chapter_number: 13, chapter_name: 'क्षितौ राजते भारतस्वर्णभूमिः', topics: [{ title: 'भारत महिमा गीत पाठ', topic_type: 'topic' }] },
       { chapter_number: 14, chapter_name: 'आर्यभटः', topics: [{ title: 'प्राचीन भारतीय वैज्ञानिक आर्यभट योगदान', topic_type: 'topic' }] },
-      { chapter_number: 15, chapter_name: 'संस्कृत व्याकरणम्', topics: [{ title: 'संधि (स्वर व व्यञ्जन), शब्दरूप, धातुरूप (पञ्चलकार)', topic_type: 'grammar' }] }
+      {
+        chapter_number: 15,
+        chapter_name: 'संस्कृत व्याकरणम् (रुचिरा भाग–3)',
+        topics: [
+          { title: 'वर्णविचारः (माहेश्वरसूत्राणि, उच्चारणस्थानानि च)', topic_type: 'grammar' },
+          { title: 'सिन्ध-प्रकरणम् (स्वरसिन्ध: दीर्घ, गुण, वृद्धि, यण्, अयादि)', topic_type: 'grammar' },
+          { title: 'शब्दरूपाणि (अकारान्त, आकारान्त, इकारान्त, ईकारान्त, उकारान्त पुं/स्त्री/नपुंसकालिङ्ग शब्दाः; सर्वनामशब्दाः: तत्, एतत्, किम्, अस्मद्, युष्मद्)', topic_type: 'grammar' },
+          { title: 'धातुरूपाणि (पञ्चसु लकारेषु: लट्, लृट्, लङ्, लोट्, विधिलिङ्; परस्मैपदिनः धातवः)', topic_type: 'grammar' },
+          { title: 'कारक-प्रकरणम् एवं उपपद-विभक्तयः', topic_type: 'grammar' },
+          { title: 'प्रत्ययाः (क्त्वा, ल्यप्, तुमुन्, क्त, क्तवतु)', topic_type: 'grammar' },
+          { title: 'अव्ययपदानि (अपि, च, एव, उच्चैः, अद्य, ह्यः, श्वः, इतस्ततः, सर्वत्र)', topic_type: 'grammar' },
+          { title: 'सङ्ख्यावाचक-शब्दाः (१ तः ५० पर्यन्तम्)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
 
@@ -845,8 +885,19 @@ export const SYLLABUS_2026_DATA = [
       { chapter_number: 16, chapter_name: 'The Necklace (Guy de Maupassant)', topics: [{ title: 'Short Story Plot Analysis', topic_type: 'topic' }] },
       { chapter_number: 17, chapter_name: 'Bholi (K.A. Abbas)', topics: [{ title: 'Social Message & Character Analysis', topic_type: 'topic' }] },
       { chapter_number: 18, chapter_name: 'The Book that Saved the Earth (Claire Boiko)', topics: [{ title: 'Play Analysis', topic_type: 'topic' }] },
-      { chapter_number: 19, chapter_name: 'Grammar: Tenses, Modals, Subject-Verb Concord', topics: [{ title: 'Tenses, Modals, Subject-Verb Agreement Rules', topic_type: 'grammar' }] },
-      { chapter_number: 20, chapter_name: 'Grammar: Reported Speech & Determiners', topics: [{ title: 'Commands/Requests, Statements, Questions, Determiners', topic_type: 'grammar' }] }
+      {
+        chapter_number: 19,
+        chapter_name: 'English Grammar Syllabus',
+        topics: [
+          { title: 'Tenses (Present, Past, and Future Tenses in Discourse)', topic_type: 'grammar' },
+          { title: 'Modals (Expressing Ability, Permission, Obligation, Possibility)', topic_type: 'grammar' },
+          { title: 'Subject-Verb Concord (Agreement of Person and Number)', topic_type: 'grammar' },
+          { title: 'Reported Speech: Commands and Requests', topic_type: 'grammar' },
+          { title: 'Reported Speech: Statements / Assertions', topic_type: 'grammar' },
+          { title: 'Reported Speech: Questions (Direct to Indirect Discourse)', topic_type: 'grammar' },
+          { title: 'Determiners (Articles, Quantifiers, Possessives, Demonstratives)', topic_type: 'grammar' }
+        ]
+      }
     ]
   },
   {
@@ -927,7 +978,19 @@ export const SYLLABUS_2026_DATA = [
       { chapter_number: 8, chapter_name: 'सूक्तयः', topics: [{ title: 'सुभाषित वचन बोध', topic_type: 'topic' }] },
       { chapter_number: 9, chapter_name: 'भूकम्पविभीषिका', topics: [{ title: 'आपदा प्रबंधन एवं प्राकृतिक प्रकोप', topic_type: 'topic' }] },
       { chapter_number: 10, chapter_name: 'प्राणेभ्योऽपि प्रियः सुहृद्', topics: [{ title: 'चाणक्य-चन्दनदास कथा', topic_type: 'topic' }] },
-      { chapter_number: 11, chapter_name: 'संस्कृत व्याकरणम्', topics: [{ title: 'व्यञ्जन/विसर्ग सन्धि, समास (तत्पुरुष/कर्मधारय/द्विगु/बहुव्रीहि/द्वंद्व/अव्ययीभाव), मतुप्/ठक्/त्व/तल् प्रत्यय', topic_type: 'grammar' }] }
+      {
+        chapter_number: 11,
+        chapter_name: 'संस्कृत व्याकरणम् (शेमुषी भाग–2)',
+        topics: [
+          { title: 'सिन्ध-कार्यम् (व्यञ्जनसिन्ध: वर्गीय-प्रथम-अक्षरस्य तृतीय-वर्ण परिवर्तनम्, प्रथम-वर्णस्य पञ्चम-वर्ण परिवर्तनम्; विसर्गसिन्ध: उत्वम्, रत्वम्, विसर्गलोपः, स/श्/ष् परिवर्तनम्)', topic_type: 'grammar' },
+          { title: 'समासः (तत्पुरुषः, कर्मधारयः, द्विगुः, बहुव्रीहिः, द्वन्द्वः, अव्ययीभावः)', topic_type: 'grammar' },
+          { title: 'प्रत्ययाः (तद्धित-प्रत्ययाः: मतुप्, ठक्, त्व, तल्; स्त्री-प्रत्ययौ: टाप्, ङीप्)', topic_type: 'grammar' },
+          { title: 'वाच्य-परिवर्तनम् (लट्-लकारे कर्तृ-कर्म-क्रिया प्रयोगः)', topic_type: 'grammar' },
+          { title: 'समय-लेखनम् (अङ्कानां स्थाने शब्देषु समय-लेखनम्: सामान्य, सपाद, सार्ध, पादोन)', topic_type: 'grammar' },
+          { title: 'अव्ययपदानि (अपि, यदि, तर्हि, यदा, तदा, कदा, सहसा, वृथा, शनैः, उच्चैः, इव, अधुना, बहिः, इतस्ततः, कुतः)', topic_type: 'grammar' },
+          { title: 'अशुद्धि-संशोधनम् (वचन, लिङ्ग, पुरुष, लकार, कारक-दृष्ट्या वाक्य-संशोधनम्)', topic_type: 'grammar' }
+        ]
+      }
     ]
   }
 ];
