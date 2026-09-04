@@ -23,6 +23,23 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
     return initial;
   });
 
+  // Expand all chapters when chapters data arrives asynchronously or changes
+  React.useEffect(() => {
+    if (chapters && chapters.length > 0) {
+      setOpenChapters((prev) => {
+        const next: Record<string, boolean> = { ...prev };
+        let updated = false;
+        chapters.forEach((ch) => {
+          if (next[ch.id] === undefined) {
+            next[ch.id] = true;
+            updated = true;
+          }
+        });
+        return updated ? next : prev;
+      });
+    }
+  }, [chapters]);
+
   const toggleChapter = (id: string) => {
     setOpenChapters((prev) => ({
       ...prev,

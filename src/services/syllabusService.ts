@@ -26,7 +26,7 @@ export const SUPPORTED_CLASSES: ClassOption[] = [
     id: '9',
     name: 'Class 9',
     slug: 'class-9',
-    description: 'NCERT 2023-24 & 2026-27 framework including Kaveri, Ganga & Shardā readers.',
+    description: 'NCERT & NCF-SE 2026-27 framework including Kaveri, Ganga & Shardā readers.',
   },
   {
     id: '10',
@@ -78,16 +78,14 @@ export function getSubjectsForClass(classInput: string | null | undefined): Subj
 export function resolveSubjectName(classInput: string | null | undefined, subjectSlugOrName: string | null | undefined): string | null {
   if (!subjectSlugOrName) return null;
   const subjects = getSubjectsForClass(classInput);
+  if (subjects.length === 0) return null;
+
   const normalizedSlug = subjectToSlug(subjectSlugOrName) || subjectSlugOrName.toLowerCase().trim();
 
   const found = subjects.find((s) => s.slug === normalizedSlug || s.name.toLowerCase() === subjectSlugOrName.toLowerCase());
   if (found) return found.name;
 
-  // Fallback slug decoding
-  return subjectSlugOrName
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  return null;
 }
 
 /**
