@@ -407,4 +407,219 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('Failed to fetch syllabus data. Please try again.');
     expect(container?.textContent).toContain('Retry Loading');
   });
+
+  describe('S5.1 Post-Merge Correction Edge-Case Tests', () => {
+    it('12. Reject invalid class routes cleanly (/syllabus/class-7, /syllabus/invalid-class)', async () => {
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-7']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(container?.textContent).toContain('Class Not Found');
+      expect(container?.textContent).toContain('The requested class syllabus route does not exist.');
+    });
+
+    it('13. Reject arbitrary/invalid subject routes without querying Supabase (/syllabus/class-10/random-subject)', async () => {
+      const spy = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy');
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10/random-subject']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(container?.textContent).toContain('Syllabus Not Found');
+      expect(container?.textContent).toContain('The requested syllabus route is invalid or not available for this class.');
+    });
+
+    it('14. Reject invalid class/subject combinations (/syllabus/class-9/hindi-course-a, /syllabus/class-8/hindi-course-b)', async () => {
+      const spy = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy');
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-9/hindi-course-a']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(container?.textContent).toContain('Syllabus Not Found');
+    });
+
+    it('15. Valid subject distinction: /syllabus/class-9/hindi works and calls API with "Hindi"', async () => {
+      const spy = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-9/hindi']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(spy).toHaveBeenCalledWith('9', 'Hindi');
+    });
+
+    it('16. Valid subject distinction: /syllabus/class-10/hindi-course-a and hindi-course-b work independently', async () => {
+      const spyA = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10/hindi-course-a']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(spyA).toHaveBeenCalledWith('10', 'Hindi Course A');
+
+      act(() => {
+        root?.unmount();
+      });
+      container = document.createElement('div');
+      document.body.appendChild(container);
+      root = createRoot(container);
+
+      const spyB = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10/hindi-course-b']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(spyB).toHaveBeenCalledWith('10', 'Hindi Course B');
+    });
+
+    it('17. Async chapter expansion: chapters expand initially when hierarchy data loads from [] to populated chapters', async () => {
+      let resolvePromise: (value: unknown) => void;
+      const asyncPromise = new Promise((resolve) => {
+        resolvePromise = resolve;
+      });
+
+      vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockReturnValue(
+        asyncPromise as ReturnType<typeof learningAPI.fetchSyllabusHierarchy>
+      );
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10/mathematics']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      // Initially loading skeleton
+      expect(container?.querySelector('.animate-pulse')).not.toBeNull();
+
+      // Resolve async data arrival
+      await act(async () => {
+        resolvePromise({
+          data: [
+            {
+              id: 'ch-async-1',
+              chapter_number: 1,
+              chapter_name: 'Polynomials',
+              display_order: 1,
+              is_active: true,
+              syllabus_topics: [
+                {
+                  id: 'tp-async-1',
+                  chapter_id: 'ch-async-1',
+                  title: 'Zeroes of a Polynomial',
+                  topic_type: 'topic',
+                  display_order: 1,
+                  is_active: true,
+                  resources: [],
+                },
+              ],
+            },
+          ],
+          error: null,
+        });
+      });
+
+      // Chapter is rendered AND topic details inside (Zeroes of a Polynomial) are expanded
+      expect(container?.textContent).toContain('Polynomials');
+      expect(container?.textContent).toContain('Zeroes of a Polynomial');
+
+      // Expand All and Collapse All buttons are present and functional
+      const collapseAllBtn = Array.from(container?.querySelectorAll('button') || []).find(
+        (b) => b.textContent?.trim() === 'Collapse All'
+      );
+      expect(collapseAllBtn).not.toBeUndefined();
+
+      await act(async () => {
+        collapseAllBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      // After Collapse All, topic content is hidden
+      expect(container?.textContent).not.toContain('Zeroes of a Polynomial');
+
+      const expandAllBtn = Array.from(container?.querySelectorAll('button') || []).find(
+        (b) => b.textContent?.trim() === 'Expand All'
+      );
+      expect(expandAllBtn).not.toBeUndefined();
+
+      await act(async () => {
+        expandAllBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      // After Expand All, topic content is visible again
+      expect(container?.textContent).toContain('Zeroes of a Polynomial');
+    });
+
+    it('18. Dynamic SEO metadata updates document title and meta description tag on route changes', async () => {
+      vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10/science']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      expect(document.title).toBe('Class 10 Science Syllabus | Horizon');
+      const metaDesc = document.querySelector('meta[name="description"]');
+      expect(metaDesc?.getAttribute('content')).toContain('Class 10 Science');
+    });
+  });
 });

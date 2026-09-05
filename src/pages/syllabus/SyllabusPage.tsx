@@ -28,12 +28,28 @@ export const SyllabusPage: React.FC = () => {
 
   // Dynamic SEO Page Title & Meta Tags
   useEffect(() => {
+    let title = 'CBSE & NCERT Syllabus Directory | Horizon';
+    let description =
+      'Explore complete CBSE & NCERT syllabus breakdown for Class 8, Class 9, and Class 10 subjects including chapters, topics, exercises, and linked study resources.';
+
     if (currentClass && resolvedSubjectName) {
-      document.title = `${currentClass.name} ${resolvedSubjectName} Syllabus | Horizon`;
+      title = `${currentClass.name} ${resolvedSubjectName} Syllabus | Horizon`;
+      description = `Detailed 2026-27 syllabus hierarchy for ${currentClass.name} ${resolvedSubjectName}. Browse chapters, topics, exercises, grammar sections, and study resources.`;
     } else if (currentClass) {
-      document.title = `${currentClass.name} Syllabus Subjects | Horizon`;
+      title = `${currentClass.name} Syllabus Subjects | Horizon`;
+      description = `Browse official NCERT and CBSE subjects for ${currentClass.name}. View chapter-wise syllabus breakdowns, topics, and learning materials.`;
+    }
+
+    document.title = title;
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
     } else {
-      document.title = 'CBSE & NCERT Syllabus Directory | Horizon';
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      metaDescription.setAttribute('content', description);
+      document.head.appendChild(metaDescription);
     }
   }, [currentClass, resolvedSubjectName]);
 
@@ -151,6 +167,36 @@ export const SyllabusPage: React.FC = () => {
   }
 
   // View 3: Subject Hierarchy View (/syllabus/:classSlug/:subjectSlug)
+  if (!currentClass || !resolvedSubjectName) {
+    return (
+      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] text-center py-12 space-y-4">
+        <h2 className="text-2xl font-bold text-ink">Syllabus Not Found</h2>
+        <p className="text-sm sm:text-base text-ink/70">
+          The requested syllabus route is invalid or not available for this class.
+        </p>
+        <div className="flex justify-center items-center gap-3 pt-2">
+          {currentClass ? (
+            <button
+              type="button"
+              onClick={handleBackToSubjects}
+              className="neu-raised neu-raised-hover px-4 py-2 rounded-xl font-bold text-ink cursor-pointer"
+            >
+              Back to {currentClass.name} Subjects
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleBackToClasses}
+              className="neu-raised neu-raised-hover px-4 py-2 rounded-xl font-bold text-ink cursor-pointer"
+            >
+              Back to Syllabus Directory
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 space-y-6">
       {/* Top Header Controls */}
@@ -178,11 +224,9 @@ export const SyllabusPage: React.FC = () => {
           </svg>
         </button>
 
-        {currentClass && resolvedSubjectName && (
-          <span className="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase truncate">
-            {currentClass.name} — {resolvedSubjectName}
-          </span>
-        )}
+        <span className="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase truncate">
+          {currentClass.name} — {resolvedSubjectName}
+        </span>
       </div>
 
       {loading && <SyllabusSkeleton />}
@@ -196,7 +240,7 @@ export const SyllabusPage: React.FC = () => {
             onClick={() => {
               setError(null);
               setLoading(true);
-              fetchSyllabusHierarchy(currentClassId!, resolvedSubjectName!)
+              fetchSyllabusHierarchy(currentClassId!, resolvedSubjectName)
                 .then(({ data, error: apiErr }) => {
                   if (apiErr) {
                     setError('Failed to fetch syllabus data. Please try again.');
@@ -217,7 +261,7 @@ export const SyllabusPage: React.FC = () => {
         </div>
       )}
 
-      {!loading && !error && currentClass && resolvedSubjectName && (
+      {!loading && !error && (
         <SyllabusHierarchyTree
           chapters={chapters}
           subjectName={resolvedSubjectName}
