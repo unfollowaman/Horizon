@@ -8,7 +8,7 @@ import ScrollToTop from './components/ScrollToTop';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
-import PdfViewerSkeleton from './components/PdfViewerSkeleton';
+import RenderingScreen from './components/RenderingScreen/RenderingScreen';
 
 // Lazy loaded pages
 const Library = lazy(() => import('./pages/resources/LibraryRoute'));
@@ -71,7 +71,7 @@ function App() {
           </Route>
 
           {/* Standalone PDF Viewer Route */}
-          <Route path="/view/:id" element={<Suspense fallback={<PdfViewerSkeleton />}><PdfViewer /></Suspense>} />
+          <Route path="/view/:id" element={<Suspense fallback={<RenderingScreen />}><PdfViewer /></Suspense>} />
 
           {/* Catch-all route for 404s */}
           <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}><h2>404 - Page Not Found</h2></div>} />
