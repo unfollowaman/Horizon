@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SYLLABUS_2026_DATA, runSyllabusSeed } from '../seed_syllabus_2026.js';
+import { SYLLABUS_2026_DATA, runSyllabusSeed, run } from '../seed_syllabus_2026.js';
 
 describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
   it('contains data exclusively for Classes 8, 9, and 10', () => {
@@ -327,5 +327,32 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
         { onConflict: 'topic_id,resource_id' }
       );
     });
+  });
+});
+
+describe('seed_syllabus_2026 run execution requirement', () => {
+  it('should log an error and exit if SUPABASE_SERVICE_ROLE_KEY is missing', async () => {
+    const originalUrl = process.env.VITE_SUPABASE_URL;
+    const originalKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    process.env.VITE_SUPABASE_URL = 'https://example.supabase.co';
+    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await run();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Error: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are required for seed_syllabus_2026.js.'
+    );
+
+    consoleErrorSpy.mockRestore();
+    if (originalUrl !== undefined) {
+      process.env.VITE_SUPABASE_URL = originalUrl;
+    } else {
+      delete process.env.VITE_SUPABASE_URL;
+    }
+    if (originalKey !== undefined) {
+      process.env.SUPABASE_SERVICE_ROLE_KEY = originalKey;
+    }
   });
 });

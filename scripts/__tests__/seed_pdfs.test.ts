@@ -158,7 +158,9 @@ describe('seed_pdfs findFiles', () => {
 
 describe('seed_pdfs run execution requirement', () => {
   it('should log an error and exit if SUPABASE_SERVICE_ROLE_KEY is missing', async () => {
+    const originalUrl = process.env.VITE_SUPABASE_URL;
     const originalKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    process.env.VITE_SUPABASE_URL = 'https://example.supabase.co';
     delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -166,10 +168,15 @@ describe('seed_pdfs run execution requirement', () => {
     await run();
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error: SUPABASE_SERVICE_ROLE_KEY environment variable is required for seed_pdfs.js.'
+      'Error: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are required for seed_pdfs.js.'
     );
 
     consoleErrorSpy.mockRestore();
+    if (originalUrl !== undefined) {
+      process.env.VITE_SUPABASE_URL = originalUrl;
+    } else {
+      delete process.env.VITE_SUPABASE_URL;
+    }
     if (originalKey !== undefined) {
       process.env.SUPABASE_SERVICE_ROLE_KEY = originalKey;
     }
