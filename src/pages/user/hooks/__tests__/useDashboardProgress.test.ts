@@ -217,4 +217,62 @@ describe('useDashboardProgress', () => {
     );
     expect(latestResult.progressData).toBeNull();
   });
+
+  it('demonstrates chapter completion benchmark calculation over large dataset', async () => {
+    // Generate 20 subjects with 50 chapters each (1000 chapters total)
+    const mockSyllabusData = [];
+    for (let s = 1; s <= 20; s++) {
+      const subject = `Subject_${s}`;
+      for (let c = 1; c <= 50; c++) {
+        mockSyllabusData.push({
+          id: `id-${s}-${c}`,
+          chapter_id: `ch-${s}-${c}`,
+          subject,
+        });
+      }
+    }
+
+    // Generate 500 completions (even numbered chapters)
+    const mockCompletionsData = [];
+    for (let i = 1; i <= 500; i++) {
+      mockCompletionsData.push({ chapter_id: `ch-${(i % 20) + 1}-${(i % 50) + 1}` });
+    }
+
+    vi.mocked(learningResourcesAPI.fetchSyllabusChapters).mockResolvedValue({
+      data: mockSyllabusData,
+      error: null,
+    } as unknown as Awaited<ReturnType<typeof learningResourcesAPI.fetchSyllabusChapters>>);
+
+    const mockEq = vi.fn().mockResolvedValue({
+      data: mockCompletionsData,
+      error: null,
+    });
+    const mockSelect = vi.fn().mockReturnValue({ eq: mockEq });
+    vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as unknown as ReturnType<typeof supabase.from>);
+
+    let latestResult: { progressData: ProgressData | null; isLoadingProgress: boolean } = {
+      progressData: null,
+      isLoadingProgress: true,
+    };
+
+    const startTime = performance.now();
+    await act(async () => {
+      root?.render(
+        React.createElement(TestComponent, {
+          user: mockUser,
+          profile: mockProfile,
+          onUpdate: (data) => {
+            latestResult = data;
+          },
+        })
+      );
+    });
+    const duration = performance.now() - startTime;
+
+    console.log(`[DashboardProgress Benchmark] Duration: ${duration.toFixed(3)}ms`);
+
+    expect(latestResult.isLoadingProgress).toBe(false);
+    expect(latestResult.progressData).not.toBeNull();
+    expect(latestResult.progressData?.syllabusTotalChapters).toBe(1000);
+  });
 });
