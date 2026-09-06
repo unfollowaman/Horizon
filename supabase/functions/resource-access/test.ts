@@ -2,13 +2,42 @@ import { assertEquals } from "jsr:@std/assert";
 
 // We will test the core logic of the edge function by replicating its behavior in a testable function.
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const ALLOWED_ORIGINS = [
+  "https://unfollowaman.tech",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:8000",
+  "http://127.0.0.1:5173",
+];
+
+function getCorsHeaders(requestOrigin?: string | null): Record<string, string> {
+  const envOrigins = Deno.env.get("ALLOWED_ORIGINS")
+    ? Deno.env.get("ALLOWED_ORIGINS")!.split(",").map((o) => o.trim()).filter(Boolean)
+    : [];
+  const singleEnvOrigin = Deno.env.get("ALLOWED_ORIGIN")?.trim();
+  if (singleEnvOrigin) {
+    envOrigins.push(singleEnvOrigin);
+  }
+
+  const allowedList = [...ALLOWED_ORIGINS, ...envOrigins];
+
+  let allowedOrigin = "https://unfollowaman.tech";
+  if (requestOrigin && allowedList.includes(requestOrigin)) {
+    allowedOrigin = requestOrigin;
+  }
+
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
 async function handleRequest(req: Request, supabaseClient: unknown): Promise<Response> {
+  const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
+  const corsHeaders = getCorsHeaders(requestOrigin);
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -251,14 +280,26 @@ Deno.test("Valid resource returns 200 with signed URL", async () => {
   assertEquals(data.expires_in, 60);
 });
 
-
-Deno.test("OPTIONS request returns 200 with CORS headers", async () => {
+Deno.test("OPTIONS request returns 200 with matching allowed origin CORS headers", async () => {
   const req = new Request("http://localhost/", {
     method: "OPTIONS",
+    headers: { Origin: "http://localhost:5173" },
   });
   const mockClient = createMockClient(null, null);
   const res = await handleRequest(req, mockClient);
   assertEquals(res.status, 200);
-  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "http://localhost:5173");
   assertEquals(res.headers.get("Access-Control-Allow-Methods"), "POST, OPTIONS");
+  assertEquals(res.headers.get("Vary"), "Origin");
+});
+
+Deno.test("OPTIONS request with untrusted origin falls back to production domain", async () => {
+  const req = new Request("http://localhost/", {
+    method: "OPTIONS",
+    headers: { Origin: "https://malicious-site.com" },
+  });
+  const mockClient = createMockClient(null, null);
+  const res = await handleRequest(req, mockClient);
+  assertEquals(res.status, 200);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "https://unfollowaman.tech");
 });
