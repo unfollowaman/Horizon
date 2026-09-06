@@ -96,9 +96,17 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
 
         for (const [subject, chapterSet] of Object.entries(subjectTotals)) {
           let completed = 0;
-          for (const chapterId of chapterSet) {
-            if (completedChapterIds.has(chapterId)) {
-              completed++;
+          if (completedChapterIds.size < chapterSet.size) {
+            for (const chapterId of completedChapterIds) {
+              if (chapterSet.has(chapterId)) {
+                completed++;
+              }
+            }
+          } else {
+            for (const chapterId of chapterSet) {
+              if (completedChapterIds.has(chapterId)) {
+                completed++;
+              }
             }
           }
           syllabusCompletedChapters += completed;
