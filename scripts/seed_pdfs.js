@@ -48,8 +48,8 @@ export async function run() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseKey) {
-    console.error("Error: SUPABASE_SERVICE_ROLE_KEY environment variable is required for seed_pdfs.js.");
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("Error: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are required for seed_pdfs.js.");
     return;
   }
 

@@ -1134,11 +1134,13 @@ export async function runSyllabusSeed(supabaseClient) {
 
 export async function run() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase credentials in environment variables.');
+    console.error('Error: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are required for seed_syllabus_2026.js.');
     return;
   }
+
   const supabase = createClient(supabaseUrl, supabaseKey);
   await runSyllabusSeed(supabase);
 }
