@@ -133,8 +133,16 @@ describe('urlHelper', () => {
   describe('slug detection helpers', () => {
     it('identifies class slugs correctly', () => {
       expect(isClassSlug('class-10')).toBe(true);
+      expect(isClassSlug('class-8')).toBe(true);
       expect(isClassSlug('10')).toBe(true);
+      expect(isClassSlug('8')).toBe(true);
+      expect(isClassSlug('CLASS-10')).toBe(true);
       expect(isClassSlug('english-medium')).toBe(false);
+      expect(isClassSlug('class-abc')).toBe(false);
+      expect(isClassSlug('class-10-extra')).toBe(false);
+      expect(isClassSlug('10a')).toBe(false);
+      expect(isClassSlug('other')).toBe(false);
+      expect(isClassSlug('')).toBe(false);
     });
 
     it('identifies medium slugs correctly', () => {
