@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 describe('Robots.txt Configuration & Crawlability Integration Tests', () => {
   const robotsPath = path.resolve(process.cwd(), 'public/robots.txt');
@@ -27,7 +27,7 @@ describe('Robots.txt Configuration & Crawlability Integration Tests', () => {
       '/view/',
     ];
 
-    expectedDisallows.forEach((route) => {
+    expectedDisallows.forEach((route: string) => {
       expect(content).toContain(`Disallow: ${route}`);
     });
   });
@@ -36,9 +36,9 @@ describe('Robots.txt Configuration & Crawlability Integration Tests', () => {
     const content = fs.readFileSync(robotsPath, 'utf8');
     const disallowLines = content
       .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.startsWith('Disallow:'))
-      .map((line) => line.replace('Disallow:', '').trim());
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.startsWith('Disallow:'))
+      .map((line: string) => line.replace('Disallow:', '').trim());
 
     const publicRoutes = [
       '/',
@@ -62,8 +62,8 @@ describe('Robots.txt Configuration & Crawlability Integration Tests', () => {
       '/resource/87',
     ];
 
-    publicRoutes.forEach((publicRoute) => {
-      const isBlocked = disallowLines.some((disallowed) => {
+    publicRoutes.forEach((publicRoute: string) => {
+      const isBlocked = disallowLines.some((disallowed: string) => {
         if (disallowed === publicRoute) return true;
         if (disallowed.endsWith('/') && publicRoute.startsWith(disallowed)) return true;
         if (!disallowed.endsWith('/') && (publicRoute === disallowed || publicRoute.startsWith(disallowed + '/'))) return true;
@@ -88,9 +88,9 @@ describe('Robots.txt Configuration & Crawlability Integration Tests', () => {
       '/view',
     ];
 
-    disallowedRoutes.forEach((route) => {
+    disallowedRoutes.forEach((route: string) => {
       expect(xmlContent).not.toContain(`<loc>https://unfollowaman.tech${route}</loc>`);
-      expect(xmlContent).not.toContain(`<loc>https://unfollowaman.tech${route}/`);
+      expect(xmlContent).not.toContain(`<loc>https://unfollowaman.tech${route}/</loc>`);
     });
   });
 });
