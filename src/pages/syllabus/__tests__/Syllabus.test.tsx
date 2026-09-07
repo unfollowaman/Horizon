@@ -7,7 +7,7 @@ import * as learningAPI from '../../../services/learningResourcesAPI';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('S5 Syllabus UI & Routing Integration Tests', () => {
+describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
   let container: HTMLDivElement | null = null;
   let root: Root | null = null;
 
@@ -127,7 +127,7 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('Hindi Course B');
   });
 
-  it('6. Subject page calls fetchSyllabusHierarchy with normalized class and subject name', async () => {
+  it('6. Subject page calls fetchSyllabusHierarchy and renders flowchart nodes', async () => {
     const spy = vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
       data: [
         {
@@ -165,6 +165,7 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
     expect(spy).toHaveBeenCalledWith('10', 'Mathematics');
     expect(container?.textContent).toContain('Real Numbers');
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
+    expect(container?.textContent).toContain('Class 10 — Mathematics Flowchart');
   });
 
   it('7. Renders chapters and topics in display order and respects topic_type badges', async () => {
@@ -284,8 +285,10 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('View Notes');
     expect(container?.textContent).toContain('English');
 
-    const topic2Container = container?.querySelectorAll('.neu-recessed')[1];
-    expect(topic2Container?.querySelectorAll('a').length).toBe(0);
+    // Only 1 resource link ('a' element) exists on the entire page
+    const resourceLinks = container?.querySelectorAll('a');
+    expect(resourceLinks?.length).toBe(1);
+    expect(resourceLinks?.[0].getAttribute('href')).toBe('/resource/res-101');
   });
 
   it('9. English and Hindi resources can coexist under one syllabus topic node', async () => {
@@ -408,7 +411,7 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('Retry Loading');
   });
 
-  describe('S5.1 Post-Merge Correction Edge-Case Tests', () => {
+  describe('S6 Flowchart Routing Edge-Case Tests', () => {
     it('12. Reject invalid class routes cleanly (/syllabus/class-7, /syllabus/invalid-class)', async () => {
       await act(async () => {
         root?.render(
@@ -521,87 +524,7 @@ describe('S5 Syllabus UI & Routing Integration Tests', () => {
       expect(spyB).toHaveBeenCalledWith('10', 'Hindi Course B');
     });
 
-    it('17. Async chapter expansion: chapters expand initially when hierarchy data loads from [] to populated chapters', async () => {
-      let resolvePromise: (value: unknown) => void;
-      const asyncPromise = new Promise((resolve) => {
-        resolvePromise = resolve;
-      });
-
-      vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockReturnValue(
-        asyncPromise as ReturnType<typeof learningAPI.fetchSyllabusHierarchy>
-      );
-
-      await act(async () => {
-        root?.render(
-          <MemoryRouter initialEntries={['/syllabus/class-10/mathematics']}>
-            <Routes>
-              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
-            </Routes>
-          </MemoryRouter>
-        );
-      });
-
-      // Initially loading skeleton
-      expect(container?.querySelector('.animate-pulse')).not.toBeNull();
-
-      // Resolve async data arrival
-      await act(async () => {
-        resolvePromise({
-          data: [
-            {
-              id: 'ch-async-1',
-              chapter_number: 1,
-              chapter_name: 'Polynomials',
-              display_order: 1,
-              is_active: true,
-              syllabus_topics: [
-                {
-                  id: 'tp-async-1',
-                  chapter_id: 'ch-async-1',
-                  title: 'Zeroes of a Polynomial',
-                  topic_type: 'topic',
-                  display_order: 1,
-                  is_active: true,
-                  resources: [],
-                },
-              ],
-            },
-          ],
-          error: null,
-        });
-      });
-
-      // Chapter is rendered AND topic details inside (Zeroes of a Polynomial) are expanded
-      expect(container?.textContent).toContain('Polynomials');
-      expect(container?.textContent).toContain('Zeroes of a Polynomial');
-
-      // Expand All and Collapse All buttons are present and functional
-      const collapseAllBtn = Array.from(container?.querySelectorAll('button') || []).find(
-        (b) => b.textContent?.trim() === 'Collapse All'
-      );
-      expect(collapseAllBtn).not.toBeUndefined();
-
-      await act(async () => {
-        collapseAllBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-
-      // After Collapse All, topic content is hidden
-      expect(container?.textContent).not.toContain('Zeroes of a Polynomial');
-
-      const expandAllBtn = Array.from(container?.querySelectorAll('button') || []).find(
-        (b) => b.textContent?.trim() === 'Expand All'
-      );
-      expect(expandAllBtn).not.toBeUndefined();
-
-      await act(async () => {
-        expandAllBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-
-      // After Expand All, topic content is visible again
-      expect(container?.textContent).toContain('Zeroes of a Polynomial');
-    });
-
-    it('18. Dynamic SEO metadata updates document title and meta description tag on route changes', async () => {
+    it('17. Dynamic SEO metadata updates document title and meta description tag on route changes', async () => {
       vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
         data: [],
         error: null,

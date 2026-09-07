@@ -11,7 +11,7 @@ import { fetchSyllabusHierarchy } from '../../services/learningResourcesAPI';
 import type { SyllabusChapterHierarchy } from '../../types';
 import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
-import SyllabusHierarchyTree from './components/SyllabusHierarchyTree';
+import SyllabusFlowchart from './components/SyllabusFlowchart';
 import SyllabusSkeleton from './components/SyllabusSkeleton';
 
 export const SyllabusPage: React.FC = () => {
@@ -34,7 +34,7 @@ export const SyllabusPage: React.FC = () => {
 
     if (currentClass && resolvedSubjectName) {
       title = `${currentClass.name} ${resolvedSubjectName} Syllabus | Horizon`;
-      description = `Detailed 2026-27 syllabus hierarchy for ${currentClass.name} ${resolvedSubjectName}. Browse chapters, topics, exercises, grammar sections, and study resources.`;
+      description = `Detailed 2026-27 syllabus flowchart for ${currentClass.name} ${resolvedSubjectName}. Browse interactive chapter and topic visual maps.`;
     } else if (currentClass) {
       title = `${currentClass.name} Syllabus Subjects | Horizon`;
       description = `Browse official NCERT and CBSE subjects for ${currentClass.name}. View chapter-wise syllabus breakdowns, topics, and learning materials.`;
@@ -262,7 +262,7 @@ export const SyllabusPage: React.FC = () => {
       )}
 
       {!loading && !error && (
-        <SyllabusHierarchyTree
+        <SyllabusFlowchart
           chapters={chapters}
           subjectName={resolvedSubjectName}
           classNameTitle={currentClass.name}
