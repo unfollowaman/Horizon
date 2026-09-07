@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ResourcePage from '../ResourcePage';
 import { notesConfig, pyqConfig } from '../../../config/resourcePageConfigs';
 import * as learningResourcesAPI from '../../../services/learningResourcesAPI';
+import * as AuthContextModule from '../../../context/AuthContext';
 import type { Resource } from '../../../types';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -71,6 +72,15 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
     vi.spyOn(learningResourcesAPI, 'fetchLearningResources').mockResolvedValue({
       data: mockResources,
       error: null,
+    });
+
+    vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
+      session: null,
+      user: null,
+      profile: null,
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
     });
   });
 
@@ -155,5 +165,71 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
 
     expect(container?.textContent).toContain('Chapter 1: Resources and Development');
     expect(document.title).toContain('Geography English Medium Study Notes');
+  });
+
+  it('defaults to student profile.study_medium when visiting /notes without an explicit medium parameter', async () => {
+    vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
+      session: { user: { id: 'user-hindi' } } as unknown as AuthContextModule.Session,
+      user: { id: 'user-hindi' } as unknown as AuthContextModule.User,
+      profile: {
+        id: 'user-hindi',
+        student_class: 'Class 10',
+        study_medium: 'Hindi',
+        onboarding_completed: true,
+      },
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes']}>
+          <Routes>
+            <Route path="/notes" element={<ResourcePage config={notesConfig} />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(learningResourcesAPI.fetchLearningResources).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource_type: 'notes',
+        medium: 'hindi',
+      })
+    );
+  });
+
+  it('allows explicit URL medium parameter to override student profile medium', async () => {
+    vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
+      session: { user: { id: 'user-hindi' } } as unknown as AuthContextModule.Session,
+      user: { id: 'user-hindi' } as unknown as AuthContextModule.User,
+      profile: {
+        id: 'user-hindi',
+        student_class: 'Class 10',
+        study_medium: 'Hindi',
+        onboarding_completed: true,
+      },
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes/class-10/english-medium/geography']}>
+          <Routes>
+            <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<ResourcePage config={notesConfig} />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(learningResourcesAPI.fetchLearningResources).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource_type: 'notes',
+        medium: 'english',
+      })
+    );
   });
 });

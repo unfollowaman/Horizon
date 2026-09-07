@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, Fragment } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { Resource, ResourceType } from '../../types';
 import { fetchLearningResources } from '../../services/learningResourcesAPI';
+import { useAuth } from '../../context/AuthContext';
+import { normalizeMediumValue } from '../../utils/resourceHelper';
 import {
   slugToClass,
   slugToMedium,
@@ -45,6 +47,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams<{ classSlug?: string; mediumSlug?: string; subjectSlug?: string }>();
+  const { profile, loading: authLoading } = useAuth();
 
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,12 +172,27 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   };
 
   useEffect(() => {
+    if (authLoading) return;
+
+    let isMounted = true;
+
     const fetchResources = async () => {
       setLoading(true);
-      const { data, error } = await fetchLearningResources({
+
+      const fetchFilters: Parameters<typeof fetchLearningResources>[0] = {
         resource_type: config.resourceType,
-        includeChapters: config.includeChapters
-      });
+        includeChapters: config.includeChapters,
+      };
+
+      if (config.resourceType === 'notes' && config.thirdFilterType === 'medium' && selectedThirdFilter) {
+        if (selectedThirdFilter !== 'Mediums' && selectedThirdFilter !== 'All Mediums') {
+          fetchFilters.medium = normalizeMediumValue(selectedThirdFilter);
+        }
+      }
+
+      const { data, error } = await fetchLearningResources(fetchFilters);
+
+      if (!isMounted) return;
 
       if (error) {
         console.error('Error fetching resources:', error);
@@ -186,7 +204,11 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     };
 
     fetchResources();
-  }, [config.resourceType, config.includeChapters]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [config.resourceType, config.includeChapters, config.thirdFilterType, selectedThirdFilter, authLoading]);
 
   const uniqueClasses = useMemo(() => {
     const classes = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
@@ -250,8 +272,18 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     if (config.thirdFilterType === 'medium') {
       if (qMedium) {
         targetThirdFilter = slugToMedium(qMedium, uniqueThirdFilterValues) || '';
-      } else if (pathMediumSlug && isMediumSlug(pathMediumSlug) && pathMediumSlug !== 'all-mediums') {
-        targetThirdFilter = slugToMedium(pathMediumSlug, uniqueThirdFilterValues) || '';
+      } else if (pathMediumSlug && isMediumSlug(pathMediumSlug)) {
+        if (pathMediumSlug === 'all-mediums') {
+          targetThirdFilter = '';
+        } else {
+          targetThirdFilter = slugToMedium(pathMediumSlug, uniqueThirdFilterValues) || '';
+        }
+      } else {
+        // Only default to student profile study_medium for notes resources
+        if (config.resourceType === 'notes' && profile?.study_medium) {
+          const profileMedium = profile.study_medium.trim();
+          targetThirdFilter = profileMedium.charAt(0).toUpperCase() + profileMedium.slice(1);
+        }
       }
 
       if (qSubject) {
