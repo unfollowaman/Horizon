@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ResourcePage from '../ResourcePage';
 import { notesConfig, pyqConfig } from '../../../config/resourcePageConfigs';
 import * as learningResourcesAPI from '../../../services/learningResourcesAPI';
+import type { Session, User } from '@supabase/supabase-js';
 import * as AuthContextModule from '../../../context/AuthContext';
 import type { Resource } from '../../../types';
 
@@ -169,8 +170,8 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
 
   it('defaults to student profile.study_medium when visiting /notes without an explicit medium parameter', async () => {
     vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
-      session: { user: { id: 'user-hindi' } } as unknown as AuthContextModule.Session,
-      user: { id: 'user-hindi' } as unknown as AuthContextModule.User,
+      session: { user: { id: 'user-hindi' } } as unknown as Session,
+      user: { id: 'user-hindi' } as unknown as User,
       profile: {
         id: 'user-hindi',
         student_class: 'Class 10',
@@ -202,8 +203,8 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
 
   it('allows explicit URL medium parameter to override student profile medium', async () => {
     vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
-      session: { user: { id: 'user-hindi' } } as unknown as AuthContextModule.Session,
-      user: { id: 'user-hindi' } as unknown as AuthContextModule.User,
+      session: { user: { id: 'user-hindi' } } as unknown as Session,
+      user: { id: 'user-hindi' } as unknown as User,
       profile: {
         id: 'user-hindi',
         student_class: 'Class 10',
