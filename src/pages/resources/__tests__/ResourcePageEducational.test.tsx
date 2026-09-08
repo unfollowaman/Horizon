@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import ResourcePage from '../ResourcePage';
 import { pyqConfig, notesConfig } from '../../../config/resourcePageConfigs';
 import * as learningAPI from '../../../services/learningResourcesAPI';
+import * as AuthContextModule from '../../../context/AuthContext';
 import type { Resource } from '../../../types';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -94,6 +95,15 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn()
       }))
+    });
+
+    vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
+      session: null,
+      user: null,
+      profile: null,
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
     });
   });
 
