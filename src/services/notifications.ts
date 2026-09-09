@@ -9,9 +9,16 @@
  * - In-app notification bell / unread count management
  */
 
-export const requestNotificationPermission = async () => {
-  // TODO: Request browser notification permission using Notification API
-  return 'default'; // 'granted' | 'denied' | 'default'
+export const requestNotificationPermission = async (): Promise<NotificationPermission> => {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    return 'denied';
+  }
+
+  if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+    return Notification.permission;
+  }
+
+  return await Notification.requestPermission();
 };
 
 export const subscribeToPushNotifications = async () => {
