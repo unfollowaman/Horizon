@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import {
   requestNotificationPermission,
   subscribeToPushNotifications,
@@ -8,10 +8,71 @@ import {
 
 describe('notifications service', () => {
   describe('requestNotificationPermission', () => {
-    it('returns "default"', async () => {
-      const result = await requestNotificationPermission();
+    const originalNotification = window.Notification;
 
-      expect(result).toBe('default');
+    afterEach(() => {
+      if (originalNotification) {
+        window.Notification = originalNotification;
+      } else {
+        // @ts-expect-error cleanup notification property
+        delete window.Notification;
+      }
+    });
+
+    it('returns "denied" if Notification API is not supported in window', async () => {
+      // @ts-expect-error property deletion for test
+      delete window.Notification;
+
+      const result = await requestNotificationPermission();
+      expect(result).toBe('denied');
+    });
+
+    it('returns existing permission if already "granted"', async () => {
+      const mockRequestPermission = vi.fn();
+      Object.defineProperty(window, 'Notification', {
+        value: {
+          permission: 'granted',
+          requestPermission: mockRequestPermission
+        },
+        writable: true,
+        configurable: true
+      });
+
+      const result = await requestNotificationPermission();
+      expect(result).toBe('granted');
+      expect(mockRequestPermission).not.toHaveBeenCalled();
+    });
+
+    it('returns existing permission if already "denied"', async () => {
+      const mockRequestPermission = vi.fn();
+      Object.defineProperty(window, 'Notification', {
+        value: {
+          permission: 'denied',
+          requestPermission: mockRequestPermission
+        },
+        writable: true,
+        configurable: true
+      });
+
+      const result = await requestNotificationPermission();
+      expect(result).toBe('denied');
+      expect(mockRequestPermission).not.toHaveBeenCalled();
+    });
+
+    it('calls Notification.requestPermission() when permission is "default" and returns result', async () => {
+      const mockRequestPermission = vi.fn().mockResolvedValue('granted');
+      Object.defineProperty(window, 'Notification', {
+        value: {
+          permission: 'default',
+          requestPermission: mockRequestPermission
+        },
+        writable: true,
+        configurable: true
+      });
+
+      const result = await requestNotificationPermission();
+      expect(mockRequestPermission).toHaveBeenCalledTimes(1);
+      expect(result).toBe('granted');
     });
   });
 
