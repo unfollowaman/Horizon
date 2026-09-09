@@ -38,21 +38,23 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
       }
 
       try {
-        // Fetch syllabus: all chapters for the student's class
+        // Fetch syllabus and user chapter completions concurrently
         const normalizedClass = normalizeClassValue(profile.student_class);
-        const { data: syllabusData, error: syllabusError } = await fetchSyllabusChapters(
-          normalizedClass,
-          normalizeMediumValue(profile.study_medium)
-        );
+        const [
+          { data: syllabusData, error: syllabusError },
+          { data: completionsData, error: completionsError }
+        ] = await Promise.all([
+          fetchSyllabusChapters(
+            normalizedClass,
+            normalizeMediumValue(profile.study_medium)
+          ),
+          supabase
+            .from('chapter_completion')
+            .select('chapter_id')
+            .eq('user_id', user.id)
+        ]);
 
         if (syllabusError) throw syllabusError;
-
-        // Fetch completed chapters for the user
-        const { data: completionsData, error: completionsError } = await supabase
-          .from('chapter_completion')
-          .select('chapter_id')
-          .eq('user_id', user.id);
-
         if (completionsError) throw completionsError;
 
         const allTimeCompletedChapters = completionsData ? completionsData.length : 0;
