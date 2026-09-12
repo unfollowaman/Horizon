@@ -68,7 +68,7 @@ export const SYLLABUS_NAV_CONFIG: ResourceCategoryConfig = {
   id: 'syllabus',
   title: 'Syllabus',
   description: 'NCERT & CBSE syllabus directory and hierarchy.',
-  path: '/syllabus',
+  path: '/syllabus/',
   isComingSoon: false,
   navLabel: 'Syllabus',
   showOnMobile: true,
