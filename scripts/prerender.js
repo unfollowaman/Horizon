@@ -35,6 +35,64 @@ export const RESOURCE_CATEGORIES = {
   pyq: { path: '/library' },
 };
 
+export const SYLLABUS_CLASSES = [
+  {
+    id: '8',
+    name: 'Class 8',
+    slug: 'class-8',
+    description: 'NCERT & CBSE syllabus breakdown for Class 8 subjects.',
+  },
+  {
+    id: '9',
+    name: 'Class 9',
+    slug: 'class-9',
+    description: 'NCERT & NCF-SE 2026-27 framework including Kaveri, Ganga & Shardā readers.',
+  },
+  {
+    id: '10',
+    name: 'Class 10',
+    slug: 'class-10',
+    description: 'Complete board examination syllabus for Class 10 subjects including Hindi Course A & B.',
+  },
+];
+
+export const SYLLABUS_SUBJECTS_BY_CLASS = {
+  '8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit'],
+  '9': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit'],
+  '10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi Course A', 'Hindi Course B', 'Sanskrit'],
+};
+
+export function generateSyllabusUrls() {
+  const routes = [];
+
+  routes.push({
+    path: '/syllabus',
+    type: 'landing',
+  });
+
+  SYLLABUS_CLASSES.forEach((cls) => {
+    routes.push({
+      path: `/syllabus/${cls.slug}`,
+      type: 'class',
+      classConfig: cls,
+    });
+
+    const subjects = SYLLABUS_SUBJECTS_BY_CLASS[cls.id] || [];
+    subjects.forEach((subj) => {
+      const sSlug = subjectToSlug(subj);
+      routes.push({
+        path: `/syllabus/${cls.slug}/${sSlug}`,
+        type: 'subject',
+        classConfig: cls,
+        subjectName: subj,
+        subjectSlug: sSlug,
+      });
+    });
+  });
+
+  return routes;
+}
+
 export function classToSlug(classVal) {
   if (!classVal) return null;
   const match = String(classVal).match(/\d+/);
@@ -1402,6 +1460,416 @@ export async function main() {
   }
 
   console.log(`Pre-rendering complete! Successfully generated ${categoryCount} static category listing pages.`);
+
+  console.log('Pre-rendering public syllabus routes...');
+  const syllabusRoutes = generateSyllabusUrls();
+  let syllabusCount = 0;
+
+  for (const sylConfig of syllabusRoutes) {
+    let pageHtml = '';
+    if (sylConfig.type === 'landing') {
+      pageHtml = generateSyllabusLandingHtml(templateHtml);
+    } else if (sylConfig.type === 'class') {
+      const subjects = SYLLABUS_SUBJECTS_BY_CLASS[sylConfig.classConfig.id] || [];
+      pageHtml = generateSyllabusClassHtml(sylConfig.classConfig, subjects, templateHtml);
+    } else if (sylConfig.type === 'subject') {
+      const chapters = await fetchSyllabusHierarchyForPrerender(supabase, sylConfig.classConfig.id, sylConfig.subjectName);
+      pageHtml = generateSyllabusSubjectHtml(sylConfig.classConfig, sylConfig.subjectName, sylConfig.subjectSlug, chapters, templateHtml);
+    }
+
+    const relPath = sylConfig.path.startsWith('/') ? sylConfig.path.slice(1) : sylConfig.path;
+    const sylDir = path.join(distDir, relPath);
+    fs.mkdirSync(sylDir, { recursive: true });
+
+    const sylOutputFile = path.join(sylDir, 'index.html');
+    fs.writeFileSync(sylOutputFile, pageHtml, 'utf-8');
+    syllabusCount++;
+  }
+
+  console.log(`Pre-rendering complete! Successfully generated ${syllabusCount} static syllabus pages.`);
+}
+
+export async function fetchSyllabusHierarchyForPrerender(supabase, studentClass, subject) {
+  const normalizedClass = String(studentClass).replace(/^class\s+/i, '').trim();
+
+  const { data, error } = await supabase
+    .from('chapters')
+    .select(`
+      *,
+      syllabus_topics (
+        *,
+        syllabus_topic_resources (
+          resource_id,
+          learning_resources (*)
+        )
+      )
+    `)
+    .or(`student_class.eq.${normalizedClass},student_class.eq.Class ${normalizedClass}`)
+    .eq('subject', subject)
+    .eq('is_active', true)
+    .order('chapter_number', { ascending: true });
+
+  if (error) {
+    console.warn(`Warning: Could not fetch syllabus hierarchy for Class ${normalizedClass} ${subject}:`, error.message);
+    return [];
+  }
+
+  return (data || []).map((chapter) => {
+    const rawTopics = chapter.syllabus_topics || [];
+    const sortedTopics = [...rawTopics].sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+    const syllabusTopics = sortedTopics.map((topic) => {
+      const topicResources = (topic.syllabus_topic_resources || [])
+        .map((tr) => (tr.learning_resources ? mapLearningResource(tr.learning_resources) : null))
+        .filter((r) => r !== null);
+
+      return {
+        id: topic.id,
+        chapter_id: topic.chapter_id,
+        title: topic.title,
+        description: topic.description,
+        topic_type: topic.topic_type,
+        display_order: topic.display_order,
+        is_active: topic.is_active,
+        created_at: topic.created_at,
+        resources: topicResources,
+      };
+    });
+
+    return {
+      ...chapter,
+      syllabus_topics: syllabusTopics,
+    };
+  });
+}
+
+export function generateSyllabusLandingHtml(templateHtml) {
+  const pageTitle = 'CBSE & NCERT Syllabus Directory | Horizon';
+  const pageDesc = 'Explore complete CBSE & NCERT syllabus breakdown for Class 8, Class 9, and Class 10 subjects including chapters, topics, exercises, and linked study resources.';
+  const canonicalUrl = `${BASE_URL}/syllabus/`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    description: pageDesc,
+    url: canonicalUrl,
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: BASE_URL,
+    },
+  };
+
+  const classCards = SYLLABUS_CLASSES.map(cls => `
+    <div class="neu-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+      <a href="/syllabus/${cls.slug}/" class="block no-underline text-ink group min-w-0">
+        <div class="space-y-3">
+          <div class="w-12 h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-xl text-[#E91E8C] group-hover:scale-105 transition-transform">
+            ${escapeHtml(cls.id)}
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-ink group-hover:text-[#E91E8C] transition-colors m-0">
+            ${escapeHtml(cls.name)}
+          </h2>
+          <p class="text-xs sm:text-sm text-ink/70 leading-relaxed m-0">
+            ${escapeHtml(cls.description)}
+          </p>
+        </div>
+        <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-[#E91E8C] pt-2 mt-4 border-t border-ink/5">
+          <span>Explore Subjects</span>
+          <span class="transition-transform group-hover:translate-x-1.5">&rarr;</span>
+        </div>
+      </a>
+    </div>
+  `).join('');
+
+  const appContentHtml = wrapInMainLayout(`
+    <div class="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
+      <div class="space-y-8 max-w-5xl mx-auto min-w-0">
+        <header class="neu-card p-6 sm:p-10 rounded-2xl text-center space-y-3">
+          <span class="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase">
+            CBSE &amp; NCERT SYLLABUS DIRECTORY
+          </span>
+          <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-ink leading-tight m-0">
+            Explore <span class="text-gradient">Syllabus</span> Hierarchy
+          </h1>
+          <p class="text-sm sm:text-lg text-ink/80 max-w-2xl mx-auto leading-relaxed m-0">
+            Detailed chapter-by-chapter topics, exercise structures, and grammar sections mapped directly to official NCERT standards and Horizon learning resources.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          ${classCards}
+        </div>
+      </div>
+    </div>
+  `);
+
+  let outputHtml = templateHtml;
+  outputHtml = outputHtml.replace(/<title>.*?<\/title>/i, `<title>${escapeHtml(pageTitle)}</title>`);
+
+  const headAdditions = `
+    <meta name="description" content="${escapeHtml(pageDesc)}">
+    <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+    </script>
+  `;
+
+  outputHtml = outputHtml.replace('</head>', `${headAdditions}\n  </head>`);
+  outputHtml = outputHtml.replace('<div id="root"></div>', `<div id="root">${appContentHtml}</div>`);
+
+  assertSecurityCompliance(outputHtml, {});
+  return outputHtml;
+}
+
+export function generateSyllabusClassHtml(classConfig, subjects, templateHtml) {
+  const pageTitle = `${classConfig.name} Syllabus Subjects | Horizon`;
+  const pageDesc = `Browse official NCERT and CBSE subjects for ${classConfig.name}. View chapter-wise syllabus breakdowns, topics, and learning materials.`;
+  const canonicalUrl = `${BASE_URL}/syllabus/${classConfig.slug}/`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    description: pageDesc,
+    url: canonicalUrl,
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: BASE_URL,
+    },
+  };
+
+  const subjectCards = subjects.map(subj => {
+    const sSlug = subjectToSlug(subj);
+    return `
+      <div class="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4">
+        <a href="/syllabus/${classConfig.slug}/${sSlug}/" class="block no-underline text-ink group min-w-0">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/5 text-ink/80 uppercase">
+                ${escapeHtml(classConfig.name)}
+              </span>
+              <span class="w-2 h-2 rounded-full bg-[#E91E8C]"></span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-ink group-hover:text-[#E91E8C] transition-colors m-0 leading-snug">
+              ${escapeHtml(subj)}
+            </h2>
+          </div>
+          <div class="flex items-center justify-between text-xs font-bold text-[#E91E8C] pt-2 mt-4 border-t border-ink/5">
+            <span>View Chapter Hierarchy</span>
+            <span class="transition-transform group-hover:translate-x-1.5">&rarr;</span>
+          </div>
+        </a>
+      </div>
+    `;
+  }).join('');
+
+  const appContentHtml = wrapInMainLayout(`
+    <div class="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
+      <div class="space-y-8 max-w-5xl mx-auto min-w-0">
+        <div class="flex justify-between items-center w-full min-w-0">
+          <a href="/syllabus/" class="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink no-underline" aria-label="Back to Classes">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <span class="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase">
+            ${escapeHtml(classConfig.name)} SYLLABUS
+          </span>
+        </div>
+
+        <header class="neu-card p-6 sm:p-8 rounded-2xl text-center space-y-2">
+          <h1 class="text-2xl sm:text-4xl font-bold text-ink m-0">
+            Select Subject for <span class="text-gradient">${escapeHtml(classConfig.name)}</span>
+          </h1>
+          <p class="text-xs sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
+            Choose a subject below to view its complete chapter hierarchy, subtopics, and practice exercises.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          ${subjectCards}
+        </div>
+      </div>
+    </div>
+  `);
+
+  let outputHtml = templateHtml;
+  outputHtml = outputHtml.replace(/<title>.*?<\/title>/i, `<title>${escapeHtml(pageTitle)}</title>`);
+
+  const headAdditions = `
+    <meta name="description" content="${escapeHtml(pageDesc)}">
+    <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+    </script>
+  `;
+
+  outputHtml = outputHtml.replace('</head>', `${headAdditions}\n  </head>`);
+  outputHtml = outputHtml.replace('<div id="root"></div>', `<div id="root">${appContentHtml}</div>`);
+
+  assertSecurityCompliance(outputHtml, {});
+  return outputHtml;
+}
+
+export function generateSyllabusSubjectHtml(classConfig, subjectName, subjectSlug, chapters = [], templateHtml) {
+  const pageTitle = `${classConfig.name} ${subjectName} Syllabus | Horizon`;
+  const pageDesc = `Detailed 2026-27 syllabus flowchart for ${classConfig.name} ${subjectName}. Browse interactive chapter and topic visual maps.`;
+  const canonicalUrl = `${BASE_URL}/syllabus/${classConfig.slug}/${subjectSlug}/`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalResource',
+    name: `${classConfig.name} ${subjectName} Syllabus`,
+    description: pageDesc,
+    url: canonicalUrl,
+    educationalLevel: classConfig.name,
+    about: {
+      '@type': 'Thing',
+      name: subjectName,
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      url: BASE_URL,
+    },
+  };
+
+  let chaptersContentHtml = '';
+
+  if (chapters && chapters.length > 0) {
+    chaptersContentHtml = chapters.map(ch => {
+      const chNum = ch.chapter_number;
+      const chTitle = ch.chapter_name;
+      const chDesc = ch.chapter_summary || ch.description;
+
+      const topics = ch.syllabus_topics || [];
+      let topicsHtml = '';
+
+      if (topics.length > 0) {
+        topicsHtml = topics.map(t => {
+          const typeBadgeClass = t.topic_type === 'grammar'
+            ? 'bg-purple-100 text-purple-800 border-purple-200'
+            : t.topic_type === 'exercise'
+            ? 'bg-blue-100 text-blue-800 border-blue-200'
+            : 'bg-black/5 text-ink/80 border-black/10';
+
+          const typeLabel = t.topic_type === 'grammar'
+            ? 'Grammar'
+            : t.topic_type === 'exercise'
+            ? 'Exercise'
+            : t.topic_type
+            ? t.topic_type.charAt(0).toUpperCase() + t.topic_type.slice(1)
+            : 'Topic';
+
+          const resources = t.resources || [];
+          let resourceLinksHtml = '';
+
+          if (resources.length > 0) {
+            resourceLinksHtml = resources.map(res => `
+              <a href="/resource/${escapeHtml(res.id)}/" class="inline-flex items-center gap-1.5 px-3 py-1.5 font-bold text-xs text-white bg-gradient-to-r from-[#E91E8C] to-[#8B0A50] rounded-lg shadow-sm hover:opacity-95 transition-all no-underline shrink-0" title="View ${escapeHtml(res.medium || '')} notes for ${escapeHtml(t.title)}">
+                <span>View Notes</span>
+                <span class="text-[10px] uppercase opacity-90 px-1 py-0.2 rounded bg-black/20 font-semibold">
+                  ${res.medium === 'hindi' ? 'Hindi' : 'English'}
+                </span>
+              </a>
+            `).join('');
+          }
+
+          return `
+            <div class="neu-recessed p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all min-w-0">
+              <div class="space-y-1 min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap min-w-0">
+                  <span class="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0 ${typeBadgeClass}">
+                    ${escapeHtml(typeLabel)}
+                  </span>
+                  <h4 class="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1">
+                    ${escapeHtml(t.title)}
+                  </h4>
+                </div>
+                ${t.description ? `<p class="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 pt-0.5 break-words">${escapeHtml(t.description)}</p>` : ''}
+              </div>
+              ${resourceLinksHtml ? `<div class="flex items-center gap-2 flex-wrap shrink-0 pt-1 sm:pt-0">${resourceLinksHtml}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+      } else {
+        topicsHtml = `<p class="text-xs text-ink/60 m-0">No subtopics recorded for this chapter.</p>`;
+      }
+
+      return `
+        <section class="neu-card rounded-2xl p-4 sm:p-6 space-y-4 min-w-0 w-full">
+          <header class="space-y-1 pb-3 border-b border-ink/10">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-[#E91E8C] uppercase tracking-wider">Chapter ${escapeHtml(String(chNum))}</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-ink m-0 break-words">${escapeHtml(chTitle)}</h2>
+            ${chDesc ? `<p class="text-xs sm:text-sm text-ink/70 m-0 pt-1 break-words">${escapeHtml(chDesc)}</p>` : ''}
+          </header>
+          <div class="space-y-2.5 min-w-0">
+            ${topicsHtml}
+          </div>
+        </section>
+      `;
+    }).join('');
+  } else {
+    chaptersContentHtml = `
+      <div class="neu-card rounded-2xl p-8 text-center space-y-3">
+        <h2 class="text-xl font-bold text-ink m-0">Syllabus Overview</h2>
+        <p class="text-sm text-ink/70 m-0">No chapters found for ${escapeHtml(classConfig.name)} ${escapeHtml(subjectName)}.</p>
+      </div>
+    `;
+  }
+
+  const appContentHtml = wrapInMainLayout(`
+    <div class="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 space-y-6">
+      <div class="flex justify-between items-center w-full min-w-0">
+        <a href="/syllabus/${classConfig.slug}/" class="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink no-underline" aria-label="Back to Subject List">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+
+        <span class="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase truncate">
+          ${escapeHtml(classConfig.name)} — ${escapeHtml(subjectName)}
+        </span>
+      </div>
+
+      <header class="neu-card p-6 sm:p-8 rounded-2xl space-y-2 text-center">
+        <h1 class="text-2xl sm:text-4xl font-bold text-ink m-0">
+          ${escapeHtml(classConfig.name)} <span class="text-gradient">${escapeHtml(subjectName)}</span> Syllabus
+        </h1>
+        <p class="text-xs sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
+          Chapter-by-chapter topics, exercises, and linked study resources according to the 2026-27 curriculum.
+        </p>
+      </header>
+
+      <div class="space-y-6 min-w-0 w-full">
+        ${chaptersContentHtml}
+      </div>
+    </div>
+  `);
+
+  let outputHtml = templateHtml;
+  outputHtml = outputHtml.replace(/<title>.*?<\/title>/i, `<title>${escapeHtml(pageTitle)}</title>`);
+
+  const headAdditions = `
+    <meta name="description" content="${escapeHtml(pageDesc)}">
+    <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+    </script>
+  `;
+
+  outputHtml = outputHtml.replace('</head>', `${headAdditions}\n  </head>`);
+  outputHtml = outputHtml.replace('<div id="root"></div>', `<div id="root">${appContentHtml}</div>`);
+
+  assertSecurityCompliance(outputHtml, {});
+  return outputHtml;
 }
 
 export function generateCategoryUrls(resources = []) {
