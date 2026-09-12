@@ -10,6 +10,11 @@ import {
   filterResourcesForCategory,
   generateCategoryHtml,
   ensureTrailingSlash,
+  generateSyllabusUrls,
+  generateSyllabusLandingHtml,
+  generateSyllabusClassHtml,
+  generateSyllabusSubjectHtml,
+  SYLLABUS_CLASSES,
 } from '../prerender.js';
 
 describe('prerender script unit tests', () => {
@@ -339,6 +344,90 @@ describe('prerender script unit tests', () => {
 
     expect(html).toContain('No previous year papers found.');
     expect(html).toContain('Try selecting a different class, subject, or year.');
+    expect(() => assertSecurityCompliance(html)).not.toThrow();
+  });
+
+  it('enumerates exactly 23 public syllabus routes with trailing slash paths', () => {
+    const routes = generateSyllabusUrls();
+    expect(routes).toHaveLength(23);
+
+    const paths = routes.map((r) => r.path);
+    expect(paths).toContain('/syllabus');
+    expect(paths).toContain('/syllabus/class-8');
+    expect(paths).toContain('/syllabus/class-9');
+    expect(paths).toContain('/syllabus/class-10');
+    expect(paths).toContain('/syllabus/class-10/science');
+    expect(paths).toContain('/syllabus/class-10/hindi-course-a');
+    expect(paths).toContain('/syllabus/class-10/hindi-course-b');
+  });
+
+  it('prerenders syllabus landing page /syllabus/ with crawlable class links and metadata', () => {
+    const html = generateSyllabusLandingHtml(sampleTemplateHtml);
+
+    expect(html).toContain('<title>CBSE &amp; NCERT Syllabus Directory | Horizon</title>');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/syllabus/">');
+    expect(html).toContain('CBSE &amp; NCERT SYLLABUS DIRECTORY');
+    expect(html).toContain('Explore <span class="text-gradient">Syllabus</span> Hierarchy');
+    expect(html).toContain('href="/syllabus/class-8/"');
+    expect(html).toContain('href="/syllabus/class-9/"');
+    expect(html).toContain('href="/syllabus/class-10/"');
+    expect(() => assertSecurityCompliance(html)).not.toThrow();
+  });
+
+  it('prerenders class syllabus selector page /syllabus/class-10/ with subject links', () => {
+    const classConfig = SYLLABUS_CLASSES.find((c) => c.id === '10')!;
+    const subjects = ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi Course A', 'Hindi Course B', 'Sanskrit'];
+
+    const html = generateSyllabusClassHtml(classConfig, subjects, sampleTemplateHtml);
+
+    expect(html).toContain('<title>Class 10 Syllabus Subjects | Horizon</title>');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/syllabus/class-10/">');
+    expect(html).toContain('Select Subject for <span class="text-gradient">Class 10</span>');
+    expect(html).toContain('href="/syllabus/class-10/science/"');
+    expect(html).toContain('href="/syllabus/class-10/hindi-course-a/"');
+    expect(html).toContain('href="/syllabus/"');
+    expect(() => assertSecurityCompliance(html)).not.toThrow();
+  });
+
+  it('prerenders subject syllabus hierarchy page /syllabus/class-10/science/ with H1, chapter nodes, and resource links', () => {
+    const classConfig = SYLLABUS_CLASSES.find((c) => c.id === '10')!;
+    const mockChapters = [
+      {
+        id: 'c1',
+        chapter_number: 1,
+        chapter_name: 'Chemical Reactions and Equations',
+        chapter_summary: 'Study of chemical changes and balanced equations.',
+        syllabus_topics: [
+          {
+            id: 't1',
+            chapter_id: 'c1',
+            title: 'Chemical Changes and Writing Balanced Equations',
+            description: 'Writing skeleton and balanced equations.',
+            topic_type: 'topic',
+            display_order: 1,
+            is_active: true,
+            resources: [
+              {
+                id: '87',
+                title: 'Chemical Reactions Notes',
+                medium: 'english',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const html = generateSyllabusSubjectHtml(classConfig, 'Science', 'science', mockChapters, sampleTemplateHtml);
+
+    expect(html).toContain('<title>Class 10 Science Syllabus | Horizon</title>');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/syllabus/class-10/science/">');
+    expect(html).toContain('Class 10 <span class="text-gradient">Science</span> Syllabus');
+    expect(html).toContain('Chapter 1');
+    expect(html).toContain('Chemical Reactions and Equations');
+    expect(html).toContain('Chemical Changes and Writing Balanced Equations');
+    expect(html).toContain('href="/resource/87/"');
+    expect(html).toContain('href="/syllabus/class-10/"');
     expect(() => assertSecurityCompliance(html)).not.toThrow();
   });
 });
