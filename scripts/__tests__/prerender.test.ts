@@ -9,6 +9,7 @@ import {
   generateCategoryUrls,
   filterResourcesForCategory,
   generateCategoryHtml,
+  ensureTrailingSlash,
 } from '../prerender.js';
 
 describe('prerender script unit tests', () => {
@@ -123,13 +124,23 @@ describe('prerender script unit tests', () => {
     expect(html).toContain('HINDI MEDIUM');
   });
 
+  it('ensures trailing slashes correctly on path and URL strings', () => {
+    expect(ensureTrailingSlash('/resource/87')).toBe('/resource/87/');
+    expect(ensureTrailingSlash('/resource/87/')).toBe('/resource/87/');
+    expect(ensureTrailingSlash('/library')).toBe('/library/');
+    expect(ensureTrailingSlash('/')).toBe('/');
+    expect(ensureTrailingSlash('https://unfollowaman.tech')).toBe('https://unfollowaman.tech/');
+    expect(ensureTrailingSlash('https://unfollowaman.tech/resource/87')).toBe('https://unfollowaman.tech/resource/87/');
+    expect(ensureTrailingSlash('/notes?medium=english-medium')).toBe('/notes/?medium=english-medium');
+  });
+
   it('generates rich static HTML for study notes without leaking protected info', () => {
     const mappedNote = mapLearningResource(sampleNoteResourceRow);
     const html = generateResourceHtml(mappedNote, sampleTemplateHtml, []);
 
     expect(html).toContain('<title>Chapter 1: Cell Biology Notes | Class 10 Science | Horizon</title>');
     expect(html).toContain('<meta name="description" content="Detailed study note covering cellular structure and organelles.">');
-    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/resource/56">');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/resource/56/">');
     expect(html).toContain('"@type": "EducationalResource"');
     expect(html).toContain('Chapter 1: Cell Biology Notes');
     expect(html).toContain('Class 10');
@@ -192,8 +203,14 @@ describe('prerender script unit tests', () => {
       expect(html).toContain(`<title>${escapeHtml(pageConfig.title)}</title>`);
       expect(html).toContain(`<meta name="description" content="${escapeHtml(pageConfig.description)}">`);
 
-      const expectedCanonical = `https://unfollowaman.tech${pageConfig.path === '/' ? '' : pageConfig.path}`;
+      const expectedCanonical = `https://unfollowaman.tech${pageConfig.path === '/' ? '/' : `${pageConfig.path}/`}`;
       expect(html).toContain(`<link rel="canonical" href="${expectedCanonical}">`);
+      if (pageConfig.path === '/') {
+        expect(html).toContain('href="/library/"');
+        expect(html).toContain('href="/notes/"');
+        expect(html).toContain('href="/about/"');
+        expect(html).toContain('href="/contact/"');
+      }
 
       if (pageConfig.jsonLd) {
         expect(html).toContain('"@context": "https://schema.org"');
@@ -235,14 +252,14 @@ describe('prerender script unit tests', () => {
     const categoryUrls = generateCategoryUrls(sampleResources);
     const paths = categoryUrls.map(c => c.path);
 
-    expect(paths).toContain('/library');
-    expect(paths).toContain('/notes');
-    expect(paths).toContain('/notes/class-10');
-    expect(paths).toContain('/notes/class-10/english-medium');
-    expect(paths).toContain('/notes/class-10/english-medium/science');
-    expect(paths).toContain('/library/class-12');
-    expect(paths).toContain('/library/class-12/hindi-medium');
-    expect(paths).toContain('/library/class-12/hindi-medium/history');
+    expect(paths).toContain('/library/');
+    expect(paths).toContain('/notes/');
+    expect(paths).toContain('/notes/class-10/');
+    expect(paths).toContain('/notes/class-10/english-medium/');
+    expect(paths).toContain('/notes/class-10/english-medium/science/');
+    expect(paths).toContain('/library/class-12/');
+    expect(paths).toContain('/library/class-12/hindi-medium/');
+    expect(paths).toContain('/library/class-12/hindi-medium/history/');
   });
 
   it('filters resources for category route correctly', () => {
@@ -295,12 +312,12 @@ describe('prerender script unit tests', () => {
 
     expect(html).toContain('<title>Previous Year Question Papers (PYQs) | Horizon - Free Student Library</title>');
     expect(html).toContain('<meta name="description" content="Access free previous year question papers (PYQs) for Class 8 to Class 12. Practice past exam papers by class, subject, and year to improve exam preparation and performance.">');
-    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/library">');
+    expect(html).toContain('<link rel="canonical" href="https://unfollowaman.tech/library/">');
     expect(html).toContain('"@type": "CollectionPage"');
     expect(html).toContain('PYQ PAPERS');
     expect(html).toContain('Horizon Previous Year Question Papers (PYQs)');
     expect(html).toContain('Class 12 History PYQ');
-    expect(html).toContain('href="/resource/57"');
+    expect(html).toContain('href="/resource/57/"');
 
     expect(() => assertSecurityCompliance(html)).not.toThrow();
   });

@@ -11,6 +11,22 @@ const __dirname = path.dirname(__filename);
 
 export const BASE_URL = 'https://unfollowaman.tech';
 
+export function ensureTrailingSlash(pathOrUrl) {
+  if (!pathOrUrl) return '/';
+  const queryOrHashIndex = pathOrUrl.search(/[?#]/);
+  if (queryOrHashIndex !== -1) {
+    const base = pathOrUrl.slice(0, queryOrHashIndex);
+    const suffix = pathOrUrl.slice(queryOrHashIndex);
+    if (base === '' || base === '/') return '/' + suffix;
+    const cleanBase = base.endsWith('/') ? base : `${base}/`;
+    return cleanBase + suffix;
+  }
+  if (pathOrUrl === '/' || pathOrUrl === BASE_URL || pathOrUrl === `${BASE_URL}/`) {
+    return pathOrUrl === BASE_URL ? `${BASE_URL}/` : pathOrUrl.endsWith('/') ? pathOrUrl : `${pathOrUrl}/`;
+  }
+  return pathOrUrl.endsWith('/') ? pathOrUrl : `${pathOrUrl}/`;
+}
+
 export const RESOURCE_CATEGORIES = {
   notes: { path: '/notes' },
   revision_sheets: { path: '/library' },
@@ -49,15 +65,15 @@ export function buildCategoryUrl({ basePath, studentClass, medium, subject, year
 
   if (cSlug) {
     if (mSlug && sSlug) {
-      return `${basePath}/${cSlug}/${mSlug}/${sSlug}`;
+      return ensureTrailingSlash(`${basePath}/${cSlug}/${mSlug}/${sSlug}`);
     }
     if (mSlug) {
-      return `${basePath}/${cSlug}/${mSlug}`;
+      return ensureTrailingSlash(`${basePath}/${cSlug}/${mSlug}`);
     }
     if (sSlug) {
-      return `${basePath}/${cSlug}/all-mediums/${sSlug}`;
+      return ensureTrailingSlash(`${basePath}/${cSlug}/all-mediums/${sSlug}`);
     }
-    return `${basePath}/${cSlug}`;
+    return ensureTrailingSlash(`${basePath}/${cSlug}`);
   }
 
   const queryParams = new URLSearchParams();
@@ -66,7 +82,8 @@ export function buildCategoryUrl({ basePath, studentClass, medium, subject, year
   if (year) queryParams.set('year', String(year));
 
   const queryString = queryParams.toString();
-  return queryString ? `${basePath}?${queryString}` : basePath;
+  const pathWithSlash = ensureTrailingSlash(basePath);
+  return queryString ? `${pathWithSlash}?${queryString}` : pathWithSlash;
 }
 
 export function escapeHtml(str) {
@@ -176,7 +193,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     ? summaryOrDesc.slice(0, 155) + (summaryOrDesc.length > 155 ? '...' : '')
     : `Access educational summary, syllabus breakdown, and study guidance for ${resource.title}${detailsContext ? ` (${detailsContext})` : ''}. Free learning materials on Horizon.`;
 
-  const canonicalUrl = `${BASE_URL}/resource/${resource.id}`;
+  const canonicalUrl = `${BASE_URL}/resource/${resource.id}/`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -440,7 +457,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
   if (relatedResources.length > 0) {
     const items = relatedResources.map(related => `
       <li class="min-w-0">
-        <a href="/resource/${escapeHtml(related.id)}" class="block p-3 sm:p-3.5 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm leading-snug group min-w-0">
+        <a href="/resource/${escapeHtml(related.id)}/" class="block p-3 sm:p-3.5 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm leading-snug group min-w-0">
           <span class="group-hover:text-[#E91E8C] transition-colors break-words block min-w-0">${escapeHtml(related.title)}</span>
           <span class="block text-caption text-ink/60 font-medium mt-1 truncate">${escapeHtml(related.student_class || '')} ${escapeHtml(related.subject || '')}</span>
         </a>
@@ -723,10 +740,10 @@ export const PUBLIC_STATIC_PAGES = [
               <span class="font-bold text-lg">Horizon</span>
             </a>
             <nav class="flex items-center gap-4" aria-label="Main navigation">
-              <a href="/library" class="no-underline text-ink font-medium">Library</a>
-              <a href="/notes" class="no-underline text-ink font-medium">Study Notes</a>
-              <a href="/about" class="no-underline text-ink font-medium">About</a>
-              <a href="/contact" class="no-underline text-ink font-medium">Contact</a>
+              <a href="/library/" class="no-underline text-ink font-medium">Library</a>
+              <a href="/notes/" class="no-underline text-ink font-medium">Study Notes</a>
+              <a href="/about/" class="no-underline text-ink font-medium">About</a>
+              <a href="/contact/" class="no-underline text-ink font-medium">Contact</a>
             </nav>
             <a href="/register" class="neu-raised neu-raised-hover px-4 py-2 rounded-xl font-bold no-underline text-ink">Get Started</a>
           </div>
@@ -750,32 +767,32 @@ export const PUBLIC_STATIC_PAGES = [
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library" class="absolute inset-0 z-20" aria-label="Go to Revision Sheets"></a>
+                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Revision Sheets"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Revision Sheets</h3>
                 <p class="text-ink/80">Concise summary sheets for quick pre-exam revision.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library" class="absolute inset-0 z-20" aria-label="Go to Previous-Year Papers"></a>
+                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Previous-Year Papers"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Previous-Year Papers</h3>
                 <p class="text-ink/80">Solve official past exam papers to understand question patterns.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/notes" class="absolute inset-0 z-20" aria-label="Go to Chapter Notes"></a>
+                <a href="/notes/" class="absolute inset-0 z-20" aria-label="Go to Chapter Notes"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Chapter Notes</h3>
                 <p class="text-ink/80">Structured study notes with definitions, key concepts, and diagrams.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library" class="absolute inset-0 z-20" aria-label="Go to Practice Questions"></a>
+                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Practice Questions"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Practice Questions</h3>
                 <p class="text-ink/80">Topic-wise problem sets to test your understanding.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library" class="absolute inset-0 z-20" aria-label="Go to Question Bank"></a>
+                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Question Bank"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Question Bank</h3>
                 <p class="text-ink/80">Curated collections of essential exam questions.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/notes" class="absolute inset-0 z-20" aria-label="Go to Study Guides"></a>
+                <a href="/notes/" class="absolute inset-0 z-20" aria-label="Go to Study Guides"></a>
                 <h3 class="text-xl font-bold text-ink mb-2">Study Guides</h3>
                 <p class="text-ink/80">Step-by-step guidance on tackling complex topics.</p>
               </div>
@@ -804,18 +821,18 @@ export const PUBLIC_STATIC_PAGES = [
               <div>
                 <h4 class="font-bold text-ink mb-2">Explore</h4>
                 <nav aria-label="Explore navigation" class="flex flex-col space-y-1">
-                  <a href="/library" class="text-ink/80 no-underline">Library</a>
-                  <a href="/notes" class="text-ink/80 no-underline">Study Notes</a>
+                  <a href="/library/" class="text-ink/80 no-underline">Library</a>
+                  <a href="/notes/" class="text-ink/80 no-underline">Study Notes</a>
                 </nav>
               </div>
               <div>
                 <h4 class="font-bold text-ink mb-2">Info</h4>
                 <nav aria-label="Footer navigation" class="flex flex-col space-y-1">
-                  <a href="/about" class="text-ink/80 no-underline">About Us</a>
-                  <a href="/contact" class="text-ink/80 no-underline">Contact</a>
-                  <a href="/terms" class="text-ink/80 no-underline">Terms of Service</a>
-                  <a href="/privacy-policy" class="text-ink/80 no-underline">Privacy Policy</a>
-                  <a href="/attribution" class="text-ink/80 no-underline">Attribution</a>
+                  <a href="/about/" class="text-ink/80 no-underline">About Us</a>
+                  <a href="/contact/" class="text-ink/80 no-underline">Contact</a>
+                  <a href="/terms/" class="text-ink/80 no-underline">Terms of Service</a>
+                  <a href="/privacy-policy/" class="text-ink/80 no-underline">Privacy Policy</a>
+                  <a href="/attribution/" class="text-ink/80 no-underline">Attribution</a>
                 </nav>
               </div>
             </div>
@@ -856,7 +873,7 @@ export const PUBLIC_STATIC_PAGES = [
           </div>
           <div class="neu-raised p-6 rounded-2xl">
             <h3 class="text-xl font-bold text-ink mb-3">An Evolving Online Library</h3>
-            <p class="text-ink/90 leading-relaxed">Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more learning materials, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips. Check out our <a href="/library" class="text-[#E91E8C] font-semibold underline">Library</a> to see our current offerings.</p>
+            <p class="text-ink/90 leading-relaxed">Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more learning materials, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips. Check out our <a href="/library/" class="text-[#E91E8C] font-semibold underline">Library</a> to see our current offerings.</p>
           </div>
           <div class="neu-raised p-6 rounded-2xl">
             <h3 class="text-xl font-bold text-ink mb-3">Our Principles</h3>
@@ -870,7 +887,7 @@ export const PUBLIC_STATIC_PAGES = [
           </div>
           <div class="neu-raised p-6 rounded-2xl">
             <h3 class="text-xl font-bold text-ink mb-3">Transparency &amp; Quality</h3>
-            <p class="text-ink/90 leading-relaxed">Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <a href="/contact" class="text-[#E91E8C] font-semibold underline">Contact</a> page or check back regularly for updates.</p>
+            <p class="text-ink/90 leading-relaxed">Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <a href="/contact/" class="text-[#E91E8C] font-semibold underline">Contact</a> page or check back regularly for updates.</p>
           </div>
           <div class="neu-raised p-6 rounded-2xl">
             <h3 class="text-xl font-bold text-ink mb-3">Privacy &amp; Trust</h3>
@@ -955,7 +972,7 @@ export const PUBLIC_STATIC_PAGES = [
                 </div>
               </a>
             </div>
-            <p class="text-ink/90 leading-relaxed text-sm pt-2">Before reaching out, you may also find quick answers regarding data privacy and platform operations on our <a href="/privacy-policy" class="text-[#E91E8C] font-semibold underline">Privacy Policy</a> page or learn more about our mission on the <a href="/about" class="text-[#E91E8C] font-semibold underline">About Us</a> page.</p>
+            <p class="text-ink/90 leading-relaxed text-sm pt-2">Before reaching out, you may also find quick answers regarding data privacy and platform operations on our <a href="/privacy-policy/" class="text-[#E91E8C] font-semibold underline">Privacy Policy</a> page or learn more about our mission on the <a href="/about/" class="text-[#E91E8C] font-semibold underline">About Us</a> page.</p>
           </section>
         </div>
       </div>
@@ -969,7 +986,7 @@ export const PUBLIC_STATIC_PAGES = [
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       'name': 'Terms of Service',
-      'url': `${BASE_URL}/terms`,
+      'url': `${BASE_URL}/terms/`,
     },
     contentHtml: wrapInMainLayout(`
       <div class="space-y-6 max-w-4xl mx-auto w-full">
@@ -1006,7 +1023,7 @@ export const PUBLIC_STATIC_PAGES = [
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">5. Intellectual Property &amp; Copyright</h2>
-            <p class="text-ink/90 leading-relaxed">The Horizon logo, website design, branding, custom UI components, and software code are the intellectual property of Horizon. Educational resources, past papers, and study material hosted on the platform remain the property of their respective original copyright holders or contributors. If you believe any content infringes your copyright, please reach out through our <a href="/contact" class="text-[#E91E8C] font-semibold underline">Contact</a> page.</p>
+            <p class="text-ink/90 leading-relaxed">The Horizon logo, website design, branding, custom UI components, and software code are the intellectual property of Horizon. Educational resources, past papers, and study material hosted on the platform remain the property of their respective original copyright holders or contributors. If you believe any content infringes your copyright, please reach out through our <a href="/contact/" class="text-[#E91E8C] font-semibold underline">Contact</a> page.</p>
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">6. Prohibited &amp; Abusive Use</h2>
@@ -1020,7 +1037,7 @@ export const PUBLIC_STATIC_PAGES = [
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">7. Third-Party Services</h2>
-            <p class="text-ink/90 leading-relaxed">Horizon relies on trusted infrastructure providers including Supabase (data &amp; authentication), Cloudflare Pages (hosting &amp; content delivery), and Google Analytics (usage metrics). Your interaction with these third-party services is subject to their respective terms and our <a href="/privacy-policy" class="text-[#E91E8C] font-semibold underline">Privacy Policy</a>.</p>
+            <p class="text-ink/90 leading-relaxed">Horizon relies on trusted infrastructure providers including Supabase (data &amp; authentication), Cloudflare Pages (hosting &amp; content delivery), and Google Analytics (usage metrics). Your interaction with these third-party services is subject to their respective terms and our <a href="/privacy-policy/" class="text-[#E91E8C] font-semibold underline">Privacy Policy</a>.</p>
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">8. Service Availability &amp; Changes</h2>
@@ -1044,7 +1061,7 @@ export const PUBLIC_STATIC_PAGES = [
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">13. Contact Information</h2>
-            <p class="text-ink/90 leading-relaxed">If you have questions regarding these Terms of Service or platform guidelines, please visit our <a href="/contact" class="text-[#E91E8C] font-semibold underline">Contact</a> page.</p>
+            <p class="text-ink/90 leading-relaxed">If you have questions regarding these Terms of Service or platform guidelines, please visit our <a href="/contact/" class="text-[#E91E8C] font-semibold underline">Contact</a> page.</p>
           </section>
         </div>
       </div>
@@ -1058,7 +1075,7 @@ export const PUBLIC_STATIC_PAGES = [
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       'name': 'Privacy Policy',
-      'url': `${BASE_URL}/privacy-policy`,
+      'url': `${BASE_URL}/privacy-policy/`,
     },
     contentHtml: wrapInMainLayout(`
       <div class="space-y-6 max-w-4xl mx-auto w-full">
@@ -1155,7 +1172,7 @@ export const PUBLIC_STATIC_PAGES = [
           </section>
           <section class="space-y-2">
             <h2 class="text-xl font-bold text-ink">15. Contact Information</h2>
-            <p class="text-ink/90 leading-relaxed">If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please feel free to reach out to us. You can find our contact details on the <a href="/contact" class="text-[#E91E8C] font-semibold underline">Contact</a> page of our website.</p>
+            <p class="text-ink/90 leading-relaxed">If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please feel free to reach out to us. You can find our contact details on the <a href="/contact/" class="text-[#E91E8C] font-semibold underline">Contact</a> page of our website.</p>
           </section>
         </div>
       </div>
@@ -1169,7 +1186,7 @@ export const PUBLIC_STATIC_PAGES = [
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       'name': 'Attribution',
-      'url': `${BASE_URL}/attribution`,
+      'url': `${BASE_URL}/attribution/`,
     },
     contentHtml: wrapInMainLayout(`
       <div class="space-y-6 max-w-4xl mx-auto w-full">
@@ -1212,7 +1229,8 @@ export const PUBLIC_STATIC_PAGES = [
 
 export function generateStaticPageHtml(pageConfig, templateHtml) {
   const { title, description, path: pagePath, jsonLd, contentHtml } = pageConfig;
-  const canonicalUrl = `${BASE_URL}${pagePath === '/' ? '' : pagePath}`;
+  const cleanPath = pagePath === '/' ? '/' : ensureTrailingSlash(pagePath);
+  const canonicalUrl = `${BASE_URL}${cleanPath === '/' ? '/' : cleanPath}`;
 
   let outputHtml = templateHtml;
 
@@ -1390,7 +1408,7 @@ export function generateCategoryUrls(resources = []) {
   const categoryMap = new Map();
 
   const addCategory = (routePath, basePath, resourceType, studentClass = null, medium = null, subject = null) => {
-    const cleanPath = routePath.startsWith('/') ? routePath : `/${routePath}`;
+    const cleanPath = ensureTrailingSlash(routePath);
     if (!categoryMap.has(cleanPath)) {
       categoryMap.set(cleanPath, {
         path: cleanPath,
@@ -1656,7 +1674,7 @@ export function renderMaterialCardHtml(resource) {
 
   return `
     <div class="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center min-w-0">
-      <a href="/resource/${escapeHtml(resource.id)}" class="w-full flex flex-col items-center text-center no-underline text-ink group min-w-0">
+      <a href="/resource/${escapeHtml(resource.id)}/" class="w-full flex flex-col items-center text-center no-underline text-ink group min-w-0">
         <div class="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
           <img src="${illustrationSrc}" alt="${escapeHtml(cardTitle)}" class="w-full h-full object-contain" />
         </div>
@@ -1668,7 +1686,7 @@ export function renderMaterialCardHtml(resource) {
         </p>
       </a>
       <div class="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
-        <a href="/resource/${escapeHtml(resource.id)}" class="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center">
+        <a href="/resource/${escapeHtml(resource.id)}/" class="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center">
           <span class="shrink-0 truncate">View</span>
         </a>
       </div>
@@ -1693,8 +1711,8 @@ export function renderEmptyStateHtml(categoryType) {
 
 export function renderOtherResourcesHtml(currentCategoryId) {
   const features = [
-    { id: 'pyq', title: 'PYQ Papers', desc: 'Past papers to help you prepare effectively.', path: '/library' },
-    { id: 'notes', title: 'Study Notes', desc: 'Comprehensive notes for all subjects.', path: '/notes' },
+    { id: 'pyq', title: 'PYQ Papers', desc: 'Past papers to help you prepare effectively.', path: '/library/' },
+    { id: 'notes', title: 'Study Notes', desc: 'Comprehensive notes for all subjects.', path: '/notes/' },
   ].filter(f => f.id !== currentCategoryId);
 
   const items = features.map(f => `
@@ -1741,7 +1759,7 @@ export function generateCategoryHtml(categoryConfig, templateHtml, allResources 
     pageDesc = `Free ${categorySummary} ${resourceTypeName.toLowerCase()} for student exam preparation. Browse concepts, practice materials, and study guides on Horizon.`;
   }
 
-  const canonicalUrl = `${BASE_URL}${routePath}`;
+  const canonicalUrl = `${BASE_URL}${ensureTrailingSlash(routePath)}`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
