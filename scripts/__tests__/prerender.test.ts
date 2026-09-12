@@ -213,6 +213,7 @@ describe('prerender script unit tests', () => {
       if (pageConfig.path === '/') {
         expect(html).toContain('href="/library/"');
         expect(html).toContain('href="/notes/"');
+        expect(html).toContain('href="/syllabus/"');
         expect(html).toContain('href="/about/"');
         expect(html).toContain('href="/contact/"');
       }

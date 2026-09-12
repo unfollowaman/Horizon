@@ -800,6 +800,7 @@ export const PUBLIC_STATIC_PAGES = [
             <nav class="flex items-center gap-4" aria-label="Main navigation">
               <a href="/library/" class="no-underline text-ink font-medium">Library</a>
               <a href="/notes/" class="no-underline text-ink font-medium">Study Notes</a>
+              <a href="/syllabus/" class="no-underline text-ink font-medium">Syllabus</a>
               <a href="/about/" class="no-underline text-ink font-medium">About</a>
               <a href="/contact/" class="no-underline text-ink font-medium">Contact</a>
             </nav>
@@ -881,6 +882,7 @@ export const PUBLIC_STATIC_PAGES = [
                 <nav aria-label="Explore navigation" class="flex flex-col space-y-1">
                   <a href="/library/" class="text-ink/80 no-underline">Library</a>
                   <a href="/notes/" class="text-ink/80 no-underline">Study Notes</a>
+                  <a href="/syllabus/" class="text-ink/80 no-underline">Syllabus</a>
                 </nav>
               </div>
               <div>
