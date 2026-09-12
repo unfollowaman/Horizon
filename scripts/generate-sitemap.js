@@ -72,8 +72,14 @@ export function generateSitemapUrls(resources = []) {
   const urlMap = new Map();
 
   const addUrl = (urlPath, changefreq, priority, lastmod) => {
-    const cleanPath = urlPath === '/' ? '/' : (urlPath.startsWith('/') ? urlPath : `/${urlPath}`);
-    const fullUrl = `${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`;
+    let cleanPath = urlPath || '/';
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = `/${cleanPath}`;
+    }
+    if (!cleanPath.endsWith('/')) {
+      cleanPath = `${cleanPath}/`;
+    }
+    const fullUrl = `${BASE_URL}${cleanPath}`;
 
     if (!urlMap.has(fullUrl)) {
       urlMap.set(fullUrl, { loc: fullUrl, changefreq, priority, lastmod });
