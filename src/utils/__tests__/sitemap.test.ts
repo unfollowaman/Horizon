@@ -50,22 +50,22 @@ describe('Sitemap Generator Unit Tests', () => {
   });
 
   describe('generateSitemapUrls', () => {
-    it('includes all main static pages', () => {
+    it('includes all main static pages with trailing slashes', () => {
       const urls: SitemapUrlEntry[] = generateSitemapUrls([]);
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
-      expect(locs).toContain('https://unfollowaman.tech');
-      expect(locs).toContain('https://unfollowaman.tech/about');
-      expect(locs).toContain('https://unfollowaman.tech/contact');
-      expect(locs).toContain('https://unfollowaman.tech/terms');
-      expect(locs).toContain('https://unfollowaman.tech/privacy-policy');
-      expect(locs).toContain('https://unfollowaman.tech/attribution');
-      expect(locs).toContain('https://unfollowaman.tech/library');
-      expect(locs).toContain('https://unfollowaman.tech/notes');
+      expect(locs).toContain('https://unfollowaman.tech/');
+      expect(locs).toContain('https://unfollowaman.tech/about/');
+      expect(locs).toContain('https://unfollowaman.tech/contact/');
+      expect(locs).toContain('https://unfollowaman.tech/terms/');
+      expect(locs).toContain('https://unfollowaman.tech/privacy-policy/');
+      expect(locs).toContain('https://unfollowaman.tech/attribution/');
+      expect(locs).toContain('https://unfollowaman.tech/library/');
+      expect(locs).toContain('https://unfollowaman.tech/notes/');
       expect(urls.length).toBe(STATIC_PAGES.length);
     });
 
-    it('generates hierarchical category URLs and public resource landing pages from resources', () => {
+    it('generates hierarchical category URLs and public resource landing pages from resources with trailing slashes', () => {
       const mockResources: SitemapResource[] = [
         {
           id: '101',
@@ -89,18 +89,22 @@ describe('Sitemap Generator Unit Tests', () => {
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
       // Public resource landing pages
-      expect(locs).toContain('https://unfollowaman.tech/resource/101');
-      expect(locs).toContain('https://unfollowaman.tech/resource/102');
+      expect(locs).toContain('https://unfollowaman.tech/resource/101/');
+      expect(locs).toContain('https://unfollowaman.tech/resource/102/');
 
       // Notes category URLs
-      expect(locs).toContain('https://unfollowaman.tech/notes/class-10');
-      expect(locs).toContain('https://unfollowaman.tech/notes/class-10/hindi-medium');
-      expect(locs).toContain('https://unfollowaman.tech/notes/class-10/hindi-medium/history');
+      expect(locs).toContain('https://unfollowaman.tech/notes/class-10/');
+      expect(locs).toContain('https://unfollowaman.tech/notes/class-10/hindi-medium/');
+      expect(locs).toContain('https://unfollowaman.tech/notes/class-10/hindi-medium/history/');
 
       // PYQ / Library category URLs
-      expect(locs).toContain('https://unfollowaman.tech/library/class-10');
-      expect(locs).toContain('https://unfollowaman.tech/library/class-10/english-medium');
-      expect(locs).toContain('https://unfollowaman.tech/library/class-10/english-medium/social-science');
+      expect(locs).toContain('https://unfollowaman.tech/library/class-10/');
+      expect(locs).toContain('https://unfollowaman.tech/library/class-10/english-medium/');
+      expect(locs).toContain('https://unfollowaman.tech/library/class-10/english-medium/social-science/');
+
+      // Ensure non-trailing-slash versions are NOT present
+      expect(locs).not.toContain('https://unfollowaman.tech/resource/101');
+      expect(locs).not.toContain('https://unfollowaman.tech/notes/class-10');
 
       // Ensure protected /view/:id URLs are NOT included
       expect(locs.some((url: string) => url.includes('/view/'))).toBe(false);
@@ -122,7 +126,7 @@ describe('Sitemap Generator Unit Tests', () => {
       const urls: SitemapUrlEntry[] = generateSitemapUrls(mockResources);
       const locs = urls.map((u: SitemapUrlEntry) => u.loc);
 
-      expect(locs).not.toContain('https://unfollowaman.tech/notes/class-10/sanskrit-medium/physics');
+      expect(locs).not.toContain('https://unfollowaman.tech/notes/class-10/sanskrit-medium/physics/');
     });
   });
 
@@ -130,7 +134,7 @@ describe('Sitemap Generator Unit Tests', () => {
     it('produces valid XML string with urlset tags', () => {
       const sampleUrls: SitemapUrlEntry[] = [
         { loc: 'https://unfollowaman.tech/', changefreq: 'weekly', priority: '1.0' },
-        { loc: 'https://unfollowaman.tech/resource/101', lastmod: '2026-08-01', changefreq: 'weekly', priority: '0.7' }
+        { loc: 'https://unfollowaman.tech/resource/101/', lastmod: '2026-08-01', changefreq: 'weekly', priority: '0.7' }
       ];
 
       const xml: string = buildSitemapXml(sampleUrls);
@@ -138,7 +142,7 @@ describe('Sitemap Generator Unit Tests', () => {
       expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
       expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
       expect(xml).toContain('<loc>https://unfollowaman.tech/</loc>');
-      expect(xml).toContain('<loc>https://unfollowaman.tech/resource/101</loc>');
+      expect(xml).toContain('<loc>https://unfollowaman.tech/resource/101/</loc>');
       expect(xml).toContain('<lastmod>2026-08-01</lastmod>');
       expect(xml).toContain('</urlset>');
     });
