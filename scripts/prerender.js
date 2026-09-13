@@ -826,34 +826,19 @@ export const PUBLIC_STATIC_PAGES = [
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Revision Sheets"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Revision Sheets</h3>
-                <p class="text-ink/80">Concise summary sheets for quick pre-exam revision.</p>
+                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to PYQ Papers"></a>
+                <h3 class="text-xl font-bold text-ink mb-2">PYQ Papers</h3>
+                <p class="text-ink/80">Past papers to help you prepare effectively.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Previous-Year Papers"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Previous-Year Papers</h3>
-                <p class="text-ink/80">Solve official past exam papers to understand question patterns.</p>
+                <a href="/notes/" class="absolute inset-0 z-20" aria-label="Go to Study Notes"></a>
+                <h3 class="text-xl font-bold text-ink mb-2">Study Notes</h3>
+                <p class="text-ink/80">Comprehensive notes for all subjects.</p>
               </div>
               <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/notes/" class="absolute inset-0 z-20" aria-label="Go to Chapter Notes"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Chapter Notes</h3>
-                <p class="text-ink/80">Structured study notes with definitions, key concepts, and diagrams.</p>
-              </div>
-              <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Practice Questions"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Practice Questions</h3>
-                <p class="text-ink/80">Topic-wise problem sets to test your understanding.</p>
-              </div>
-              <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/library/" class="absolute inset-0 z-20" aria-label="Go to Question Bank"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Question Bank</h3>
-                <p class="text-ink/80">Curated collections of essential exam questions.</p>
-              </div>
-              <div class="neu-card p-6 rounded-2xl relative">
-                <a href="/notes/" class="absolute inset-0 z-20" aria-label="Go to Study Guides"></a>
-                <h3 class="text-xl font-bold text-ink mb-2">Study Guides</h3>
-                <p class="text-ink/80">Step-by-step guidance on tackling complex topics.</p>
+                <a href="/syllabus/" class="absolute inset-0 z-20" aria-label="Go to Syllabus"></a>
+                <h3 class="text-xl font-bold text-ink mb-2">Syllabus</h3>
+                <p class="text-ink/80">NCERT &amp; CBSE syllabus directory and hierarchy.</p>
               </div>
             </div>
           </section>
