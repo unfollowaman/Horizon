@@ -611,6 +611,14 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
             </div>
             <div class="space-y-3 sm:space-y-4 min-w-0">${studyGuidanceHtml}</div>
           </section>
+
+          ${isPYQ ? `
+            <section class="neu-card rounded-2xl p-3.5 sm:p-4 space-y-2 min-w-0 w-full">
+              <p class="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 break-words">
+                This is an official ${resource.subject ? `${escapeHtml(resource.subject)} ` : ''}${resource.student_class ? `${escapeHtml(resource.student_class)} ` : ''}previous year question paper originally published by RBSE (Rajasthan Board of Secondary Education). Reformatted by Horizon for readability. Read our <a href="/attribution/" class="text-[#E91E8C] font-semibold underline">full content sourcing policy</a>.
+              </p>
+            </section>
+          ` : ''}
         </main>
 
         <aside class="space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
@@ -1225,23 +1233,30 @@ export const PUBLIC_STATIC_PAGES = [
   },
   {
     path: '/attribution',
-    title: 'Attribution | Horizon - Free Student Library',
-    description: 'Attribution for third-party illustrations and icons used in Horizon.',
+    title: 'Attribution & Sourcing | Horizon - Free Student Library',
+    description: 'Content sourcing policy, examination paper attributions, third-party illustrations, and copyright takedown contact details for Horizon.',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      'name': 'Attribution',
+      'name': 'Attribution & Sourcing',
       'url': `${BASE_URL}/attribution/`,
     },
     contentHtml: wrapInMainLayout(`
       <div class="space-y-6 max-w-4xl mx-auto w-full">
         <header class="neu-raised p-6 sm:p-8 rounded-2xl">
-          <h1 class="text-2xl sm:text-4xl font-bold text-ink mb-2"><span class="text-gradient">Attribution</span></h1>
+          <h1 class="text-2xl sm:text-4xl font-bold text-ink mb-2"><span class="text-gradient">Attribution &amp; Sourcing</span></h1>
         </header>
         <div class="space-y-6">
           <div class="neu-raised p-6 rounded-2xl">
-            <p class="text-ink/80 text-base leading-relaxed m-0">Horizon uses third-party illustrations and icons throughout the platform. We gratefully acknowledge the creators and services that provide these resources.</p>
+            <p class="text-ink/80 text-base leading-relaxed m-0">Horizon is committed to full transparency regarding third-party creative assets and official examination material used across our educational platform.</p>
           </div>
+          <section class="neu-raised p-6 rounded-2xl space-y-4">
+            <h2 class="text-xl font-bold text-ink">Educational Content Sourcing</h2>
+            <p class="text-ink/90 leading-relaxed">Previous Year Question (PYQ) papers hosted on Horizon are official examination papers originally published by the <strong>Rajasthan Board of Secondary Education (RBSE)</strong> via their official website (<a href="https://rajeduboard.rajasthan.gov.in" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">rajeduboard.rajasthan.gov.in</a>).</p>
+            <p class="text-ink/90 leading-relaxed">Horizon reformats these question papers to enhance readability, layout consistency, and responsive viewing on mobile devices and digital displays. Horizon does not claim authorship or ownership of original examination questions or board paper content — all copyright and intellectual property rights to the original examination papers remain with the Rajasthan Board of Secondary Education (RBSE).</p>
+            <p class="text-ink/90 leading-relaxed">These papers are provided free of charge strictly for personal, non-commercial educational use by students for revision, self-assessment, and exam preparation.</p>
+            <p class="text-ink/90 leading-relaxed">Horizon respects the intellectual property rights of original educational publishers and examination boards. If you are a representative of RBSE or another authorized rights holder and wish to request content removal or modification, please contact us at <a href="mailto:tryhorizon18@gmail.com" class="text-[#E91E8C] font-semibold underline">tryhorizon18@gmail.com</a> or visit our <a href="/contact/" class="text-[#E91E8C] font-semibold underline">Contact</a> page. Valid rights-holder takedown requests will be processed promptly.</p>
+          </section>
           <section class="neu-raised p-6 rounded-2xl space-y-4">
             <h2 class="text-xl font-bold text-ink">Illustrations</h2>
             <h3 class="text-lg font-bold text-ink">Storyset</h3>

@@ -758,6 +758,15 @@ const ResourceDetails: React.FC = () => {
             </div>
           </section>
 
+          {/* Sourcing Disclosure Note (PYQ pages only) */}
+          {isPYQ && (
+            <section className="neu-card rounded-2xl p-3.5 sm:p-4 space-y-2 min-w-0 w-full">
+              <p className="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 break-words">
+                This is an official {resource.subject ? `${resource.subject} ` : ''}{resource.student_class ? `${resource.student_class} ` : ''}previous year question paper originally published by RBSE (Rajasthan Board of Secondary Education). Reformatted by Horizon for readability. Read our <Link to="/attribution" className="text-[#E91E8C] font-semibold underline">full content sourcing policy</Link>.
+              </p>
+            </section>
+          )}
+
         </main>
 
         {/* Right Sidebar Column (1 col on desktop) */}

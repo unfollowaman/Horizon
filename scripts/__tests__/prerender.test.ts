@@ -175,6 +175,8 @@ describe('prerender script unit tests', () => {
     expect(html).toContain('3 Hours');
     expect(html).toContain('Paper Overview');
     expect(html).toContain('How to Use This Paper');
+    expect(html).toContain('originally published by RBSE (Rajasthan Board of Secondary Education)');
+    expect(html).toContain('href="/attribution/"');
   });
 
   it('throws security error if storage path or forbidden URL pattern is present', () => {
@@ -238,7 +240,9 @@ describe('prerender script unit tests', () => {
         expect(html).toContain('Privacy <span class="text-gradient">Policy</span>');
         expect(html).toContain('1. Introduction');
       } else if (pageConfig.path === '/attribution') {
-        expect(html).toContain('Attribution');
+        expect(html).toContain('Attribution &amp; Sourcing');
+        expect(html).toContain('Educational Content Sourcing');
+        expect(html).toContain('Rajasthan Board of Secondary Education (RBSE)');
         expect(html).toContain('Storyset');
       }
 
