@@ -19,7 +19,7 @@ interface IconConfig {
 }
 
 const iconsConfig: IconConfig[] = [
-  { label: 'Notes', asset: 'notes.avif', baseAngle: -90, arriveDelay: 0, grid: { x: 92, y: 160 } },
+  { label: 'Study Notes', asset: 'notes.avif', baseAngle: -90, arriveDelay: 0, grid: { x: 92, y: 160 } },
   { label: 'PYQ Papers', asset: 'pyq-papers.avif', baseAngle: -30, arriveDelay: 150, grid: { x: 208, y: 160 } },
   { label: 'MCQ Sheets', asset: 'mcq-sheets.avif', baseAngle: 30, arriveDelay: 300, grid: { x: 92, y: 235 } },
   { label: 'Flashcards', asset: 'flashcards.avif', baseAngle: 90, arriveDelay: 450, grid: { x: 208, y: 235 } },

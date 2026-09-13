@@ -11,7 +11,10 @@ export interface ResourceCategoryConfig {
   showOnDesktop: boolean;
 }
 
-export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> = {
+export const RESOURCE_CATEGORIES: Partial<Record<ResourceType, ResourceCategoryConfig>> & {
+  pyq: ResourceCategoryConfig;
+  notes: ResourceCategoryConfig;
+} = {
   pyq: {
     id: 'pyq',
     title: 'PYQ Papers',
@@ -21,36 +24,6 @@ export const RESOURCE_CATEGORIES: Record<ResourceType, ResourceCategoryConfig> =
     navLabel: 'PYQ Papers',
     showOnMobile: true,
     showOnDesktop: true,
-  },
-  flashcards: {
-    id: 'flashcards',
-    title: 'Flashcards',
-    description: 'Quick-recall cards for fast revision.',
-    path: '/coming-soon',
-    isComingSoon: true,
-    navLabel: 'Flashcards',
-    showOnMobile: false,
-    showOnDesktop: false,
-  },
-  mcq: {
-    id: 'mcq',
-    title: 'MCQ Sets',
-    description: 'Exam-oriented questions and practice material.',
-    path: '/coming-soon',
-    isComingSoon: true,
-    navLabel: 'MCQ Sets',
-    showOnMobile: false,
-    showOnDesktop: false,
-  },
-  revision_sheets: {
-    id: 'revision_sheets',
-    title: 'Revision Sheets',
-    description: 'Condensed sheets for quick topic overview.',
-    path: '/coming-soon',
-    isComingSoon: true,
-    navLabel: 'Revision Sheets',
-    showOnMobile: false,
-    showOnDesktop: false,
   },
   notes: {
     id: 'notes',
@@ -81,7 +54,7 @@ export const SYSTEM_NAV_LINKS = [
 
 export const getAllFeatures = () => {
   const activeCategories = Object.values(RESOURCE_CATEGORIES)
-    .filter(cat => !cat.isComingSoon)
+    .filter((cat): cat is ResourceCategoryConfig => Boolean(cat) && !cat.isComingSoon)
     .map(cat => ({
       title: cat.title,
       desc: cat.description,
@@ -102,7 +75,7 @@ export const getAllFeatures = () => {
 
 export const getNavLinks = () => {
   const resourceLinks = Object.values(RESOURCE_CATEGORIES)
-    .filter(cat => cat.showOnMobile || cat.showOnDesktop)
+    .filter((cat): cat is ResourceCategoryConfig => Boolean(cat) && (cat.showOnMobile || cat.showOnDesktop))
     .map(cat => ({
       label: cat.navLabel,
       path: cat.path,

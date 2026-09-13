@@ -13,13 +13,11 @@ describe('Navigation Links Configuration', () => {
     expect(syllabusLink?.showOnMobile).toBe(true);
   });
 
-  it('includes crawlable Syllabus feature card in getAllFeatures', () => {
+  it('returns exactly 3 distinct active features in getAllFeatures', () => {
     const features = getAllFeatures();
-    const syllabusFeature = features.find(f => f.id === 'syllabus');
-
-    expect(syllabusFeature).toBeDefined();
-    expect(syllabusFeature?.title).toBe('Syllabus');
-    expect(syllabusFeature?.path).toBe('/syllabus/');
+    expect(features).toHaveLength(3);
+    expect(features.map(f => f.id)).toEqual(['pyq', 'notes', 'syllabus']);
+    expect(features.map(f => f.path)).toEqual(['/library', '/notes', '/syllabus/']);
   });
 
   it('SYLLABUS_NAV_CONFIG is configured with trailing slash /syllabus/', () => {
