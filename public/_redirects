@@ -1,0 +1,3 @@
+# Cloudflare Pages Redirects
+# Redirect all requests from old tryhorizon.pages.dev subdomain to custom domain unfollowaman.tech with 301 status code
+https://tryhorizon.pages.dev/* https://unfollowaman.tech/:splat 301
