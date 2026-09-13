@@ -67,12 +67,12 @@ describe('prerender script unit tests', () => {
   };
 
   it('maps raw database row to Resource structure correctly', () => {
-    const mappedNote = mapLearningResource(sampleNoteResourceRow);
-    expect(mappedNote.id).toBe('56');
-    expect(mappedNote.title).toBe('Chapter 1: Cell Biology Notes');
-    expect(mappedNote.student_class).toBe('Class 10');
-    expect(mappedNote.description).toBe('Detailed study note covering cellular structure and organelles.');
-    expect(mappedNote.topics).toEqual(['Mitochondria', 'Nucleus', 'Cell Membrane']);
+    const mappedNoteResult = mapLearningResource(sampleNoteResourceRow);
+    expect(mappedNoteResult.id).toBe('56');
+    expect(mappedNoteResult.title).toBe('Chapter 1: Cell Biology Notes');
+    expect(mappedNoteResult.student_class).toBe('Class 10');
+    expect(mappedNoteResult.description).toBe('Detailed study note covering cellular structure and organelles.');
+    expect(mappedNoteResult.topics).toEqual(['Mitochondria', 'Nucleus', 'Cell Membrane']);
   });
 
   it('prerenders English Resource 87 with English title and without Hindi subtitle', () => {
@@ -140,8 +140,8 @@ describe('prerender script unit tests', () => {
   });
 
   it('generates rich static HTML for study notes without leaking protected info', () => {
-    const mappedNote = mapLearningResource(sampleNoteResourceRow);
-    const html = generateResourceHtml(mappedNote, sampleTemplateHtml, []);
+    const mappedNoteResource = mapLearningResource(sampleNoteResourceRow);
+    const html = generateResourceHtml(mappedNoteResource, sampleTemplateHtml, []);
 
     expect(html).toContain('<title>Chapter 1: Cell Biology Notes | Class 10 Science | Horizon</title>');
     expect(html).toContain('<meta name="description" content="Detailed study note covering cellular structure and organelles.">');
@@ -178,8 +178,6 @@ describe('prerender script unit tests', () => {
   });
 
   it('throws security error if storage path or forbidden URL pattern is present', () => {
-    const mappedNote = mapLearningResource(sampleNoteResourceRow);
-
     expect(() => {
       assertSecurityCompliance('<div>https://storage/v1/object/public/file.pdf</div>', sampleNoteResourceRow);
     }).toThrow('SECURITY VIOLATION');

@@ -1,0 +1,3 @@
+## 2026-03-13 - WAI-ARIA Listbox Pattern & Keyboard Navigation in Custom Dropdowns
+**Learning:** Custom interactive select components built using plain `<button>` triggers must declare `aria-haspopup="listbox"` and render options in a `role="listbox"` container with `role="option"` buttons and `aria-selected` attributes rather than `aria-pressed`. Keyboard listeners should support ArrowUp/ArrowDown traversal, Home/End jump, and Escape closing with automatic focus management back to the trigger button.
+**Action:** Always provide explicit `ariaLabel` props to custom dropdown controls and handle keyboard focus explicitly when building custom select/combobox components.

@@ -231,11 +231,13 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
   });
 
   describe('Syllabus Seed Script Idempotency & Resource Junction Mechanics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mockSupabase: any;
 
     beforeEach(() => {
-      const upsertSpy = vi.fn().mockReturnValue({ then: (res: any) => res({ data: null, error: null }) });
-      const builder: any = {};
+      const upsertSpy = vi.fn().mockReturnValue({ then: (res: (val: { data: null; error: null }) => unknown) => res({ data: null, error: null }) });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const builder: Record<string, any> = {};
       builder.select = vi.fn().mockReturnValue(builder);
       builder.or = vi.fn().mockReturnValue(builder);
       builder.eq = vi.fn().mockReturnValue(builder);
@@ -244,7 +246,7 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
       builder.insert = vi.fn().mockReturnValue(builder);
       builder.upsert = upsertSpy;
       builder.single = vi.fn().mockResolvedValue({ data: { id: 'inserted-1' }, error: null });
-      builder.then = (resolve: any) => resolve({ data: [], error: null });
+      builder.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [], error: null });
 
       mockSupabase = {
         from: vi.fn().mockReturnValue(builder),
@@ -255,7 +257,7 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
 
     it('executes idempotently without duplicating existing chapters or topics', async () => {
       mockSupabase._builder.select.mockReturnValue(mockSupabase._builder);
-      mockSupabase._builder.then = (resolve: any) => resolve({
+      mockSupabase._builder.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({
         data: [{ id: 'ch-123', chapter_number: 1, chapter_name: 'Rational Numbers' }],
         error: null,
       });
@@ -267,16 +269,14 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
     });
 
     it('never attaches generic chapter-level PDFs to all topics automatically', async () => {
-      let fromCallCount = 0;
       mockSupabase.from.mockImplementation((table: string) => {
-        fromCallCount++;
         const b = { ...mockSupabase._builder };
         if (table === 'chapters') {
-          b.then = (resolve: any) => resolve({ data: [{ id: 'ch-1', chapter_number: 1, chapter_name: 'Rational Numbers' }], error: null });
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [{ id: 'ch-1', chapter_number: 1, chapter_name: 'Rational Numbers' }], error: null });
         } else if (table === 'syllabus_topics') {
-          b.then = (resolve: any) => resolve({ data: [{ id: 'top-1', title: 'Exercise 1.1' }], error: null });
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [{ id: 'top-1', title: 'Exercise 1.1' }], error: null });
         } else if (table === 'learning_resources') {
-          b.then = (resolve: any) => resolve({
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({
             data: [{ id: 'res-1', title: 'Chapter 1 Notes', chapter_id: 'ch-1', student_class: '8', subject: 'Mathematics' }],
             error: null
           });
@@ -292,7 +292,8 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
 
     it('attaches resources ONLY when confident topic match occurs', async () => {
       const createBuilder = (table: string) => {
-        const b: any = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const b: Record<string, any> = {
           select: vi.fn().mockReturnThis(),
           or: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),
@@ -303,16 +304,16 @@ describe('Authoritative 2026-27 Syllabus Dataset Audit', () => {
           single: vi.fn().mockResolvedValue({ data: { id: 'inserted-1' }, error: null }),
         };
         if (table === 'chapters') {
-          b.then = (resolve: any) => resolve({ data: [{ id: 'ch-1', chapter_number: 1, chapter_name: 'Rational Numbers' }], error: null });
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [{ id: 'ch-1', chapter_number: 1, chapter_name: 'Rational Numbers' }], error: null });
         } else if (table === 'syllabus_topics') {
-          b.then = (resolve: any) => resolve({ data: [{ id: 'top-1', title: 'Exercise 1.1' }], error: null });
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [{ id: 'top-1', title: 'Exercise 1.1' }], error: null });
         } else if (table === 'learning_resources') {
-          b.then = (resolve: any) => resolve({
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({
             data: [{ id: 'res-2', title: 'Class 8 Maths Exercise 1.1 Solutions', chapter_id: 'ch-1', student_class: '8', subject: 'Mathematics' }],
             error: null
           });
         } else {
-          b.then = (resolve: any) => resolve({ data: [], error: null });
+          b.then = (resolve: (val: { data: unknown[]; error: null }) => unknown) => resolve({ data: [], error: null });
         }
         return b;
       };

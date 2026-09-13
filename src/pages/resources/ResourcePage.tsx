@@ -410,6 +410,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-1 sm:grid-cols-3 w-full gap-[12px]">
         <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
+            ariaLabel="Filter by class"
             value={selectedClass || classAllLabel}
             onChange={(val) => {
               const newClass = val === classAllLabel ? '' : val;
@@ -428,6 +429,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
         <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
+            ariaLabel="Filter by subject"
             value={selectedSubject || subjectAllLabel}
             onChange={(val) => {
               const newSubject = val === subjectAllLabel ? '' : val;
@@ -446,6 +448,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
         <div className="w-full min-w-0 flex flex-col gap-2">
           <Dropdown
+            ariaLabel={config.thirdFilterType === 'medium' ? 'Filter by medium' : 'Filter by year'}
             value={selectedThirdFilter || thirdFilterAllLabel}
             onChange={(val) => {
               const newThirdFilter = val === thirdFilterAllLabel ? '' : val;

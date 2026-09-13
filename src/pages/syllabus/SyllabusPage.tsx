@@ -77,7 +77,7 @@ export const SyllabusPage: React.FC = () => {
         } else {
           setChapters((data as SyllabusChapterHierarchy[]) || []);
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
           setError('An unexpected error occurred while loading the syllabus.');
           setChapters([]);
