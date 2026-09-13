@@ -40,6 +40,26 @@ const About: React.FC = () => {
 
         <section className={styles.contentSection}>
           <div className={`${styles.card} neu-raised`}>
+            <h3 id="why-horizon" className={styles.sectionTitle}>Why Horizon</h3>
+            <p className={styles.paragraph}>
+              Horizon was built solo by Aman specifically for secondary school students (classes 9-10) following the Rajasthan Board of Secondary Education (RBSE) curriculum. The platform exists to provide students with a clean, mobile-friendly destination for previous year question papers, structured study notes, and official syllabus tracking all in one place. Access is kept completely free because prep resources shouldn't be paywalled or cluttered with aggressive paywalls and ad popups.
+            </p>
+          </div>
+
+          <div className={`${styles.card} neu-raised`}>
+            <h3 id="how-it-works" className={styles.sectionTitle}>How it works</h3>
+            <p className={styles.paragraph}>
+              Horizon is designed for fast, intuitive orientation so you can start studying immediately:
+            </p>
+            <ol className={styles.orderedList}>
+              <li><strong>Browse by class and subject:</strong> Select your class (Class 8, 9, or 10) and target subject from the navigation bar or category directory.</li>
+              <li><strong>Select your resource type:</strong> Explore official Previous Year Question (PYQ) papers, structured Study Notes, or the visual Syllabus flowchart.</li>
+              <li><strong>View material directly in-browser:</strong> Open past papers and summaries in our clean in-browser PDF reader with zoom and full-screen controls.</li>
+              <li><strong>Access study notes with a free account:</strong> While PYQ papers and syllabus guides are completely public, full Study Notes require creating a free Horizon account to track your reading progress.</li>
+            </ol>
+          </div>
+
+          <div className={`${styles.card} neu-raised`}>
             <h3 className={styles.sectionTitle}>Our Mission</h3>
             <p className={styles.paragraph}>
               Welcome to Horizon! We believe that finding reliable study material shouldn't be the hardest part of your education. Our mission is simple: to make quality educational resources easily accessible to every student. By reducing the time and effort you spend searching for dependable student notes, we help you focus on what really matters—learning and growing. We want to keep your educational experience simple, organized, and entirely distraction-free.
