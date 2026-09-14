@@ -9,13 +9,15 @@ import type { Resource } from '../../types';
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 const mockResource: Resource = {
-  id: 101,
+  id: '101',
   title: 'Chapter 1: Real Numbers Notes',
   resource_type: 'notes',
   student_class: 'Class 10',
   subject: 'Mathematics',
   medium: 'english',
   year: '2024',
+  uploadDate: '2024-01-01',
+  thumbnailUrl: 'https://example.com/thumb.png',
   pdfUrl: 'https://example.com/math.pdf',
 };
 
