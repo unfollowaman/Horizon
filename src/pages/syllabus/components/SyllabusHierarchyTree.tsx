@@ -86,14 +86,14 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
           <button
             type="button"
             onClick={expandAll}
-            className="neu-raised neu-raised-hover px-3 py-1.5 rounded-xl text-xs font-bold text-ink cursor-pointer"
+            className="neu-raised neu-raised-hover px-3 py-1.5 rounded-xl text-xs font-bold text-ink cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             Expand All
           </button>
           <button
             type="button"
             onClick={collapseAll}
-            className="neu-raised neu-raised-hover px-3 py-1.5 rounded-xl text-xs font-bold text-ink cursor-pointer"
+            className="neu-raised neu-raised-hover px-3 py-1.5 rounded-xl text-xs font-bold text-ink cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             Collapse All
           </button>
@@ -117,7 +117,7 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
                 onClick={() => toggleChapter(chapter.id)}
                 aria-expanded={isOpen}
                 aria-label={`Toggle Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
-                className="w-full flex items-center justify-between gap-3 text-left focus:outline-none cursor-pointer group min-w-0"
+                className="w-full flex items-center justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] rounded-2xl cursor-pointer group min-w-0"
               >
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 neu-raised rounded-full flex items-center justify-center shrink-0 font-bold text-[#E91E8C] text-sm sm:text-base">

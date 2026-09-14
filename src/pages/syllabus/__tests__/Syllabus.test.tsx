@@ -544,5 +544,23 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       const metaDesc = document.querySelector('meta[name="description"]');
       expect(metaDesc?.getAttribute('content')).toContain('Class 10 Science');
     });
+
+    it('18. ClassSubjectSelector buttons and cards include focus-visible focus ring classes', async () => {
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/syllabus/class-10']}>
+            <Routes>
+              <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      const backBtn = container?.querySelector('button[aria-label="Back to Classes"]');
+      expect(backBtn?.className).toContain('focus-visible:ring-2');
+
+      const subjectCard = container?.querySelector('div[role="button"][aria-label="View syllabus for Class 10 Science"]');
+      expect(subjectCard?.className).toContain('focus-visible:ring-2');
+    });
   });
 });
