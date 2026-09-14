@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import SyllabusFlowchart from '../SyllabusFlowchart';
@@ -160,5 +160,39 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('No Syllabus Found');
     expect(container?.textContent).toContain('Syllabus data is currently not available');
+  });
+
+  it('6. memoizes ChapterNodeCard and TopicNodeCard to prevent unnecessary re-renders during viewport transformation state updates', async () => {
+    let parentRenderCount = 0;
+
+    const TestParentWrapper = () => {
+      const [, setCounter] = useState(0);
+      parentRenderCount++;
+      return (
+        <div>
+          <button onClick={() => setCounter((c) => c + 1)}>Force Parent Render</button>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </div>
+      );
+    };
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <TestParentWrapper />
+        </MemoryRouter>
+      );
+    });
+
+    expect(parentRenderCount).toBe(1);
+    expect(container?.textContent).toContain('CHAPTER 1');
+
+    const btn = container?.querySelector('button');
+    await act(async () => {
+      btn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(parentRenderCount).toBe(2);
+    expect(container?.textContent).toContain('CHAPTER 1');
   });
 });
