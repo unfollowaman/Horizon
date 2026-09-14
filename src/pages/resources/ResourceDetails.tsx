@@ -9,6 +9,7 @@ import ProfileButton from '../../components/ProfileButton';
 import Spinner from '../../components/loading/Spinner';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { buildCategoryUrl } from '../../utils/urlHelper';
+import { serializeJsonLd } from '../../utils/jsonLd';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -212,7 +213,7 @@ const ResourceDetails: React.FC = () => {
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
       <script type="application/ld+json">
-        {JSON.stringify(jsonLd)}
+        {serializeJsonLd(jsonLd)}
       </script>
 
       {/* Top Header Navigation */}

@@ -2,6 +2,7 @@ import type React from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Contact.module.css';
+import { serializeJsonLd } from '../../utils/jsonLd';
 
 const Contact: React.FC = () => {
   useEffect(() => {
@@ -35,7 +36,7 @@ const Contact: React.FC = () => {
   return (
     <>
       <script type="application/ld+json">
-        {JSON.stringify(jsonLd)}
+        {serializeJsonLd(jsonLd)}
       </script>
       <div className={styles.contactContainer}>
         <header className={`${styles.header} neu-raised`}>
