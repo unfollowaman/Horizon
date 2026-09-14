@@ -182,6 +182,11 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
 };
 
 const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
+  const cardTitle =
+    resource.resource_type === 'pyq'
+      ? `${resource.student_class} ${resource.subject} PYQ`
+      : resource.title;
+
   return (
     <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
       <Link
@@ -196,9 +201,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
           )}
         </div>
         <h3 className="text-[15px] leading-[1.25] font-bold mb-[3px] text-ink line-clamp-2 overflow-hidden w-full text-center">
-          {resource.resource_type === 'pyq'
-            ? `${resource.student_class} ${resource.subject} PYQ`
-            : resource.title}
+          {cardTitle}
         </h3>
         <p className="text-[12px] mb-[14px] text-ink/70 font-bold w-full text-center">
           {resource.year || resource.subject}
@@ -207,6 +210,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
           to={`/resource/${resource.id}`}
+          aria-label={`View ${cardTitle}`}
           className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
         >
           <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -229,6 +233,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
           <button
             type="button"
             onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
+            aria-label={`Download ${cardTitle}`}
             className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
           >
             <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
