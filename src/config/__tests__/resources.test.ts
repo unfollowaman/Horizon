@@ -13,6 +13,30 @@ describe('Navigation Links Configuration', () => {
     expect(syllabusLink?.showOnMobile).toBe(true);
   });
 
+  it('returns all visible navigation links with required fields and valid configuration in getNavLinks', () => {
+    const links = getNavLinks();
+
+    expect(links).toHaveLength(3);
+    expect(links.map(l => l.id)).toEqual(['pyq', 'notes', 'syllabus']);
+    expect(links.map(l => l.path)).toEqual(['/library', '/notes', '/syllabus/']);
+
+    links.forEach(link => {
+      expect(link).toHaveProperty('id');
+      expect(link).toHaveProperty('label');
+      expect(link).toHaveProperty('path');
+      expect(typeof link.showOnMobile).toBe('boolean');
+      expect(typeof link.showOnDesktop).toBe('boolean');
+      expect(link.showOnMobile || link.showOnDesktop).toBe(true);
+    });
+  });
+
+  it('filters out links where both showOnMobile and showOnDesktop are false in getNavLinks', () => {
+    const links = getNavLinks();
+    const hiddenSystemLink = links.find(l => l.id === 'system_updates');
+
+    expect(hiddenSystemLink).toBeUndefined();
+  });
+
   it('returns exactly 3 distinct active features in getAllFeatures', () => {
     const features = getAllFeatures();
     expect(features).toHaveLength(3);
