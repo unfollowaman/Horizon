@@ -171,7 +171,7 @@ describe('Register Component', () => {
     expect(submitButton.textContent).toBe('Registering...');
 
     await act(async () => {
-      resolveRegister({ user: { id: '123' } });
+      resolveRegister({ user: { id: '123' } } as never);
     });
 
     const successHeading = container?.querySelector('h1');
@@ -182,7 +182,7 @@ describe('Register Component', () => {
     vi.mocked(register).mockResolvedValueOnce({
       user: { id: 'user-123' },
       session: null,
-    });
+    } as never);
 
     act(() => {
       root?.render(
