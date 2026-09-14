@@ -101,7 +101,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('Grammar');
   });
 
-  it('2. provides compact accessible graph control buttons with aria-labels (Zoom In, Zoom Out, Fit View)', async () => {
+  it('2. provides compact accessible graph control buttons with aria-labels and focus-visible styling (Zoom In, Zoom Out, Fit View)', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -117,9 +117,13 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(zoomInBtn).not.toBeNull();
     expect(zoomOutBtn).not.toBeNull();
     expect(fitViewBtn).not.toBeNull();
+
+    expect(zoomInBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(zoomOutBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(fitViewBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
-  it('3. renders resource action links when resources exist and keeps nodes without resources visible without broken links', async () => {
+  it('3. renders resource action links with aria-labels and focus-visible styling when resources exist', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -128,7 +132,12 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       );
     });
 
-    // Topic with resource
+    // Topic with resource link check
+    const resourceLink = container?.querySelector(
+      'a[aria-label="View english notes for Fundamental Theorem of Arithmetic"]'
+    );
+    expect(resourceLink).not.toBeNull();
+    expect(resourceLink?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(container?.textContent).toContain('View Notes');
     expect(container?.textContent).toContain('English');
 
