@@ -154,6 +154,15 @@ export function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+export function serializeJsonLd(data, space = null) {
+  return JSON.stringify(data, null, space)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
 export function mapLearningResource(item) {
   let className;
   if (item.student_class) {
@@ -755,7 +764,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     <meta name="description" content="${escapeHtml(descriptionText)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     <script type="application/ld+json">
-${JSON.stringify(jsonLd, null, 2)}
+${serializeJsonLd(jsonLd, 2)}
     </script>
   `;
 
@@ -1329,7 +1338,7 @@ export function generateStaticPageHtml(pageConfig, templateHtml) {
   const headAdditions = `
     <meta name="description" content="${escapeHtml(description)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
-    ${jsonLd ? `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n    </script>` : ''}
+    ${jsonLd ? `<script type="application/ld+json">\n${serializeJsonLd(jsonLd, 2)}\n    </script>` : ''}
   `;
 
   outputHtml = outputHtml.replace('</head>', `${headAdditions}\n  </head>`);
@@ -1642,7 +1651,7 @@ export function generateSyllabusLandingHtml(templateHtml) {
     <meta name="description" content="${escapeHtml(pageDesc)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     <script type="application/ld+json">
-${JSON.stringify(jsonLd, null, 2)}
+${serializeJsonLd(jsonLd, 2)}
     </script>
   `;
 
@@ -1734,7 +1743,7 @@ export function generateSyllabusClassHtml(classConfig, subjects, templateHtml) {
     <meta name="description" content="${escapeHtml(pageDesc)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     <script type="application/ld+json">
-${JSON.stringify(jsonLd, null, 2)}
+${serializeJsonLd(jsonLd, 2)}
     </script>
   `;
 
@@ -1891,7 +1900,7 @@ export function generateSyllabusSubjectHtml(classConfig, subjectName, subjectSlu
     <meta name="description" content="${escapeHtml(pageDesc)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     <script type="application/ld+json">
-${JSON.stringify(jsonLd, null, 2)}
+${serializeJsonLd(jsonLd, 2)}
     </script>
   `;
 
@@ -2322,7 +2331,7 @@ export function generateCategoryHtml(categoryConfig, templateHtml, allResources 
     <meta name="description" content="${escapeHtml(pageDesc)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     <script type="application/ld+json">
-${JSON.stringify(jsonLd, null, 2)}
+${serializeJsonLd(jsonLd, 2)}
     </script>
   `;
 

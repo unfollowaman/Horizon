@@ -20,6 +20,7 @@ import OtherResources from '../../components/OtherResources';
 import ProfileButton from '../../components/ProfileButton';
 import LibraryEducationalGuide from './components/LibraryEducationalGuide';
 import NotesEducationalGuide from './components/NotesEducationalGuide';
+import { serializeJsonLd } from '../../utils/jsonLd';
 
 export interface ResourcePageConfig {
   resourceType: ResourceType;
@@ -367,7 +368,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
       <script type="application/ld+json">
-        {JSON.stringify(categoryJsonLd)}
+        {serializeJsonLd(categoryJsonLd)}
       </script>
       {/* Page Header */}
       <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full">

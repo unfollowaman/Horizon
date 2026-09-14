@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
+import { serializeJsonLd } from '../../utils/jsonLd';
 
 const About: React.FC = () => {
   useEffect(() => {
@@ -30,7 +31,7 @@ const About: React.FC = () => {
   return (
     <>
       <script type="application/ld+json">
-        {JSON.stringify(jsonLd)}
+        {serializeJsonLd(jsonLd)}
       </script>
       <div className={styles.aboutContainer}>
         <header className={`${styles.aboutHeader} neu-raised`}>
