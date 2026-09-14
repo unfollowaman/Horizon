@@ -181,7 +181,9 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
   );
 };
 
-const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
+// Memoize MaterialCard with React.memo to prevent unnecessary re-renders in grid lists
+// (e.g., ResourcePage, Library, Notes) when parent state updates without changing resource props.
+const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
   const cardTitle =
     resource.resource_type === 'pyq'
       ? `${resource.student_class} ${resource.subject} PYQ`
@@ -254,6 +256,8 @@ const MaterialCard: React.FC<MaterialCardProps> = ({ resource }) => {
       </div>
     </div>
   );
-};
+});
+
+MaterialCard.displayName = 'MaterialCard';
 
 export default MaterialCard;
