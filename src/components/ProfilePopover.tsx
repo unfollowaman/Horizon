@@ -50,10 +50,12 @@ const ProfilePopover: React.FC = () => {
       <button
         className={`${styles.avatarBtn} neu-raised neu-raised-hover`}
         onClick={togglePopover}
+        aria-label={profile.name ? `${profile.name}'s profile menu` : 'User profile menu'}
+        aria-haspopup="true"
         aria-expanded={isOpen}
       >
         {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt="Profile Avatar" className={styles.avatarImg} />
+          <img src={profile.avatar_url} alt="" className={styles.avatarImg} />
         ) : (
           <span className={styles.avatarInitials}>{initials}</span>
         )}
