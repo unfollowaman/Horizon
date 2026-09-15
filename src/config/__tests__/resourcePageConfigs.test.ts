@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { pyqConfig, notesConfig } from '../resourcePageConfigs';
-import type { Resource } from '../../types';
+import type { Resource, Chapter } from '../../types';
 
 describe('resourcePageConfigs Sorting Optimizations', () => {
   it('pyqConfig.sortResources performs non-mutating sort on resources array', () => {
@@ -22,10 +22,18 @@ describe('resourcePageConfigs Sorting Optimizations', () => {
   });
 
   it('notesConfig.sortResources performs non-mutating sort on resources array', () => {
+    const createMockChapter = (id: string, chapter_number: number, chapter_name: string): Chapter => ({
+      id,
+      chapter_number,
+      chapter_name,
+      display_order: chapter_number,
+      is_active: true,
+    });
+
     const mockResources: Partial<Resource>[] = [
-      { id: '1', title: 'Chapter 3 Notes', chapters: { id: 'c3', chapter_number: 3, chapter_name: 'Ch 3' } },
-      { id: '2', title: 'Chapter 1 Notes', chapters: { id: 'c1', chapter_number: 1, chapter_name: 'Ch 1' } },
-      { id: '3', title: 'Chapter 2 Notes', chapters: { id: 'c2', chapter_number: 2, chapter_name: 'Ch 2' } },
+      { id: '1', title: 'Chapter 3 Notes', chapters: createMockChapter('c3', 3, 'Ch 3') },
+      { id: '2', title: 'Chapter 1 Notes', chapters: createMockChapter('c1', 1, 'Ch 1') },
+      { id: '3', title: 'Chapter 2 Notes', chapters: createMockChapter('c2', 2, 'Ch 2') },
     ];
 
     const inputCopy = [...mockResources];
