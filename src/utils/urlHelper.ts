@@ -24,10 +24,12 @@ export function slugToClass(slug: string | null | undefined, availableClasses?: 
   if (!slug) return null;
   const normalized = slug.trim().toLowerCase();
 
-  // Try matching against available classes first
+  // Bolt Optimization: Use fast loop to exit early upon matching available class
   if (availableClasses && availableClasses.length > 0) {
-    const found = availableClasses.find(c => classToSlug(c) === normalized);
-    if (found) return found;
+    for (let i = 0; i < availableClasses.length; i++) {
+      const cls = availableClasses[i];
+      if (classToSlug(cls) === normalized) return cls;
+    }
   }
 
   const match = normalized.match(/(?:class-)?(\d+)/);
@@ -55,9 +57,12 @@ export function slugToMedium(slug: string | null | undefined, availableMediums?:
   if (!slug) return null;
   const normalized = slug.trim().toLowerCase();
 
+  // Bolt Optimization: Check direct lower-case string match before computing mediumToSlug
   if (availableMediums && availableMediums.length > 0) {
-    const found = availableMediums.find(m => mediumToSlug(m) === normalized || m.toLowerCase() === normalized);
-    if (found) return found;
+    for (let i = 0; i < availableMediums.length; i++) {
+      const m = availableMediums[i];
+      if (m.toLowerCase() === normalized || mediumToSlug(m) === normalized) return m;
+    }
   }
 
   if (normalized.startsWith('english')) return 'English';
@@ -86,9 +91,12 @@ export function slugToSubject(slug: string | null | undefined, availableSubjects
   if (!slug) return null;
   const normalized = slug.trim().toLowerCase();
 
+  // Bolt Optimization: Fast loop for subject slug resolution
   if (availableSubjects && availableSubjects.length > 0) {
-    const found = availableSubjects.find(s => subjectToSlug(s) === normalized);
-    if (found) return found;
+    for (let i = 0; i < availableSubjects.length; i++) {
+      const s = availableSubjects[i];
+      if (subjectToSlug(s) === normalized) return s;
+    }
   }
 
   // Fallback title casing: "social-science" -> "Social Science"

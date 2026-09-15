@@ -25,10 +25,11 @@ export const pyqConfig: ResourcePageConfig = {
     return resources;
   },
   sortResources: (resources: Resource[]) => {
-    // Sort descending by year
-    return resources.sort((a, b) => {
-      const yearA = a.year ? parseInt(a.year) : 0;
-      const yearB = b.year ? parseInt(b.year) : 0;
+    // Bolt Optimization: Perform non-mutating sort on a shallow copy [...resources] to avoid mutating
+    // React state in place, using fast numeric coercions instead of repeated parseInt() calls.
+    return [...resources].sort((a, b) => {
+      const yearA = a.year ? Number(a.year) || 0 : 0;
+      const yearB = b.year ? Number(b.year) || 0 : 0;
       return yearB - yearA;
     });
   }
@@ -57,8 +58,9 @@ export const notesConfig: ResourcePageConfig = {
     return resources;
   },
   sortResources: (resources: Resource[]) => {
-    // Sort by chapter number if possible, else title
-    return resources.sort((a, b) => {
+    // Bolt Optimization: Perform non-mutating sort on a shallow copy [...resources] to avoid mutating
+    // React state in place when rendering sorted lists.
+    return [...resources].sort((a, b) => {
       if (a.chapters && b.chapters) {
         return a.chapters.chapter_number - b.chapters.chapter_number;
       }

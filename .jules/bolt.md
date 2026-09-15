@@ -5,3 +5,7 @@
 ## 2026-04-01 - Memoizing Interactive Canvas/Flowchart Nodes in Zoom/Pan Viewports
 **Learning:** Canvas and flowchart visualizers (like `SyllabusFlowchart`) update scale/transform state on every zoom and pan gesture via `TransformWrapper`. Without memoization, hundreds of child node components (`ChapterNodeCard`, `TopicNodeCard`) re-render on every frame update during interaction. Wrapping node cards in `React.memo` stops redundant reconciliations and maintains 60fps pan/zoom.
 **Action:** Always wrap node items rendered inside interactive zoom/pan viewports with `React.memo` and assign `displayName`.
+
+## 2026-04-02 - Non-Mutating Shallow Copy Sorting for React State Arrays
+**Learning:** Calling `Array.prototype.sort()` directly on arrays passed from React state or `useMemo` hooks mutates state in place when no filters are active. Performing a shallow copy `[...resources].sort(...)` prevents React state mutation and preserves render cache integrity while enabling fast numeric coercions (`Number(val) || 0`) over repeated string parsing.
+**Action:** Always sort array arguments via a shallow copy (`[...arr].sort(...)`) inside data processing and configuration helpers to preserve state immutability.
