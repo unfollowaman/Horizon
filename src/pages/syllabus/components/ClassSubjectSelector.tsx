@@ -21,7 +21,7 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
         <button
           type="button"
           onClick={onBackToClasses}
-          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           aria-label="Back to Classes"
         >
           <svg
@@ -71,7 +71,7 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
             tabIndex={0}
             role="button"
             aria-label={`View syllabus for ${currentClass.name} ${subj.name}`}
-            className="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 cursor-pointer hover:neu-raised-hover transition-all group focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+            className="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 cursor-pointer hover:neu-raised-hover transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between">

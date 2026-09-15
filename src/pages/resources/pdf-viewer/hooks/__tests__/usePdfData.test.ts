@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { usePdfData } from '../usePdfData';
 import * as learningAPI from '../../../../../services/learningResourcesAPI';
 import { supabase } from '../../../../../services/supabase';
-import type { Resource } from '../../../../../types';
+import type { Resource, LearningResourceRow } from '../../../../../types';
 import type { User } from '@supabase/supabase-js';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -114,7 +114,7 @@ describe('usePdfData hook', () => {
   it('handles unauthenticated access to protected resource by returning 401_UNAUTHORIZED', async () => {
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockProtectedResource,
-      rawData: mockProtectedResource as any,
+      rawData: mockProtectedResource as unknown as LearningResourceRow,
       error: null
     });
 
@@ -141,7 +141,7 @@ describe('usePdfData hook', () => {
   it('handles public non-protected resource correctly without requiring signed URL', async () => {
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockPublicResource,
-      rawData: mockPublicResource as any,
+      rawData: mockPublicResource as unknown as LearningResourceRow,
       error: null
     });
 
@@ -174,7 +174,7 @@ describe('usePdfData hook', () => {
   it('fetches signed URL and related resources for authenticated user on protected resource', async () => {
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockProtectedResource,
-      rawData: mockProtectedResource as any,
+      rawData: mockProtectedResource as unknown as LearningResourceRow,
       error: null
     });
 
@@ -183,9 +183,10 @@ describe('usePdfData hook', () => {
       error: null
     });
 
+    // @ts-expect-error - supabase.functions is a getter returning a new FunctionsClient instance
     vi.spyOn(supabase, 'functions', 'get').mockReturnValue({
       invoke: invokeMock
-    } as any);
+    });
 
     vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
       data: mockRelatedResources,
@@ -219,7 +220,7 @@ describe('usePdfData hook', () => {
   it('demonstrates measurable speedup of concurrent vs sequential fetch in usePdfData', async () => {
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockProtectedResource,
-      rawData: mockProtectedResource as any,
+      rawData: mockProtectedResource as unknown as LearningResourceRow,
       error: null
     });
 
