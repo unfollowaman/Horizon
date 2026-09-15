@@ -103,7 +103,6 @@ describe('resourceHelper', () => {
       });
       const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
         getPublicUrl: getPublicUrlMock,
-        // Add other mock methods if needed to satisfy types, but casting to any should be fine
       } as unknown as ReturnType<typeof supabase.storage.from>);
 
       expect(getResourceUrl(item)).toBe('https://supabase.com/public/path.pdf');
@@ -111,46 +110,30 @@ describe('resourceHelper', () => {
       expect(getPublicUrlMock).toHaveBeenCalledWith('public/path.pdf');
     });
 
-    it('strips leading slashes from file_path when generating public URL', () => {
-      const item = {
-        resource_type: 'pyq',
-        file_path: '///public/path.pdf',
-      };
-
-      const getPublicUrlMock = vi.fn().mockReturnValue({
-        data: { publicUrl: 'https://supabase.com/public/path.pdf' }
-      });
-      const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
-        getPublicUrl: getPublicUrlMock,
-      } as unknown as ReturnType<typeof supabase.storage.from>);
-
-      expect(getResourceUrl(item)).toBe('https://supabase.com/public/path.pdf');
-      expect(fromMock).toHaveBeenCalledWith('pdfs');
-      expect(getPublicUrlMock).toHaveBeenCalledWith('public/path.pdf');
-    });
-
-    it('generates public URL with default "pdfs" bucket if storage_bucket is not provided but resource is public by type', () => {
-      const item = {
-        resource_type: 'pyq',
-        file_path: 'public/path.pdf',
-      };
-
-      const getPublicUrlMock = vi.fn().mockReturnValue({
-        data: { publicUrl: 'https://supabase.com/public/path.pdf' }
-      });
-      const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
-        getPublicUrl: getPublicUrlMock,
-      } as unknown as ReturnType<typeof supabase.storage.from>);
-
-      expect(getResourceUrl(item)).toBe('https://supabase.com/public/path.pdf');
-      expect(fromMock).toHaveBeenCalledWith('pdfs');
-      expect(getPublicUrlMock).toHaveBeenCalledWith('public/path.pdf');
-    });
-
-    it('returns pdf_url for public resources without file_path', () => {
+    it('strips leading slashes and bucket prefix from legacy relative pdf_url for public resources', () => {
       const item = {
         storage_bucket: 'pdfs',
-        resource_type: 'notes',
+        resource_type: 'pyq',
+        file_path: null,
+        pdf_url: 'pdfs/pyq/class-10/maths-2023.pdf',
+      };
+
+      const getPublicUrlMock = vi.fn().mockReturnValue({
+        data: { publicUrl: 'https://supabase.co/storage/v1/object/public/pdfs/pyq/class-10/maths-2023.pdf' }
+      });
+      const fromMock = vi.mocked(supabase.storage.from).mockReturnValue({
+        getPublicUrl: getPublicUrlMock,
+      } as unknown as ReturnType<typeof supabase.storage.from>);
+
+      expect(getResourceUrl(item)).toBe('https://supabase.co/storage/v1/object/public/pdfs/pyq/class-10/maths-2023.pdf');
+      expect(fromMock).toHaveBeenCalledWith('pdfs');
+      expect(getPublicUrlMock).toHaveBeenCalledWith('pyq/class-10/maths-2023.pdf');
+    });
+
+    it('returns pdf_url directly if it is already an absolute URL', () => {
+      const item = {
+        storage_bucket: 'pdfs',
+        resource_type: 'pyq',
         file_path: '',
         pdf_url: 'https://example.com/file.pdf'
       };

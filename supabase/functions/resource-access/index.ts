@@ -85,6 +85,14 @@ Deno.serve(async (req) => {
     });
   }
 
+  const numericId = typeof resource_id === "number" ? resource_id : parseInt(String(resource_id), 10);
+  if (isNaN(numericId)) {
+    return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
+      status: 400,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   // 2. Initialize Supabase client
   // Get environment variables injected by Supabase Edge Runtime
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -117,7 +125,7 @@ Deno.serve(async (req) => {
   const { data: resource, error: resourceError } = await supabase
     .from("learning_resources")
     .select("id, resource_type, storage_bucket, file_path, allow_download, is_active")
-    .eq("id", resource_id)
+    .eq("id", numericId)
     .single();
 
   // 5. Verify the resource
