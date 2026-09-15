@@ -73,7 +73,12 @@ Deno.serve(async (req) => {
   }
 
   const { resource_id } = body;
-  if (resource_id === undefined || typeof resource_id !== "number") {
+  if (
+    resource_id === undefined ||
+    resource_id === null ||
+    (typeof resource_id !== "number" && typeof resource_id !== "string") ||
+    (typeof resource_id === "string" && resource_id.trim() === "")
+  ) {
     return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
       status: 400,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
