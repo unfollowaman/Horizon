@@ -250,6 +250,7 @@ const Onboarding: React.FC = () => {
                         onChange={handleFileUpload}
                         className="hidden"
                         disabled={uploading}
+                        aria-label="Upload profile photo"
                       />
                     </label>
                     <button
