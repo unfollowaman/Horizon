@@ -73,20 +73,18 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         setResource(mappedResource);
 
         const isProtected = isResourceProtected(mappedResource);
-        if (isProtected && !user) {
-          setPdfError('401_UNAUTHORIZED');
-          setLoading(false);
-          return;
+        if (isProtected) {
+          if (!user) {
+            setPdfError('401_UNAUTHORIZED');
+            setLoading(false);
+            return;
+          }
+          await fetchSignedUrl(mappedResource.id);
+        } else {
+          setSignedUrl(mappedResource.pdfUrl);
         }
 
-        const urlPromise = isProtected
-          ? fetchSignedUrl(mappedResource.id)
-          : (async () => {
-              setSignedUrl(mappedResource.pdfUrl);
-              return mappedResource.pdfUrl;
-            })();
-
-        const relatedPromise = fetchLearningResources({
+        const { error: relatedError } = await fetchLearningResources({
           resource_type: mappedResource.resource_type,
           student_class: mappedResource.student_class || undefined,
           subject: mappedResource.subject || undefined,
@@ -95,8 +93,6 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
           neqId: mappedResource.id,
           limit: 4
         });
-
-        const [, { error: relatedError }] = await Promise.all([urlPromise, relatedPromise]);
 
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);

@@ -28,11 +28,26 @@ export const getResourceUrl = (item: ResourceUrlItem): string => {
     return item.file_path || item.pdf_url || '';
   }
 
-  const cleanPath = item.file_path ? item.file_path.replace(/^\/+/, '') : '';
+  const rawPath = item.file_path || item.pdf_url || '';
+  if (!rawPath) return '';
 
-  return cleanPath
-    ? supabase.storage.from(item.storage_bucket || 'pdfs').getPublicUrl(cleanPath).data.publicUrl
-    : (item.pdf_url || '');
+  // If pdf_url is already an absolute HTTP/HTTPS URL, return it directly
+  if (/^https?:\/\//i.test(rawPath)) {
+    return rawPath;
+  }
+
+  const bucket = item.storage_bucket || 'pdfs';
+
+  // Clean path: strip leading slashes and optional leading bucket name if present (e.g. 'pdfs/pyq/...' -> 'pyq/...')
+  let cleanPath = rawPath.replace(/^\/+/, '');
+  const bucketPrefix = `${bucket}/`;
+  if (cleanPath.startsWith(bucketPrefix)) {
+    cleanPath = cleanPath.slice(bucketPrefix.length);
+  }
+
+  if (!cleanPath) return '';
+
+  return supabase.storage.from(bucket).getPublicUrl(cleanPath).data.publicUrl;
 };
 
 /**
