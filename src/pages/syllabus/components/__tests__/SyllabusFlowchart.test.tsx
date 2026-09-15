@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import SyllabusFlowchart from '../SyllabusFlowchart';
@@ -101,7 +101,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('Grammar');
   });
 
-  it('2. provides compact accessible graph control buttons with aria-labels (Zoom In, Zoom Out, Fit View)', async () => {
+  it('2. provides compact accessible graph control buttons with aria-labels and focus-visible styling (Zoom In, Zoom Out, Fit View)', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -117,9 +117,13 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(zoomInBtn).not.toBeNull();
     expect(zoomOutBtn).not.toBeNull();
     expect(fitViewBtn).not.toBeNull();
+
+    expect(zoomInBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(zoomOutBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(fitViewBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
-  it('3. renders resource action links when resources exist and keeps nodes without resources visible without broken links', async () => {
+  it('3. renders resource action links with aria-labels and focus-visible styling when resources exist', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -128,7 +132,12 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       );
     });
 
-    // Topic with resource
+    // Topic with resource link check
+    const resourceLink = container?.querySelector(
+      'a[aria-label="View english notes for Fundamental Theorem of Arithmetic"]'
+    );
+    expect(resourceLink).not.toBeNull();
+    expect(resourceLink?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(container?.textContent).toContain('View Notes');
     expect(container?.textContent).toContain('English');
 
@@ -160,5 +169,39 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('No Syllabus Found');
     expect(container?.textContent).toContain('Syllabus data is currently not available');
+  });
+
+  it('6. memoizes ChapterNodeCard and TopicNodeCard to prevent unnecessary re-renders during viewport transformation state updates', async () => {
+    let parentRenderCount = 0;
+
+    const TestParentWrapper = () => {
+      const [, setCounter] = useState(0);
+      parentRenderCount++;
+      return (
+        <div>
+          <button onClick={() => setCounter((c) => c + 1)}>Force Parent Render</button>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </div>
+      );
+    };
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <TestParentWrapper />
+        </MemoryRouter>
+      );
+    });
+
+    expect(parentRenderCount).toBe(1);
+    expect(container?.textContent).toContain('CHAPTER 1');
+
+    const btn = container?.querySelector('button');
+    await act(async () => {
+      btn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(parentRenderCount).toBe(2);
+    expect(container?.textContent).toContain('CHAPTER 1');
   });
 });

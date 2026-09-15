@@ -183,7 +183,7 @@ describe('usePdfData hook', () => {
       error: null
     });
 
-    // @ts-expect-error Mocking functions property on Supabase client for testing
+    // @ts-expect-error - supabase.functions is a getter returning a new FunctionsClient instance
     vi.spyOn(supabase, 'functions', 'get').mockReturnValue({
       invoke: invokeMock
     });
