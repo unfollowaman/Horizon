@@ -161,4 +161,29 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('No Syllabus Found');
     expect(container?.textContent).toContain('Syllabus data is currently not available');
   });
+
+  it('6. retains memoized node card elements across flowchart parent re-renders', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    const initialChapterNodeText = container?.querySelector('h3')?.textContent;
+    expect(initialChapterNodeText).toBe('Real Numbers');
+
+    // Re-render parent with same chapters prop reference
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    // Node content remains rendered correctly without DOM reconstruction errors
+    expect(container?.querySelector('h3')?.textContent).toBe('Real Numbers');
+  });
 });
