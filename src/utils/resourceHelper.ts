@@ -28,8 +28,10 @@ export const getResourceUrl = (item: ResourceUrlItem): string => {
     return item.file_path || item.pdf_url || '';
   }
 
-  return item.file_path
-    ? supabase.storage.from(item.storage_bucket || 'pdfs').getPublicUrl(item.file_path).data.publicUrl
+  const cleanPath = item.file_path ? item.file_path.replace(/^\/+/, '') : '';
+
+  return cleanPath
+    ? supabase.storage.from(item.storage_bucket || 'pdfs').getPublicUrl(cleanPath).data.publicUrl
     : (item.pdf_url || '');
 };
 

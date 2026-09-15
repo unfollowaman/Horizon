@@ -69,7 +69,12 @@ async function handleRequest(req: Request, supabaseClient: unknown): Promise<Res
   }
 
   const { resource_id } = body;
-  if (resource_id === undefined || typeof resource_id !== "number") {
+  if (
+    resource_id === undefined ||
+    resource_id === null ||
+    (typeof resource_id !== "number" && typeof resource_id !== "string") ||
+    (typeof resource_id === "string" && resource_id.trim() === "")
+  ) {
     return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -197,11 +202,35 @@ Deno.test("Invalid resource_id returns 400", async () => {
   const req = new Request("http://localhost/", {
     method: "POST",
     headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: "not-a-number" }),
+    body: JSON.stringify({ resource_id: "   " }),
   });
   const mockClient = createMockClient({ id: "user1" }, null);
   const res = await handleRequest(req, mockClient);
   assertEquals(res.status, 400);
+});
+
+Deno.test("Valid string resource_id returns 200 with signed URL", async () => {
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: { Authorization: "Bearer valid-token" },
+    body: JSON.stringify({ resource_id: "res-uuid-1234" }),
+  });
+  const mockResource = {
+    id: "res-uuid-1234",
+    resource_type: "notes",
+    storage_bucket: "pdfs",
+    file_path: "path/to/file.pdf",
+    allow_download: false,
+    is_active: true,
+  };
+  const mockStorageData = { signedUrl: "https://example.com/signed-url" };
+  const mockClient = createMockClient({ id: "user1" }, mockResource, null, mockStorageData);
+  const res = await handleRequest(req, mockClient);
+  assertEquals(res.status, 200);
+  const data = await res.json();
+  assertEquals(data.success, true);
+  assertEquals(data.signed_url, "https://example.com/signed-url");
+  assertEquals(data.expires_in, 60);
 });
 
 Deno.test("Nonexistent resource returns 404", async () => {

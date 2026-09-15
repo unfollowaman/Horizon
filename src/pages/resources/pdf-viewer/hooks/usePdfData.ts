@@ -27,10 +27,12 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         if (errorMessage.includes('401') || errorMessage.includes('unauthorized')) {
           setPdfError('401_UNAUTHORIZED');
           return null;
-        } else if (errorMessage.includes('404')) {
+        } else if (errorMessage.includes('404') || errorMessage.includes('not found')) {
           setPdfError('Resource not found');
-        } else {
+        } else if (errorMessage.includes('403') || errorMessage.includes('forbidden')) {
           setPdfError('403_FORBIDDEN');
+        } else {
+          setPdfError(edgeError.message || 'Error accessing protected resource');
         }
         return null;
       } else if (!edgeData?.success) {
@@ -38,8 +40,11 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         if (dataError.includes('unauthorized') || dataError.includes('401')) {
           setPdfError('401_UNAUTHORIZED');
           return null;
+        } else if (dataError.includes('not found') || dataError.includes('404')) {
+          setPdfError('Resource not found');
+          return null;
         }
-        setPdfError(edgeData?.error || '403_FORBIDDEN');
+        setPdfError(edgeData?.error || 'Error accessing protected resource');
         return null;
       } else {
         setSignedUrl(edgeData.signed_url);
