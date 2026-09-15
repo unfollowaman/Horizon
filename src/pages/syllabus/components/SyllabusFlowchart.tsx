@@ -70,7 +70,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   type="button"
                   onClick={() => zoomIn(0.2)}
                   aria-label="Zoom in flowchart"
-                  className="w-8 h-8 neu-raised rounded-lg flex items-center justify-center font-bold text-ink hover:text-[#E91E8C] transition-colors cursor-pointer text-base"
+                  className="w-8 h-8 neu-raised rounded-lg flex items-center justify-center font-bold text-ink hover:text-[#E91E8C] transition-colors cursor-pointer text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
                   title="Zoom In"
                 >
                   +
@@ -79,7 +79,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   type="button"
                   onClick={() => zoomOut(0.2)}
                   aria-label="Zoom out flowchart"
-                  className="w-8 h-8 neu-raised rounded-lg flex items-center justify-center font-bold text-ink hover:text-[#E91E8C] transition-colors cursor-pointer text-base"
+                  className="w-8 h-8 neu-raised rounded-lg flex items-center justify-center font-bold text-ink hover:text-[#E91E8C] transition-colors cursor-pointer text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
                   title="Zoom Out"
                 >
                   −
@@ -88,7 +88,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   type="button"
                   onClick={() => resetTransform()}
                   aria-label="Fit flowchart to view"
-                  className="px-3 py-1.5 neu-raised rounded-lg font-bold text-xs text-ink hover:text-[#E91E8C] transition-colors cursor-pointer"
+                  className="px-3 py-1.5 neu-raised rounded-lg font-bold text-xs text-ink hover:text-[#E91E8C] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
                   title="Reset View"
                 >
                   Fit View
@@ -274,7 +274,8 @@ const TopicNodeCard: React.FC<{ node: GraphNode }> = React.memo(({ node }) => {
             <Link
               key={res.id}
               to={`/resource/${res.id}`}
-              className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-[11px] text-white bg-gradient-to-r from-[#E91E8C] to-[#8B0A50] rounded-md shadow-sm hover:opacity-95 transition-all no-underline shrink-0"
+              aria-label={`View ${res.medium} notes for ${node.data.title}`}
+              className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-[11px] text-white bg-gradient-to-r from-[#E91E8C] to-[#8B0A50] rounded-md shadow-sm hover:opacity-95 transition-all no-underline shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-1"
               title={`View ${res.medium} notes for ${node.data.title}`}
             >
               <span>View Notes</span>
