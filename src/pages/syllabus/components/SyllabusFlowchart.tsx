@@ -183,8 +183,8 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
   );
 };
 
-// Chapter Node Component
-const ChapterNodeCard: React.FC<{ node: GraphNode }> = ({ node }) => {
+// Memoize ChapterNodeCard with React.memo to prevent unnecessary re-renders during pan/zoom scale state updates
+const ChapterNodeCard: React.FC<{ node: GraphNode }> = React.memo(({ node }) => {
   return (
     <div
       className="absolute neu-card rounded-2xl p-4 flex flex-col justify-between border-2 border-[#E91E8C]/40 shadow-md transition-all hover:border-[#E91E8C] box-border"
@@ -215,10 +215,11 @@ const ChapterNodeCard: React.FC<{ node: GraphNode }> = ({ node }) => {
       )}
     </div>
   );
-};
+});
+ChapterNodeCard.displayName = 'ChapterNodeCard';
 
-// Topic / Exercise / Grammar Node Component
-const TopicNodeCard: React.FC<{ node: GraphNode }> = ({ node }) => {
+// Memoize TopicNodeCard with React.memo to prevent unnecessary re-renders during pan/zoom scale state updates
+const TopicNodeCard: React.FC<{ node: GraphNode }> = React.memo(({ node }) => {
   const isGrammar = node.data.topicType === 'grammar';
   const isExercise = node.data.topicType === 'exercise';
 
@@ -286,6 +287,7 @@ const TopicNodeCard: React.FC<{ node: GraphNode }> = ({ node }) => {
       )}
     </div>
   );
-};
+});
+TopicNodeCard.displayName = 'TopicNodeCard';
 
 export default SyllabusFlowchart;
