@@ -58,6 +58,7 @@ describe('ProfileButton Component', () => {
     expect(link).not.toBeNull();
     expect(link?.getAttribute('aria-label')).toBe('Log in');
     expect(link?.getAttribute('href')).toBe('/login');
+    expect(link?.className).toContain('focus-visible:ring-2');
     const svg = link?.querySelector('svg');
     expect(svg?.getAttribute('aria-hidden')).toBe('true');
   });
