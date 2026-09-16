@@ -99,7 +99,7 @@ describe('prerender script unit tests', () => {
     const html = generateResourceHtml(mapped, sampleTemplateHtml, []);
     expect(html).toContain('<title>Chapter 1: Resources and Development | Class 10 Geography | Horizon</title>');
     expect(html).toContain('Chapter 1: Resources and Development');
-    expect(html).toContain('ENGLISH MEDIUM');
+    expect(html).toContain('English Medium');
     expect(html).not.toContain('संसाधन और विकास');
   });
 
@@ -126,7 +126,7 @@ describe('prerender script unit tests', () => {
 
     const html = generateResourceHtml(mapped, sampleTemplateHtml, []);
     expect(html).toContain('Chapter 1: संसाधन और विकास');
-    expect(html).toContain('HINDI MEDIUM');
+    expect(html).toContain('Hindi Medium');
   });
 
   it('ensures trailing slashes correctly on path and URL strings', () => {
@@ -150,7 +150,7 @@ describe('prerender script unit tests', () => {
     expect(html).toContain('Chapter 1: Cell Biology Notes');
     expect(html).toContain('Class 10');
     expect(html).toContain('Science');
-    expect(html).toContain('ENGLISH MEDIUM');
+    expect(html).toContain('English Medium');
     expect(html).toContain('Cellular biology explores structural units of life.');
     expect(html).toContain('Mitochondria');
     expect(html).toContain('Nucleus');
@@ -170,7 +170,7 @@ describe('prerender script unit tests', () => {
 
     expect(html).toContain('<title>Class 12 History PYQ 2024 | Class 12 History | Horizon</title>');
     expect(html).toContain('Class 12 History PYQ 2024');
-    expect(html).toContain('HINDI MEDIUM');
+    expect(html).toContain('Hindi Medium');
     expect(html).toContain('80');
     expect(html).toContain('3 Hours');
     expect(html).toContain('Paper Overview');

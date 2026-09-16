@@ -253,8 +253,8 @@ const ResourceDetails: React.FC = () => {
                 </span>
               )}
               {resource.medium && (
-                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase bg-black/5 shrink-0">
-                  {resource.medium} MEDIUM
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
+                  {resource.medium.charAt(0).toUpperCase() + resource.medium.slice(1).toLowerCase()} Medium
                 </span>
               )}
             </div>
@@ -574,9 +574,9 @@ const ResourceDetails: React.FC = () => {
                     const stepTitle = typeof stepItem === 'string' ? `Step ${idx + 1}` : (stepItem.title || `Step ${idx + 1}`);
                     const stepDesc = typeof stepItem === 'string' ? stepItem : stepItem.description;
                     return (
-                      <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -597,9 +597,9 @@ const ResourceDetails: React.FC = () => {
                   return (
                     <>
                       {/* PYQ Step 01 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -614,9 +614,9 @@ const ResourceDetails: React.FC = () => {
                       </div>
 
                       {/* PYQ Step 02 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -631,9 +631,9 @@ const ResourceDetails: React.FC = () => {
                       </div>
 
                       {/* PYQ Step 03 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -648,9 +648,9 @@ const ResourceDetails: React.FC = () => {
                       </div>
 
                       {/* PYQ Step 04 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -665,9 +665,9 @@ const ResourceDetails: React.FC = () => {
                       </div>
 
                       {/* PYQ Step 05 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                        <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                        <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                          <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -687,9 +687,9 @@ const ResourceDetails: React.FC = () => {
                 return (
                   <>
                     {/* Step 01 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
@@ -704,9 +704,9 @@ const ResourceDetails: React.FC = () => {
                     </div>
 
                     {/* Step 02 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
@@ -721,9 +721,9 @@ const ResourceDetails: React.FC = () => {
                     </div>
 
                     {/* Step 03 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
@@ -738,9 +738,9 @@ const ResourceDetails: React.FC = () => {
                     </div>
 
                     {/* Step 04 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-                      <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
@@ -904,7 +904,7 @@ const ResourceDetails: React.FC = () => {
           </section>
 
           {/* Ready to Study / Practice CTA Card */}
-          <section className="neu-card rounded-2xl p-4 sm:p-6 text-center space-y-2.5 sm:space-y-3 bg-gradient-to-br from-[#E91E8C]/10 via-[#C2185B]/5 to-transparent border border-[#E91E8C]/20 relative overflow-hidden min-w-0 w-full">
+          <section className="neu-card rounded-2xl p-4 sm:p-6 text-center space-y-2.5 sm:space-y-3 relative overflow-hidden min-w-0 w-full">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white flex items-center justify-center mx-auto shadow-md shrink-0">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -920,10 +920,10 @@ const ResourceDetails: React.FC = () => {
             </p>
             <Link
               to={`/view/${resource.id}`}
-              className="inline-flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center text-xs sm:text-sm border-2 border-[#E91E8C]/20 group min-w-0"
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0"
             >
               <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
-              <span className="text-[#E91E8C] transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
+              <span className="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
             </Link>
           </section>
 

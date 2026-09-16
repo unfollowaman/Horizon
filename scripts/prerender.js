@@ -442,9 +442,9 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
       const stepTitle = typeof stepItem === 'string' ? `Step ${idx + 1}` : (stepItem.title || `Step ${idx + 1}`);
       const stepDesc = typeof stepItem === 'string' ? stepItem : stepItem.description;
       return `
-        <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-          <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-            <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+          <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0">
+            <svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
@@ -457,43 +457,43 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     }).join('');
   } else if (isPYQ) {
     studyGuidanceHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Closed-Book Attempt</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Attempt the paper without referring to notes or textbooks to test true recall.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Timed Practice</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Follow the prescribed time limit where available to improve speed and exam stamina.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Self-Evaluation</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Review incorrect or incomplete answers systematically to spot knowledge gaps.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Identify Patterns</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Identify recurring concepts and high-weightage question formats across multiple years.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Targeted Revision</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Revisit relevant chapter notes for topics where errors occurred during practice.</p></div>
       </div>
     `;
   } else {
     studyGuidanceHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Initial Review</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Read through the chapter overview to establish a clear conceptual framework before delving into details.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Active Recall</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Test yourself on key definitions and concepts without looking at the reference material.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Practice Questions</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Work through example problems and practice questions under timed conditions.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="w-7 h-7 border border-[#F48FB1] bg-[#FBE4EE] rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#8B0A50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Interactive Note Viewing</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.</p></div>
       </div>
     `;
@@ -557,7 +557,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
             <div class="flex flex-nowrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full overflow-x-auto no-scrollbar">
               ${resource.student_class ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.student_class)}</span>` : ''}
               ${resource.subject ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.subject)}</span>` : ''}
-              ${resource.medium ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 uppercase bg-black/5 shrink-0">${escapeHtml(resource.medium.toUpperCase())} MEDIUM</span>` : ''}
+              ${resource.medium ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.medium.charAt(0).toUpperCase() + resource.medium.slice(1).toLowerCase())} Medium</span>` : ''}
             </div>
 
             <header class="space-y-1.5 sm:space-y-2 relative z-10 min-w-0">
@@ -732,15 +732,15 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
             </dl>
           </section>
 
-          <section class="neu-card rounded-2xl p-4 sm:p-6 text-center space-y-2.5 sm:space-y-3 bg-gradient-to-br from-[#E91E8C]/10 via-[#C2185B]/5 to-transparent border border-[#E91E8C]/20 relative overflow-hidden min-w-0 w-full">
+          <section class="neu-card rounded-2xl p-4 sm:p-6 text-center space-y-2.5 sm:space-y-3 relative overflow-hidden min-w-0 w-full">
             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] text-white flex items-center justify-center mx-auto shadow-md shrink-0">
               <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
             </div>
             <h2 class="text-base sm:text-h2 uppercase text-ink m-0 break-words">${isPYQ ? 'Ready to Practice?' : 'Ready to Study?'}</h2>
             <p class="text-caption text-ink/80 max-w-xs mx-auto break-words">${isPYQ ? 'Open the question paper in Horizon\'s dedicated reader to start practicing now.' : 'Open the full notes in Horizon\'s dedicated reader to start studying now.'}</p>
-            <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center text-xs sm:text-sm border-2 border-[#E91E8C]/20 group min-w-0">
+            <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0">
               <span class="truncate">${isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
-              <span class="text-[#E91E8C] transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
+              <span class="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
             </a>
           </section>
 
