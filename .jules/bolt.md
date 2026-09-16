@@ -5,3 +5,7 @@
 ## 2026-04-01 - Memoizing Interactive Canvas/Flowchart Nodes in Zoom/Pan Viewports
 **Learning:** Canvas and flowchart visualizers (like `SyllabusFlowchart`) update scale/transform state on every zoom and pan gesture via `TransformWrapper`. Without memoization, hundreds of child node components (`ChapterNodeCard`, `TopicNodeCard`) re-render on every frame update during interaction. Wrapping node cards in `React.memo` stops redundant reconciliations and maintains 60fps pan/zoom.
 **Action:** Always wrap node items rendered inside interactive zoom/pan viewports with `React.memo` and assign `displayName`.
+
+## 2026-04-02 - Memoizing Accordion Topic Nodes in Syllabus Hierarchy Trees
+**Learning:** Accordion tree components like `SyllabusHierarchyTree` update open/close state (`openChapters`) on chapter header toggles. Without `React.memo`, dozens of rendered `SyllabusTopicNode` instances across all open chapters re-render on every accordion toggle. Wrapping `SyllabusTopicNode` in `React.memo` skips Virtual DOM reconciliations for unchanged topics when toggling sibling chapters or accordion states.
+**Action:** Wrap child node items in expandable accordion trees with `React.memo` and assign `displayName`.

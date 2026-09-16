@@ -6,7 +6,13 @@ interface SyllabusTopicNodeProps {
   topic: SyllabusTopic;
 }
 
-export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) => {
+/**
+ * SyllabusTopicNode renders individual topic cards within syllabus chapter hierarchy trees.
+ * Memoized with React.memo to prevent unnecessary re-renders when parent accordion open/close
+ * or sibling chapter states change in SyllabusHierarchyTree, avoiding Virtual DOM reconciliations
+ * for dozens of topic nodes.
+ */
+export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = React.memo(({ topic }) => {
   const isGrammar = topic.topic_type === 'grammar';
   const isExercise = topic.topic_type === 'exercise';
 
@@ -67,6 +73,8 @@ export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) =
       )}
     </div>
   );
-};
+});
+
+SyllabusTopicNode.displayName = 'SyllabusTopicNode';
 
 export default SyllabusTopicNode;
