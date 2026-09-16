@@ -277,7 +277,7 @@ const FeaturesSection = () => {
               }}
             >
               {f.path ? (
-                <Link to={f.path} className="absolute inset-0 z-20" aria-label={`Go to ${f.title}`} />
+                <Link to={f.path} className="absolute inset-0 z-20 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2" aria-label={`Go to ${f.title}`} />
               ) : null}
               <div className={styles.featureCardInner} />
               <div className={styles.featureCardContent}>
