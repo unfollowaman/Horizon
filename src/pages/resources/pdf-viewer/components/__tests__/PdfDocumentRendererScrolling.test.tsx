@@ -7,6 +7,11 @@ import { PdfDocumentRenderer } from '../PdfDocumentRenderer';
 
 // Mock react-pdf to avoid canvas loading issues in jsdom
 vi.mock('react-pdf', () => ({
+  pdfjs: {
+    GlobalWorkerOptions: {
+      workerSrc: '',
+    },
+  },
   Document: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="mock-document" className={className}>
       {children}
@@ -48,6 +53,7 @@ describe('PdfDocumentRenderer Scrolling & Touch Lock Behavior', () => {
 
   const defaultProps = {
     signedUrl: 'https://example.com/test.pdf',
+    pdfData: new ArrayBuffer(8),
     pdfError: null,
     numPages: 3,
     containerRef: { current: null } as React.RefObject<HTMLDivElement | null>,

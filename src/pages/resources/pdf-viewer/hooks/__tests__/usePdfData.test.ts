@@ -66,6 +66,7 @@ const mockRelatedResources: Resource[] = [
 interface PdfDataState {
   resource: Resource | null;
   signedUrl: string | null;
+  pdfData: ArrayBuffer | null;
   pdfError: string | null;
   loading: boolean;
   fetchSignedUrl: (resourceId: string) => Promise<string | null>;
@@ -139,6 +140,11 @@ describe('usePdfData hook', () => {
   });
 
   it('handles public non-protected resource correctly without requiring signed URL', async () => {
+    const fakeBuffer = new ArrayBuffer(8);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+    );
+
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockPublicResource,
       rawData: mockPublicResource as unknown as LearningResourceRow,
@@ -171,7 +177,78 @@ describe('usePdfData hook', () => {
     expect(stateRef.current?.pdfError).toBeNull();
   });
 
+  it('pre-fetches PDF bytes when signedUrl or public pdfUrl is available', async () => {
+    const fakeBuffer = new ArrayBuffer(8);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+    );
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockPublicResource,
+      rawData: mockPublicResource as unknown as LearningResourceRow,
+      error: null
+    });
+
+    vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
+      data: mockRelatedResources,
+      error: null
+    });
+
+    const stateRef: { current: PdfDataState | null } = { current: null };
+
+    await act(async () => {
+      root?.render(
+        React.createElement(TestComponent, {
+          id: 'public-1',
+          user: null,
+          authLoading: false,
+          onUpdate: (val: PdfDataState) => {
+            stateRef.current = val;
+          }
+        })
+      );
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith('https://cdn.example.com/pdfs/2023-science.pdf', expect.objectContaining({ signal: expect.any(AbortSignal) }));
+    expect(stateRef.current?.pdfData).not.toBeNull();
+    expect(stateRef.current?.pdfError).toBeNull();
+  });
+
+  it('handles non-2xx pre-fetch response gracefully by setting pdfError', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(null, { status: 404, statusText: 'Not Found' })
+    );
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockPublicResource,
+      rawData: mockPublicResource as unknown as LearningResourceRow,
+      error: null
+    });
+
+    const stateRef: { current: PdfDataState | null } = { current: null };
+
+    await act(async () => {
+      root?.render(
+        React.createElement(TestComponent, {
+          id: 'public-1',
+          user: null,
+          authLoading: false,
+          onUpdate: (val: PdfDataState) => {
+            stateRef.current = val;
+          }
+        })
+      );
+    });
+
+    expect(stateRef.current?.pdfError).toContain('Failed to load PDF (404 Not Found)');
+  });
+
   it('fetches signed URL and related resources for authenticated user on protected resource', async () => {
+    const fakeBuffer = new ArrayBuffer(8);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+    );
+
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockProtectedResource,
       rawData: mockProtectedResource as unknown as LearningResourceRow,
