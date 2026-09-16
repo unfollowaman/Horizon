@@ -22,7 +22,7 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
         <div className={`${styles.menuPanel} neu-raised ${isMobileMenuOpen ? styles.menuPanelActive : styles.menuPanelInactive}`}>
           <div className={styles.menuHeader}>
             {user ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
-            <button type="button" aria-label="Close menu" onClick={closeMenu} className={styles.menuCloseBtn}>
+            <button type="button" aria-label="Close menu" onClick={closeMenu} className={`${styles.menuCloseBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}>
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -36,7 +36,7 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
                   <Link
                     to={link.path}
                     onClick={closeMenu}
-                    className={styles.menuNavLink}
+                    className={`${styles.menuNavLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
                     aria-current={isActive ? 'page' : undefined}
                   >
                     {link.label}
@@ -51,19 +51,20 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
                 <Link
                   to="/dashboard"
                   onClick={closeMenu}
-                  className={styles.menuNavLink}
+                  className={`${styles.menuNavLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
                   aria-current={location.pathname === '/dashboard' ? 'page' : undefined}
                 >
                   Profile
                 </Link>
                 <div className={styles.menuDivider} />
                 <button
+                  type="button"
                   onClick={async () => {
                     closeMenu();
                     await signOut();
                     navigate('/');
                   }}
-                  className={styles.menuSignOutBtn}
+                  className={`${styles.menuSignOutBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
                 >
                   Log Out
                 </button>
@@ -72,10 +73,10 @@ export const PdfMobileMenu: React.FC<PdfMobileMenuProps> = ({ isMobileMenuOpen, 
           </nav>
           {(!user) && (
             <div className={styles.menuActionButtons}>
-              <Link to="/login" onClick={closeMenu} className={styles.menuSignInBtn}>
+              <Link to="/login" onClick={closeMenu} className={`${styles.menuSignInBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}>
                 Sign in
               </Link>
-              <Link to="/register" onClick={closeMenu} className={styles.menuGetNowBtn}>
+              <Link to="/register" onClick={closeMenu} className={`${styles.menuGetNowBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}>
                 Get Started
               </Link>
             </div>
