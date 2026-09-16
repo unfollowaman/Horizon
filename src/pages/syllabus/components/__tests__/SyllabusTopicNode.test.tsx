@@ -14,17 +14,20 @@ const sampleTopic: SyllabusTopic = {
   title: 'Real Numbers Intro',
   description: 'Basics of Euclid division lemma and prime factorization.',
   topic_type: 'topic',
-  order_index: 1,
+  display_order: 1,
+  is_active: true,
   created_at: '2026-01-01T00:00:00Z',
   resources: [
     {
-      id: 87,
+      id: '87',
       title: 'Chapter 1 Real Numbers Notes',
       subject: 'Mathematics',
       student_class: 'Class 10',
       medium: 'english',
       resource_type: 'notes',
-      created_at: '2026-01-01T00:00:00Z',
+      uploadDate: '2026-01-01',
+      pdfUrl: 'https://example.com/math.pdf',
+      thumbnailUrl: 'https://example.com/thumb.png',
     },
   ],
 };
