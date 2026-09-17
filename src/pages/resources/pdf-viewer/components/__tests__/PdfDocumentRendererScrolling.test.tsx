@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { PdfDocumentRenderer } from '../PdfDocumentRenderer';
+import { pdfjs } from 'react-pdf';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -9,7 +10,7 @@ import { PdfDocumentRenderer } from '../PdfDocumentRenderer';
 vi.mock('react-pdf', () => ({
   pdfjs: {
     GlobalWorkerOptions: {
-      workerSrc: '',
+      workerSrc: 'test-worker.js',
     },
   },
   Document: ({ children, className }: { children: React.ReactNode; className?: string }) => (
@@ -222,5 +223,11 @@ describe('PdfDocumentRenderer Scrolling & Touch Lock Behavior', () => {
 
     const documentEl = scrollContainer?.querySelector('[data-testid="mock-document"]');
     expect(documentEl).not.toBeNull();
+  });
+
+  it('configures pdfjs.GlobalWorkerOptions.workerSrc to non-empty URL string', () => {
+    expect(pdfjs.GlobalWorkerOptions.workerSrc).toBeDefined();
+    expect(typeof pdfjs.GlobalWorkerOptions.workerSrc).toBe('string');
+    expect(pdfjs.GlobalWorkerOptions.workerSrc.length).toBeGreaterThan(0);
   });
 });
