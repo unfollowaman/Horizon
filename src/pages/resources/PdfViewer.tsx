@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useAuth } from '../../context/AuthContext';
@@ -19,18 +18,13 @@ import { PdfRenderErrorFallback } from './pdf-viewer/components/PdfRenderErrorFa
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 import { isResourceProtected } from '../../utils/resourceHelper';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
-
 const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const [renderResetKey, setRenderResetKey] = useState<number>(0);
 
-  const { resource, signedUrl, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
+  const { resource, signedUrl, pdfData, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
 
   const [numPages, setNumPages] = useState<number | null>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -216,6 +210,7 @@ const PdfViewer: React.FC = () => {
       >
         <PdfDocumentRenderer
           signedUrl={signedUrl}
+          pdfData={pdfData}
           pdfError={pdfError}
           numPages={numPages}
           containerRef={containerRef}

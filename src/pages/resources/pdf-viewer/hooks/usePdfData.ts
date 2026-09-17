@@ -14,6 +14,7 @@ interface UsePdfDataProps {
 export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
   const [resource, setResource] = useState<Resource | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -60,6 +61,8 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
     const fetchResourceAndRelated = async () => {
       if (!id || authLoading) return;
       setLoading(true);
+      setPdfData(null);
+      setPdfError(null);
 
       const { data: mappedResource, rawData: data, error } = await fetchLearningResourceById(id, true);
 
@@ -97,16 +100,60 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         if (relatedError) {
           console.error("Error fetching related resources:", relatedError);
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchResourceAndRelated();
   }, [id, user, authLoading, fetchSignedUrl]);
 
+  useEffect(() => {
+    if (!signedUrl) {
+      setPdfData(null);
+      return;
+    }
+
+    const controller = new AbortController();
+    let isSubscribed = true;
+
+    const fetchPdfBytes = async () => {
+      try {
+        const response = await fetch(signedUrl, { signal: controller.signal });
+        if (!response.ok) {
+          if (isSubscribed) {
+            setPdfError(`Failed to load PDF (${response.status} ${response.statusText})`);
+            setLoading(false);
+          }
+          return;
+        }
+        const buffer = await response.arrayBuffer();
+        if (isSubscribed) {
+          setPdfData(buffer);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
+        if (isSubscribed) {
+          console.error("Error pre-fetching PDF bytes:", err);
+          setPdfError('Failed to load PDF file.');
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchPdfBytes();
+
+    return () => {
+      isSubscribed = false;
+      controller.abort();
+    };
+  }, [signedUrl]);
+
   return {
     resource,
     signedUrl,
+    pdfData,
     pdfError,
     loading,
     fetchSignedUrl

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Document, Page } from 'react-pdf';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import styles from '../../PdfViewer.module.css';
 import { PdfBottomControls } from './PdfFloatingControls';
 
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
+
 interface PdfDocumentRendererProps {
   signedUrl: string | null;
+  pdfData: ArrayBuffer | null;
   pdfError: string | null;
   numPages: number | null;
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -26,6 +32,7 @@ interface PdfDocumentRendererProps {
 
 export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
   signedUrl,
+  pdfData,
   pdfError,
   numPages,
   containerRef,
@@ -208,7 +215,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                        <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
                     ) : (
                     <Document
-                      file={signedUrl}
+                      file={pdfData || signedUrl}
                       onLoadSuccess={onDocumentLoadSuccess}
                       onLoadError={onDocumentLoadError}
                       onSourceError={onDocumentSourceError}
