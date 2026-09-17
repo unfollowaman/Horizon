@@ -221,7 +221,7 @@ const ResourceDetails: React.FC = () => {
         <button
           type="button"
           onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = backPath}
-          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0"
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
           aria-label="Go Back"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -313,7 +313,7 @@ const ResourceDetails: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 min-w-0">
               <Link
                 to={`/view/${resource.id}`}
-                className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0"
+                className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
               >
                 <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
                 <span className="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
@@ -323,7 +323,8 @@ const ResourceDetails: React.FC = () => {
                 <button
                   type="button"
                   onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center cursor-pointer min-w-0"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center cursor-pointer min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+                  aria-label={`Download ${resource.title}`}
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -920,7 +921,7 @@ const ResourceDetails: React.FC = () => {
             </p>
             <Link
               to={`/view/${resource.id}`}
-              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0"
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
               <span className="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
@@ -939,7 +940,7 @@ const ResourceDetails: React.FC = () => {
                   <li key={related.id} className="min-w-0">
                     <Link
                       to={`/resource/${related.id}`}
-                      className="block p-3 sm:p-3.5 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm leading-snug group min-w-0"
+                      className="block p-3 sm:p-3.5 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm leading-snug group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
                     >
                       <span className="group-hover:text-[#E91E8C] transition-colors break-words block min-w-0">{related.title}</span>
                       <span className="block text-caption text-ink/60 font-medium mt-1 truncate">
