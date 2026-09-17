@@ -176,6 +176,27 @@ export async function main() {
   const outputPath = path.resolve(__dirname, '../public/sitemap.xml');
   fs.writeFileSync(outputPath, xml, 'utf-8');
   console.log(`Sitemap generated successfully at ${outputPath} with ${urls.length} total URLs.`);
+
+  // Copy pdf.worker.min.mjs static fallbacks
+  try {
+    const workerSrcPath = path.resolve(__dirname, '../node_modules/pdfjs-dist/build/pdf.worker.min.mjs');
+    if (fs.existsSync(workerSrcPath)) {
+      const publicWorkerPath = path.resolve(__dirname, '../public/pdf.worker.min.mjs');
+      const nestedWorkerDir = path.resolve(__dirname, '../public/assets/pdfjs-dist/build');
+      const nestedWorkerPath = path.resolve(nestedWorkerDir, 'pdf.worker.min.mjs');
+
+      fs.copyFileSync(workerSrcPath, publicWorkerPath);
+
+      if (!fs.existsSync(nestedWorkerDir)) {
+        fs.mkdirSync(nestedWorkerDir, { recursive: true });
+      }
+      fs.copyFileSync(workerSrcPath, nestedWorkerPath);
+
+      console.log('Successfully copied pdf.worker.min.mjs static fallbacks to public folder.');
+    }
+  } catch (err) {
+    console.warn('Warning: Failed to copy pdf.worker.min.mjs fallback:', err.message);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -1382,11 +1382,6 @@ export async function main() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Error: Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.');
-    process.exit(1);
-  }
-
   const distDir = path.resolve(__dirname, '../dist');
   const templatePath = path.join(distDir, 'index.html');
 
@@ -1411,45 +1406,45 @@ export async function main() {
     }
   }
 
-  console.log('Connecting to Supabase to fetch learning resources...');
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  let supabase = null;
+  let rawRows = [];
 
-  const selectQuery = 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, is_active, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)';
+  if (supabaseUrl && supabaseAnonKey) {
+    try {
+      console.log('Connecting to Supabase to fetch learning resources...');
+      supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-  const { data: initialData, error: initialError } = await supabase
-    .from('learning_resources')
-    .select(selectQuery);
+      const selectQuery = 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, is_active, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)';
 
-  let rawRows = initialData;
-  let error = initialError;
+      const { data: initialData, error: initialError } = await supabase
+        .from('learning_resources')
+        .select(selectQuery);
 
-  if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('column'))) {
-    console.warn('Fallback query triggered for pre-rendering due to missing database columns...');
-    const legacySelect = 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, is_active, chapters(id, chapter_number, chapter_name)';
-    const legacyResult = await supabase
-      .from('learning_resources')
-      .select(legacySelect);
+      rawRows = initialData || [];
+      let error = initialError;
 
-    rawRows = legacyResult.data;
-    error = legacyResult.error;
+      if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('column'))) {
+        console.warn('Fallback query triggered for pre-rendering due to missing database columns...');
+        const legacySelect = 'id, title, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, is_active, chapters(id, chapter_number, chapter_name)';
+        const legacyResult = await supabase
+          .from('learning_resources')
+          .select(legacySelect);
+
+        rawRows = legacyResult.data || [];
+        error = legacyResult.error;
+      }
+
+      if (error) {
+        console.warn('Warning: Error fetching learning resources from Supabase for pre-rendering:', error.message);
+      }
+    } catch (err) {
+      console.warn('Warning: Failed connecting to Supabase for pre-rendering:', err.message);
+    }
+  } else {
+    console.warn('Warning: Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY env. Pre-rendering static templates only.');
   }
 
-  if (error) {
-    console.error('Error fetching learning resources from Supabase for pre-rendering:', error.message);
-    process.exit(1);
-  }
-
-  if (!rawRows || rawRows.length === 0) {
-    console.error('Error: Zero learning resources returned from database query.');
-    process.exit(1);
-  }
-
-  const activeRows = rawRows.filter(r => r.is_active !== false);
-
-  if (activeRows.length === 0) {
-    console.error('Error: Zero active learning resources found to pre-render.');
-    process.exit(1);
-  }
+  const activeRows = (rawRows || []).filter(r => r.is_active !== false);
 
   console.log(`Mapping ${activeRows.length} active resources for pre-rendering...`);
 
@@ -1529,57 +1524,63 @@ export async function main() {
 }
 
 export async function fetchSyllabusHierarchyForPrerender(supabase, studentClass, subject) {
+  if (!supabase) return [];
   const normalizedClass = String(studentClass).replace(/^class\s+/i, '').trim();
 
-  const { data, error } = await supabase
-    .from('chapters')
-    .select(`
-      *,
-      syllabus_topics (
+  try {
+    const { data, error } = await supabase
+      .from('chapters')
+      .select(`
         *,
-        syllabus_topic_resources (
-          resource_id,
-          learning_resources (*)
+        syllabus_topics (
+          *,
+          syllabus_topic_resources (
+            resource_id,
+            learning_resources (*)
+          )
         )
-      )
-    `)
-    .or(`student_class.eq.${normalizedClass},student_class.eq.Class ${normalizedClass}`)
-    .eq('subject', subject)
-    .eq('is_active', true)
-    .order('chapter_number', { ascending: true });
+      `)
+      .or(`student_class.eq.${normalizedClass},student_class.eq.Class ${normalizedClass}`)
+      .eq('subject', subject)
+      .eq('is_active', true)
+      .order('chapter_number', { ascending: true });
 
-  if (error) {
-    console.warn(`Warning: Could not fetch syllabus hierarchy for Class ${normalizedClass} ${subject}:`, error.message);
-    return [];
-  }
+    if (error) {
+      console.warn(`Warning: Could not fetch syllabus hierarchy for Class ${normalizedClass} ${subject}:`, error.message);
+      return [];
+    }
 
-  return (data || []).map((chapter) => {
-    const rawTopics = chapter.syllabus_topics || [];
-    const sortedTopics = [...rawTopics].sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+    return (data || []).map((chapter) => {
+      const rawTopics = chapter.syllabus_topics || [];
+      const sortedTopics = [...rawTopics].sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
-    const syllabusTopics = sortedTopics.map((topic) => {
-      const topicResources = (topic.syllabus_topic_resources || [])
-        .map((tr) => (tr.learning_resources ? mapLearningResource(tr.learning_resources) : null))
-        .filter((r) => r !== null);
+      const syllabusTopics = sortedTopics.map((topic) => {
+        const topicResources = (topic.syllabus_topic_resources || [])
+          .map((tr) => (tr.learning_resources ? mapLearningResource(tr.learning_resources) : null))
+          .filter((r) => r !== null);
+
+        return {
+          id: topic.id,
+          chapter_id: topic.chapter_id,
+          title: topic.title,
+          description: topic.description,
+          topic_type: topic.topic_type,
+          display_order: topic.display_order,
+          is_active: topic.is_active,
+          created_at: topic.created_at,
+          resources: topicResources,
+        };
+      });
 
       return {
-        id: topic.id,
-        chapter_id: topic.chapter_id,
-        title: topic.title,
-        description: topic.description,
-        topic_type: topic.topic_type,
-        display_order: topic.display_order,
-        is_active: topic.is_active,
-        created_at: topic.created_at,
-        resources: topicResources,
+        ...chapter,
+        syllabus_topics: syllabusTopics,
       };
     });
-
-    return {
-      ...chapter,
-      syllabus_topics: syllabusTopics,
-    };
-  });
+  } catch (err) {
+    console.warn(`Warning: Could not fetch syllabus hierarchy for Class ${normalizedClass} ${subject}:`, err.message);
+    return [];
+  }
 }
 
 export function generateSyllabusLandingHtml(templateHtml) {
