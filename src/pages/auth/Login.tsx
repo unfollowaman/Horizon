@@ -40,7 +40,7 @@ const Login: React.FC = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="neu-recessed rounded-full p-3 px-5 text-ink outline-none"
+          className="neu-recessed rounded-full p-3 px-5 text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
         />
         <label htmlFor="login-password" className="sr-only">Password</label>
         <input
@@ -50,19 +50,19 @@ const Login: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="neu-recessed rounded-full p-3 px-5 text-ink outline-none"
+          className="neu-recessed rounded-full p-3 px-5 text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
         />
         <button
           type="submit"
           disabled={loading}
-          className="neu-raised p-3 rounded-full text-ink font-bold hover:neu-raised-hover"
+          className="neu-raised p-3 rounded-full text-ink font-bold hover:neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
 
       <p style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
-        Don't have an account? <Link to="/register">Register here</Link>.
+        Don't have an account? <Link to="/register" className="text-[#E91E8C] font-semibold hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]">Register here</Link>.
       </p>
     </div>
   );
