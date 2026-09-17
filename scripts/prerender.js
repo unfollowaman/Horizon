@@ -1406,6 +1406,21 @@ export async function main() {
     }
   }
 
+  // Copy PDF.js worker files directly into dist/ output
+  try {
+    const workerSourcePath = path.resolve(__dirname, '../node_modules/pdfjs-dist/build/pdf.worker.min.mjs');
+    if (fs.existsSync(workerSourcePath)) {
+      const targetDir1 = distDir;
+      const targetDir2 = path.join(distDir, 'assets/pdfjs-dist/build');
+      fs.mkdirSync(targetDir2, { recursive: true });
+      fs.copyFileSync(workerSourcePath, path.join(targetDir1, 'pdf.worker.min.mjs'));
+      fs.copyFileSync(workerSourcePath, path.join(targetDir2, 'pdf.worker.min.mjs'));
+      console.log('PDF.js worker assets verified in dist output directory.');
+    }
+  } catch (wErr) {
+    console.warn('Warning: Could not copy PDF worker to dist folder:', wErr.message);
+  }
+
   if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Warning: Supabase credentials not found in env. Pre-rendering completed for static info pages.');
     return;

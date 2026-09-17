@@ -170,21 +170,6 @@ export async function main() {
     console.warn('Warning: Supabase credentials not found in env. Sitemap generated with static routes only.');
   }
 
-  // Ensure PDF.js worker files exist in public static assets
-  try {
-    const workerSourcePath = path.resolve(__dirname, '../node_modules/pdfjs-dist/build/pdf.worker.min.mjs');
-    if (fs.existsSync(workerSourcePath)) {
-      const targetDir1 = path.resolve(__dirname, '../public');
-      const targetDir2 = path.resolve(__dirname, '../public/assets/pdfjs-dist/build');
-      fs.mkdirSync(targetDir2, { recursive: true });
-      fs.copyFileSync(workerSourcePath, path.join(targetDir1, 'pdf.worker.min.mjs'));
-      fs.copyFileSync(workerSourcePath, path.join(targetDir2, 'pdf.worker.min.mjs'));
-      console.log('PDF.js worker assets verified in public static directory.');
-    }
-  } catch (wErr) {
-    console.warn('Warning: Could not copy PDF worker to public folder:', wErr.message);
-  }
-
   const urls = generateSitemapUrls(resources);
   const xml = buildSitemapXml(urls);
 
