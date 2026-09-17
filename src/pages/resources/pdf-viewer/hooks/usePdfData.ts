@@ -18,10 +18,12 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchSignedUrl = useCallback(async (resourceId: string) => {
+  const fetchSignedUrl = useCallback(async (resourceId: string | number) => {
     try {
+      const numericId = typeof resourceId === 'number' ? resourceId : parseInt(String(resourceId), 10);
+      const payloadId = isNaN(numericId) ? resourceId : numericId;
       const { data: edgeData, error: edgeError } = await supabase.functions.invoke('resource-access', {
-        body: { resource_id: resourceId },
+        body: { resource_id: payloadId },
       });
       if (edgeError) {
         const errorMessage = edgeError.message?.toLowerCase() || '';

@@ -4,10 +4,9 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import styles from '../../PdfViewer.module.css';
 import { PdfBottomControls } from './PdfFloatingControls';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 interface PdfDocumentRendererProps {
   signedUrl: string | null;
