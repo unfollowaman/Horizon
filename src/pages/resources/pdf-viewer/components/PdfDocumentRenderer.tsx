@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import styles from '../../PdfViewer.module.css';
 import { PdfBottomControls } from './PdfFloatingControls';
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 interface PdfDocumentRendererProps {
   signedUrl: string | null;
