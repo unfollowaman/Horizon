@@ -9,36 +9,31 @@ const projectRoot = path.resolve(__dirname, '..');
 
 let sourcePath = null;
 
-// 1. Try Node module resolution using createRequire
 try {
   const require = createRequire(import.meta.url);
-  const resolved = require.resolve('pdfjs-dist/build/pdf.worker.min.mjs');
-  if (resolved && fs.existsSync(resolved)) {
-    sourcePath = resolved;
+  // Resolve package manifest of pdfjs-dist directly
+  const packageJsonPath = require.resolve('pdfjs-dist/package.json');
+  const pdfjsDir = path.dirname(packageJsonPath);
+  const workerPath = path.resolve(pdfjsDir, 'build/pdf.worker.min.mjs');
+
+  if (fs.existsSync(workerPath)) {
+    sourcePath = workerPath;
   }
-} catch {
-  // Ignore require.resolve error and fall back to manual path checks
+} catch (error) {
+  console.warn('[WARN] Could not resolve pdfjs-dist/package.json via require.resolve:', error?.message);
 }
 
-// 2. Fall back to manual node_modules path resolution from project root
+// Direct node_modules fallback if require.resolve is unavailable
 if (!sourcePath) {
-  const candidatePaths = [
-    path.resolve(projectRoot, 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs'),
-    path.resolve(projectRoot, '../node_modules/pdfjs-dist/build/pdf.worker.min.mjs'),
-    path.resolve(process.cwd(), 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs')
-  ];
-
-  for (const candidate of candidatePaths) {
-    if (fs.existsSync(candidate)) {
-      sourcePath = candidate;
-      break;
-    }
+  const fallbackPath = path.resolve(projectRoot, 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs');
+  if (fs.existsSync(fallbackPath)) {
+    sourcePath = fallbackPath;
   }
 }
 
 if (!sourcePath) {
-  console.error(`[ERROR] PDF.js worker source file could not be located in node_modules.`);
-  console.error('Please ensure pdfjs-dist package is installed in node_modules.');
+  console.error('[ERROR] Could not locate installed pdf.worker.min.mjs in pdfjs-dist.');
+  console.error('Please ensure pdfjs-dist package is installed.');
   process.exit(1);
 }
 
