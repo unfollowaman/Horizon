@@ -1382,11 +1382,6 @@ export async function main() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Error: Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.');
-    process.exit(1);
-  }
-
   const distDir = path.resolve(__dirname, '../dist');
   const templatePath = path.join(distDir, 'index.html');
 
@@ -1409,6 +1404,26 @@ export async function main() {
       fs.writeFileSync(path.join(pageDir, 'index.html'), pageHtml, 'utf-8');
       console.log(`  ✓ Pre-rendered ${pageConfig.path} -> dist${pageConfig.path}/index.html`);
     }
+  }
+
+  // Copy PDF.js worker files directly into dist/ output
+  try {
+    const workerSourcePath = path.resolve(__dirname, '../node_modules/pdfjs-dist/build/pdf.worker.min.mjs');
+    if (fs.existsSync(workerSourcePath)) {
+      const targetDir1 = distDir;
+      const targetDir2 = path.join(distDir, 'assets/pdfjs-dist/build');
+      fs.mkdirSync(targetDir2, { recursive: true });
+      fs.copyFileSync(workerSourcePath, path.join(targetDir1, 'pdf.worker.min.mjs'));
+      fs.copyFileSync(workerSourcePath, path.join(targetDir2, 'pdf.worker.min.mjs'));
+      console.log('PDF.js worker assets verified in dist output directory.');
+    }
+  } catch (wErr) {
+    console.warn('Warning: Could not copy PDF worker to dist folder:', wErr.message);
+  }
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Warning: Supabase credentials not found in env. Pre-rendering completed for static info pages.');
+    return;
   }
 
   console.log('Connecting to Supabase to fetch learning resources...');

@@ -19,7 +19,7 @@ const mockUser: User = {
 };
 
 const mockProtectedResource: Resource = {
-  id: 'protected-1',
+  id: '87',
   title: 'Chapter 1: Protected Notes',
   description: 'Protected PDF resource',
   pdfUrl: 'protected/notes/ch1.pdf',
@@ -275,7 +275,7 @@ describe('usePdfData hook', () => {
     await act(async () => {
       root?.render(
         React.createElement(TestComponent, {
-          id: 'protected-1',
+          id: '87',
           user: mockUser,
           authLoading: false,
           onUpdate: (val: PdfDataState) => {
@@ -286,7 +286,7 @@ describe('usePdfData hook', () => {
     });
 
     expect(invokeMock).toHaveBeenCalledWith('resource-access', {
-      body: { resource_id: 'protected-1' }
+      body: { resource_id: 87 }
     });
     expect(stateRef.current?.resource).toEqual(mockProtectedResource);
     expect(stateRef.current?.signedUrl).toBe('https://supabase.co/storage/signed/ch1.pdf');
