@@ -71,7 +71,7 @@ const Contact: React.FC = () => {
                 className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
                 aria-label="Send email to tryhorizon18@gmail.com"
               >
-                <img src="/assets/Social Links/gmail.png" alt="" aria-hidden="true" className={styles.socialIcon} />
+                <img src="/assets/Social Links/gmail.png" alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Gmail</span>
                 <span className={styles.socialHandle}>tryhorizon18@gmail.com</span>
               </a>
@@ -82,7 +82,7 @@ const Contact: React.FC = () => {
                 className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
                 aria-label="Follow @unfollowaman on X (opens in a new tab)"
               >
-                <img src="/assets/Social Links/twitter-x.png" alt="" aria-hidden="true" className={styles.socialIcon} />
+                <img src="/assets/Social Links/twitter-x.png" alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>X</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>
@@ -93,7 +93,7 @@ const Contact: React.FC = () => {
                 className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
                 aria-label="View @unfollowaman on GitHub (opens in a new tab)"
               >
-                <img src="/assets/Social Links/github.png" alt="" aria-hidden="true" className={styles.socialIcon} />
+                <img src="/assets/Social Links/github.png" alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>GitHub</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>
@@ -104,7 +104,7 @@ const Contact: React.FC = () => {
                 className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
                 aria-label="Follow @unfollowaman_ on Instagram (opens in a new tab)"
               >
-                <img src="/assets/Social Links/instagram.png" alt="" aria-hidden="true" className={styles.socialIcon} />
+                <img src="/assets/Social Links/instagram.png" alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Instagram</span>
                 <span className={styles.socialHandle}>@unfollowaman_</span>
               </a>
@@ -115,7 +115,7 @@ const Contact: React.FC = () => {
                 className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
                 aria-label="Subscribe to @unfollowaman on Substack (opens in a new tab)"
               >
-                <img src="/assets/Social Links/substack.png" alt="" aria-hidden="true" className={styles.socialIcon} />
+                <img src="/assets/Social Links/substack.png" alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Substack</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>

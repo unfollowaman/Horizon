@@ -32,6 +32,10 @@ const Register: React.FC = () => {
           <img
             src="/assets/SVG Illustrations/confirm-email.svg"
             alt=""
+            width="160"
+            height="160"
+            loading="lazy"
+            decoding="async"
             className="w-40 h-40 mb-4 object-contain"
           />
           <h1 className="text-h2">Check your email</h1>

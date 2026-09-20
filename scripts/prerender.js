@@ -811,7 +811,7 @@ export const PUBLIC_STATIC_PAGES = [
         <header>
           <div class="flex justify-between items-center p-4">
             <a href="/" class="neu-raised flex items-center gap-2 p-2 rounded-xl no-underline text-ink">
-              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" class="w-8 h-8 rounded-full" />
+              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" fetchpriority="high" class="w-8 h-8 rounded-full" />
               <span class="font-bold text-lg">Horizon</span>
             </a>
             <nav class="flex items-center gap-4" aria-label="Main navigation">
@@ -827,7 +827,7 @@ export const PUBLIC_STATIC_PAGES = [
         <main class="flex-1 w-full flex flex-col">
           <section class="text-center py-12 px-4 max-w-4xl mx-auto space-y-6">
             <a href="/" class="neu-raised inline-flex items-center gap-2 px-4 py-1.5 rounded-full no-underline text-ink font-bold">
-              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" class="w-5 h-5 rounded-full" />
+              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="20" height="20" loading="eager" decoding="async" fetchpriority="high" class="w-5 h-5 rounded-full" />
               <span>Horizon</span>
             </a>
             <h1 class="text-3xl sm:text-5xl font-extrabold text-ink leading-tight">
@@ -888,7 +888,7 @@ export const PUBLIC_STATIC_PAGES = [
           <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div class="flex items-center gap-2 mb-2">
-                <img src="/assets/favicon/logo.avif" alt="Horizon Logo" class="w-6 h-6 rounded-full" />
+                <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6 rounded-full" />
                 <h3 class="font-bold text-lg text-ink">Horizon</h3>
               </div>
             </div>
@@ -913,11 +913,11 @@ export const PUBLIC_STATIC_PAGES = [
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="/assets/Social Links/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
-              <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)"><img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" class="w-6 h-6" /></a>
-              <a href="mailto:tryhorizon18@gmail.com" aria-label="Gmail"><img src="/assets/Social Links/gmail.png" alt="Gmail" class="w-6 h-6" /></a>
-              <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="/assets/Social Links/github.png" alt="GitHub" class="w-6 h-6" /></a>
-              <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="Substack"><img src="/assets/Social Links/substack.png" alt="Substack" class="w-6 h-6" /></a>
+              <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="/assets/Social Links/instagram.png" alt="Instagram" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6" /></a>
+              <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)"><img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6" /></a>
+              <a href="mailto:tryhorizon18@gmail.com" aria-label="Gmail"><img src="/assets/Social Links/gmail.png" alt="Gmail" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6" /></a>
+              <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="/assets/Social Links/github.png" alt="GitHub" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6" /></a>
+              <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" aria-label="Substack"><img src="/assets/Social Links/substack.png" alt="Substack" width="24" height="24" loading="lazy" decoding="async" class="w-6 h-6" /></a>
             </div>
           </div>
         </footer>

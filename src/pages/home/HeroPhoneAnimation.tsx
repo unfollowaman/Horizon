@@ -299,6 +299,10 @@ export const HeroPhoneAnimation: React.FC = () => {
             ref={mascotRef}
             src="/assets/favicon/logo.avif"
             alt="Mascot"
+            width="60"
+            height="60"
+            loading="eager"
+            decoding="async"
             className={styles.mascot}
             style={{ opacity: 0 }}
           />
@@ -320,6 +324,10 @@ export const HeroPhoneAnimation: React.FC = () => {
               <img
                 src={`/assets/hero/${config.asset}`}
                 alt={config.label}
+                width="80"
+                height="80"
+                loading="eager"
+                decoding="async"
                 className={styles.iconImage}
               />
               <div className={`iconLabel ${styles.iconLabel}`}>
