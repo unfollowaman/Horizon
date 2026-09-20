@@ -479,6 +479,10 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           <img
             src="/assets/SVG Illustrations/no-content-available.svg"
             alt=""
+            width="192"
+            height="192"
+            loading="lazy"
+            decoding="async"
             className="w-48 h-48 mb-3 object-contain"
           />
           <p className="font-bold text-body1 mb-2">{config.emptyMessageTitle}</p>

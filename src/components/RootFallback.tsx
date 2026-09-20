@@ -11,6 +11,10 @@ export const RootFallback: FC = () => {
         <img
           src="/assets/favicon/logo.avif"
           alt="Horizon Logo"
+          width="64"
+          height="64"
+          loading="eager"
+          decoding="async"
           className="w-16 h-16 mb-4 object-contain"
         />
         <h1 className="text-h2 text-ink uppercase tracking-wider mb-3">

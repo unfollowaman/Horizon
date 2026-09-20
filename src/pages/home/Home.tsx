@@ -56,7 +56,7 @@ const Header = () => {
       <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
         <Link to="/" className={`${styles.brandLogoDesktop} neu-raised`}>
-          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.brandLogoImg} />
+          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" fetchPriority="high" className={styles.brandLogoImg} />
           <div className={styles.brandLogoDivider}></div>
           <span className={styles.brandLogoText}>
             Horizon
@@ -203,7 +203,7 @@ const HeroSection = () => (
 
       {/* Brand Pill Logo */}
       <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
-        <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.heroBrandPillImg} />
+        <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="eager" decoding="async" fetchPriority="high" className={styles.heroBrandPillImg} />
         <span className={styles.heroBrandPillText}>
           Horizon
         </span>
@@ -405,7 +405,7 @@ const Footer = () => {
         {/* Brand Section */}
         <div className={styles.footerBrandCol}>
           <div className={styles.footerBrandTitleWrapper}>
-            <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.footerLogo} />
+            <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="lazy" decoding="async" className={styles.footerLogo} />
             <h3 className={styles.footerBrandTitle}>Horizon</h3>
           </div>
         </div>
@@ -447,19 +447,19 @@ const Footer = () => {
         {/* Socials */}
         <div className={styles.footerSocials}>
           <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Instagram">
-            <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.footerSocialIcon} />
+            <img src="/assets/Social Links/instagram.png" alt="Instagram" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
           <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="X (formerly Twitter)">
-            <img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" className={styles.footerSocialIcon} />
+            <img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
           <a href="mailto:tryhorizon18@gmail.com" className={styles.footerSocialLink} aria-label="Gmail">
-            <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.footerSocialIcon} />
+            <img src="/assets/Social Links/gmail.png" alt="Gmail" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
           <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="GitHub">
-            <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.footerSocialIcon} />
+            <img src="/assets/Social Links/github.png" alt="GitHub" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
           <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Substack">
-            <img src="/assets/Social Links/substack.png" alt="Substack" className={styles.footerSocialIcon} />
+            <img src="/assets/Social Links/substack.png" alt="Substack" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
         </div>
 

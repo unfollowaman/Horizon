@@ -11,6 +11,10 @@ const ComingSoon: React.FC = () => {
       <img
         src="/assets/SVG Illustrations/coming-soon.svg"
         alt="Coming Soon"
+        width="448"
+        height="300"
+        loading="lazy"
+        decoding="async"
         className="w-full max-w-md h-auto mx-auto mb-8 object-contain"
       />
       <Link to="/" className="neu-raised neu-raised-hover px-6 py-2 rounded-full text-ink text-body1 font-medium no-underline">

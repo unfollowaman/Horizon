@@ -141,6 +141,10 @@ const PdfViewer: React.FC = () => {
           <img
             src="/assets/SVG Illustrations/login-signin-page.svg"
             alt=""
+            width="160"
+            height="160"
+            loading="lazy"
+            decoding="async"
             className="w-40 h-auto my-2"
           />
           <div className="flex flex-col gap-2 w-full max-w-[300px]">
