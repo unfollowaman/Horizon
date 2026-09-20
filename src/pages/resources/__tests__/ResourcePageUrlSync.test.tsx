@@ -116,7 +116,7 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
     expect(document.title).toContain('Class 10 Geography English Medium');
   });
 
-  it('handles invalid URL parameter gracefully by displaying empty state when zero resources match', async () => {
+  it('handles invalid URL parameter gracefully by displaying empty state and clear filters button when zero resources match', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter initialEntries={['/notes/class-99/english-medium/nonexistent-subject']}>
@@ -131,6 +131,16 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
     });
 
     expect(container?.textContent).toContain(notesConfig.emptyMessageTitle);
+    const clearBtn = container?.querySelector('button[aria-label="Clear all active filters"]');
+    expect(clearBtn).not.toBeNull();
+    expect(clearBtn?.textContent).toBe('Clear Filters');
+
+    await act(async () => {
+      clearBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    // Verifies navigation resets back to base route
+    expect(container?.textContent).toContain('Chapter 1: Resources and Development');
   });
 
   it('initializes filter state for library PYQs from URL /library/class-10/2024', async () => {

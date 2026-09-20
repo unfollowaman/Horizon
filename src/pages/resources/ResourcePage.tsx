@@ -487,6 +487,16 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           />
           <p className="font-bold text-body1 mb-2">{config.emptyMessageTitle}</p>
           <p className="text-caption">{config.emptyMessageSubtitle}</p>
+          {Boolean(selectedClass || selectedSubject || selectedThirdFilter) && (
+            <button
+              type="button"
+              onClick={() => navigate(basePath)}
+              aria-label="Clear all active filters"
+              className="mt-4 px-5 py-2.5 font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
