@@ -47,7 +47,7 @@ describe('Contact Page', () => {
     expect(h2s?.[1].textContent).toContain('Connect & Support');
   });
 
-  it('renders all social links with correct hrefs', () => {
+  it('renders all social links with correct hrefs, ARIA labels, and focus-visible classes', () => {
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -57,13 +57,20 @@ describe('Contact Page', () => {
     });
 
     const links = Array.from(container?.querySelectorAll('a') || []);
-    const hrefs = links.map(l => l.getAttribute('href'));
+    const socialLinks = links.filter(l => l.getAttribute('href')?.includes('mailto:') || l.getAttribute('href')?.includes('https://'));
+    const hrefs = socialLinks.map(l => l.getAttribute('href'));
 
     expect(hrefs).toContain('mailto:tryhorizon18@gmail.com');
     expect(hrefs).toContain('https://x.com/unfollowaman');
     expect(hrefs).toContain('https://github.com/unfollowaman');
     expect(hrefs).toContain('https://www.instagram.com/unfollowaman_');
     expect(hrefs).toContain('https://substack.com/@unfollowaman');
+
+    socialLinks.forEach(link => {
+      expect(link.getAttribute('aria-label')).toBeTruthy();
+      expect(link.className).toContain('focus-visible:ring-2');
+      expect(link.className).toContain('focus-visible:ring-[#E91E8C]');
+    });
   });
 
   it('sets document title and meta description on mount', () => {
