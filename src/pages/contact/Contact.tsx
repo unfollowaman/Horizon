@@ -66,28 +66,56 @@ const Contact: React.FC = () => {
               Reach out directly or connect with us on social media for updates, feedback, and support:
             </p>
             <div className={styles.socialGrid}>
-              <a href="mailto:tryhorizon18@gmail.com" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
-                <img src="/assets/Social Links/gmail.png" alt="Gmail" className={styles.socialIcon} />
+              <a
+                href="mailto:tryhorizon18@gmail.com"
+                className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+                aria-label="Send email to tryhorizon18@gmail.com"
+              >
+                <img src="/assets/Social Links/gmail.png" alt="" aria-hidden="true" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Gmail</span>
                 <span className={styles.socialHandle}>tryhorizon18@gmail.com</span>
               </a>
-              <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
-                <img src="/assets/Social Links/twitter-x.png" alt="X" className={styles.socialIcon} />
+              <a
+                href="https://x.com/unfollowaman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+                aria-label="Follow @unfollowaman on X (opens in a new tab)"
+              >
+                <img src="/assets/Social Links/twitter-x.png" alt="" aria-hidden="true" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>X</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>
-              <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
-                <img src="/assets/Social Links/github.png" alt="GitHub" className={styles.socialIcon} />
+              <a
+                href="https://github.com/unfollowaman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+                aria-label="View @unfollowaman on GitHub (opens in a new tab)"
+              >
+                <img src="/assets/Social Links/github.png" alt="" aria-hidden="true" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>GitHub</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>
-              <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
-                <img src="/assets/Social Links/instagram.png" alt="Instagram" className={styles.socialIcon} />
+              <a
+                href="https://www.instagram.com/unfollowaman_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+                aria-label="Follow @unfollowaman_ on Instagram (opens in a new tab)"
+              >
+                <img src="/assets/Social Links/instagram.png" alt="" aria-hidden="true" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Instagram</span>
                 <span className={styles.socialHandle}>@unfollowaman_</span>
               </a>
-              <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={`${styles.socialItem} neu-raised neu-raised-hover`}>
-                <img src="/assets/Social Links/substack.png" alt="Substack" className={styles.socialIcon} />
+              <a
+                href="https://substack.com/@unfollowaman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.socialItem} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+                aria-label="Subscribe to @unfollowaman on Substack (opens in a new tab)"
+              >
+                <img src="/assets/Social Links/substack.png" alt="" aria-hidden="true" className={styles.socialIcon} />
                 <span className={styles.socialLabel}>Substack</span>
                 <span className={styles.socialHandle}>@unfollowaman</span>
               </a>
