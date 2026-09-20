@@ -37,7 +37,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({ classes, onSel
             tabIndex={0}
             role="button"
             aria-label={`Explore syllabus for ${cls.name}`}
-            className="neu-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 cursor-pointer hover:neu-raised-hover transition-all group focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+            className="neu-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 cursor-pointer hover:neu-raised-hover transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             <div className="space-y-3">
               <div className="w-12 h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-xl text-[#E91E8C] group-hover:scale-105 transition-transform">

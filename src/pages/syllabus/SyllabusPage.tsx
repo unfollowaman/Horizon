@@ -204,7 +204,7 @@ export const SyllabusPage: React.FC = () => {
         <button
           type="button"
           onClick={handleBackToSubjects}
-          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           aria-label="Back to Subject List"
         >
           <svg
