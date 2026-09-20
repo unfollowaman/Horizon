@@ -70,6 +70,7 @@ describe('PdfFloatingControls', () => {
       toggleThreeDotsMenu: vi.fn(),
       zoomIn: vi.fn(),
       zoomOut: vi.fn(),
+      toggleRotation: vi.fn(),
       handleShare: vi.fn(),
     };
 
@@ -80,20 +81,51 @@ describe('PdfFloatingControls', () => {
 
       const zoomInBtn = container?.querySelector('button[aria-label="Zoom In"]');
       const zoomOutBtn = container?.querySelector('button[aria-label="Zoom Out"]');
+      const rotateBtn = container?.querySelector('button[aria-label="Rotate Screen"]');
       const shareBtn = container?.querySelector('button[aria-label="Share"]');
       const toggleBtn = container?.querySelector('button[aria-label="More options"]');
 
       expect(zoomInBtn).not.toBeNull();
       expect(zoomOutBtn).not.toBeNull();
+      expect(rotateBtn).not.toBeNull();
       expect(shareBtn).not.toBeNull();
       expect(toggleBtn).not.toBeNull();
 
       expect(zoomInBtn?.className).toContain('focus-visible:ring-2');
       expect(zoomOutBtn?.className).toContain('focus-visible:ring-2');
+      expect(rotateBtn?.className).toContain('focus-visible:ring-2');
       expect(shareBtn?.className).toContain('focus-visible:ring-2');
       expect(toggleBtn?.className).toContain('focus-visible:ring-2');
 
       expect(toggleBtn?.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('positions Rotate Screen button directly below Zoom Out and directly above Share', () => {
+      act(() => {
+        root?.render(<PdfBottomControls {...defaultBottomProps} />);
+      });
+
+      const allButtons = Array.from(container?.querySelectorAll('button') || []);
+      const menuButtons = allButtons.filter(btn => btn.getAttribute('aria-label') !== 'More options');
+      const labels = menuButtons.map(btn => btn.getAttribute('aria-label'));
+
+      expect(labels).toEqual(['Zoom In', 'Zoom Out', 'Rotate Screen', 'Share']);
+    });
+
+    it('calls toggleRotation when Rotate Screen button is clicked', () => {
+      const toggleRotationMock = vi.fn();
+      act(() => {
+        root?.render(<PdfBottomControls {...defaultBottomProps} toggleRotation={toggleRotationMock} />);
+      });
+
+      const rotateBtn = container?.querySelector('button[aria-label="Rotate Screen"]') as HTMLButtonElement;
+      expect(rotateBtn).not.toBeNull();
+
+      act(() => {
+        rotateBtn.click();
+      });
+
+      expect(toggleRotationMock).toHaveBeenCalledTimes(1);
     });
 
     it('updates aria-expanded attribute when three-dots menu is open', () => {

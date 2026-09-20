@@ -25,6 +25,8 @@ interface PdfDocumentRendererProps {
   toggleThreeDotsMenu: () => void;
   handleShare: () => void;
   setCurrentPage: (page: number) => void;
+  rotation?: number;
+  toggleRotation?: () => void;
 }
 
 export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
@@ -45,7 +47,9 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
   isThreeDotsMenuOpen,
   toggleThreeDotsMenu,
   handleShare,
-  setCurrentPage
+  setCurrentPage,
+  rotation = 0,
+  toggleRotation
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [currentScale, setCurrentScale] = useState<number>(1);
@@ -196,6 +200,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                   toggleThreeDotsMenu={toggleThreeDotsMenu}
                   zoomIn={zoomIn}
                   zoomOut={zoomOut}
+                  toggleRotation={toggleRotation}
                   handleShare={handleShare}
                 />
 
@@ -230,6 +235,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                             pageNumber={index + 1}
                             width={containerWidth || Math.min(window.innerWidth, 800)}
                             scale={1}
+                            rotate={rotation}
                             renderTextLayer={false}
                             renderAnnotationLayer={false}
                             loading={<div className="h-64 w-full animate-pulse neu-recessed rounded-xl"></div>}

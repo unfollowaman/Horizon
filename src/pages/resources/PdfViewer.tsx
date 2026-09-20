@@ -27,6 +27,12 @@ const PdfViewer: React.FC = () => {
   const { resource, signedUrl, pdfData, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
 
   const [numPages, setNumPages] = useState<number | null>(null);
+  const [rotation, setRotation] = useState<number>(0);
+
+  const toggleRotation = () => {
+    setRotation(prev => (prev === 0 ? 90 : 0));
+    setIsThreeDotsMenuOpen(false);
+  };
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -227,6 +233,8 @@ const PdfViewer: React.FC = () => {
           toggleThreeDotsMenu={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
           handleShare={handleShare}
           setCurrentPage={setCurrentPage}
+          rotation={rotation}
+          toggleRotation={toggleRotation}
         />
       </ErrorBoundary>
     </div>

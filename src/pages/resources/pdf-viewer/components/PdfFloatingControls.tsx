@@ -41,6 +41,7 @@ interface PdfBottomControlsProps {
   toggleThreeDotsMenu: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
+  toggleRotation?: () => void;
   handleShare: () => void;
 }
 
@@ -50,6 +51,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
   toggleThreeDotsMenu,
   zoomIn,
   zoomOut,
+  toggleRotation,
   handleShare
 }) => {
   return (
@@ -70,6 +72,18 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
         </button>
+        {toggleRotation && (
+          <button onClick={toggleRotation} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Rotate Screen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 9V4a1 1 0 0 0-1-1h-5" />
+              <path d="M21 3l-6 6" />
+              <path d="M4 15v5a1 1 0 0 0 1 1h5" />
+              <path d="M3 21l6-6" />
+              <path d="M21 13a9 9 0 0 1-15.5 6.36" />
+              <path d="M3 11a9 9 0 0 1 15.5-6.36" />
+            </svg>
+          </button>
+        )}
         <button onClick={handleShare} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Share">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
