@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
         <Link
           to="/"
           onClick={() => window.scrollTo(0, 0)}
-          className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}
+          className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
         >
           <img src="/assets/favicon/logo.avif" alt="Horizon Logo" className={styles.heroBrandPillImg} />
           <span className={styles.heroBrandPillText}>Horizon</span>
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
             </div>
             <Link
               to={RESOURCE_CATEGORIES.notes.path}
-              className="inline-flex items-center justify-center px-8 h-12 text-accent font-bold rounded-full neu-raised neu-raised-hover transition-all"
+              className="inline-flex items-center justify-center px-8 h-12 text-accent font-bold rounded-full neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               Browse Notes
             </Link>
@@ -108,7 +108,15 @@ const Dashboard: React.FC = () => {
                     <span className="text-body-large text-ink font-bold">Overall Syllabus</span>
                     <span className="text-h2 text-accent font-bold leading-none">{progressData.percentageComplete}%</span>
                   </div>
-                  <div className="w-full h-3 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative">
+                  <div
+                    role="progressbar"
+                    aria-label="Overall Syllabus Progress"
+                    aria-valuenow={progressData.percentageComplete}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuetext={`${progressData.percentageComplete}% complete`}
+                    className="w-full h-3 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative"
+                  >
                     <div
                       className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
                       style={{ width: `${progressData.percentageComplete}%` }}
@@ -132,7 +140,15 @@ const Dashboard: React.FC = () => {
                             <span className="text-body-base text-ink font-bold">{subject}</span>
                             <span className="text-caption font-bold text-accent">{stats.percentage}%</span>
                           </div>
-                          <div className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative">
+                          <div
+                            role="progressbar"
+                            aria-label={`${subject} Progress`}
+                            aria-valuenow={stats.percentage}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuetext={`${stats.percentage}% complete`}
+                            className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative"
+                          >
                             <div
                               className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
                               style={{ width: `${stats.percentage}%` }}
@@ -171,7 +187,7 @@ const Dashboard: React.FC = () => {
           <div className="neu-card rounded-2xl p-8">
             <div className={styles.profileHeaderCard}>
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="Profile" className={styles.avatar} />
+                <img src={profile.avatar_url} alt={`${displayName}'s profile photo`} className={styles.avatar} />
               ) : (
                 <div className={styles.avatar}>{initials}</div>
               )}
@@ -184,8 +200,11 @@ const Dashboard: React.FC = () => {
                 </p>
                 <div className="mt-4">
                   <button
+                    type="button"
                     disabled
-                    className={`${styles.editBtn} inline-flex items-center justify-center px-4 h-9 text-caption font-bold rounded-lg neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all`}
+                    title="Profile editing coming soon"
+                    aria-label="Edit Profile (Coming Soon)"
+                    className={`${styles.editBtn} inline-flex items-center justify-center px-4 h-9 text-caption font-bold rounded-lg neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
                   >
                     Edit Profile
                   </button>
@@ -256,8 +275,10 @@ const Dashboard: React.FC = () => {
               Account Section
             </span>
             <button
+              type="button"
               onClick={handleSignOut}
-              className="w-full flex items-center justify-center px-6 h-11 text-accent font-bold rounded-xl neu-raised neu-raised-hover transition-all"
+              aria-label="Sign out of your account"
+              className="w-full flex items-center justify-center px-6 h-11 text-accent font-bold rounded-xl neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               Sign Out
             </button>

@@ -9,3 +9,7 @@
 ## 2026-03-30 - Focus Rings on Overlay Link Elements
 **Learning:** When using full-card overlay `<Link>` elements (`absolute inset-0 z-20`) to make entire card containers clickable, omitting focus utilities leaves keyboard navigation without a visible focus indicator. Adding explicit `rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2` to overlay links ensures keyboard Tab navigation renders a visible focus ring that matches the card's rounded border radius.
 **Action:** Always include matching `rounded-*` border-radius and `focus-visible:ring-2` styling on overlay link elements.
+
+## 2026-03-31 - Accessible Custom Progress Bars & Disabled Control Hints
+**Learning:** Custom CSS-animated progress bars in dashboard cards must include `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and descriptive `aria-label`/`aria-valuetext` attributes so assistive technologies can convey completion metrics. Disabled interactive controls require explanatory `title` and `aria-label` hints alongside `focus-visible` ring styling.
+**Action:** Always wrap custom progress indicators with full WAI-ARIA `progressbar` role semantics and provide descriptive tooltips for disabled UI actions.
