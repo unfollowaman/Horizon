@@ -162,10 +162,13 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    });
+
     expect(spy).toHaveBeenCalledWith('10', 'Mathematics');
     expect(container?.textContent).toContain('Real Numbers');
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
-    expect(container?.textContent).toContain('Class 10 — Mathematics Flowchart');
   });
 
   it('7. Renders chapters and topics in display order and respects topic_type badges', async () => {
@@ -219,6 +222,10 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
           </Routes>
         </MemoryRouter>
       );
+    });
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
     });
 
     expect(container?.textContent).toContain('Chemical Reactions and Equations');

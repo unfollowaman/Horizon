@@ -8,9 +8,8 @@ import ScrollToTop from './components/ScrollToTop';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
-import RenderingScreen from './components/RenderingScreen/RenderingScreen';
 
-// Lazy loaded pages
+// Lazy loaded pages & fallback screens
 const Library = lazy(() => import('./pages/resources/LibraryRoute'));
 const ResourceDetails = lazy(() => import('./pages/resources/ResourceDetails'));
 const Dashboard = lazy(() => import('./pages/user/Dashboard'));
@@ -18,15 +17,16 @@ const NotificationSettings = lazy(() => import('./pages/settings/NotificationSet
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
 const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
-import About from './pages/about/About';
-import Contact from './pages/contact/Contact';
-import Terms from './pages/terms/Terms';
-import PrivacyPolicy from './pages/privacy/PrivacyPolicy';
-import Attribution from './pages/attribution/Attribution';
+const About = lazy(() => import('./pages/about/About'));
+const Contact = lazy(() => import('./pages/contact/Contact'));
+const Terms = lazy(() => import('./pages/terms/Terms'));
+const PrivacyPolicy = lazy(() => import('./pages/privacy/PrivacyPolicy'));
+const Attribution = lazy(() => import('./pages/attribution/Attribution'));
 const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
 const StudyNotes = lazy(() => import('./pages/resources/StudyNotesRoute'));
 const SyllabusPage = lazy(() => import('./pages/syllabus/SyllabusPage'));
 const ComingSoon = lazy(() => import('./pages/coming-soon/ComingSoon'));
+const RenderingScreen = lazy(() => import('./components/RenderingScreen/RenderingScreen'));
 
 function App() {
   return (
