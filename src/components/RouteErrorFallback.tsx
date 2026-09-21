@@ -19,14 +19,14 @@ export const RouteErrorFallback: FC<RouteErrorFallbackProps> = ({ onRetry }) => 
           <button
             type="button"
             onClick={onRetry}
-            className="px-5 py-2 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink transition-all"
+            className="px-5 py-2 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
           >
             Try Again
           </button>
         )}
         <Link
           to="/"
-          className="px-5 py-2 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink no-underline transition-all"
+          className="px-5 py-2 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink no-underline transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
         >
           Go Home
         </Link>

@@ -52,6 +52,14 @@ describe('RouteErrorFallback and MainLayout Error Boundary Integration', () => {
     expect(container?.textContent).toContain('An unexpected error occurred while loading this page content.');
     expect(container?.textContent).toContain('Try Again');
     expect(container?.textContent).toContain('Go Home');
+
+    const tryAgainBtn = container?.querySelector('button');
+    const goHomeLink = container?.querySelector('a[href="/"]');
+
+    expect(tryAgainBtn?.className).toContain('focus-visible:ring-2');
+    expect(tryAgainBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(goHomeLink?.className).toContain('focus-visible:ring-2');
+    expect(goHomeLink?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
   it('calls onRetry callback when Try Again button is clicked', () => {
