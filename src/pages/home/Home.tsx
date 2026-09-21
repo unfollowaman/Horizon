@@ -9,7 +9,7 @@ import ProfileButton from '../../components/ProfileButton';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Home.module.css';
 
-const Header = () => {
+const Header = React.memo(() => {
   const { session, loading, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
@@ -20,10 +20,11 @@ const Header = () => {
     const handleScroll = () => {
       // Assuming hero section is ~100vh
       const threshold = window.innerHeight * 0.8;
-      setScrolledPastHero(window.scrollY > threshold);
+      const isPast = window.scrollY > threshold;
+      setScrolledPastHero((prev) => (prev !== isPast ? isPast : prev));
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -189,14 +190,15 @@ const Header = () => {
       </div>
     </header>
   );
-};
+});
+Header.displayName = 'Header';
 
 import { getAllFeatures } from '../../config/resources';
 
 const preloadLibrary = () => import('../resources/LibraryRoute');
 const preloadStudyNotes = () => import('../resources/StudyNotesRoute');
 
-const HeroSection = () => (
+const HeroSection = React.memo(() => (
   <section className={styles.heroSection}>
     {/* Content */}
     <div className={styles.heroContent}>
@@ -220,9 +222,10 @@ const HeroSection = () => (
       <HeroPhoneAnimation />
     </div>
   </section>
-);
+));
+HeroSection.displayName = 'HeroSection';
 
-const FeaturesSection = () => {
+const FeaturesSection = React.memo(() => {
   const [hasReachedFeatures, setHasReachedFeatures] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -307,9 +310,10 @@ const FeaturesSection = () => {
       </div>
     </section>
   );
-};
+});
+FeaturesSection.displayName = 'FeaturesSection';
 
-const HighlightsSection = () => {
+const HighlightsSection = React.memo(() => {
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -393,9 +397,10 @@ const HighlightsSection = () => {
     </div>
   </section>
   );
-};
+});
+HighlightsSection.displayName = 'HighlightsSection';
 
-const Footer = () => {
+const Footer = React.memo(() => {
   const location = useLocation();
 
   return (
@@ -466,7 +471,8 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+Footer.displayName = 'Footer';
 
 const Home: React.FC = () => {
   const { session, loading } = useAuth();
