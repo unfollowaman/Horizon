@@ -43,6 +43,7 @@ export const HeroPhoneAnimation: React.FC = () => {
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
+  const [isVisible, setIsVisible] = useState(true);
   const containerWidthRef = useRef(300);
   const textWidthRef = useRef(60); // Default to 60px as fallback
 
@@ -52,13 +53,33 @@ export const HeroPhoneAnimation: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const node = containerRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry) {
+          setIsVisible(entry.isIntersecting);
+        }
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (!containerRef.current) return;
 
     const observer = new ResizeObserver((entries) => {
       if (entries[0]) {
         const width = entries[0].contentRect.width;
-        setContainerWidth(width);
-        containerWidthRef.current = width;
+        if (width > 0 && Math.abs(containerWidthRef.current - width) > 0.5) {
+          setContainerWidth(width);
+          containerWidthRef.current = width;
+        }
       }
     });
 
@@ -253,7 +274,7 @@ export const HeroPhoneAnimation: React.FC = () => {
   };
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || !isVisible) return;
 
     let frameId: number;
     const startTime = performance.now();
@@ -268,7 +289,7 @@ export const HeroPhoneAnimation: React.FC = () => {
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, isVisible]);
 
   useEffect(() => {
     if (prefersReducedMotion) {
