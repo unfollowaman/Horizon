@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   SUPPORTED_CLASSES,
@@ -11,8 +11,9 @@ import { fetchSyllabusHierarchy } from '../../services/learningResourcesAPI';
 import type { SyllabusChapterHierarchy } from '../../types';
 import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
-import SyllabusFlowchart from './components/SyllabusFlowchart';
 import SyllabusSkeleton from './components/SyllabusSkeleton';
+
+const SyllabusFlowchart = lazy(() => import('./components/SyllabusFlowchart'));
 
 export const SyllabusPage: React.FC = () => {
   const { classSlug, subjectSlug } = useParams<{ classSlug?: string; subjectSlug?: string }>();
@@ -262,11 +263,13 @@ export const SyllabusPage: React.FC = () => {
       )}
 
       {!loading && !error && (
-        <SyllabusFlowchart
-          chapters={chapters}
-          subjectName={resolvedSubjectName}
-          classNameTitle={currentClass.name}
-        />
+        <Suspense fallback={<SyllabusSkeleton />}>
+          <SyllabusFlowchart
+            chapters={chapters}
+            subjectName={resolvedSubjectName}
+            classNameTitle={currentClass.name}
+          />
+        </Suspense>
       )}
     </div>
   );
