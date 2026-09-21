@@ -211,7 +211,7 @@ export const HeroPhoneAnimation: React.FC = () => {
 
         x = lerp(originX, orbitStartX, eased);
         y = lerp(originY, orbitStartY, eased);
-        opacity = localT;
+        opacity = 1;
         labelOpacity = 0;
       } else if (t < ORBIT_END) {
         // Act 2
@@ -339,7 +339,6 @@ export const HeroPhoneAnimation: React.FC = () => {
               key={config.label}
               ref={el => { iconRefs.current[idx] = el; }}
               className={styles.iconContainer}
-              style={{ opacity: 0 }}
             >
               <div className={`${styles.iconBox} neu-raised`} style={{ opacity: 0 }} />
               <img
@@ -349,6 +348,7 @@ export const HeroPhoneAnimation: React.FC = () => {
                 height="80"
                 loading="eager"
                 decoding="async"
+                fetchPriority="high"
                 className={styles.iconImage}
               />
               <div className={`iconLabel ${styles.iconLabel}`}>

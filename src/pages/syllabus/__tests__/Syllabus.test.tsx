@@ -163,7 +163,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     });
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     expect(spy).toHaveBeenCalledWith('10', 'Mathematics');
