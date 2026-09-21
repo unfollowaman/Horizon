@@ -836,6 +836,40 @@ export const PUBLIC_STATIC_PAGES = [
             <p class="text-lg sm:text-xl text-ink/80 max-w-2xl mx-auto">
               Study notes, past papers, and practice materials — everything for class 8th to 12th, in one place.
             </p>
+            <div class="flex justify-center pt-4">
+              <div class="w-full max-w-[420px] h-[560px] relative rounded-[46px] bg-white border border-gray-200 shadow-2xl overflow-hidden mx-auto">
+                <div class="w-full h-full relative mx-auto">
+                  <div class="absolute top-[36px] left-1/2 -translate-x-1/2 rounded-full px-4 h-11 flex items-center justify-center gap-2 whitespace-nowrap neu-raised">
+                    <div style="width: 28px; height: 100%; flex-shrink: 0;"></div>
+                    <span class="text-xl font-normal text-ink">Horizon</span>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(92px, 160px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/notes.avif" alt="Study Notes" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Study Notes</div>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 160px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/pyq-papers.avif" alt="PYQ Papers" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">PYQ Papers</div>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(92px, 235px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/mcq-sheets.avif" alt="MCQ Sheets" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">MCQ Sheets</div>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 235px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/flashcards.avif" alt="Flashcards" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Flashcards</div>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(92px, 310px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/announcements.avif" alt="Announcements" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Announcements</div>
+                  </div>
+                  <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 310px) translate(-50%, -50%); opacity: 1;">
+                    <img src="/assets/hero/revision-sheets.avif" alt="Revision Sheets" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Revision Sheets</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
           <section class="py-12 px-4 max-w-6xl mx-auto w-full">
             <div class="text-center mb-8">
