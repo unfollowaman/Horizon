@@ -93,8 +93,33 @@ const Onboarding: React.FC = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0 || !userId) return;
     const file = e.target.files[0];
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${userId}/avatar.${fileExt}`;
+
+    const ALLOWED_MIME_TYPES = new Set([
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+      'image/avif',
+    ]);
+    const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif']);
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
+    const rawExt = file.name.includes('.') ? file.name.split('.').pop() || '' : '';
+    const cleanExt = rawExt.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    if (file.size > MAX_FILE_SIZE) {
+      console.error('File size exceeds maximum allowed limit of 5MB.');
+      e.target.value = '';
+      return;
+    }
+
+    if (!ALLOWED_MIME_TYPES.has(file.type) || !ALLOWED_EXTENSIONS.has(cleanExt)) {
+      console.error('Invalid file type. Only JPEG, PNG, WebP, GIF, and AVIF images are allowed.');
+      e.target.value = '';
+      return;
+    }
+
+    const filePath = `${userId}/avatar.${cleanExt}`;
 
     setUploading(true);
 
