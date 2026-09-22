@@ -123,9 +123,9 @@
   color: #C2185B;
 }
 
-.inlineLink:focus {
+.inlineLink:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-ink);
+  box-shadow: 0 0 0 2px #E91E8C;
   --tw-radius: 2px;
   border-radius: 2px;
 }
