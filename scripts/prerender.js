@@ -349,7 +349,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     topicsHtml = topicsList.map(topicItem => `
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
@@ -362,25 +362,25 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     topicsHtml = `
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Fundamental definitions, laws, and core theoretical concepts.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Structured breakdown of key chapter subtopics and formulas.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">High-yield exam points and recurring conceptual questions.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Diagrams, illustrative examples, and chapter summaries.</span>
       </div>
@@ -389,25 +389,25 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     topicsHtml = `
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Multiple-choice and objective assessment questions.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Short-answer conceptual problems and core syllabus coverage.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Long-answer analytical and structured essay questions.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Direct insight into examination question formats and marking weightage.</span>
       </div>
@@ -416,19 +416,19 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
     topicsHtml = `
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Comprehensive topic review and core definitions.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Practice questions and self-assessment exercises.</span>
       </div>
       <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Key takeaways for quick revision before tests.</span>
       </div>
