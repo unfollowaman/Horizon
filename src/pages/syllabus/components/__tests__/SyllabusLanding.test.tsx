@@ -54,7 +54,7 @@ describe('SyllabusLanding', () => {
     expect(stepIndicator?.textContent).not.toContain('03');
   });
 
-  it('renders class cards with prominent class numbers, derived subject counts, and CTA', () => {
+  it('renders class cards in grid format with SVG placeholders, class titles, descriptions, and View CTA', () => {
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -63,53 +63,20 @@ describe('SyllabusLanding', () => {
       );
     });
 
-    const buttons = container?.querySelectorAll('[role="button"]');
-    expect(buttons?.length).toBe(3);
+    const classCards = container?.querySelectorAll('[role="button"]');
+    expect(classCards?.length).toBe(3);
 
-    expect(container?.textContent).toContain('08');
-    expect(container?.textContent).toContain('09');
-    expect(container?.textContent).toContain('10');
-    expect(container?.textContent).toContain('Class 8');
-    expect(container?.textContent).toContain('Class 9');
-    expect(container?.textContent).toContain('Class 10');
-    expect(container?.textContent).toContain('6 Subjects');
-    expect(container?.textContent).toContain('7 Subjects');
-    expect(container?.textContent).toContain('View Subjects');
-  });
+    expect(container?.textContent).toContain('Class 8th');
+    expect(container?.textContent).toContain('Class 9th');
+    expect(container?.textContent).toContain('Class 10th');
+    expect(container?.textContent).toContain('View');
 
-  it('displays database chapter counts with document icons when provided', () => {
-    const chapterCounts = { '8': 38, '9': 40, '10': 45 };
-    act(() => {
-      root?.render(
-        <MemoryRouter>
-          <SyllabusLanding
-            classes={SUPPORTED_CLASSES}
-            chapterCounts={chapterCounts}
-            onSelectClass={() => {}}
-          />
-        </MemoryRouter>
-      );
-    });
-
-    expect(container?.textContent).toContain('38 Chapters');
-    expect(container?.textContent).toContain('40 Chapters');
-    expect(container?.textContent).toContain('45 Chapters');
-  });
-
-  it('shows loading state when countsLoading is true', () => {
-    act(() => {
-      root?.render(
-        <MemoryRouter>
-          <SyllabusLanding
-            classes={SUPPORTED_CLASSES}
-            countsLoading={true}
-            onSelectClass={() => {}}
-          />
-        </MemoryRouter>
-      );
-    });
-
-    expect(container?.textContent).toContain('Loading chapters...');
+    // Confirm circular class number badges and subject/chapter counts are NOT rendered on front-end cards
+    expect(container?.textContent).not.toContain('08');
+    expect(container?.textContent).not.toContain('09');
+    expect(container?.textContent).not.toContain('6 Subjects');
+    expect(container?.textContent).not.toContain('7 Subjects');
+    expect(container?.textContent).not.toContain('Chapters');
   });
 
   it('triggers onSelectClass callback on click and keyboard enter', () => {
@@ -122,7 +89,7 @@ describe('SyllabusLanding', () => {
       );
     });
 
-    const class8Card = container?.querySelector('[aria-label="Select Class 8"]');
+    const class8Card = container?.querySelector('[aria-label="Select Class 8th"]');
     expect(class8Card).not.toBeNull();
 
     act(() => {

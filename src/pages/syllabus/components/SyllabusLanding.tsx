@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProfileButton from '../../../components/ProfileButton';
-import { type ClassOption, getSubjectsForClass } from '../../../services/syllabusService';
+import { type ClassOption } from '../../../services/syllabusService';
 
 interface SyllabusLandingProps {
   classes: ClassOption[];
@@ -12,7 +12,7 @@ interface SyllabusLandingProps {
 
 // Compact SVG Illustration Placeholders for Class Cards
 const BookStackIllustration: React.FC = () => (
-  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Book Stack */}
       <rect x="14" y="52" width="52" height="10" rx="2" fill="#1A1A2E" opacity="0.15" />
@@ -30,7 +30,7 @@ const BookStackIllustration: React.FC = () => (
 );
 
 const ChecklistIllustration: React.FC = () => (
-  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="18" y="14" width="44" height="52" rx="5" fill="#1A1A2E" opacity="0.08" />
       <rect x="20" y="12" width="40" height="52" rx="5" fill="#FFFFFF" className="neu-card" />
@@ -51,7 +51,7 @@ const ChecklistIllustration: React.FC = () => (
 );
 
 const GradCapIllustration: React.FC = () => (
-  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M26 42C26 42 28 52 40 52C52 52 54 42 54 42V48C54 52 48 55 40 55C32 55 26 52 26 48V42Z" fill="#1A1A2E" opacity="0.85" />
       <polygon points="40,20 68,31 40,42 12,31" fill="#E91E8C" />
@@ -78,8 +78,6 @@ const getCardIllustration = (classId: string) => {
 
 export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
   classes,
-  chapterCounts,
-  countsLoading = false,
   onSelectClass,
 }) => {
   const navigate = useNavigate();
@@ -143,12 +141,10 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         </div>
       </header>
 
-      {/* Class Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+      {/* Class Cards Grid (2-column on mobile, 3-column on desktop matching PYQ/Notes grid format) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6">
         {classes.map((cls) => {
-          const subjects = getSubjectsForClass(cls.id);
-          const subjectCount = subjects.length;
-          const chapterCount = chapterCounts ? chapterCounts[cls.id] : undefined;
+          const classNameFormatted = cls.name.endsWith('th') ? cls.name : `${cls.name}th`;
 
           return (
             <div
@@ -162,91 +158,47 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
               }}
               tabIndex={0}
               role="button"
-              aria-label={`Select ${cls.name}`}
-              className="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 cursor-pointer hover:neu-raised-hover transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+              aria-label={`Select ${classNameFormatted}`}
+              className="neu-raised p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between h-full cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
-              <div className="space-y-3.5">
-                {/* Top Identity Row: Prominent Class Number Badge + Compact Illustration Placeholder */}
-                <div className="flex items-center justify-between gap-3">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 neu-raised rounded-2xl flex items-center justify-center font-black text-xl sm:text-2xl text-[#E91E8C] group-hover:scale-105 transition-transform shrink-0">
-                    {String(cls.id).padStart(2, '0')}
-                  </div>
+              <div className="flex flex-col items-center text-center w-full">
+                {/* Top Section: SVG Illustration Placeholder Container */}
+                <div className="w-full h-24 sm:h-32 neu-recessed rounded-xl flex items-center justify-center p-2 sm:p-3 overflow-hidden shrink-0 mb-3 sm:mb-4">
                   {getCardIllustration(cls.id)}
                 </div>
 
-                {/* Class Title */}
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0">
-                    {cls.name}
+                {/* Middle Section: Class Title & Description */}
+                <div className="space-y-1 sm:space-y-1.5 text-center px-1 w-full">
+                  <h2 className="text-base sm:text-xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 line-clamp-1">
+                    {classNameFormatted}
                   </h2>
-                </div>
-
-                {/* Description (Full readability, no artificial line-clamp truncation) */}
-                <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0">
-                  {cls.description}
-                </p>
-
-                {/* Metadata Counts (Placed BELOW description and ABOVE CTA as clean text metadata) */}
-                <div className="pt-1 flex items-center flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-ink/70">
-                  {/* Book Icon + Subject Count */}
-                  <div className="inline-flex items-center gap-1.5">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[#E91E8C] shrink-0"
-                      aria-hidden="true"
-                    >
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    </svg>
-                    <span>{subjectCount} Subjects</span>
-                  </div>
-
-                  {/* Document Icon + Chapter Count */}
-                  <div className="inline-flex items-center gap-1.5">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[#E91E8C] shrink-0"
-                      aria-hidden="true"
-                    >
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    {countsLoading ? (
-                      <span className="text-ink/40 animate-pulse">Loading chapters...</span>
-                    ) : chapterCount !== undefined ? (
-                      <span className="font-semibold text-ink/80">{chapterCount} Chapters</span>
-                    ) : (
-                      <span className="text-ink/50">-- Chapters</span>
-                    )}
-                  </div>
+                  <p className="text-xs sm:text-sm text-ink/70 leading-snug m-0 line-clamp-2">
+                    {cls.description}
+                  </p>
                 </div>
               </div>
 
-              {/* Action Link CTA */}
-              <div className="pt-3 border-t border-ink/5 flex items-center justify-between font-bold text-xs sm:text-sm text-[#E91E8C] group-hover:underline">
-                <span>View Subjects</span>
-                <span className="transition-transform group-hover:translate-x-1.5" aria-hidden="true">
-                  &rarr;
-                </span>
+              {/* Bottom Section: View Button CTA */}
+              <div className="pt-3.5 sm:pt-4 w-full mt-auto">
+                <div className="w-full py-1.5 sm:py-2 px-3 flex items-center justify-center text-xs sm:text-sm gap-1.5 font-bold neu-raised-sm rounded-lg group-hover:neu-raised-sm-hover text-ink text-center transition-all">
+                  <svg
+                    aria-hidden="true"
+                    className="shrink-0 text-[#E91E8C]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  <span>View</span>
+                </div>
               </div>
             </div>
           );
