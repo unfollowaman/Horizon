@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import ProfileButton from '../../../components/ProfileButton';
 import { type ClassOption, getSubjectsForClass } from '../../../services/syllabusService';
 
 interface SyllabusLandingProps {
@@ -80,15 +82,39 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
   countsLoading = false,
   onSelectClass,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8 sm:space-y-10 max-w-5xl mx-auto min-w-0">
+      {/* Top Header Navigation */}
+      <div className="flex justify-between items-center w-full min-w-0">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+          aria-label="Go Back"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <ProfileButton />
+      </div>
+
       {/* Hero Section */}
       <header className="text-center space-y-3.5 pt-2 sm:pt-4">
-        {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-3 py-0.5 neu-raised rounded-full text-[11px] font-bold tracking-[0.2em] text-[#E91E8C] uppercase">
-          <span>Syllabus</span>
-        </div>
-
         {/* Primary Heading */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink tracking-tight leading-tight m-0">
           Choose Your Class
@@ -101,26 +127,17 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
 
         {/* Journey Progress Indicator */}
         <div className="pt-2 flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
-          <ol className="inline-flex items-center gap-1 sm:gap-2.5 px-2.5 sm:px-4 py-1.5 neu-raised rounded-full text-[11px] sm:text-xs font-bold text-ink/60 list-none m-0 max-w-full overflow-x-auto no-scrollbar shrink-0">
-            <li className="flex items-center gap-1.5 text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
-              <span className="w-5 h-5 rounded-full bg-[#E91E8C] text-white flex items-center justify-center text-[10px] font-bold">
-                01
-              </span>
-              <span>Class</span>
+          <ol className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-1.5 neu-raised rounded-full text-[11px] sm:text-xs font-bold text-ink/60 list-none m-0 max-w-full shrink-0">
+            <li className="text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
+              Class
             </li>
             <li className="text-ink/30 select-none shrink-0">&rarr;</li>
-            <li className="flex items-center gap-1.5 text-ink/50 shrink-0">
-              <span className="w-5 h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[10px] font-bold">
-                02
-              </span>
-              <span>Subject</span>
+            <li className="text-ink/50 shrink-0">
+              Subject
             </li>
             <li className="text-ink/30 select-none shrink-0">&rarr;</li>
-            <li className="flex items-center gap-1.5 text-ink/50 shrink-0">
-              <span className="w-5 h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[10px] font-bold">
-                03
-              </span>
-              <span>Syllabus</span>
+            <li className="text-ink/50 shrink-0">
+              Syllabus
             </li>
           </ol>
         </div>

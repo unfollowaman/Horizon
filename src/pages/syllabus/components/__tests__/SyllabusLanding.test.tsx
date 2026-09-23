@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { MemoryRouter } from 'react-router-dom';
 import SyllabusLanding from '../SyllabusLanding';
 import { SUPPORTED_CLASSES } from '../../../../services/syllabusService';
 
@@ -29,22 +30,37 @@ describe('SyllabusLanding', () => {
     root = null;
   });
 
-  it('renders page header, title, step indicator, and bottom motivational section', () => {
+  it('renders top navigation buttons, title, simplified step indicator, and bottom motivational section', () => {
     act(() => {
-      root?.render(<SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />);
+      root?.render(
+        <MemoryRouter>
+          <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />
+        </MemoryRouter>
+      );
     });
 
-    expect(container?.textContent).toContain('Syllabus');
+    const backButton = container?.querySelector('button[aria-label="Go Back"]');
+    expect(backButton).not.toBeNull();
+
     expect(container?.textContent).toContain('Choose Your Class');
-    expect(container?.textContent).toContain('01');
     expect(container?.textContent).toContain('Class');
     expect(container?.textContent).toContain('Subject');
+    expect(container?.textContent).toContain('Syllabus');
     expect(container?.textContent).toContain('Master Your NCERT & Board Curriculum');
+
+    const stepIndicator = container?.querySelector('ol');
+    expect(stepIndicator?.textContent).not.toContain('01');
+    expect(stepIndicator?.textContent).not.toContain('02');
+    expect(stepIndicator?.textContent).not.toContain('03');
   });
 
   it('renders class cards with prominent class numbers, derived subject counts, and CTA', () => {
     act(() => {
-      root?.render(<SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />);
+      root?.render(
+        <MemoryRouter>
+          <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />
+        </MemoryRouter>
+      );
     });
 
     const buttons = container?.querySelectorAll('[role="button"]');
@@ -65,11 +81,13 @@ describe('SyllabusLanding', () => {
     const chapterCounts = { '8': 38, '9': 40, '10': 45 };
     act(() => {
       root?.render(
-        <SyllabusLanding
-          classes={SUPPORTED_CLASSES}
-          chapterCounts={chapterCounts}
-          onSelectClass={() => {}}
-        />
+        <MemoryRouter>
+          <SyllabusLanding
+            classes={SUPPORTED_CLASSES}
+            chapterCounts={chapterCounts}
+            onSelectClass={() => {}}
+          />
+        </MemoryRouter>
       );
     });
 
@@ -81,11 +99,13 @@ describe('SyllabusLanding', () => {
   it('shows loading state when countsLoading is true', () => {
     act(() => {
       root?.render(
-        <SyllabusLanding
-          classes={SUPPORTED_CLASSES}
-          countsLoading={true}
-          onSelectClass={() => {}}
-        />
+        <MemoryRouter>
+          <SyllabusLanding
+            classes={SUPPORTED_CLASSES}
+            countsLoading={true}
+            onSelectClass={() => {}}
+          />
+        </MemoryRouter>
       );
     });
 
@@ -96,7 +116,9 @@ describe('SyllabusLanding', () => {
     const handleSelectClass = vi.fn();
     act(() => {
       root?.render(
-        <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={handleSelectClass} />
+        <MemoryRouter>
+          <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={handleSelectClass} />
+        </MemoryRouter>
       );
     });
 
