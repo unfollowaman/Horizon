@@ -7,7 +7,7 @@ import {
   resolveSubjectName,
   normalizeClassId,
 } from '../../services/syllabusService';
-import { fetchSyllabusHierarchy } from '../../services/learningResourcesAPI';
+import { fetchSyllabusHierarchy, fetchSyllabusChapterCounts } from '../../services/learningResourcesAPI';
 import type { SyllabusChapterHierarchy } from '../../types';
 import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
@@ -22,6 +22,8 @@ export const SyllabusPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [chapters, setChapters] = useState<SyllabusChapterHierarchy[]>([]);
+  const [chapterCounts, setChapterCounts] = useState<Record<string, number> | null>(null);
+  const [countsLoading, setCountsLoading] = useState<boolean>(false);
 
   const currentClass = getClassBySlug(classSlug);
   const currentClassId = normalizeClassId(classSlug);
@@ -123,12 +125,38 @@ export const SyllabusPage: React.FC = () => {
     }
   };
 
+  // Fetch class-level chapter counts for Syllabus Landing Page
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!classSlug) {
+      setCountsLoading(true);
+      fetchSyllabusChapterCounts()
+        .then(({ data }) => {
+          if (isMounted) {
+            setChapterCounts(data);
+          }
+        })
+        .finally(() => {
+          if (isMounted) {
+            setCountsLoading(false);
+          }
+        });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [classSlug]);
+
   // View 1: Syllabus Landing Page (/syllabus)
   if (!classSlug) {
     return (
       <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
         <SyllabusLanding
           classes={SUPPORTED_CLASSES}
+          chapterCounts={chapterCounts}
+          countsLoading={countsLoading}
           onSelectClass={handleSelectClass}
         />
       </div>
