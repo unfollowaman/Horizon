@@ -126,7 +126,14 @@ const PdfViewer: React.FC = () => {
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
         <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
           <h1 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h1>
-          <button onClick={() => navigate(-1)} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Go Back</button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back to previous page"
+            className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -155,7 +162,12 @@ const PdfViewer: React.FC = () => {
                Create account
              </Link>
           </div>
-          <button onClick={() => navigate(-1)} className="mt-2 p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink text-sm">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back to previous page"
+            className="mt-2 p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+          >
             Go Back
           </button>
         </div>
@@ -169,7 +181,14 @@ const PdfViewer: React.FC = () => {
         <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
           <h1 className="text-h2 uppercase mb-4 text-accent-red">Access denied</h1>
           <p className="text-ink text-lg font-medium mb-4">You do not have permission to view this resource.</p>
-          <button onClick={() => navigate(-1)} className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink">Go Back</button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back to previous page"
+            className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
