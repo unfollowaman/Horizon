@@ -165,6 +165,28 @@ export type Profile = {
   created_at?: string;
 }
 
+export type PushSubscriptionRecord = {
+  id: string;
+  user_id?: string | null;
+  endpoint: string;
+  p256dh?: string | null;
+  auth?: string | null;
+  device_token?: string | null;
+  user_agent?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type PushSubscriptionPayload = {
+  endpoint: string;
+  keys?: {
+    p256dh?: string;
+    auth?: string;
+  };
+  device_token?: string;
+  user_agent?: string;
+};
+
 // Stage 4 Syllabus Types
 export type SyllabusTopic = {
   id: string;
@@ -404,6 +426,32 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      push_subscriptions: {
+        Row: PushSubscriptionRecord
+        Insert: {
+          id?: string
+          user_id?: string | null
+          endpoint: string
+          p256dh?: string | null
+          auth?: string | null
+          device_token?: string | null
+          user_agent?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          endpoint?: string
+          p256dh?: string | null
+          auth?: string | null
+          device_token?: string | null
+          user_agent?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
