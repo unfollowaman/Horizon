@@ -60,7 +60,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
-    const class10Card = container?.querySelector('[aria-label="Select Class 10"]');
+    const class10Card = container?.querySelector('[aria-label="Select Class 10th"]');
     expect(class10Card).not.toBeNull();
 
     await act(async () => {
