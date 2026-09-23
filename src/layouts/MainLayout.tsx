@@ -21,7 +21,13 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-base)] font-body text-ink w-full max-w-full overflow-x-clip">
-      <main className="flex-1 flex flex-col w-full max-w-full max-md:px-0 max-md:py-0 md:p-8 min-w-0">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-[#E91E8C] focus:ring-2 focus:ring-[#E91E8C] focus:rounded-lg focus:shadow-md focus:top-4 focus:left-4 focus-visible:outline-none"
+      >
+        Skip to main content
+      </a>
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col w-full max-w-full max-md:px-0 max-md:py-0 md:p-8 min-w-0 outline-none">
         <ErrorBoundary
           key={`${location.pathname}-${resetKey}`}
           fallback={<RouteErrorFallback onRetry={handleRetry} />}
