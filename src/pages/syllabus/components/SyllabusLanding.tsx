@@ -8,62 +8,55 @@ interface SyllabusLandingProps {
   onSelectClass: (classSlug: string) => void;
 }
 
-// Clean illustration placeholders matching visual reference
+// Compact SVG Illustration Placeholders for Class Cards
 const BookStackIllustration: React.FC = () => (
-  <div className="w-full h-24 sm:h-28 flex items-center justify-center neu-raised rounded-xl p-3 bg-gradient-to-b from-white/40 to-transparent" aria-hidden="true">
-    <svg viewBox="0 0 120 90" className="h-full max-w-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Book 1 (Bottom) */}
-      <rect x="20" y="62" width="80" height="14" rx="3" fill="#1A1A2E" opacity="0.15" />
-      <rect x="22" y="60" width="76" height="14" rx="3" fill="#E91E8C" opacity="0.85" />
-      <rect x="26" y="63" width="68" height="8" rx="1.5" fill="#FFFFFF" opacity="0.9" />
-      {/* Book 2 (Middle) */}
-      <rect x="28" y="44" width="68" height="13" rx="2.5" fill="#1A1A2E" opacity="0.8" />
-      <rect x="32" y="47" width="60" height="7" rx="1" fill="#FFFFFF" opacity="0.85" />
-      {/* Book 3 (Top) */}
-      <rect x="24" y="28" width="72" height="13" rx="2.5" fill="#E91E8C" />
-      <rect x="28" y="31" width="64" height="7" rx="1" fill="#FFFFFF" />
-      {/* Bookmark */}
-      <path d="M78 28V46L83 42L88 46V28H78Z" fill="#FFC107" />
+  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Book Stack */}
+      <rect x="14" y="52" width="52" height="10" rx="2" fill="#1A1A2E" opacity="0.15" />
+      <rect x="16" y="50" width="48" height="10" rx="2" fill="#E91E8C" opacity="0.9" />
+      <rect x="20" y="52" width="40" height="6" rx="1" fill="#FFFFFF" opacity="0.9" />
+
+      <rect x="20" y="38" width="44" height="9" rx="2" fill="#1A1A2E" opacity="0.8" />
+      <rect x="23" y="40" width="38" height="5" rx="1" fill="#FFFFFF" opacity="0.85" />
+
+      <rect x="16" y="26" width="48" height="9" rx="2" fill="#E91E8C" />
+      <rect x="19" y="28" width="42" height="5" rx="1" fill="#FFFFFF" />
+      <path d="M52 26V38L55 35L58 38V26H52Z" fill="#FFC107" />
     </svg>
   </div>
 );
 
 const ChecklistIllustration: React.FC = () => (
-  <div className="w-full h-24 sm:h-28 flex items-center justify-center neu-raised rounded-xl p-3 bg-gradient-to-b from-white/40 to-transparent" aria-hidden="true">
-    <svg viewBox="0 0 120 90" className="h-full max-w-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Board */}
-      <rect x="30" y="15" width="60" height="65" rx="6" fill="#1A1A2E" opacity="0.08" />
-      <rect x="32" y="13" width="56" height="65" rx="6" fill="#FFFFFF" className="neu-card" />
-      {/* Clip */}
-      <rect x="48" y="9" width="24" height="8" rx="2" fill="#E91E8C" />
-      {/* Check lines */}
-      <circle cx="44" cy="28" r="4" fill="#E91E8C" />
-      <path d="M42 28L43.5 29.5L46 27" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="52" y="26" width="26" height="4" rx="2" fill="#1A1A2E" opacity="0.3" />
+  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="18" y="14" width="44" height="52" rx="5" fill="#1A1A2E" opacity="0.08" />
+      <rect x="20" y="12" width="40" height="52" rx="5" fill="#FFFFFF" className="neu-card" />
+      <rect x="32" y="9" width="16" height="6" rx="1.5" fill="#E91E8C" />
 
-      <circle cx="44" cy="42" r="4" fill="#E91E8C" />
-      <path d="M42 42L43.5 43.5L46 41" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="52" y="40" width="22" height="4" rx="2" fill="#1A1A2E" opacity="0.3" />
+      <circle cx="28" cy="24" r="3" fill="#E91E8C" />
+      <path d="M26.5 24L27.5 25L29.5 23" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="34" y="22.5" width="20" height="3" rx="1.5" fill="#1A1A2E" opacity="0.3" />
 
-      <circle cx="44" cy="56" r="4" fill="#1A1A2E" opacity="0.15" />
-      <rect x="52" y="54" width="24" height="4" rx="2" fill="#1A1A2E" opacity="0.2" />
+      <circle cx="28" cy="35" r="3" fill="#E91E8C" />
+      <path d="M26.5 35L27.5 36L29.5 34" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="34" y="33.5" width="17" height="3" rx="1.5" fill="#1A1A2E" opacity="0.3" />
+
+      <circle cx="28" cy="46" r="3" fill="#1A1A2E" opacity="0.15" />
+      <rect x="34" y="44.5" width="18" height="3" rx="1.5" fill="#1A1A2E" opacity="0.2" />
     </svg>
   </div>
 );
 
 const GradCapIllustration: React.FC = () => (
-  <div className="w-full h-24 sm:h-28 flex items-center justify-center neu-raised rounded-xl p-3 bg-gradient-to-b from-white/40 to-transparent" aria-hidden="true">
-    <svg viewBox="0 0 120 90" className="h-full max-w-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Cap Base */}
-      <path d="M42 46C42 46 45 58 60 58C75 58 78 46 78 46V54C78 58 70 62 60 62C50 62 42 58 42 54V46Z" fill="#1A1A2E" opacity="0.85" />
-      {/* Cap Diamond Top */}
-      <polygon points="60,22 100,36 60,50 20,36" fill="#E91E8C" />
-      <polygon points="60,25 92,36 60,47 28,36" fill="#C2185B" opacity="0.4" />
-      {/* Tassel Button */}
-      <circle cx="60" cy="36" r="3" fill="#FFC107" />
-      {/* Tassel String & Flag */}
-      <path d="M60 36C60 36 78 38 82 48" stroke="#FFC107" strokeWidth="2" strokeLinecap="round" />
-      <rect x="80" y="48" width="6" height="10" rx="1" fill="#FFC107" />
+  <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M26 42C26 42 28 52 40 52C52 52 54 42 54 42V48C54 52 48 55 40 55C32 55 26 52 26 48V42Z" fill="#1A1A2E" opacity="0.85" />
+      <polygon points="40,20 68,31 40,42 12,31" fill="#E91E8C" />
+      <polygon points="40,22 62,31 40,40 18,31" fill="#C2185B" opacity="0.4" />
+      <circle cx="40" cy="31" r="2.5" fill="#FFC107" />
+      <path d="M40 31C40 31 54 33 57 40" stroke="#FFC107" strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="55.5" y="40" width="4.5" height="7" rx="1" fill="#FFC107" />
     </svg>
   </div>
 );
@@ -88,11 +81,11 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
   onSelectClass,
 }) => {
   return (
-    <div className="space-y-8 max-w-5xl mx-auto min-w-0">
-      {/* Page Header */}
-      <header className="neu-card p-6 sm:p-10 rounded-2xl text-center space-y-4">
+    <div className="space-y-8 sm:space-y-10 max-w-5xl mx-auto min-w-0">
+      {/* Hero Section */}
+      <header className="text-center space-y-3.5 pt-2 sm:pt-4">
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 neu-raised rounded-full text-xs font-bold tracking-[0.2em] text-[#E91E8C] uppercase">
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 neu-raised rounded-full text-[11px] font-bold tracking-[0.2em] text-[#E91E8C] uppercase">
           <span>Syllabus</span>
         </div>
 
@@ -102,29 +95,29 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         </h1>
 
         {/* Supporting Description */}
-        <p className="text-xs sm:text-base text-ink/70 max-w-2xl mx-auto leading-relaxed m-0">
+        <p className="text-xs sm:text-base text-ink/70 max-w-2xl mx-auto leading-relaxed m-0 px-2">
           Select your class to explore structured subjects, active chapter breakdowns, topics, and mapped NCERT learning resources.
         </p>
 
         {/* Journey Progress Indicator */}
-        <div className="pt-1 flex justify-center items-center w-full" aria-label="Syllabus Navigation Steps">
-          <ol className="inline-flex items-center gap-1 sm:gap-3 px-2.5 sm:px-4 py-1.5 sm:py-2 neu-raised rounded-full text-[10px] sm:text-xs font-bold text-ink/60 list-none m-0 max-w-full overflow-x-auto no-scrollbar">
-            <li className="flex items-center gap-1 sm:gap-1.5 text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
-              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#E91E8C] text-white flex items-center justify-center text-[9px] sm:text-[10px]">
+        <div className="pt-2 flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
+          <ol className="inline-flex items-center gap-1 sm:gap-2.5 px-2.5 sm:px-4 py-1.5 neu-raised rounded-full text-[11px] sm:text-xs font-bold text-ink/60 list-none m-0 max-w-full overflow-x-auto no-scrollbar shrink-0">
+            <li className="flex items-center gap-1.5 text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
+              <span className="w-5 h-5 rounded-full bg-[#E91E8C] text-white flex items-center justify-center text-[10px] font-bold">
                 01
               </span>
               <span>Class</span>
             </li>
             <li className="text-ink/30 select-none shrink-0">&rarr;</li>
-            <li className="flex items-center gap-1 sm:gap-1.5 text-ink/50 shrink-0">
-              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[9px] sm:text-[10px]">
+            <li className="flex items-center gap-1.5 text-ink/50 shrink-0">
+              <span className="w-5 h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[10px] font-bold">
                 02
               </span>
               <span>Subject</span>
             </li>
             <li className="text-ink/30 select-none shrink-0">&rarr;</li>
-            <li className="flex items-center gap-1 sm:gap-1.5 text-ink/50 shrink-0">
-              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[9px] sm:text-[10px]">
+            <li className="flex items-center gap-1.5 text-ink/50 shrink-0">
+              <span className="w-5 h-5 rounded-full bg-ink/10 text-ink/60 flex items-center justify-center text-[10px] font-bold">
                 03
               </span>
               <span>Syllabus</span>
@@ -153,48 +146,86 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
               tabIndex={0}
               role="button"
               aria-label={`Select ${cls.name}`}
-              className="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-5 cursor-pointer hover:neu-raised-hover transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+              className="neu-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 cursor-pointer hover:neu-raised-hover transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
-              <div className="space-y-4">
-                {/* Illustration Placeholder Area */}
-                {getCardIllustration(cls.id)}
-
-                {/* Class Badge & Title */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors">
-                      {cls.name}
-                    </span>
-                    <span className="w-9 h-9 neu-raised rounded-xl flex items-center justify-center font-bold text-sm text-[#E91E8C] group-hover:scale-105 transition-transform">
-                      {String(cls.id).padStart(2, '0')}
-                    </span>
+              <div className="space-y-3.5">
+                {/* Top Identity Row: Prominent Class Number Badge + Compact Illustration Placeholder */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 neu-raised rounded-2xl flex items-center justify-center font-black text-xl sm:text-2xl text-[#E91E8C] group-hover:scale-105 transition-transform shrink-0">
+                    {String(cls.id).padStart(2, '0')}
                   </div>
-
-                  {/* Syllabus Stats Chips */}
-                  <div className="flex items-center gap-2 text-xs font-semibold text-ink/70">
-                    <span className="px-2.5 py-0.5 neu-raised rounded-md text-ink/80">
-                      {subjectCount} Subjects
-                    </span>
-                    {countsLoading ? (
-                      <span className="px-2.5 py-0.5 neu-raised rounded-md text-ink/40 animate-pulse">
-                        Loading chapters...
-                      </span>
-                    ) : chapterCount !== undefined ? (
-                      <span className="px-2.5 py-0.5 neu-raised rounded-md text-[#E91E8C] bg-[#E91E8C]/5 font-bold">
-                        {chapterCount} Chapters
-                      </span>
-                    ) : null}
-                  </div>
+                  {getCardIllustration(cls.id)}
                 </div>
 
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-ink/70 leading-relaxed m-0 line-clamp-3">
+                {/* Class Title */}
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0">
+                    {cls.name}
+                  </h2>
+                </div>
+
+                {/* Description (Full readability, no artificial line-clamp truncation) */}
+                <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0">
                   {cls.description}
                 </p>
+
+                {/* Metadata Counts (Placed BELOW description and ABOVE CTA as clean text metadata) */}
+                <div className="pt-1 flex items-center flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-ink/70">
+                  {/* Book Icon + Subject Count */}
+                  <div className="inline-flex items-center gap-1.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-[#E91E8C] shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span>{subjectCount} Subjects</span>
+                  </div>
+
+                  {/* Document Icon + Chapter Count */}
+                  <div className="inline-flex items-center gap-1.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-[#E91E8C] shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    {countsLoading ? (
+                      <span className="text-ink/40 animate-pulse">Loading chapters...</span>
+                    ) : chapterCount !== undefined ? (
+                      <span className="font-semibold text-ink/80">{chapterCount} Chapters</span>
+                    ) : (
+                      <span className="text-ink/50">-- Chapters</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Action Link CTA */}
-              <div className="pt-3 border-t border-ink/5 flex items-center justify-between font-bold text-xs sm:text-sm text-[#E91E8C]">
+              <div className="pt-3 border-t border-ink/5 flex items-center justify-between font-bold text-xs sm:text-sm text-[#E91E8C] group-hover:underline">
                 <span>View Subjects</span>
                 <span className="transition-transform group-hover:translate-x-1.5" aria-hidden="true">
                   &rarr;
@@ -204,6 +235,16 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
           );
         })}
       </div>
+
+      {/* Secondary Bottom Motivational Placeholder Section */}
+      <section className="neu-card rounded-2xl p-6 sm:p-8 text-center space-y-2.5 bg-gradient-to-r from-transparent via-[#E91E8C]/5 to-transparent">
+        <h3 className="text-lg sm:text-xl font-bold text-ink m-0">
+          Master Your NCERT & Board Curriculum
+        </h3>
+        <p className="text-xs sm:text-sm text-ink/70 max-w-xl mx-auto m-0 leading-relaxed">
+          Structured chapter breakdowns, topic maps, and textbook-linked resources tailored for RBSE, NCERT, and CBSE students.
+        </p>
+      </section>
     </div>
   );
 };

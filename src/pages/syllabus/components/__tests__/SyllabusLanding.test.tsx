@@ -29,7 +29,7 @@ describe('SyllabusLanding', () => {
     root = null;
   });
 
-  it('renders page header, title, and step indicator', () => {
+  it('renders page header, title, step indicator, and bottom motivational section', () => {
     act(() => {
       root?.render(<SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />);
     });
@@ -39,9 +39,10 @@ describe('SyllabusLanding', () => {
     expect(container?.textContent).toContain('01');
     expect(container?.textContent).toContain('Class');
     expect(container?.textContent).toContain('Subject');
+    expect(container?.textContent).toContain('Master Your NCERT & Board Curriculum');
   });
 
-  it('renders class cards with derived subject counts and CTA', () => {
+  it('renders class cards with prominent class numbers, derived subject counts, and CTA', () => {
     act(() => {
       root?.render(<SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />);
     });
@@ -49,6 +50,9 @@ describe('SyllabusLanding', () => {
     const buttons = container?.querySelectorAll('[role="button"]');
     expect(buttons?.length).toBe(3);
 
+    expect(container?.textContent).toContain('08');
+    expect(container?.textContent).toContain('09');
+    expect(container?.textContent).toContain('10');
     expect(container?.textContent).toContain('Class 8');
     expect(container?.textContent).toContain('Class 9');
     expect(container?.textContent).toContain('Class 10');
@@ -57,7 +61,7 @@ describe('SyllabusLanding', () => {
     expect(container?.textContent).toContain('View Subjects');
   });
 
-  it('displays database chapter counts when provided', () => {
+  it('displays database chapter counts with document icons when provided', () => {
     const chapterCounts = { '8': 38, '9': 40, '10': 45 };
     act(() => {
       root?.render(
