@@ -97,11 +97,7 @@ export const usePdfProgress = ({ id, user, resource, numPages, pageRefs }: UsePd
             if (insertError) {
               console.error("Error inserting chapter completion:", insertError);
               completionCheckedRef.current = false;
-            } else {
-              console.log("Chapter marked as completed.");
             }
-          } else {
-             console.log("Chapter already completed.");
           }
         } catch (err) {
           console.error("Failed to process chapter completion:", err);
