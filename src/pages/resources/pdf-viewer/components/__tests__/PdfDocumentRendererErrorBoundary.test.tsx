@@ -87,6 +87,19 @@ describe('PdfDocumentRenderer ErrorBoundary Integration', () => {
     expect(container?.textContent).toContain('Unable to display document');
     expect(container?.textContent).toContain('An unexpected error occurred while rendering the PDF document.');
 
+    // Verify fallback buttons have focus-visible styling for keyboard accessibility
+    const tryAgainBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Try Again'
+    );
+    const goBackBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Go Back'
+    );
+
+    expect(tryAgainBtn?.className).toContain('focus-visible:ring-2');
+    expect(tryAgainBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(goBackBtn?.className).toContain('focus-visible:ring-2');
+    expect(goBackBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+
     // Verify top controls remain usable
     expect(container?.querySelector('[data-testid="pdf-top-controls"]')).not.toBeNull();
     expect(container?.textContent).toContain('Resource Title');
