@@ -190,6 +190,40 @@ export const fetchSyllabusChapters = async (studentClass: string, medium: Medium
   return { data, error };
 };
 
+export interface ClassSyllabusCount {
+  subjectCount: number;
+  chapterCount: number | null;
+}
+
+export const fetchSyllabusChapterCounts = async (): Promise<{ data: Record<string, number> | null; error: unknown }> => {
+  const { data, error } = await supabase
+    .from('chapters')
+    .select('student_class')
+    .eq('is_active', true);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  const counts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
+
+  if (data) {
+    for (const row of data) {
+      if (!row.student_class) continue;
+      const strClass = String(row.student_class);
+      const match = strClass.match(/\d+/);
+      if (match) {
+        const classId = match[0];
+        if (counts[classId] !== undefined) {
+          counts[classId] = (counts[classId] || 0) + 1;
+        }
+      }
+    }
+  }
+
+  return { data: counts, error: null };
+};
+
 export const fetchSyllabusHierarchy = async (studentClass: string, subject: string) => {
   const normalizedClass = studentClass.replace(/^class\s+/i, '').trim();
 

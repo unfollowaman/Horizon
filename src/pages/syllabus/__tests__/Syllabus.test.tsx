@@ -42,7 +42,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
-    expect(container?.textContent).toContain('Explore Syllabus Hierarchy');
+    expect(container?.textContent).toContain('Choose Your Class');
     expect(container?.textContent).toContain('Class 8');
     expect(container?.textContent).toContain('Class 9');
     expect(container?.textContent).toContain('Class 10');
@@ -60,7 +60,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
-    const class10Card = container?.querySelector('[aria-label="Explore syllabus for Class 10"]');
+    const class10Card = container?.querySelector('[aria-label="Select Class 10"]');
     expect(class10Card).not.toBeNull();
 
     await act(async () => {
