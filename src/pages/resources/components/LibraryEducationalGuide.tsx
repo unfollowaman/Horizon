@@ -15,28 +15,49 @@ export const LibraryEducationalGuide: React.FC<LibraryEducationalGuideProps> = (
   selectedYear
 }) => {
   // Extract dynamic details based strictly on loaded resources
-  const availableClasses = useMemo(() => {
-    const set = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
-    return Array.from(set).sort((a, b) => {
+  const { availableClasses, availableSubjects, yearRange } = useMemo(() => {
+    const classSet = new Set<string>();
+    const subjectSet = new Set<string>();
+    let minYear = Infinity;
+    let maxYear = -Infinity;
+    let hasValidYear = false;
+
+    for (let i = 0; i < allResources.length; i++) {
+      const r = allResources[i];
+      if (r.student_class) {
+        classSet.add(r.student_class);
+      }
+      if (r.subject) {
+        subjectSet.add(r.subject);
+      }
+      if (r.year) {
+        const y = parseInt(r.year, 10);
+        if (!isNaN(y)) {
+          if (y < minYear) minYear = y;
+          if (y > maxYear) maxYear = y;
+          hasValidYear = true;
+        }
+      }
+    }
+
+    const availableClasses = Array.from(classSet).sort((a, b) => {
       const numA = parseInt(a.replace(/\D/g, '') || '0', 10);
       const numB = parseInt(b.replace(/\D/g, '') || '0', 10);
       return numA - numB;
     });
-  }, [allResources]);
 
-  const availableSubjects = useMemo(() => {
-    const set = new Set(allResources.map(r => r.subject).filter(Boolean) as string[]);
-    return Array.from(set).sort();
-  }, [allResources]);
+    const availableSubjects = Array.from(subjectSet).sort();
 
-  const yearRange = useMemo(() => {
-    const years = allResources
-      .map(r => (r.year ? parseInt(r.year, 10) : NaN))
-      .filter(y => !isNaN(y));
-    if (years.length === 0) return null;
-    const min = Math.min(...years);
-    const max = Math.max(...years);
-    return min === max ? `${min}` : `${min}–${max}`;
+    let yearRange: string | null = null;
+    if (hasValidYear) {
+      yearRange = minYear === maxYear ? `${minYear}` : `${minYear}–${maxYear}`;
+    }
+
+    return {
+      availableClasses,
+      availableSubjects,
+      yearRange
+    };
   }, [allResources]);
 
   // Contextual text summarizing current filter state
