@@ -14,28 +14,43 @@ export const NotesEducationalGuide: React.FC<NotesEducationalGuideProps> = ({
   selectedSubject,
   selectedMedium
 }) => {
-  const availableClasses = useMemo(() => {
-    const set = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
-    return Array.from(set).sort((a, b) => {
+  const { availableClasses, availableSubjects, availableMediums, chapterCount } = useMemo(() => {
+    const classSet = new Set<string>();
+    const subjectSet = new Set<string>();
+    const mediumSet = new Set<string>();
+    const chapterSet = new Set<string | number>();
+
+    for (let i = 0; i < allResources.length; i++) {
+      const r = allResources[i];
+      if (r.student_class) {
+        classSet.add(r.student_class);
+      }
+      if (r.subject) {
+        subjectSet.add(r.subject);
+      }
+      if (r.medium) {
+        mediumSet.add(r.medium.charAt(0).toUpperCase() + r.medium.slice(1));
+      }
+      if (r.chapter_id) {
+        chapterSet.add(r.chapter_id);
+      }
+    }
+
+    const availableClasses = Array.from(classSet).sort((a, b) => {
       const numA = parseInt(a.replace(/\D/g, '') || '0', 10);
       const numB = parseInt(b.replace(/\D/g, '') || '0', 10);
       return numA - numB;
     });
-  }, [allResources]);
 
-  const availableSubjects = useMemo(() => {
-    const set = new Set(allResources.map(r => r.subject).filter(Boolean) as string[]);
-    return Array.from(set).sort();
-  }, [allResources]);
+    const availableSubjects = Array.from(subjectSet).sort();
+    const availableMediums = Array.from(mediumSet).sort();
 
-  const availableMediums = useMemo(() => {
-    const set = new Set(allResources.map(r => r.medium).filter(Boolean) as string[]);
-    return Array.from(set).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
-  }, [allResources]);
-
-  const chapterCount = useMemo(() => {
-    const chapterIds = new Set(allResources.map(r => r.chapter_id).filter(Boolean));
-    return chapterIds.size;
+    return {
+      availableClasses,
+      availableSubjects,
+      availableMediums,
+      chapterCount: chapterSet.size
+    };
   }, [allResources]);
 
   const contextualFilterSummary = useMemo(() => {
