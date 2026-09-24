@@ -467,6 +467,87 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         </div>
       </div>
 
+      {/* Active Filter Chips */}
+      {Boolean(selectedClass || selectedSubject || selectedThirdFilter) && (
+        <div className="mb-[clamp(16px,2vw,24px)] flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold text-ink/70 uppercase tracking-wider mr-1">Active Filters:</span>
+          {selectedClass && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold neu-raised text-ink">
+              <span>Class: {selectedClass}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetUrl = buildCategoryUrl({
+                    basePath,
+                    studentClass: '',
+                    medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+                    subject: selectedSubject,
+                    year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+                  });
+                  navigate(targetUrl);
+                }}
+                aria-label={`Remove filter for ${selectedClass}`}
+                className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 text-ink/70 hover:text-ink cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              >
+                &times;
+              </button>
+            </span>
+          )}
+          {selectedSubject && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold neu-raised text-ink">
+              <span>Subject: {selectedSubject}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetUrl = buildCategoryUrl({
+                    basePath,
+                    studentClass: selectedClass,
+                    medium: config.thirdFilterType === 'medium' ? selectedThirdFilter : undefined,
+                    subject: '',
+                    year: config.thirdFilterType === 'year' ? selectedThirdFilter : undefined,
+                  });
+                  navigate(targetUrl);
+                }}
+                aria-label={`Remove filter for ${selectedSubject}`}
+                className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 text-ink/70 hover:text-ink cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              >
+                &times;
+              </button>
+            </span>
+          )}
+          {selectedThirdFilter && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold neu-raised text-ink">
+              <span>{config.thirdFilterType === 'medium' ? 'Medium' : 'Year'}: {selectedThirdFilter}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetUrl = buildCategoryUrl({
+                    basePath,
+                    studentClass: selectedClass,
+                    medium: config.thirdFilterType === 'medium' ? '' : undefined,
+                    subject: selectedSubject,
+                    year: config.thirdFilterType === 'year' ? '' : undefined,
+                  });
+                  navigate(targetUrl);
+                }}
+                aria-label={`Remove filter for ${selectedThirdFilter}`}
+                className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 text-ink/70 hover:text-ink cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              >
+                &times;
+              </button>
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => navigate(basePath)}
+            aria-label="Clear all active filters"
+            className="text-xs font-bold text-[#E91E8C] hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] rounded px-1"
+          >
+            Clear all
+          </button>
+        </div>
+      )}
+
       {/* Grid */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
@@ -491,7 +572,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
             <button
               type="button"
               onClick={() => navigate(basePath)}
-              aria-label="Clear all active filters"
+              aria-label="Clear active filters"
               className="mt-4 px-5 py-2.5 font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               Clear Filters

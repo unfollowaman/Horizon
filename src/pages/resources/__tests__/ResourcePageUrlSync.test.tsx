@@ -131,7 +131,7 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
     });
 
     expect(container?.textContent).toContain(notesConfig.emptyMessageTitle);
-    const clearBtn = container?.querySelector('button[aria-label="Clear all active filters"]');
+    const clearBtn = container?.querySelector('button[aria-label="Clear active filters"]');
     expect(clearBtn).not.toBeNull();
     expect(clearBtn?.textContent).toBe('Clear Filters');
 
@@ -242,5 +242,59 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
         medium: 'english',
       })
     );
+  });
+
+  it('renders active filter chips and removes specific filter when individual remove button is clicked', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes/class-10/english-medium/geography']}>
+          <Routes>
+            <Route path="/notes" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<ResourcePage config={notesConfig} />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Active Filters:');
+    expect(container?.textContent).toContain('Class: Class 10');
+    expect(container?.textContent).toContain('Medium: English');
+    expect(container?.textContent).toContain('Subject: Geography');
+
+    const removeClassBtn = container?.querySelector('button[aria-label="Remove filter for Class 10"]');
+    expect(removeClassBtn).not.toBeNull();
+
+    await act(async () => {
+      removeClassBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container?.textContent).not.toContain('Class: Class 10');
+    expect(container?.textContent).toContain('Subject: Geography');
+  });
+
+  it('clears all active filters when "Clear all" button in chip bar is clicked', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes/class-10/english-medium/geography']}>
+          <Routes>
+            <Route path="/notes" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug" element={<ResourcePage config={notesConfig} />} />
+            <Route path="/notes/:classSlug/:mediumSlug/:subjectSlug" element={<ResourcePage config={notesConfig} />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const clearAllBtn = container?.querySelector('button[aria-label="Clear all active filters"]');
+    expect(clearAllBtn).not.toBeNull();
+
+    await act(async () => {
+      clearAllBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container?.textContent).not.toContain('Active Filters:');
   });
 });
