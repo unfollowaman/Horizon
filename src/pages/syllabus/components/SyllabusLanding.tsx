@@ -142,7 +142,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </header>
 
       {/* Class Cards Grid (2-column on mobile, 3-column on desktop matching PYQ/Notes grid format) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6 mb-8 sm:mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-[18px] mb-8 sm:mb-10">
         {classes.map((cls) => {
           const classNameFormatted = cls.name.endsWith('th') ? cls.name : `${cls.name}th`;
 
@@ -159,16 +159,16 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
               tabIndex={0}
               role="button"
               aria-label={`Select ${classNameFormatted}`}
-              className="neu-raised p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between h-full cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+              className="neu-raised p-3.5 sm:p-[14px] rounded-2xl flex flex-col justify-between h-full cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               <div className="flex flex-col items-center text-center w-full">
                 {/* Top Section: SVG Illustration Placeholder Container */}
-                <div className="w-full h-24 sm:h-32 neu-recessed rounded-xl flex items-center justify-center p-2 sm:p-3 overflow-hidden shrink-0 mb-3 sm:mb-4">
+                <div className="w-full h-24 sm:h-32 neu-recessed rounded-xl flex items-center justify-center p-2 sm:p-3 overflow-hidden shrink-0 mb-3 sm:mb-[12px]">
                   {getCardIllustration(cls.id)}
                 </div>
 
                 {/* Middle Section: Class Title & Description */}
-                <div className="space-y-1 sm:space-y-1.5 text-center px-1 w-full">
+                <div className="space-y-1 sm:space-y-[3px] text-center px-1 w-full">
                   <h2 className="text-base sm:text-xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 line-clamp-1">
                     {classNameFormatted}
                   </h2>
