@@ -83,9 +83,9 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-8 sm:space-y-10 max-w-5xl mx-auto min-w-0">
+    <div className="max-w-5xl mx-auto min-w-0">
       {/* Top Header Navigation */}
-      <div className="flex justify-between items-center w-full min-w-0">
+      <div className="flex justify-between items-center w-full min-w-0 mb-[clamp(12px,3vw,20px)]">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -111,11 +111,11 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         <ProfileButton />
       </div>
 
-      {/* Hero Section */}
-      <header className="text-center space-y-3.5 pt-2 sm:pt-4">
+      {/* Hero Section Card Container */}
+      <header className="neu-raised rounded-2xl p-5 sm:p-6 text-center space-y-3.5 mb-8 sm:mb-10">
         {/* Primary Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink tracking-tight leading-tight m-0">
-          Choose Your Class
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
+          Choose Your <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">Class</span>
         </h1>
 
         {/* Supporting Description */}
@@ -142,7 +142,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </header>
 
       {/* Class Cards Grid (2-column on mobile, 3-column on desktop matching PYQ/Notes grid format) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6 mb-8 sm:mb-10">
         {classes.map((cls) => {
           const classNameFormatted = cls.name.endsWith('th') ? cls.name : `${cls.name}th`;
 
