@@ -125,7 +125,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
 
         {/* Journey Progress Indicator */}
         <div className="pt-2 flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
-          <ol className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-1.5 neu-raised rounded-full text-[11px] sm:text-xs font-bold text-ink/60 list-none m-0 max-w-full shrink-0">
+          <ol className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-1.5 sm:py-2 neu-raised-sm rounded-lg text-xs sm:text-sm font-bold text-ink/60 list-none m-0 max-w-full shrink-0">
             <li className="text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
               Class
             </li>
