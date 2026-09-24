@@ -51,9 +51,7 @@ export const handleDownload = async (url: string, resource: Resource, e?: { prev
     // Cleanup
     document.body.removeChild(a);
     window.URL.revokeObjectURL(objectUrl);
-  } catch (error) {
-    console.warn("Blob download failed, falling back to native download", error);
-
+  } catch {
     // Fallback approach: Append ?download= to the URL and use native download
     // Supabase supports ?download= to force a Content-Disposition: attachment header
     const fallbackUrl = finalUrl.includes('?') ? `${finalUrl}&download=` : `${finalUrl}?download=`;
