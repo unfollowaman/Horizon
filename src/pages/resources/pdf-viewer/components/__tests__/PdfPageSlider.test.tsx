@@ -86,4 +86,30 @@ describe('PdfPageSlider', () => {
 
     expect(sliderContainer.style.transition).toBe('none');
   });
+
+  it('renders WAI-ARIA slider attributes and tabIndex for accessibility', () => {
+    act(() => {
+      root?.render(<PdfPageSlider {...dummyProps} currentPage={3} numPages={10} />);
+    });
+    const sliderContainer = container?.querySelector('[role="slider"]') as HTMLElement;
+
+    expect(sliderContainer).not.toBeNull();
+    expect(sliderContainer.getAttribute('tabIndex')).toBe('0');
+    expect(sliderContainer.getAttribute('aria-label')).toBe('Page slider');
+    expect(sliderContainer.getAttribute('aria-valuenow')).toBe('3');
+    expect(sliderContainer.getAttribute('aria-valuemin')).toBe('1');
+    expect(sliderContainer.getAttribute('aria-valuemax')).toBe('10');
+    expect(sliderContainer.getAttribute('aria-valuetext')).toBe('Page 3 of 10');
+  });
+
+  it('renders fallback aria-valuetext when numPages is not provided', () => {
+    act(() => {
+      root?.render(<PdfPageSlider {...dummyProps} currentPage={2} numPages={null} />);
+    });
+    const sliderContainer = container?.querySelector('[role="slider"]') as HTMLElement;
+
+    expect(sliderContainer.getAttribute('aria-valuenow')).toBe('2');
+    expect(sliderContainer.getAttribute('aria-valuemax')).toBeNull();
+    expect(sliderContainer.getAttribute('aria-valuetext')).toBe('Page 2');
+  });
 });
