@@ -220,6 +220,7 @@ const PdfViewer: React.FC = () => {
         sliderContainerRef={sliderContainerRef}
         isSliderVisible={isSliderVisible}
         currentPage={currentPage}
+        numPages={numPages}
         sliderTopPx={sliderTopPx}
         isDraggingSlider={isDraggingSlider}
         onSliderTouchStart={onSliderTouchStart}
