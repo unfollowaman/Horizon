@@ -11,8 +11,8 @@
 **Action:** Always include matching `rounded-*` border-radius and `focus-visible:ring-2` styling on overlay link elements.
 
 ## 2026-03-31 - Accessible Custom Progress Bars & Disabled Control Hints
-**Learning:** Custom CSS-animated progress bars in dashboard cards must include `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and descriptive `aria-label`/`aria-valuetext` attributes so assistive technologies can convey completion metrics. Disabled interactive controls require explanatory `title` and `aria-label` hints alongside `focus-visible` ring styling.
-**Action:** Always wrap custom progress indicators with full WAI-ARIA `progressbar` role semantics and provide descriptive tooltips for disabled UI actions.
+**Learning:** When rendering disabled setting controls or form inputs, pairing explicit input `id`s with `htmlFor` labels, `aria-disabled="true"`, and explanatory `title` tooltips ensures assistive technologies and mouse/keyboard users clearly understand the control's state and why it is currently unavailable.
+**Action:** Always bind disabled checkboxes or toggles to explicit `<label>` elements via `htmlFor`, and provide `aria-disabled="true"` alongside explanatory `title` tooltips.
 
 ## 2026-04-01 - WAI-ARIA Slider Semantics for Custom Floating Controls
 **Learning:** Custom interactive slider/scrubber elements (like PDF document page scrubbers) built with draggable `<div>` elements must declare `role="slider"`, `tabIndex={0}`, `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and descriptive `aria-valuetext` (e.g. "Page 3 of 10") so screen readers can interpret slider position and value bounds. High-contrast `focus-visible` ring utilities (`focus-visible:ring-2 focus-visible:ring-[#E91E8C]`) ensure keyboard navigation renders clear focus indicators.
