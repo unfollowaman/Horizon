@@ -112,7 +112,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </div>
 
       {/* Hero Section Card Container */}
-      <header className="neu-raised rounded-2xl p-5 sm:p-6 text-center space-y-3.5 mb-8 sm:mb-10">
+      <header className="neu-raised rounded-2xl p-2 sm:p-3 text-center space-y-3.5 mb-8 sm:mb-10">
         {/* Primary Heading */}
         <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
           Choose Your <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">Class</span>
@@ -124,7 +124,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         </p>
 
         {/* Journey Progress Indicator */}
-        <div className="pt-2 flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
+        <div className="flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
           <ol className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-1.5 sm:py-2 neu-raised-sm rounded-lg text-xs sm:text-sm font-bold text-ink/60 list-none m-0 max-w-full shrink-0">
             <li className="text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
               Class
