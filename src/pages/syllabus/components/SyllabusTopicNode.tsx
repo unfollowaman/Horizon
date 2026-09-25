@@ -54,6 +54,7 @@ export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) =
             <Link
               key={res.id}
               to={`/resource/${res.id}`}
+              state={{ fromApp: true }}
               aria-label={`View ${res.medium === 'hindi' ? 'Hindi' : 'English'} notes for ${topic.title}`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 font-bold text-xs text-white bg-gradient-to-r from-[#E91E8C] to-[#8B0A50] rounded-lg shadow-sm hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 transition-all no-underline shrink-0"
               title={`View ${res.medium} notes for ${topic.title}`}

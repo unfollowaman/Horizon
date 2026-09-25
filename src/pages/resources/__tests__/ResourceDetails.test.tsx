@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ResourceDetails from '../ResourceDetails';
 import MaterialCard from '../../../components/MaterialCard';
 import * as learningAPI from '../../../services/learningResourcesAPI';
@@ -689,5 +689,79 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     const arrowSpans = container?.querySelectorAll('span[aria-hidden="true"]');
     const hasRightArrow = Array.from(arrowSpans || []).some(span => span.textContent === '→');
     expect(hasRightArrow).toBe(true);
+  });
+
+  it('navigates to backPath with replace option on Back button click during direct entry', async () => {
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockNoteResource,
+      rawData: mockNoteResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    let currentPath = '';
+    const LocationTracker = () => {
+      const loc = useLocation();
+      currentPath = loc.pathname;
+      return null;
+    };
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/note-101']}>
+          <LocationTracker />
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+            <Route path="/notes/class-10/english-medium/geography" element={<div>Category Page</div>} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const backBtn = container?.querySelector('button[aria-label="Go Back"]') as HTMLButtonElement;
+    expect(backBtn).not.toBeNull();
+
+    await act(async () => {
+      backBtn.click();
+    });
+
+    expect(currentPath).toBe('/notes/class-10/english-medium/geography');
+  });
+
+  it('navigates back to previous route (-1) on Back button click during in-app navigation with state.fromApp', async () => {
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockNoteResource,
+      rawData: mockNoteResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    let currentPath = '';
+    const LocationTracker = () => {
+      const loc = useLocation();
+      currentPath = loc.pathname;
+      return null;
+    };
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/notes', { pathname: '/resource/note-101', state: { fromApp: true } }]}>
+          <LocationTracker />
+          <Routes>
+            <Route path="/notes" element={<div>Notes Page</div>} />
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    expect(currentPath).toBe('/resource/note-101');
+
+    const backBtn = container?.querySelector('button[aria-label="Go Back"]') as HTMLButtonElement;
+    expect(backBtn).not.toBeNull();
+
+    await act(async () => {
+      backBtn.click();
+    });
+
+    expect(currentPath).toBe('/notes');
   });
 });

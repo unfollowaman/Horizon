@@ -274,6 +274,7 @@ const TopicNodeCard: React.FC<{ node: GraphNode }> = React.memo(({ node }) => {
             <Link
               key={res.id}
               to={`/resource/${res.id}`}
+              state={{ fromApp: true }}
               aria-label={`View ${res.medium} notes for ${node.data.title}`}
               className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-[11px] text-white bg-gradient-to-r from-[#E91E8C] to-[#8B0A50] rounded-md shadow-sm hover:opacity-95 transition-all no-underline shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-1"
               title={`View ${res.medium} notes for ${node.data.title}`}
