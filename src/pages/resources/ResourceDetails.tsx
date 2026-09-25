@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { fetchLearningResourceById, fetchLearningResources } from '../../services/learningResourcesAPI';
 import type { Resource } from '../../types';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
@@ -13,6 +13,8 @@ import { serializeJsonLd } from '../../utils/jsonLd';
 
 const ResourceDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
@@ -131,6 +133,14 @@ const ResourceDetails: React.FC = () => {
       })
     : '/';
 
+  const handleBack = () => {
+    if (location.state?.fromApp) {
+      navigate(-1);
+    } else {
+      navigate(backPath, { replace: true });
+    }
+  };
+
   if (!resource) {
     return (
       <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
@@ -220,7 +230,7 @@ const ResourceDetails: React.FC = () => {
       <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full min-w-0">
         <button
           type="button"
-          onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = backPath}
+          onClick={handleBack}
           className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
           aria-label="Go Back"
         >
@@ -940,6 +950,7 @@ const ResourceDetails: React.FC = () => {
                   <li key={related.id} className="min-w-0">
                     <Link
                       to={`/resource/${related.id}`}
+                      state={{ fromApp: true }}
                       className="block p-3 sm:p-3.5 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-xs sm:text-sm leading-snug group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
                     >
                       <span className="group-hover:text-[#E91E8C] transition-colors break-words block min-w-0">{related.title}</span>

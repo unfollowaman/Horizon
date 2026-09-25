@@ -193,6 +193,7 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
     <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
       <Link
         to={`/resource/${resource.id}`}
+        state={{ fromApp: true }}
         className="w-full flex flex-col items-center text-center no-underline text-ink group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 rounded-md"
       >
         <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
@@ -212,6 +213,7 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
       <div className="w-full flex justify-center gap-[4px] md:gap-[8px] mt-auto">
         <Link
           to={`/resource/${resource.id}`}
+          state={{ fromApp: true }}
           aria-label={`View ${cardTitle}`}
           className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
         >
