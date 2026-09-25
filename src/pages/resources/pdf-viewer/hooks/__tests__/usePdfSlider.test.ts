@@ -42,9 +42,11 @@ const TestComponent: React.FC<TestComponentProps> = ({
   const transformStateRef = React.useRef({ positionX: 0, positionY: 0, scale: 1 });
   const pageRefs = React.useRef<(HTMLDivElement | null)[]>(pageRefsArr);
 
-  containerRef.current = containerEl;
-  scrollContainerRef.current = scrollContainerEl;
-  pageRefs.current = pageRefsArr;
+  React.useLayoutEffect(() => {
+    containerRef.current = containerEl;
+    scrollContainerRef.current = scrollContainerEl;
+    pageRefs.current = pageRefsArr;
+  });
 
   const sliderState = usePdfSlider({
     containerRef,
