@@ -91,7 +91,7 @@ describe('usePdfSlider hook', () => {
   });
 
   it('initializes with default hidden state and calculates correct sliderTopPx for page 1 of 10', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
 
     await act(async () => {
@@ -101,20 +101,20 @@ describe('usePdfSlider hook', () => {
           currentPage: 1,
           setCurrentPage,
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
     });
 
-    expect(latestState?.isSliderVisible).toBe(false);
-    expect(latestState?.isDraggingSlider).toBe(false);
+    expect(stateRef.current?.isSliderVisible).toBe(false);
+    expect(stateRef.current?.isDraggingSlider).toBe(false);
     // topOffset = 80, progress = 0 -> sliderTopPx = 80
-    expect(latestState?.sliderTopPx).toBe(80);
+    expect(stateRef.current?.sliderTopPx).toBe(80);
   });
 
   it('calculates correct sliderTopPx for last page and null/single numPages', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
 
     await act(async () => {
@@ -124,14 +124,14 @@ describe('usePdfSlider hook', () => {
           currentPage: 10,
           setCurrentPage,
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
     });
 
     // topOffset (80) + 1 * usableRange (windowHeight 768 - 80 - 80 - 44 = 564) = 644
-    expect(latestState?.sliderTopPx).toBe(644);
+    expect(stateRef.current?.sliderTopPx).toBe(644);
 
     await act(async () => {
       root?.render(
@@ -140,17 +140,17 @@ describe('usePdfSlider hook', () => {
           currentPage: 1,
           setCurrentPage,
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
     });
 
-    expect(latestState?.sliderTopPx).toBe(80);
+    expect(stateRef.current?.sliderTopPx).toBe(80);
   });
 
   it('shows slider on scroll or transform and hides automatically after 5 seconds', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
     const containerEl = document.createElement('div');
     const scrollContainerEl = document.createElement('div');
@@ -164,49 +164,49 @@ describe('usePdfSlider hook', () => {
           containerEl,
           scrollContainerEl,
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
     });
 
-    expect(latestState?.isSliderVisible).toBe(false);
+    expect(stateRef.current?.isSliderVisible).toBe(false);
 
     await act(async () => {
-      latestState?.handleScroll();
+      stateRef.current?.handleScroll();
     });
 
-    expect(latestState?.isSliderVisible).toBe(true);
+    expect(stateRef.current?.isSliderVisible).toBe(true);
 
     // Fast forward 4.9 seconds - should still be visible
     act(() => {
       vi.advanceTimersByTime(4900);
     });
-    expect(latestState?.isSliderVisible).toBe(true);
+    expect(stateRef.current?.isSliderVisible).toBe(true);
 
     // Fast forward past 5 seconds total
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    expect(latestState?.isSliderVisible).toBe(false);
+    expect(stateRef.current?.isSliderVisible).toBe(false);
 
     // Test handleTransformed
     await act(async () => {
-      latestState?.handleTransformed({
+      stateRef.current?.handleTransformed({
         state: { positionX: 10, positionY: 20, scale: 1.5 },
       });
     });
 
-    expect(latestState?.isSliderVisible).toBe(true);
+    expect(stateRef.current?.isSliderVisible).toBe(true);
 
     act(() => {
       vi.advanceTimersByTime(5100);
     });
-    expect(latestState?.isSliderVisible).toBe(false);
+    expect(stateRef.current?.isSliderVisible).toBe(false);
   });
 
   it('handles mouse dragging and calls setCurrentPage and scrollIntoView', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
     const scrollIntoViewMock = vi.fn();
 
@@ -224,7 +224,7 @@ describe('usePdfSlider hook', () => {
           scrollContainerEl: document.createElement('div'),
           pageRefsArr: [page1, page2],
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
@@ -237,12 +237,12 @@ describe('usePdfSlider hook', () => {
     } as unknown as React.MouseEvent;
 
     await act(async () => {
-      latestState?.onSliderMouseDown(fakeMouseDownEvent);
+      stateRef.current?.onSliderMouseDown(fakeMouseDownEvent);
     });
 
     expect(preventDefaultSpy).toHaveBeenCalled();
-    expect(latestState?.isDraggingSlider).toBe(true);
-    expect(latestState?.isSliderVisible).toBe(true);
+    expect(stateRef.current?.isDraggingSlider).toBe(true);
+    expect(stateRef.current?.isSliderVisible).toBe(true);
 
     // Simulate mouse move across window
     const mouseMoveEvent = new MouseEvent('mousemove', { clientY: 644 });
@@ -259,11 +259,11 @@ describe('usePdfSlider hook', () => {
       document.dispatchEvent(mouseUpEvent);
     });
 
-    expect(latestState?.isDraggingSlider).toBe(false);
+    expect(stateRef.current?.isDraggingSlider).toBe(false);
   });
 
   it('handles touch dragging start, move, and end', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
     const scrollIntoViewMock = vi.fn();
 
@@ -281,7 +281,7 @@ describe('usePdfSlider hook', () => {
           scrollContainerEl: document.createElement('div'),
           pageRefsArr: [page1, page2],
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
@@ -296,12 +296,12 @@ describe('usePdfSlider hook', () => {
     } as unknown as React.TouchEvent;
 
     await act(async () => {
-      latestState?.onSliderTouchStart(fakeTouchStartEvent);
+      stateRef.current?.onSliderTouchStart(fakeTouchStartEvent);
     });
 
     expect(stopPropagationSpy).toHaveBeenCalled();
-    expect(latestState?.isDraggingSlider).toBe(true);
-    expect(latestState?.isSliderVisible).toBe(true);
+    expect(stateRef.current?.isDraggingSlider).toBe(true);
+    expect(stateRef.current?.isSliderVisible).toBe(true);
 
     const fakeTouchMoveEvent = {
       touches: [{ clientY: 644 }],
@@ -310,21 +310,21 @@ describe('usePdfSlider hook', () => {
     } as unknown as React.TouchEvent;
 
     await act(async () => {
-      latestState?.onSliderTouchMove(fakeTouchMoveEvent);
+      stateRef.current?.onSliderTouchMove(fakeTouchMoveEvent);
     });
 
     expect(preventDefaultSpy).toHaveBeenCalled();
     expect(setCurrentPage).toHaveBeenCalledWith(2);
 
     await act(async () => {
-      latestState?.onSliderTouchEnd();
+      stateRef.current?.onSliderTouchEnd();
     });
 
-    expect(latestState?.isDraggingSlider).toBe(false);
+    expect(stateRef.current?.isDraggingSlider).toBe(false);
   });
 
   it('updates slider position calculation when window is resized', async () => {
-    let latestState: ReturnOfUsePdfSlider | null = null;
+    const stateRef: { current: ReturnOfUsePdfSlider | null } = { current: null };
     const setCurrentPage = vi.fn();
 
     await act(async () => {
@@ -334,14 +334,14 @@ describe('usePdfSlider hook', () => {
           currentPage: 10,
           setCurrentPage,
           onUpdate: (state) => {
-            latestState = state;
+            stateRef.current = state;
           },
         })
       );
     });
 
     // Default windowHeight is 768 -> 80 + 1 * (768 - 80 - 80 - 44) = 644
-    expect(latestState?.sliderTopPx).toBe(644);
+    expect(stateRef.current?.sliderTopPx).toBe(644);
 
     // Change window.innerHeight
     Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1000 });
@@ -351,6 +351,6 @@ describe('usePdfSlider hook', () => {
     });
 
     // New windowHeight = 1000 -> usableRange = 1000 - 204 = 796 -> topPx = 80 + 796 = 876
-    expect(latestState?.sliderTopPx).toBe(876);
+    expect(stateRef.current?.sliderTopPx).toBe(876);
   });
 });
