@@ -66,19 +66,22 @@ const Header = React.memo(() => {
 
         {/* Navigation */}
         <nav className={`${styles.navGroup} neu-raised`} aria-label="Main navigation">
-          {navLinks.filter(link => link.showOnDesktop).map((link, index) => {
-            const isActive = location.pathname === link.path;
-            return (
-              <Link
-                key={index}
-                to={link.path}
-                className={styles.navItem}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+          {navLinks.reduce<React.ReactNode[]>((acc, link, index) => {
+            if (link.showOnDesktop) {
+              const isActive = location.pathname === link.path;
+              acc.push(
+                <Link
+                  key={link.id || index}
+                  to={link.path}
+                  className={styles.navItem}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              );
+            }
+            return acc;
+          }, [])}
         </nav>
 
         {/* Get Started or Profile Popover */}
@@ -130,22 +133,29 @@ const Header = React.memo(() => {
 
                 {/* Navigation Links */}
                 <nav className={`${styles.menuNavLinks} ${session ? styles.menuNavLinksAuth : ''}`} aria-label="Mobile navigation">
-                  {navLinks.filter(link => link.showOnMobile).map((link, index, array) => {
-                    const isActive = location.pathname === link.path;
-                    return (
-                      <React.Fragment key={index}>
-                        <Link
-                          to={link.path}
-                          onClick={closeMenu}
-                          className={styles.menuNavLink}
-                          aria-current={isActive ? 'page' : undefined}
-                        >
-                          {link.label}
-                        </Link>
-                        {(index < array.length - 1 || session) && <div className={styles.menuDivider} />}
-                      </React.Fragment>
-                    );
-                  })}
+                  {(() => {
+                    const lastMobileIndex = navLinks.findLastIndex(link => link.showOnMobile);
+                    return navLinks.reduce<React.ReactNode[]>((acc, link, index) => {
+                      if (link.showOnMobile) {
+                        const isActive = location.pathname === link.path;
+                        const showDivider = index < lastMobileIndex || Boolean(session);
+                        acc.push(
+                          <React.Fragment key={link.id || index}>
+                            <Link
+                              to={link.path}
+                              onClick={closeMenu}
+                              className={styles.menuNavLink}
+                              aria-current={isActive ? 'page' : undefined}
+                            >
+                              {link.label}
+                            </Link>
+                            {showDivider && <div className={styles.menuDivider} />}
+                          </React.Fragment>
+                        );
+                      }
+                      return acc;
+                    }, []);
+                  })()}
 
                   {session && (
                     <React.Fragment>
