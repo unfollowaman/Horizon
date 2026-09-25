@@ -116,13 +116,11 @@ export const SyllabusPage: React.FC = () => {
   };
 
   const handleBackToClasses = () => {
-    navigate('/syllabus');
+    navigate(-1);
   };
 
   const handleBackToSubjects = () => {
-    if (classSlug) {
-      navigate(`/syllabus/${classSlug}`);
-    }
+    navigate(-1);
   };
 
   // Fetch class-level chapter counts for Syllabus Landing Page

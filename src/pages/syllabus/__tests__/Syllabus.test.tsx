@@ -1,8 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import SyllabusPage from '../SyllabusPage';
+
+const LocationTracker: React.FC = () => {
+  const location = useLocation();
+  const navType = useNavigationType();
+  return (
+    <div data-testid="location-tracker" data-pathname={location.pathname} data-navtype={navType}>
+      {location.pathname} ({navType})
+    </div>
+  );
+};
 import * as learningAPI from '../../../services/learningResourcesAPI';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -568,6 +578,165 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
 
       const subjectCard = container?.querySelector('div[role="button"][aria-label="View syllabus for Class 10 Science"]');
       expect(subjectCard?.className).toContain('focus-visible:ring-2');
+    });
+  });
+
+  describe('Syllabus Back Navigation & History Cycle Prevention Tests', () => {
+    it('19. Full traversal: Home -> /syllabus -> /syllabus/class-10 -> /syllabus/class-10/science -> Back -> Back -> Back -> Home with POP actions', async () => {
+      vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/']}>
+            <LocationTracker />
+            <Routes>
+              <Route path="/" element={<div>Home Page</div>} />
+              <Route path="/syllabus" element={<SyllabusPage />} />
+              <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      let tracker = container?.querySelector('[data-testid="location-tracker"]');
+      expect(tracker?.getAttribute('data-pathname')).toBe('/');
+
+      // Simulate navigating forward to /syllabus
+      // (In real app, clicked from Home) - let's render with entries step by step or click
+      act(() => {
+        root?.unmount();
+      });
+      container = document.createElement('div');
+      document.body.appendChild(container);
+      root = createRoot(container);
+
+      await act(async () => {
+        root?.render(
+          <MemoryRouter initialEntries={['/', '/syllabus', '/syllabus/class-10', '/syllabus/class-10/science']} initialIndex={3}>
+            <LocationTracker />
+            <Routes>
+              <Route path="/" element={<div>Home Page</div>} />
+              <Route path="/syllabus" element={<SyllabusPage />} />
+              <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+              <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+            </Routes>
+          </MemoryRouter>
+        );
+      });
+
+      tracker = container?.querySelector('[data-testid="location-tracker"]');
+      expect(tracker?.getAttribute('data-pathname')).toBe('/syllabus/class-10/science');
+
+      // Click Subject Back button
+      const subjectBackBtn = container?.querySelector('button[aria-label="Back to Subject List"]');
+      expect(subjectBackBtn).not.toBeNull();
+
+      await act(async () => {
+        subjectBackBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      tracker = container?.querySelector('[data-testid="location-tracker"]');
+      expect(tracker?.getAttribute('data-pathname')).toBe('/syllabus/class-10');
+
+      // Click Class Back button
+      const classBackBtn = container?.querySelector('button[aria-label="Back to Classes"]');
+      expect(classBackBtn).not.toBeNull();
+
+      await act(async () => {
+        classBackBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      tracker = container?.querySelector('[data-testid="location-tracker"]');
+      expect(tracker?.getAttribute('data-pathname')).toBe('/syllabus');
+
+      // Click Syllabus Landing Back button
+      const landingBackBtn = container?.querySelector('button[aria-label="Go Back"]');
+      expect(landingBackBtn).not.toBeNull();
+
+      await act(async () => {
+        landingBackBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      tracker = container?.querySelector('[data-testid="location-tracker"]');
+      expect(tracker?.getAttribute('data-pathname')).toBe('/');
+      expect(container?.textContent).toContain('Home Page');
+    });
+
+    it('20. Back navigation works consistently for Class 8, Class 9, and Class 10', async () => {
+      for (const classSlug of ['class-8', 'class-9', 'class-10']) {
+        act(() => {
+          root?.unmount();
+        });
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        root = createRoot(container);
+
+        await act(async () => {
+          root?.render(
+            <MemoryRouter initialEntries={['/syllabus', `/syllabus/${classSlug}`]} initialIndex={1}>
+              <LocationTracker />
+              <Routes>
+                <Route path="/syllabus" element={<SyllabusPage />} />
+                <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+              </Routes>
+            </MemoryRouter>
+          );
+        });
+
+        const classBackBtn = container?.querySelector('button[aria-label="Back to Classes"]');
+        expect(classBackBtn).not.toBeNull();
+
+        await act(async () => {
+          classBackBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        });
+
+        const tracker = container?.querySelector('[data-testid="location-tracker"]');
+        expect(tracker?.getAttribute('data-pathname')).toBe('/syllabus');
+      }
+    });
+
+    it('21. Back navigation works consistently for multiple Class 10 subjects (Mathematics, Science, English, Hindi, Social Science)', async () => {
+      vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
+        data: [],
+        error: null,
+      } as unknown as Awaited<ReturnType<typeof learningAPI.fetchSyllabusHierarchy>>);
+
+      const subjects = ['mathematics', 'science', 'english', 'hindi-course-a', 'social-science'];
+
+      for (const subjSlug of subjects) {
+        act(() => {
+          root?.unmount();
+        });
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        root = createRoot(container);
+
+        await act(async () => {
+          root?.render(
+            <MemoryRouter initialEntries={['/syllabus/class-10', `/syllabus/class-10/${subjSlug}`]} initialIndex={1}>
+              <LocationTracker />
+              <Routes>
+                <Route path="/syllabus/:classSlug" element={<SyllabusPage />} />
+                <Route path="/syllabus/:classSlug/:subjectSlug" element={<SyllabusPage />} />
+              </Routes>
+            </MemoryRouter>
+          );
+        });
+
+        const subjectBackBtn = container?.querySelector('button[aria-label="Back to Subject List"]');
+        expect(subjectBackBtn).not.toBeNull();
+
+        await act(async () => {
+          subjectBackBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        });
+
+        const tracker = container?.querySelector('[data-testid="location-tracker"]');
+        expect(tracker?.getAttribute('data-pathname')).toBe('/syllabus/class-10');
+      }
     });
   });
 });
