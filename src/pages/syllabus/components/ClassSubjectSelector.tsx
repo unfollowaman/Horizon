@@ -165,15 +165,8 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
               {getSubjectIllustration(subj.slug, subj.name)}
             </div>
 
-            {/* Middle Section: Subject Title, Description & Badge */}
+            {/* Middle Section: Subject Title & Description */}
             <div className="flex flex-col items-center text-center w-full space-y-1 sm:space-y-[3px]">
-              <div className="flex items-center justify-center gap-1.5 mb-1">
-                <span className="text-[10px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-md neu-recessed text-ink/70 uppercase tracking-wider">
-                  {currentClass.name}
-                </span>
-                <span className="w-2 h-2 rounded-full bg-[#E91E8C] shadow-sm shrink-0"></span>
-              </div>
-
               <h2 className="text-base sm:text-xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 line-clamp-1 w-full text-center">
                 {subj.name}
               </h2>
