@@ -212,12 +212,13 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   }, [config.resourceType, config.includeChapters, config.thirdFilterType, selectedThirdFilter, authLoading]);
 
   const uniqueClasses = useMemo(() => {
-    const classes = new Set(allResources.map(r => r.student_class).filter(Boolean) as string[]);
-    ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'].forEach(cls => {
-      if (!classes.has(cls)) {
-        classes.add(cls);
+    const classes = allResources.reduce((acc, r) => {
+      if (r.student_class) {
+        acc.add(r.student_class);
       }
-    });
+      return acc;
+    }, new Set<string>(['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12']));
+
     const sorted = Array.from(classes).sort((a, b) => {
       const matchA = a.match(/Class (\d+)/i);
       const matchB = b.match(/Class (\d+)/i);
@@ -238,7 +239,12 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   }, [allResources]);
 
   const uniqueSubjects = useMemo(() => {
-    const subjects = new Set(allResources.map(r => r.subject).filter(Boolean) as string[]);
+    const subjects = allResources.reduce((acc, r) => {
+      if (r.subject) {
+        acc.add(r.subject);
+      }
+      return acc;
+    }, new Set<string>());
     return Array.from(subjects).sort();
   }, [allResources]);
 
