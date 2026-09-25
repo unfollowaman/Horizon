@@ -2,7 +2,12 @@ import React from 'react';
 
 const MaterialCardSkeleton: React.FC = () => {
   return (
-    <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center animate-pulse" aria-hidden="true">
+    <div
+      role="status"
+      aria-label="Loading study material..."
+      className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center animate-pulse"
+    >
+      <span className="sr-only">Loading study material...</span>
       {/* Thumbnail Skeleton */}
       <div className="w-full h-[100px] neu-recessed rounded-md mb-[12px] shrink-0 bg-ink/5" />
 

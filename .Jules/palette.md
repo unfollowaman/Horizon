@@ -17,3 +17,7 @@
 ## 2026-04-01 - WAI-ARIA Slider Semantics for Custom Floating Controls
 **Learning:** Custom interactive slider/scrubber elements (like PDF document page scrubbers) built with draggable `<div>` elements must declare `role="slider"`, `tabIndex={0}`, `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and descriptive `aria-valuetext` (e.g. "Page 3 of 10") so screen readers can interpret slider position and value bounds. High-contrast `focus-visible` ring utilities (`focus-visible:ring-2 focus-visible:ring-[#E91E8C]`) ensure keyboard navigation renders clear focus indicators.
 **Action:** Always wrap custom range scrubbers/sliders with full WAI-ARIA `slider` role semantics, `tabIndex={0}`, dynamic `aria-valuetext`, and high-contrast `focus-visible` focus indicators.
+
+## 2026-09-25 - Accessible Skeleton Loading Screens
+**Learning:** Skeleton loading containers should not be hidden from screen readers using `aria-hidden="true"` without providing an accessible status. Instead, declaring `role="status"`, a descriptive `aria-label` (e.g. "Loading study material..."), and an internal `<span className="sr-only">` element ensures assistive technologies announce pending async content states without visual clutter.
+**Action:** Always add `role="status"`, descriptive `aria-label`, and `sr-only` loading text to skeleton placeholder containers.

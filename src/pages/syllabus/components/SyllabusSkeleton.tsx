@@ -2,7 +2,12 @@ import React from 'react';
 
 export const SyllabusSkeleton: React.FC = () => {
   return (
-    <div className="w-full space-y-4 animate-pulse">
+    <div
+      role="status"
+      aria-label="Loading syllabus..."
+      className="w-full space-y-4 animate-pulse"
+    >
+      <span className="sr-only">Loading syllabus...</span>
       <div className="h-8 bg-black/5 rounded-xl w-1/3"></div>
       <div className="h-4 bg-black/5 rounded-lg w-2/3"></div>
 

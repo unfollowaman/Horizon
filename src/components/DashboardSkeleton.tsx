@@ -3,7 +3,12 @@ import styles from '../pages/user/Dashboard.module.css';
 
 const DashboardSkeleton: React.FC = () => {
   return (
-    <div className={`${styles.container} max-md:pt-[10px] md:-mt-[20px]`}>
+    <div
+      role="status"
+      aria-label="Loading dashboard..."
+      className={`${styles.container} max-md:pt-[10px] md:-mt-[20px]`}
+    >
+      <span className="sr-only">Loading dashboard...</span>
       {/* Brand Header Skeleton */}
       <div className="flex flex-col items-start max-md:gap-[32px] md:gap-[12px] mb-[clamp(24px,4vw,40px)] animate-pulse">
         <div className="w-32 h-10 neu-raised rounded-full bg-ink/5" />
