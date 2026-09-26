@@ -113,7 +113,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('1 Chapter');
   });
 
-  it('2. renders Structure B (Chapter + Topics) with chapter badge and topic cards', async () => {
+  it('2. renders Structure B (Chapter + Topics) closed by default and expands/collapses on toggle', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -126,13 +126,33 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('Real Numbers');
     expect(container?.textContent).toContain('3 Topics');
 
+    // Sub-topics should be closed by default initially
+    expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
+    expect(container?.textContent).not.toContain('Exercise 1.1');
+
+    const toggleButton = container?.querySelector(
+      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+    ) as HTMLButtonElement | null;
+    expect(toggleButton).not.toBeNull();
+    expect(toggleButton?.getAttribute('aria-expanded')).toBe('false');
+
+    // Expand sub-topics by tapping/clicking chapter tile
+    await act(async () => {
+      toggleButton?.click();
+    });
+
+    expect(toggleButton?.getAttribute('aria-expanded')).toBe('true');
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
     expect(container?.textContent).toContain('Exercise 1.1');
     expect(container?.textContent).toContain('व्याकरण सन्धि नियम');
 
-    expect(container?.textContent).toContain('Topic');
-    expect(container?.textContent).toContain('Exercise');
-    expect(container?.textContent).toContain('Grammar');
+    // Collapse sub-topics by tapping/clicking again
+    await act(async () => {
+      toggleButton?.click();
+    });
+
+    expect(toggleButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
   });
 
   it('3. renders Structure A (Chapter-Only sequence) for literature subjects without artificial topics', async () => {
@@ -152,13 +172,21 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).not.toContain('Reading Comprehension');
   });
 
-  it('4. renders resource action links with aria-labels and focus-visible styling when resources exist', async () => {
+  it('4. renders resource action links with aria-labels and focus-visible styling when expanded', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
           <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
         </MemoryRouter>
       );
+    });
+
+    const toggleButton = container?.querySelector(
+      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+    ) as HTMLButtonElement | null;
+
+    await act(async () => {
+      toggleButton?.click();
     });
 
     const resourceLink = container?.querySelector(

@@ -178,6 +178,13 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
 
     expect(spy).toHaveBeenCalledWith('10', 'Mathematics');
     expect(container?.textContent).toContain('Real Numbers');
+
+    // Click chapter toggle button to reveal sub-topics
+    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    await act(async () => {
+      toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
     // ProfileButton is rendered on view 3
     const profileBtn = container?.querySelector('[aria-label="Log in"], [aria-label="Go to Dashboard"]');
@@ -242,6 +249,12 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     });
 
     expect(container?.textContent).toContain('Chemical Reactions and Equations');
+
+    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Chemical Reactions and Equations"]');
+    await act(async () => {
+      toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
     expect(container?.textContent).toContain('Topic');
     expect(container?.textContent).toContain('Exercise');
     expect(container?.textContent).toContain('Grammar');
@@ -299,6 +312,11 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
           </Routes>
         </MemoryRouter>
       );
+    });
+
+    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    await act(async () => {
+      toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
     expect(container?.textContent).toContain('Introduction to Real Numbers');
@@ -365,6 +383,11 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
+    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    await act(async () => {
+      toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
     expect(container?.textContent).toContain('English');
     expect(container?.textContent).toContain('Hindi');
@@ -406,6 +429,12 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     });
 
     expect(container?.textContent).toContain('Circles');
+
+    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 9: Circles"]');
+    await act(async () => {
+      toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
     expect(container?.textContent).toContain('Angle Subtended by a Chord at a Point');
     expect(container?.textContent).not.toContain('Exercise');
   });
