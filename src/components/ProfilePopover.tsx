@@ -48,7 +48,8 @@ const ProfilePopover: React.FC = () => {
   return (
     <div className={styles.popoverContainer} ref={popoverRef}>
       <button
-        className={`${styles.avatarBtn} neu-raised neu-raised-hover`}
+        type="button"
+        className={`${styles.avatarBtn} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
         onClick={togglePopover}
         aria-label={profile.name ? `${profile.name}'s profile menu` : 'User profile menu'}
         aria-haspopup="true"
@@ -78,14 +79,16 @@ const ProfilePopover: React.FC = () => {
           <div className={styles.popoverActions}>
             <Link
               to="/dashboard"
-              className={styles.popoverLink}
+              className={`${styles.popoverLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
               onClick={closePopover}
             >
               View Profile
             </Link>
             <button
+              type="button"
               onClick={handleSignOut}
-              className={styles.popoverSignOutBtn}
+              aria-label="Sign out of your account"
+              className={`${styles.popoverSignOutBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
             >
               Sign Out
             </button>
