@@ -80,7 +80,40 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     },
   ];
 
-  it('1. renders Chapter node, Topic node, Exercise node, and Grammar node correctly', async () => {
+  const literatureChapters: SyllabusChapterHierarchy[] = [
+    {
+      id: 'ch-eng-1',
+      chapter_number: 1,
+      chapter_name: 'A Letter to God',
+      display_order: 1,
+      is_active: true,
+      syllabus_topics: [],
+    },
+    {
+      id: 'ch-eng-2',
+      chapter_number: 2,
+      chapter_name: 'Nelson Mandela: Long Walk to Freedom',
+      display_order: 2,
+      is_active: true,
+      syllabus_topics: [],
+    },
+  ];
+
+  it('1. renders Subject Identity Hero Banner with step progress indicator and total chapter count', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Class 10 — Mathematics Roadmap');
+    expect(container?.textContent).toContain('Roadmap');
+    expect(container?.textContent).toContain('1 Chapter');
+  });
+
+  it('2. renders Structure B (Chapter + Topics) with chapter badge and topic cards', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -91,6 +124,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('CHAPTER 1');
     expect(container?.textContent).toContain('Real Numbers');
+    expect(container?.textContent).toContain('3 Topics');
 
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
     expect(container?.textContent).toContain('Exercise 1.1');
@@ -101,29 +135,24 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('Grammar');
   });
 
-  it('2. provides compact accessible graph control buttons with aria-labels and focus-visible styling (Zoom In, Zoom Out, Fit View)', async () => {
+  it('3. renders Structure A (Chapter-Only sequence) for literature subjects without artificial topics', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
-          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+          <SyllabusFlowchart chapters={literatureChapters} subjectName="English" classNameTitle="Class 10" />
         </MemoryRouter>
       );
     });
 
-    const zoomInBtn = container?.querySelector('button[aria-label="Zoom in flowchart"]');
-    const zoomOutBtn = container?.querySelector('button[aria-label="Zoom out flowchart"]');
-    const fitViewBtn = container?.querySelector('button[aria-label="Fit flowchart to view"]');
-
-    expect(zoomInBtn).not.toBeNull();
-    expect(zoomOutBtn).not.toBeNull();
-    expect(fitViewBtn).not.toBeNull();
-
-    expect(zoomInBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
-    expect(zoomOutBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
-    expect(fitViewBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(container?.textContent).toContain('CHAPTER 1');
+    expect(container?.textContent).toContain('A Letter to God');
+    expect(container?.textContent).toContain('CHAPTER 2');
+    expect(container?.textContent).toContain('Nelson Mandela');
+    expect(container?.textContent).toContain('Chapter Overview');
+    expect(container?.textContent).not.toContain('Reading Comprehension');
   });
 
-  it('3. renders resource action links with aria-labels and focus-visible styling when resources exist', async () => {
+  it('4. renders resource action links with aria-labels and focus-visible styling when resources exist', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -132,30 +161,13 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       );
     });
 
-    // Topic with resource link check
     const resourceLink = container?.querySelector(
-      'a[aria-label="View english notes for Fundamental Theorem of Arithmetic"]'
+      'a[aria-label="View English notes for Fundamental Theorem of Arithmetic"]'
     );
     expect(resourceLink).not.toBeNull();
     expect(resourceLink?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(container?.textContent).toContain('View Notes');
     expect(container?.textContent).toContain('English');
-
-    // Topic without resource (Exercise 1.1) is still rendered
-    expect(container?.textContent).toContain('Exercise 1.1');
-  });
-
-  it('4. renders SVG connector edges between Chapter and Topic nodes', async () => {
-    await act(async () => {
-      root?.render(
-        <MemoryRouter>
-          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
-        </MemoryRouter>
-      );
-    });
-
-    const svgEdges = container?.querySelectorAll('svg path.flowchart-edge');
-    expect(svgEdges?.length).toBeGreaterThan(0);
   });
 
   it('5. renders empty state cleanly when chapters array is empty', async () => {
@@ -171,7 +183,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('Syllabus data is currently not available');
   });
 
-  it('6. memoizes ChapterNodeCard and TopicNodeCard to prevent unnecessary re-renders during viewport transformation state updates', async () => {
+  it('6. updates correctly when parent component state triggers re-render', async () => {
     let parentRenderCount = 0;
 
     const TestParentWrapper = () => {
