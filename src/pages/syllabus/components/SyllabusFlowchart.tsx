@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { SyllabusChapterHierarchy } from '../../../types';
 import SyllabusTopicNode from './SyllabusTopicNode';
 
@@ -6,12 +7,16 @@ interface SyllabusFlowchartProps {
   chapters: SyllabusChapterHierarchy[];
   subjectName: string;
   classNameTitle: string;
+  classSlug?: string;
+  subjectSlug?: string;
 }
 
 export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
   chapters,
   subjectName,
   classNameTitle,
+  classSlug,
+  subjectSlug,
 }) => {
   // Track open/collapsed state for chapters with sub-topics (defaults to all closed initially)
   const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({});
@@ -32,6 +37,19 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
       [id]: !prev[id],
     }));
   };
+
+  // Resolve navigation paths for action buttons
+  const notesPath = classSlug
+    ? subjectSlug
+      ? `/notes/${classSlug}/${subjectSlug}`
+      : `/notes/${classSlug}`
+    : '/notes';
+
+  const pyqPath = classSlug
+    ? subjectSlug
+      ? `/library/${classSlug}/${subjectSlug}`
+      : `/library/${classSlug}`
+    : '/library';
 
   if (!sortedChapters || sortedChapters.length === 0) {
     return (
@@ -76,26 +94,21 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
         </div>
       </header>
 
-      {/* Main Roadmap Progression Timeline Container */}
-      <div className="relative w-full min-w-0 space-y-8 sm:space-y-10">
-        {/* Continuous Connecting Stem Line (Desktop & Mobile) */}
-        <div
-          className="absolute left-6 sm:left-8 top-8 bottom-8 w-1 bg-gradient-to-b from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-full opacity-30 pointer-events-none hidden sm:block"
-          aria-hidden="true"
-        />
-
-        {sortedChapters.map((chapter, index) => {
+      {/* Main Chapter Cards Container - 2 Column Grid on Desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start w-full min-w-0">
+        {sortedChapters.map((chapter) => {
           const topics = (chapter.syllabus_topics || []).sort(
             (a, b) => a.display_order - b.display_order
           );
           const hasTopics = topics.length > 0;
-          const isLast = index === sortedChapters.length - 1;
-
           const isOpen = Boolean(openChapters[chapter.id]);
 
           return (
-            <div key={chapter.id} className="relative min-w-0 w-full space-y-4">
-              {/* Chapter Milestone Card */}
+            <div
+              key={chapter.id}
+              className="neu-card rounded-2xl p-4 sm:p-5 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3.5 relative z-10 shadow-md flex flex-col justify-between h-full min-w-0"
+            >
+              {/* Header & Main Tile Section */}
               {hasTopics ? (
                 <button
                   type="button"
@@ -103,12 +116,12 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   aria-expanded={isOpen}
                   aria-controls={`chapter-topics-${chapter.id}`}
                   aria-label={`Toggle topics for Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
-                  className="w-full text-left neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 group"
+                  className="w-full text-left flex flex-col space-y-3 min-w-0 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-xl p-1 border-0 bg-transparent"
                 >
-                  <div className="flex flex-row items-center justify-between gap-3 min-w-0">
+                  <div className="flex flex-row items-center justify-between gap-3 min-w-0 w-full">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
                       {/* Chapter Number Badge */}
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
                         {chapter.chapter_number}
                       </div>
 
@@ -116,49 +129,44 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                         <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
                           CHAPTER {chapter.chapter_number}
                         </span>
-                        <h2 className="text-base sm:text-xl font-bold text-ink leading-snug break-words m-0 group-hover:text-[#E91E8C] transition-colors">
+                        <h2 className="text-base sm:text-lg font-bold text-ink leading-snug break-words m-0 group-hover:text-[#E91E8C] transition-colors">
                           {chapter.chapter_name}
                         </h2>
                       </div>
                     </div>
 
-                    {/* Right side: Topic Count Badge + Toggle Arrow Icon */}
-                    <div className="flex items-center gap-2.5 shrink-0">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-black/5 text-xs font-bold text-ink/70">
-                        <span>{topics.length} {topics.length === 1 ? 'Topic' : 'Topics'}</span>
-                      </div>
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
-                        <svg
-                          className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </div>
+                    {/* Right side arrow toggle icon */}
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
+                      <svg
+                        className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
                     </div>
                   </div>
 
                   {/* Chapter Summary (Short) */}
                   {chapter.chapter_summary && (
-                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words">
+                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words w-full">
                       {chapter.chapter_summary}
                     </p>
                   )}
                 </button>
               ) : (
-                <div className="neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                <div className="flex flex-col space-y-3 min-w-0 p-1">
+                  <div className="flex flex-row items-center justify-between gap-3 min-w-0 w-full">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
                       {/* Chapter Number Badge */}
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
                         {chapter.chapter_number}
                       </div>
 
@@ -166,42 +174,71 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                         <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
                           CHAPTER {chapter.chapter_number}
                         </span>
-                        <h2 className="text-base sm:text-xl font-bold text-ink leading-snug break-words m-0">
+                        <h2 className="text-base sm:text-lg font-bold text-ink leading-snug break-words m-0">
                           {chapter.chapter_name}
                         </h2>
                       </div>
-                    </div>
-
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-500/10 text-xs font-bold text-purple-700 shrink-0 self-start sm:self-center">
-                      <span>Chapter Overview</span>
                     </div>
                   </div>
 
                   {/* Chapter Summary (Short) */}
                   {chapter.chapter_summary && (
-                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words">
+                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words w-full">
                       {chapter.chapter_summary}
                     </p>
                   )}
                 </div>
               )}
 
+              {/* Chapter Action Buttons Row */}
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-3 border-t border-ink/10 mt-auto">
+                <Link
+                  to={notesPath}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`View notes for Chapter ${chapter.chapter_number}`}
+                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-1.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+                >
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  <span className="truncate">Notes</span>
+                </Link>
+
+                <Link
+                  to={pyqPath}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`View PYQ papers for Chapter ${chapter.chapter_number}`}
+                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-1.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+                >
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="truncate">PYQ Papers</span>
+                </Link>
+
+                <Link
+                  to={notesPath}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`View important questions for Chapter ${chapter.chapter_number}`}
+                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-1.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+                >
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" strokeWidth={2} />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m0 4h.01" />
+                  </svg>
+                  <span className="truncate">imp.questions</span>
+                </Link>
+              </div>
+
               {/* Subordinate Topic Branches (Structure B) - Shown when open */}
               {hasTopics && isOpen && (
                 <div
                   id={`chapter-topics-${chapter.id}`}
-                  className="pl-4 sm:pl-10 space-y-3 border-l-2 border-[#E91E8C]/20 ml-5 sm:ml-6 pt-1"
+                  className="pl-2 sm:pl-4 space-y-2.5 border-l-2 border-[#E91E8C]/20 mt-3 pt-2"
                 >
                   {topics.map((topic) => (
                     <SyllabusTopicNode key={topic.id} topic={topic} />
                   ))}
-                </div>
-              )}
-
-              {/* Connector dot indicator between chapters */}
-              {!isLast && (
-                <div className="flex justify-center sm:justify-start sm:pl-8 py-1" aria-hidden="true">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#E91E8C] shadow-xs" />
                 </div>
               )}
             </div>

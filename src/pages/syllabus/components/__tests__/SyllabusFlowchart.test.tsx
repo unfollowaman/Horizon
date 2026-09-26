@@ -99,7 +99,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     },
   ];
 
-  it('1. renders Subject Identity Hero Banner with step progress indicator', async () => {
+  it('1. renders Subject Identity Hero Banner with step progress indicator and 2-column grid container', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -110,7 +110,8 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('Class 10 — Mathematics Syllabus');
     expect(container?.textContent).toContain('Syllabus');
-    expect(container?.textContent).not.toContain('1 Chapter');
+    const gridContainer = container?.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
+    expect(gridContainer).not.toBeNull();
   });
 
   it('2. renders Structure B (Chapter + Topics) closed by default and expands/collapses on toggle', async () => {
@@ -124,15 +125,14 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('CHAPTER 1');
     expect(container?.textContent).toContain('Real Numbers');
-    expect(container?.textContent).toContain('3 Topics');
 
     // Sub-topics should be closed by default initially
     expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
     expect(container?.textContent).not.toContain('Exercise 1.1');
 
     const toggleButton = container?.querySelector(
-      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
-    ) as HTMLButtonElement | null;
+      '[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+    ) as HTMLElement | null;
     expect(toggleButton).not.toBeNull();
     expect(toggleButton?.getAttribute('aria-expanded')).toBe('false');
 
@@ -155,11 +155,17 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
   });
 
-  it('3. renders Structure A (Chapter-Only sequence) for literature subjects without artificial topics', async () => {
+  it('3. renders action buttons (Notes, PYQ Papers, imp.questions) on chapter tiles', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
-          <SyllabusFlowchart chapters={literatureChapters} subjectName="English" classNameTitle="Class 10" />
+          <SyllabusFlowchart
+            chapters={literatureChapters}
+            subjectName="English"
+            classNameTitle="Class 10"
+            classSlug="class-10"
+            subjectSlug="english"
+          />
         </MemoryRouter>
       );
     });
@@ -168,8 +174,21 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).toContain('A Letter to God');
     expect(container?.textContent).toContain('CHAPTER 2');
     expect(container?.textContent).toContain('Nelson Mandela');
-    expect(container?.textContent).toContain('Chapter Overview');
-    expect(container?.textContent).not.toContain('Reading Comprehension');
+
+    // Verify Action Buttons
+    const notesLink = container?.querySelector('a[aria-label="View notes for Chapter 1"]') as HTMLAnchorElement | null;
+    const pyqLink = container?.querySelector('a[aria-label="View PYQ papers for Chapter 1"]') as HTMLAnchorElement | null;
+    const impLink = container?.querySelector('a[aria-label="View important questions for Chapter 1"]') as HTMLAnchorElement | null;
+
+    expect(notesLink).not.toBeNull();
+    expect(pyqLink).not.toBeNull();
+    expect(impLink).not.toBeNull();
+
+    expect(notesLink?.getAttribute('href')).toBe('/notes/class-10/english');
+    expect(pyqLink?.getAttribute('href')).toBe('/library/class-10/english');
+    expect(container?.textContent).toContain('Notes');
+    expect(container?.textContent).toContain('PYQ Papers');
+    expect(container?.textContent).toContain('imp.questions');
   });
 
   it('4. renders resource action links with aria-labels and focus-visible styling when expanded', async () => {
@@ -182,8 +201,8 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     });
 
     const toggleButton = container?.querySelector(
-      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
-    ) as HTMLButtonElement | null;
+      '[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+    ) as HTMLElement | null;
 
     await act(async () => {
       toggleButton?.click();
