@@ -38,34 +38,43 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
 
   return (
     <div className="w-full min-w-0 space-y-8 sm:space-y-10">
-      {/* Subject Identity Hero Banner */}
-      <div className="neu-raised rounded-2xl p-4 sm:p-6 text-center space-y-3.5 border border-ink/5 relative overflow-hidden">
-        {/* Step Progress Pill */}
-        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold bg-cream/80 border border-ink/10 shadow-xs">
-          <span className="text-ink/60">Class</span>
-          <span className="text-ink/40">→</span>
-          <span className="text-ink/60">Subject</span>
-          <span className="text-ink/40">→</span>
-          <span className="text-[#E91E8C] font-extrabold" aria-current="step">
-            Roadmap
-          </span>
-        </div>
+      {/* Subject Identity Hero Banner Container */}
+      <header className="neu-raised rounded-2xl p-2 sm:p-3 text-center space-y-3.5 mb-8 sm:mb-10">
+        {/* Primary Heading */}
+        <h1 className="font-serif font-normal text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
+          {classNameTitle} — <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">{subjectName}</span> Roadmap
+        </h1>
 
-        <div className="space-y-1.5 max-w-3xl mx-auto">
-          <h1 className="font-serif font-normal text-2xl sm:text-4xl md:text-5xl text-ink leading-tight">
-            {classNameTitle} — <span className="text-[#E91E8C]">{subjectName}</span> Roadmap
-          </h1>
-          <p className="text-xs sm:text-sm md:text-base text-ink/70 leading-relaxed">
-            Interactive, chapter-by-chapter learning roadmap with linked study notes and practice exercises.
-          </p>
+        {/* Supporting Description */}
+        <p className="text-xs sm:text-base text-ink/70 max-w-2xl mx-auto leading-relaxed m-0 px-2">
+          Interactive, chapter-by-chapter learning roadmap with linked study notes and practice exercises.
+        </p>
+
+        {/* Journey Progress Indicator / Flow Pill */}
+        <div className="flex justify-center items-center w-full min-w-0" aria-label="Syllabus Navigation Steps">
+          <ol className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-1.5 sm:py-2 neu-raised-sm rounded-lg text-xs sm:text-sm font-bold text-ink/60 list-none m-0 max-w-full shrink-0">
+            <li className="text-ink/50 shrink-0">
+              Class
+            </li>
+            <li className="text-ink/30 select-none shrink-0" aria-hidden="true">&rarr;</li>
+            <li className="text-ink/50 shrink-0">
+              Subject
+            </li>
+            <li className="text-ink/30 select-none shrink-0" aria-hidden="true">&rarr;</li>
+            <li className="text-[#E91E8C] font-extrabold shrink-0" aria-current="step">
+              Syllabus
+            </li>
+          </ol>
         </div>
 
         {/* Dynamic Chapter Count Chip */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-black/5 border border-ink/10 text-xs sm:text-sm font-bold text-ink/80">
-          <span className="w-2 h-2 rounded-full bg-[#E91E8C]"></span>
-          <span>{totalChapters} {totalChapters === 1 ? 'Chapter' : 'Chapters'}</span>
+        <div className="flex justify-center items-center w-full min-w-0 pt-0.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-black/5 border border-ink/10 text-xs sm:text-sm font-bold text-ink/80">
+            <span className="w-2 h-2 rounded-full bg-[#E91E8C]"></span>
+            <span>{totalChapters} {totalChapters === 1 ? 'Chapter' : 'Chapters'}</span>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Roadmap Progression Timeline Container */}
       <div className="relative w-full min-w-0 space-y-8 sm:space-y-10">

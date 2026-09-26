@@ -109,7 +109,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     });
 
     expect(container?.textContent).toContain('Class 10 — Mathematics Roadmap');
-    expect(container?.textContent).toContain('Roadmap');
+    expect(container?.textContent).toContain('Syllabus');
     expect(container?.textContent).toContain('1 Chapter');
   });
 
