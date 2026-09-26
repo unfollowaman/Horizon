@@ -301,21 +301,6 @@ const FeaturesSection = React.memo(() => {
           ))}
         </div>
 
-        <div className={styles.teaserGrid}>
-          <Link to="/about/#why-horizon" className={styles.teaserCard} aria-label="Why Horizon">
-            <span className={styles.teaserTitle}>Why Horizon</span>
-            <svg className={styles.teaserArrow} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
-          <Link to="/about/#how-it-works" className={styles.teaserCard} aria-label="How it works">
-            <span className={styles.teaserTitle}>How it works</span>
-            <svg className={styles.teaserArrow} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
-        </div>
-
         {hasReachedFeatures && <HomeAd />}
       </div>
     </section>
