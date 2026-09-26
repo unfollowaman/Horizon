@@ -59,6 +59,32 @@ describe('MaterialCard', () => {
     const viewLink = container?.querySelector('a[aria-label="View Chapter 1: Real Numbers Notes"]');
     expect(viewLink).not.toBeNull();
     expect(viewLink?.getAttribute('href')).toBe('/resource/101');
+    expect(viewLink?.className).toContain('flex-1 min-w-0');
+  });
+
+  it('renders dynamic flex classes for PYQ resource buttons on mobile', () => {
+    const mockPyqResource: Resource = {
+      ...mockResource,
+      id: 'pyq-101',
+      resource_type: 'pyq',
+      title: 'Class 10 Science PYQ 2023',
+    };
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <MaterialCard resource={mockPyqResource} />
+        </MemoryRouter>
+      );
+    });
+
+    const viewLink = container?.querySelector('a[aria-label="View Class 10 Mathematics PYQ"]');
+    expect(viewLink).not.toBeNull();
+    expect(viewLink?.className).toContain('flex-none w-auto md:flex-1 md:min-w-0');
+
+    const downloadButton = container?.querySelector('button[aria-label="Download Class 10 Mathematics PYQ"]');
+    expect(downloadButton).not.toBeNull();
+    expect(downloadButton?.className).toContain('flex-1 min-w-0');
   });
 
   it('skips re-rendering when parent re-renders with unchanged resource prop', () => {
