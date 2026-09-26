@@ -64,21 +64,23 @@ describe('LibraryEducationalGuide', () => {
     root = null;
   });
 
-  it('extracts unique sorted classes, subjects, and year range', async () => {
+  it('renders default PYQ title and concise subtext inside uniform header container', async () => {
     await act(async () => {
       root?.render(<LibraryEducationalGuide allResources={mockPyqResources} />);
     });
 
-    const section = container?.querySelector('section[aria-label="Library Overview and Exam Preparation Guide"]');
-    expect(section).not.toBeNull();
+    const header = container?.querySelector('header[aria-label="Library Overview and Exam Preparation Guide"]');
+    expect(header).not.toBeNull();
+    expect(header?.className).toContain('neu-raised rounded-2xl');
 
-    const text = section?.textContent || '';
-    expect(text).toContain('Classes Covered: Class 9, Class 10');
-    expect(text).toContain('Subjects Available: Mathematics, Science');
-    expect(text).toContain('Examination Years: 2021–2023 past exam papers');
+    const h1 = header?.querySelector('h1');
+    expect(h1?.textContent).toBe('Previous Year Question Papers (PYQs)');
+
+    const p = header?.querySelector('p');
+    expect(p?.textContent).toBe('Access official previous year question papers to practice exam formats, question types, and time management.');
   });
 
-  it('renders filter summary when contextual filters are provided', async () => {
+  it('renders contextual title and shortened subtext when filters are selected', async () => {
     await act(async () => {
       root?.render(
         <LibraryEducationalGuide
@@ -90,18 +92,24 @@ describe('LibraryEducationalGuide', () => {
       );
     });
 
-    const text = container?.textContent || '';
-    expect(text).toContain('Currently displaying previous year question papers filtered for Class 10 • Science • Year 2023.');
+    const header = container?.querySelector('header[aria-label="Library Overview and Exam Preparation Guide"]');
+    expect(header).not.toBeNull();
+
+    const h1 = header?.querySelector('h1');
+    expect(h1?.textContent).toBe('Class 10th Science — PYQ Papers');
+
+    const p = header?.querySelector('p');
+    expect(p?.textContent).toBe('Access previous year question papers for Class 10th Science to practice and prepare effectively for your exams.');
   });
 
-  it('handles empty resource list gracefully', async () => {
+  it('handles empty resource list gracefully without flow pill', async () => {
     await act(async () => {
       root?.render(<LibraryEducationalGuide allResources={[]} />);
     });
 
     const text = container?.textContent || '';
-    expect(text).toContain('Secondary & Higher Secondary grades');
-    expect(text).toContain('Mathematics, Science, Social Sciences');
+    expect(text).toContain('Previous Year Question Papers (PYQs)');
+    expect(container?.querySelector('ol')).toBeNull();
   });
 
   it('demonstrates measurable performance improvement over multi-pass baseline', () => {

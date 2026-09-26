@@ -140,25 +140,15 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
     const metaDescription = document.querySelector('meta[name="description"]');
     expect(metaDescription?.getAttribute('content')).toContain('Access free previous year question papers');
 
-    // Check semantic HTML guide section
-    const guideSection = container?.querySelector('section[aria-label="Library Overview and Exam Preparation Guide"]');
+    // Check semantic HTML header guide section inside container card
+    const guideSection = container?.querySelector('header[aria-label="Library Overview and Exam Preparation Guide"]');
     expect(guideSection).not.toBeNull();
 
-    const h2 = guideSection?.querySelector('h2');
-    expect(h2?.textContent).toBe('Horizon Previous Year Question Papers (PYQs)');
+    const h1 = guideSection?.querySelector('h1');
+    expect(h1?.textContent).toBe('Previous Year Question Papers (PYQs)');
 
-    const paragraphs = guideSection?.querySelectorAll('p');
-    expect(paragraphs && paragraphs.length).toBeGreaterThan(0);
-    expect(guideSection?.textContent).toContain('The Horizon Library provides a structured repository of official previous year question papers');
-
-    // Check dynamic data present in real HTML
-    expect(guideSection?.textContent).toContain('Class 10');
-    expect(guideSection?.textContent).toContain('Geography, Science');
-    expect(guideSection?.textContent).toContain('2022–2023');
-
-    // Check structured list guidelines
-    const lists = guideSection?.querySelectorAll('ul');
-    expect(lists && lists.length).toBe(2);
+    const paragraph = guideSection?.querySelector('p');
+    expect(paragraph?.textContent).toBe('Access official previous year question papers to practice exam formats, question types, and time management.');
 
     // Check JSON-LD CollectionPage structured data
     const jsonLdScript = container?.querySelector('script[type="application/ld+json"]');
@@ -188,14 +178,14 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
     const metaDescription = document.querySelector('meta[name="description"]');
     expect(metaDescription?.getAttribute('content')).toContain('Explore free, subject-wise study notes');
 
-    // Check semantic HTML guide section
-    const guideSection = container?.querySelector('section[aria-label="Study Notes Overview and Learning Guide"]');
+    // Check semantic HTML header guide section
+    const guideSection = container?.querySelector('header[aria-label="Study Notes Overview and Learning Guide"]');
     expect(guideSection).not.toBeNull();
 
-    const h2 = guideSection?.querySelector('h2');
-    expect(h2?.textContent).toBe('Horizon Comprehensive Study Notes');
+    const h1 = guideSection?.querySelector('h1');
+    expect(h1?.textContent).toBe('Comprehensive Study Notes');
 
-    // Check product behavior clarification regarding protected PDF access
-    expect(guideSection?.textContent).toContain('Complete protected document access may require logging into your free Horizon account');
+    const paragraph = guideSection?.querySelector('p');
+    expect(paragraph?.textContent).toBe('Comprehensive chapter-wise revision notes designed to help students quickly grasp key concepts, formulas, and topics.');
   });
 });
