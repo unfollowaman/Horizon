@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import type { SyllabusChapterHierarchy } from '../../../types';
 import SyllabusTopicNode from './SyllabusTopicNode';
 
@@ -13,6 +13,9 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
   subjectName,
   classNameTitle,
 }) => {
+  // Track open/collapsed state for chapters with sub-topics (defaults to all closed initially)
+  const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({});
+
   // Sort chapters predictably by chapter_number or display_order
   const sortedChapters = useMemo(() => {
     if (!chapters) return [];
@@ -22,6 +25,13 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
       return orderA - orderB;
     });
   }, [chapters]);
+
+  const toggleChapter = (id: string) => {
+    setOpenChapters((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   if (!sortedChapters || sortedChapters.length === 0) {
     return (
@@ -91,50 +101,107 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
           const hasTopics = topics.length > 0;
           const isLast = index === sortedChapters.length - 1;
 
+          const isOpen = Boolean(openChapters[chapter.id]);
+
           return (
             <div key={chapter.id} className="relative min-w-0 w-full space-y-4">
               {/* Chapter Milestone Card */}
-              <div className="neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
-                  <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                    {/* Chapter Number Badge */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
-                      {chapter.chapter_number}
+              {hasTopics ? (
+                <button
+                  type="button"
+                  onClick={() => toggleChapter(chapter.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`chapter-topics-${chapter.id}`}
+                  aria-label={`Toggle topics for Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
+                  className="w-full text-left neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 group"
+                >
+                  <div className="flex flex-row items-center justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                      {/* Chapter Number Badge */}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                        {chapter.chapter_number}
+                      </div>
+
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
+                          CHAPTER {chapter.chapter_number}
+                        </span>
+                        <h2 className="text-base sm:text-xl font-bold text-ink leading-snug break-words m-0 group-hover:text-[#E91E8C] transition-colors">
+                          {chapter.chapter_name}
+                        </h2>
+                      </div>
                     </div>
 
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
-                        CHAPTER {chapter.chapter_number}
-                      </span>
-                      <h2 className="text-base sm:text-xl font-bold text-ink leading-snug break-words m-0">
-                        {chapter.chapter_name}
-                      </h2>
+                    {/* Right side: Topic Count Badge + Toggle Arrow Icon */}
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-black/5 text-xs font-bold text-ink/70">
+                        <span>{topics.length} {topics.length === 1 ? 'Topic' : 'Topics'}</span>
+                      </div>
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
+                        <svg
+                          className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Section Count or Quick Info */}
-                  {hasTopics ? (
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/5 text-xs font-bold text-ink/70 shrink-0 self-start sm:self-center">
-                      <span>{topics.length} {topics.length === 1 ? 'Topic' : 'Topics'}</span>
+                  {/* Chapter Summary (Short) */}
+                  {chapter.chapter_summary && (
+                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words">
+                      {chapter.chapter_summary}
+                    </p>
+                  )}
+                </button>
+              ) : (
+                <div className="neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                      {/* Chapter Number Badge */}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-2xl flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                        {chapter.chapter_number}
+                      </div>
+
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
+                          CHAPTER {chapter.chapter_number}
+                        </span>
+                        <h2 className="text-base sm:text-xl font-bold text-ink leading-snug break-words m-0">
+                          {chapter.chapter_name}
+                        </h2>
+                      </div>
                     </div>
-                  ) : (
+
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-500/10 text-xs font-bold text-purple-700 shrink-0 self-start sm:self-center">
                       <span>Chapter Overview</span>
                     </div>
+                  </div>
+
+                  {/* Chapter Summary (Short) */}
+                  {chapter.chapter_summary && (
+                    <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words">
+                      {chapter.chapter_summary}
+                    </p>
                   )}
                 </div>
+              )}
 
-                {/* Chapter Summary (Short) */}
-                {chapter.chapter_summary && (
-                  <p className="text-xs sm:text-sm text-ink/75 leading-relaxed m-0 pt-1 border-t border-ink/5 break-words">
-                    {chapter.chapter_summary}
-                  </p>
-                )}
-              </div>
-
-              {/* Subordinate Topic Branches (Structure B) */}
-              {hasTopics && (
-                <div className="pl-4 sm:pl-10 space-y-3 border-l-2 border-[#E91E8C]/20 ml-5 sm:ml-6 pt-1">
+              {/* Subordinate Topic Branches (Structure B) - Shown when open */}
+              {hasTopics && isOpen && (
+                <div
+                  id={`chapter-topics-${chapter.id}`}
+                  className="pl-4 sm:pl-10 space-y-3 border-l-2 border-[#E91E8C]/20 ml-5 sm:ml-6 pt-1"
+                >
                   {topics.map((topic) => (
                     <SyllabusTopicNode key={topic.id} topic={topic} />
                   ))}
