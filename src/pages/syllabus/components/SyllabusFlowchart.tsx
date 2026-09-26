@@ -102,7 +102,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   onClick={() => toggleChapter(chapter.id)}
                   aria-expanded={isOpen}
                   aria-controls={`chapter-topics-${chapter.id}`}
-                  aria-label={`Toggle topics for Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
+                  aria-label={`${isOpen ? 'Collapse' : 'Expand'} topics for Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
                   className="w-full text-left neu-card rounded-2xl p-4 sm:p-6 border-2 border-[#E91E8C]/30 hover:border-[#E91E8C] transition-all space-y-3 relative z-10 shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 group"
                 >
                   <div className="flex flex-row items-center justify-between gap-3 min-w-0">
