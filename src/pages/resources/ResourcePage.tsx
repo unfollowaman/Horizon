@@ -219,23 +219,26 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       return acc;
     }, new Set<string>(['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12']));
 
-    const sorted = Array.from(classes).sort((a, b) => {
-      const matchA = a.match(/Class (\d+)/i);
-      const matchB = b.match(/Class (\d+)/i);
+    const classItems = Array.from(classes).map(cls => {
+      const match = cls.match(/Class (\d+)/i);
+      return {
+        cls,
+        num: match ? parseInt(match[1], 10) : 0,
+      };
+    });
 
-      const numA = matchA ? parseInt(matchA[1], 10) : 0;
-      const numB = matchB ? parseInt(matchB[1], 10) : 0;
-
-      if (numA && numB) {
-        return numB - numA;
+    classItems.sort((a, b) => {
+      if (a.num && b.num) {
+        return b.num - a.num;
       }
 
-      if (numA) return -1;
-      if (numB) return 1;
+      if (a.num) return -1;
+      if (b.num) return 1;
 
-      return a.localeCompare(b);
+      return a.cls.localeCompare(b.cls);
     });
-    return sorted;
+
+    return classItems.map(item => item.cls);
   }, [allResources]);
 
   const uniqueSubjects = useMemo(() => {
