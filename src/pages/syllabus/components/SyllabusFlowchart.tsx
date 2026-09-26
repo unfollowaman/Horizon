@@ -52,7 +52,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
         </div>
 
         <div className="space-y-1.5 max-w-3xl mx-auto">
-          <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-ink leading-tight">
+          <h1 className="font-serif font-normal text-2xl sm:text-4xl md:text-5xl text-ink leading-tight">
             {classNameTitle} — <span className="text-[#E91E8C]">{subjectName}</span> Roadmap
           </h1>
           <p className="text-xs sm:text-sm md:text-base text-ink/70 leading-relaxed">

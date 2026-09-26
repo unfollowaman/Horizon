@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        serif: ['"Instrument Serif"', 'serif'],
+      },
       colors: {
         'accent-blue': '#0000FF',
         'accent-red': '#FF0000',
