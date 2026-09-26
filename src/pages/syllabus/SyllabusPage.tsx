@@ -293,6 +293,8 @@ export const SyllabusPage: React.FC = () => {
             chapters={chapters}
             subjectName={resolvedSubjectName}
             classNameTitle={currentClass.name}
+            classSlug={classSlug}
+            subjectSlug={subjectSlug}
           />
         </Suspense>
       )}
