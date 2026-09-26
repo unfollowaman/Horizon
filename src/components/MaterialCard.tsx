@@ -184,10 +184,10 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
 // Memoize MaterialCard with React.memo to prevent unnecessary re-renders in grid lists
 // (e.g., ResourcePage, Library, Notes) when parent state updates without changing resource props.
 const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
-  const cardTitle =
-    resource.resource_type === 'pyq'
-      ? `${resource.student_class} ${resource.subject} PYQ`
-      : resource.title;
+  const isPYQ = resource.resource_type === 'pyq';
+  const cardTitle = isPYQ
+    ? `${resource.student_class} ${resource.subject} PYQ`
+    : resource.title;
 
   return (
     <div className="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center">
@@ -215,7 +215,9 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
           to={`/resource/${resource.id}`}
           state={{ fromApp: true }}
           aria-label={`View ${cardTitle}`}
-          className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+          className={`${
+            isPYQ ? 'flex-none w-auto md:flex-1 md:min-w-0' : 'flex-1 min-w-0'
+          } p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
         >
           <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <defs>
