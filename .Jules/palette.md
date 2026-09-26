@@ -21,3 +21,7 @@
 ## 2026-04-02 - Descriptive ARIA Labels for Contextual Inline Navigation Links
 **Learning:** In informational prose and static marketing/about cards, single-word inline navigation links (such as "Library" or "Contact") lack sufficient standalone context when announced out-of-flow by screen reader link lists. Providing explicit `aria-label` attributes (e.g., `aria-label="Visit our online Library to browse study materials"`) ensures screen readers convey full destination context and action purpose.
 **Action:** Always add descriptive `aria-label` attributes to terse or single-word inline links embedded in paragraph text on informational pages.
+
+## 2026-04-03 - WAI-ARIA Modal Drawers & Escape Dismissal in Mobile Overlays
+**Learning:** Slide-out navigation panels and mobile drawer overlays rendered over full-screen interfaces (such as PDF readers) must declare `role="dialog"`, `aria-modal="true"`, and descriptive `aria-label="Mobile navigation menu"` attributes so screen readers isolate modal context. Attaching a global `keydown` listener for `KeyboardEvent.key === 'Escape'` when the modal state is active ensures users can dismiss mobile menus effortlessly using standard keyboard controls.
+**Action:** Always declare `role="dialog"`, `aria-modal="true"`, and `Escape` key event dismissal on mobile slide-out navigation drawers.
