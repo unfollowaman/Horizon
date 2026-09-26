@@ -179,6 +179,9 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     expect(spy).toHaveBeenCalledWith('10', 'Mathematics');
     expect(container?.textContent).toContain('Real Numbers');
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
+    // ProfileButton is rendered on view 3
+    const profileBtn = container?.querySelector('[aria-label="Log in"], [aria-label="Go to Dashboard"]');
+    expect(profileBtn).not.toBeNull();
   });
 
   it('7. Renders chapters and topics in display order and respects topic_type badges', async () => {
@@ -302,8 +305,8 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('View Notes');
     expect(container?.textContent).toContain('English');
 
-    // Only 1 resource link ('a' element) exists on the entire page
-    const resourceLinks = container?.querySelectorAll('a');
+    // Only 1 resource link exists on the entire page
+    const resourceLinks = container?.querySelectorAll('a[href^="/resource/"]');
     expect(resourceLinks?.length).toBe(1);
     expect(resourceLinks?.[0].getAttribute('href')).toBe('/resource/res-101');
   });

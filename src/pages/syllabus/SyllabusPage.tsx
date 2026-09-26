@@ -9,6 +9,7 @@ import {
 } from '../../services/syllabusService';
 import { fetchSyllabusHierarchy, fetchSyllabusChapterCounts } from '../../services/learningResourcesAPI';
 import type { SyllabusChapterHierarchy } from '../../types';
+import ProfileButton from '../../components/ProfileButton';
 import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
 import SyllabusSkeleton from './components/SyllabusSkeleton';
@@ -225,13 +226,13 @@ export const SyllabusPage: React.FC = () => {
   }
 
   return (
-    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 space-y-6">
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0">
       {/* Top Header Controls */}
-      <div className="flex justify-between items-center w-full min-w-0">
+      <div className="flex justify-between items-center w-full min-w-0 mb-[clamp(12px,3vw,20px)]">
         <button
           type="button"
           onClick={handleBackToSubjects}
-          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
           aria-label="Back to Subject List"
         >
           <svg
@@ -251,9 +252,7 @@ export const SyllabusPage: React.FC = () => {
           </svg>
         </button>
 
-        <span className="text-xs sm:text-sm font-bold tracking-widest text-[#E91E8C] uppercase truncate">
-          {currentClass.name} — {resolvedSubjectName}
-        </span>
+        <ProfileButton />
       </div>
 
       {loading && <SyllabusSkeleton />}
