@@ -114,7 +114,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       {/* Hero Section Card Container */}
       <header className="neu-raised rounded-2xl p-2 sm:p-3 text-center space-y-3.5 mb-8 sm:mb-10">
         {/* Primary Heading */}
-        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
+        <h1 className="font-serif font-normal text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
           Choose Your <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">Class</span>
         </h1>
 
