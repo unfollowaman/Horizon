@@ -17,3 +17,7 @@
 ## 2026-04-01 - WAI-ARIA Slider Semantics for Custom Floating Controls
 **Learning:** Custom interactive slider/scrubber elements (like PDF document page scrubbers) built with draggable `<div>` elements must declare `role="slider"`, `tabIndex={0}`, `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and descriptive `aria-valuetext` (e.g. "Page 3 of 10") so screen readers can interpret slider position and value bounds. High-contrast `focus-visible` ring utilities (`focus-visible:ring-2 focus-visible:ring-[#E91E8C]`) ensure keyboard navigation renders clear focus indicators.
 **Action:** Always wrap custom range scrubbers/sliders with full WAI-ARIA `slider` role semantics, `tabIndex={0}`, dynamic `aria-valuetext`, and high-contrast `focus-visible` focus indicators.
+
+## 2026-04-02 - Descriptive ARIA Labels for Contextual Inline Navigation Links
+**Learning:** In informational prose and static marketing/about cards, single-word inline navigation links (such as "Library" or "Contact") lack sufficient standalone context when announced out-of-flow by screen reader link lists. Providing explicit `aria-label` attributes (e.g., `aria-label="Visit our online Library to browse study materials"`) ensures screen readers convey full destination context and action purpose.
+**Action:** Always add descriptive `aria-label` attributes to terse or single-word inline links embedded in paragraph text on informational pages.
