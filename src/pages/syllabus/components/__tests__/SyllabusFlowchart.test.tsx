@@ -131,7 +131,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).not.toContain('Exercise 1.1');
 
     const toggleButton = container?.querySelector(
-      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+      'button[aria-label="Expand topics for Chapter 1: Real Numbers"]'
     ) as HTMLButtonElement | null;
     expect(toggleButton).not.toBeNull();
     expect(toggleButton?.getAttribute('aria-expanded')).toBe('false');
@@ -141,6 +141,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       toggleButton?.click();
     });
 
+    expect(toggleButton?.getAttribute('aria-label')).toBe('Collapse topics for Chapter 1: Real Numbers');
     expect(toggleButton?.getAttribute('aria-expanded')).toBe('true');
     expect(container?.textContent).toContain('Fundamental Theorem of Arithmetic');
     expect(container?.textContent).toContain('Exercise 1.1');
@@ -151,6 +152,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       toggleButton?.click();
     });
 
+    expect(toggleButton?.getAttribute('aria-label')).toBe('Expand topics for Chapter 1: Real Numbers');
     expect(toggleButton?.getAttribute('aria-expanded')).toBe('false');
     expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
   });
@@ -182,7 +184,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     });
 
     const toggleButton = container?.querySelector(
-      'button[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+      'button[aria-label="Expand topics for Chapter 1: Real Numbers"]'
     ) as HTMLButtonElement | null;
 
     await act(async () => {

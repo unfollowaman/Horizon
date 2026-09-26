@@ -180,7 +180,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     expect(container?.textContent).toContain('Real Numbers');
 
     // Click chapter toggle button to reveal sub-topics
-    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    const toggleBtn = container?.querySelector('button[aria-label="Expand topics for Chapter 1: Real Numbers"]');
     await act(async () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -250,7 +250,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
 
     expect(container?.textContent).toContain('Chemical Reactions and Equations');
 
-    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Chemical Reactions and Equations"]');
+    const toggleBtn = container?.querySelector('button[aria-label="Expand topics for Chapter 1: Chemical Reactions and Equations"]');
     await act(async () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -314,7 +314,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
-    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    const toggleBtn = container?.querySelector('button[aria-label="Expand topics for Chapter 1: Real Numbers"]');
     await act(async () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -383,7 +383,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       );
     });
 
-    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 1: Real Numbers"]');
+    const toggleBtn = container?.querySelector('button[aria-label="Expand topics for Chapter 1: Real Numbers"]');
     await act(async () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -430,7 +430,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
 
     expect(container?.textContent).toContain('Circles');
 
-    const toggleBtn = container?.querySelector('button[aria-label="Toggle topics for Chapter 9: Circles"]');
+    const toggleBtn = container?.querySelector('button[aria-label="Expand topics for Chapter 9: Circles"]');
     await act(async () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
