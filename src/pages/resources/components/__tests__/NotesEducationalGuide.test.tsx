@@ -8,8 +8,8 @@ import type { Resource } from '../../../../types';
 
 const mockNotesResources: Resource[] = [
   {
-    id: '1',
-    title: 'Class 10 Physics Notes',
+    id: '3',
+    title: 'Class 10 Physics Motion Notes',
     description: '',
     pdfUrl: '',
     thumbnailUrl: '',
@@ -17,43 +17,19 @@ const mockNotesResources: Resource[] = [
     student_class: 'Class 10',
     subject: 'Physics',
     resource_type: 'notes',
-    file_path: 'notes/phys-10.pdf',
-    chapter_id: 'chap-101',
+    year: undefined,
+    file_path: 'notes/class10-physics-motion.pdf',
+    chapter_id: 'chap-1',
     medium: 'english',
     allow_download: true,
-    storage_bucket: 'learning_resources'
-  },
-  {
-    id: '2',
-    title: 'Class 9 Chemistry Notes',
-    description: '',
-    pdfUrl: '',
-    thumbnailUrl: '',
-    uploadDate: '2023-01-01',
-    student_class: 'Class 9',
-    subject: 'Chemistry',
-    resource_type: 'notes',
-    file_path: 'notes/chem-9.pdf',
-    chapter_id: 'chap-102',
-    medium: 'english',
-    allow_download: true,
-    storage_bucket: 'learning_resources'
-  },
-  {
-    id: '3',
-    title: 'Class 12 Biology Notes',
-    description: '',
-    pdfUrl: '',
-    thumbnailUrl: '',
-    uploadDate: '2023-01-01',
-    student_class: 'Class 12',
-    subject: 'Biology',
-    resource_type: 'notes',
-    file_path: 'notes/bio-12.pdf',
-    chapter_id: 'chap-101',
-    medium: 'hindi',
-    allow_download: true,
-    storage_bucket: 'learning_resources'
+    storage_bucket: 'learning_resources',
+    chapters: {
+      id: 'chap-1',
+      chapter_number: 1,
+      chapter_name: 'Motion in a Straight Line',
+      display_order: 1,
+      is_active: true
+    }
   }
 ];
 
@@ -80,22 +56,23 @@ describe('NotesEducationalGuide', () => {
     root = null;
   });
 
-  it('extracts unique sorted classes, subjects, capitalized mediums, and chapter count', async () => {
+  it('renders default Study Notes title and concise subtext inside uniform header container', async () => {
     await act(async () => {
       root?.render(<NotesEducationalGuide allResources={mockNotesResources} />);
     });
 
-    const section = container?.querySelector('section[aria-label="Study Notes Overview and Learning Guide"]');
-    expect(section).not.toBeNull();
+    const header = container?.querySelector('header[aria-label="Study Notes Overview and Learning Guide"]');
+    expect(header).not.toBeNull();
+    expect(header?.className).toContain('neu-raised rounded-2xl');
 
-    const text = section?.textContent || '';
-    expect(text).toContain('Classes Supported: Class 9, Class 10, Class 12');
-    expect(text).toContain('Subjects Covered: Biology, Chemistry, Physics');
-    expect(text).toContain('Study Mediums: English, Hindi');
-    expect(text).toContain('Syllabus Chapters: Covers over 2 curriculum chapters');
+    const h1 = header?.querySelector('h1');
+    expect(h1?.textContent).toBe('Comprehensive Study Notes');
+
+    const p = header?.querySelector('p');
+    expect(p?.textContent).toBe('Comprehensive chapter-wise revision notes designed to help students quickly grasp key concepts, formulas, and topics.');
   });
 
-  it('renders filter summary when contextual filters are provided', async () => {
+  it('renders contextual title and shortened subtext when filters are selected', async () => {
     await act(async () => {
       root?.render(
         <NotesEducationalGuide
@@ -107,25 +84,30 @@ describe('NotesEducationalGuide', () => {
       );
     });
 
-    const summaryText = container?.textContent || '';
-    expect(summaryText).toContain('Currently displaying study notes filtered for Class 10 • Physics • English Medium.');
+    const header = container?.querySelector('header[aria-label="Study Notes Overview and Learning Guide"]');
+    expect(header).not.toBeNull();
+
+    const h1 = header?.querySelector('h1');
+    expect(h1?.textContent).toBe('Class 10th Physics — Revision Notes');
+
+    const p = header?.querySelector('p');
+    expect(p?.textContent).toBe('Comprehensive chapter-wise revision notes to help Class 10th Physics students quickly master key concepts and formulas.');
   });
 
-  it('handles empty resource list gracefully', async () => {
+  it('handles empty resource list gracefully without flow pill', async () => {
     await act(async () => {
       root?.render(<NotesEducationalGuide allResources={[]} />);
     });
 
     const text = container?.textContent || '';
-    expect(text).toContain('Middle & High School grades');
-    expect(text).toContain('Science, Social Studies, Mathematics');
-    expect(text).toContain('English and Hindi medium');
+    expect(text).toContain('Comprehensive Study Notes');
+    expect(container?.querySelector('ol')).toBeNull();
   });
 
   it('demonstrates measurable performance improvement over multi-pass baseline', () => {
     const largeDataset: Resource[] = Array.from({ length: 10000 }, (_, i) => ({
-      id: `res-${i}`,
-      title: `Resource ${i}`,
+      id: `note-${i}`,
+      title: `Note ${i}`,
       description: '',
       pdfUrl: '',
       thumbnailUrl: '',
@@ -133,8 +115,9 @@ describe('NotesEducationalGuide', () => {
       student_class: `Class ${(i % 12) + 1}`,
       subject: `Subject ${i % 10}`,
       resource_type: 'notes',
+      year: undefined,
       file_path: `notes/file-${i}.pdf`,
-      chapter_id: `chap-${i % 100}`,
+      chapter_id: `chap-${i % 20}`,
       medium: i % 2 === 0 ? 'english' : 'hindi',
       allow_download: true,
       storage_bucket: 'learning_resources'
@@ -154,13 +137,10 @@ describe('NotesEducationalGuide', () => {
       ).sort();
 
       const availableMediums = Array.from(
-        new Set(resources.map(r => r.medium).filter(Boolean) as string[])
-      )
-        .map(m => m.charAt(0).toUpperCase() + m.slice(1))
-        .sort();
+        new Set(resources.map(r => (r.medium ? r.medium.charAt(0).toUpperCase() + r.medium.slice(1) : '')).filter(Boolean) as string[])
+      ).sort();
 
-      const chapterIds = new Set(resources.map(r => r.chapter_id).filter(Boolean));
-      const chapterCount = chapterIds.size;
+      const chapterCount = new Set(resources.map(r => r.chapter_id).filter(Boolean)).size;
 
       return { availableClasses, availableSubjects, availableMediums, chapterCount };
     };
@@ -188,21 +168,16 @@ describe('NotesEducationalGuide', () => {
       const availableSubjects = Array.from(subjectSet).sort();
       const availableMediums = Array.from(mediumSet).sort();
 
-      return {
-        availableClasses,
-        availableSubjects,
-        availableMediums,
-        chapterCount: chapterSet.size
-      };
+      return { availableClasses, availableSubjects, availableMediums, chapterCount: chapterSet.size };
     };
 
-    const baselineResult = multiPassExtraction(largeDataset);
-    const optimizedResult = singlePassExtraction(largeDataset);
+    const baseline = multiPassExtraction(largeDataset);
+    const optimized = singlePassExtraction(largeDataset);
 
-    expect(optimizedResult.availableClasses).toEqual(baselineResult.availableClasses);
-    expect(optimizedResult.availableSubjects).toEqual(baselineResult.availableSubjects);
-    expect(optimizedResult.availableMediums).toEqual(Array.from(new Set(baselineResult.availableMediums)));
-    expect(optimizedResult.chapterCount).toBe(baselineResult.chapterCount);
+    expect(optimized.availableClasses).toEqual(baseline.availableClasses);
+    expect(optimized.availableSubjects).toEqual(baseline.availableSubjects);
+    expect(optimized.availableMediums).toEqual(baseline.availableMediums);
+    expect(optimized.chapterCount).toEqual(baseline.chapterCount);
 
     for (let i = 0; i < 5; i++) {
       multiPassExtraction(largeDataset);
