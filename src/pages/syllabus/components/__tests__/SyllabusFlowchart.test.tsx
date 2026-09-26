@@ -99,7 +99,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     },
   ];
 
-  it('1. renders Subject Identity Hero Banner with step progress indicator and total chapter count', async () => {
+  it('1. renders Subject Identity Hero Banner with step progress indicator', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -108,9 +108,9 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
       );
     });
 
-    expect(container?.textContent).toContain('Class 10 — Mathematics Roadmap');
+    expect(container?.textContent).toContain('Class 10 — Mathematics Syllabus');
     expect(container?.textContent).toContain('Syllabus');
-    expect(container?.textContent).toContain('1 Chapter');
+    expect(container?.textContent).not.toContain('1 Chapter');
   });
 
   it('2. renders Structure B (Chapter + Topics) closed by default and expands/collapses on toggle', async () => {

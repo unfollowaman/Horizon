@@ -44,15 +44,13 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
     );
   }
 
-  const totalChapters = sortedChapters.length;
-
   return (
     <div className="w-full min-w-0 space-y-8 sm:space-y-10">
       {/* Subject Identity Hero Banner Container */}
       <header className="neu-raised rounded-2xl p-2 sm:p-3 text-center space-y-3.5 mb-8 sm:mb-10">
         {/* Primary Heading */}
         <h1 className="font-serif font-normal text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
-          {classNameTitle} — <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">{subjectName}</span> Roadmap
+          {classNameTitle} — <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">{subjectName}</span> Syllabus
         </h1>
 
         {/* Supporting Description */}
@@ -75,14 +73,6 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
               Syllabus
             </li>
           </ol>
-        </div>
-
-        {/* Dynamic Chapter Count Chip */}
-        <div className="flex justify-center items-center w-full min-w-0 pt-0.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-black/5 border border-ink/10 text-xs sm:text-sm font-bold text-ink/80">
-            <span className="w-2 h-2 rounded-full bg-[#E91E8C]"></span>
-            <span>{totalChapters} {totalChapters === 1 ? 'Chapter' : 'Chapters'}</span>
-          </div>
         </div>
       </header>
 
