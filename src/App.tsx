@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Core layout and non-lazy components
@@ -8,25 +8,26 @@ import ScrollToTop from './components/ScrollToTop';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
+import { lazyWithRetry } from './utils/lazyWithRetry';
 
-// Lazy loaded pages & fallback screens
-const Library = lazy(() => import('./pages/resources/LibraryRoute'));
-const ResourceDetails = lazy(() => import('./pages/resources/ResourceDetails'));
-const Dashboard = lazy(() => import('./pages/user/Dashboard'));
-const NotificationSettings = lazy(() => import('./pages/settings/NotificationSettings'));
-const Login = lazy(() => import('./pages/auth/Login'));
-const Register = lazy(() => import('./pages/auth/Register'));
-const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
-const About = lazy(() => import('./pages/about/About'));
-const Contact = lazy(() => import('./pages/contact/Contact'));
-const Terms = lazy(() => import('./pages/terms/Terms'));
-const PrivacyPolicy = lazy(() => import('./pages/privacy/PrivacyPolicy'));
-const Attribution = lazy(() => import('./pages/attribution/Attribution'));
-const PdfViewer = lazy(() => import('./pages/resources/PdfViewer'));
-const StudyNotes = lazy(() => import('./pages/resources/StudyNotesRoute'));
-const SyllabusPage = lazy(() => import('./pages/syllabus/SyllabusPage'));
-const ComingSoon = lazy(() => import('./pages/coming-soon/ComingSoon'));
-const RenderingScreen = lazy(() => import('./components/RenderingScreen/RenderingScreen'));
+// Lazy loaded pages & fallback screens with dynamic import retry mechanism
+const Library = lazyWithRetry(() => import('./pages/resources/LibraryRoute'));
+const ResourceDetails = lazyWithRetry(() => import('./pages/resources/ResourceDetails'));
+const Dashboard = lazyWithRetry(() => import('./pages/user/Dashboard'));
+const NotificationSettings = lazyWithRetry(() => import('./pages/settings/NotificationSettings'));
+const Login = lazyWithRetry(() => import('./pages/auth/Login'));
+const Register = lazyWithRetry(() => import('./pages/auth/Register'));
+const Onboarding = lazyWithRetry(() => import('./pages/onboarding/Onboarding'));
+const About = lazyWithRetry(() => import('./pages/about/About'));
+const Contact = lazyWithRetry(() => import('./pages/contact/Contact'));
+const Terms = lazyWithRetry(() => import('./pages/terms/Terms'));
+const PrivacyPolicy = lazyWithRetry(() => import('./pages/privacy/PrivacyPolicy'));
+const Attribution = lazyWithRetry(() => import('./pages/attribution/Attribution'));
+const PdfViewer = lazyWithRetry(() => import('./pages/resources/PdfViewer'));
+const StudyNotes = lazyWithRetry(() => import('./pages/resources/StudyNotesRoute'));
+const SyllabusPage = lazyWithRetry(() => import('./pages/syllabus/SyllabusPage'));
+const ComingSoon = lazyWithRetry(() => import('./pages/coming-soon/ComingSoon'));
+const RenderingScreen = lazyWithRetry(() => import('./components/RenderingScreen/RenderingScreen'));
 
 function App() {
   return (
