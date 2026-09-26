@@ -71,7 +71,7 @@ const About: React.FC = () => {
             <h3 className={styles.sectionTitle}>An Evolving Online Library</h3>
             <p className={styles.paragraph}>
               Horizon isn't just a static website; it's a growing free learning platform. We are continuously expanding our collection to include more learning materials, detailed student notes, previous year papers, and specialized educational resources. As you progress in your academic journey, you can count on Horizon to grow alongside you, always bringing fresh and relevant content to your fingertips.
-              Check out our <Link to={RESOURCE_CATEGORIES.pyq.path} className={styles.inlineLink}>Library</Link> to see our current offerings.
+              Check out our <Link to={RESOURCE_CATEGORIES.pyq.path} className={styles.inlineLink} aria-label="Visit our online Library to browse study materials">Library</Link> to see our current offerings.
             </p>
           </div>
 
@@ -89,7 +89,7 @@ const About: React.FC = () => {
           <div className={`${styles.card} neu-raised`}>
             <h3 className={styles.sectionTitle}>Transparency & Quality</h3>
             <p className={styles.paragraph}>
-              Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <Link to="/contact" className={styles.inlineLink}>Contact</Link> page or check back regularly for updates.
+              Trust is the foundation of any good educational platform. Our study material is meticulously selected and reviewed to ensure accuracy and relevance. We understand that educational standards and syllabi change, which is why our content is regularly updated to reflect the latest requirements. If you ever spot a mistake or come across outdated material, we strongly encourage you to let us know. You can reach out through our <Link to="/contact" className={styles.inlineLink} aria-label="Go to the Contact page to send feedback or report issues">Contact</Link> page or check back regularly for updates.
             </p>
           </div>
 
