@@ -205,8 +205,12 @@ Header.displayName = 'Header';
 
 import { getAllFeatures } from '../../config/resources';
 
-const preloadLibrary = () => import('../resources/LibraryRoute');
-const preloadStudyNotes = () => import('../resources/StudyNotesRoute');
+const preloadLibrary = () => {
+  import('../resources/LibraryRoute').catch(() => {});
+};
+const preloadStudyNotes = () => {
+  import('../resources/StudyNotesRoute').catch(() => {});
+};
 
 const HeroSection = React.memo(() => (
   <section className={styles.heroSection}>
@@ -281,10 +285,6 @@ const FeaturesSection = React.memo(() => {
               key={i}
               className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}
               onMouseEnter={() => {
-                if (f.path === '/library') preloadLibrary();
-                if (f.path === '/notes') preloadStudyNotes();
-              }}
-              onTouchStart={() => {
                 if (f.path === '/library') preloadLibrary();
                 if (f.path === '/notes') preloadStudyNotes();
               }}
