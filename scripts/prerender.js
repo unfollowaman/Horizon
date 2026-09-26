@@ -892,20 +892,6 @@ export const PUBLIC_STATIC_PAGES = [
                 <p class="text-ink/80">NCERT &amp; CBSE syllabus directory and hierarchy.</p>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-              <a href="/about/#why-horizon" class="neu-raised h-10 px-5 rounded-full flex items-center justify-between no-underline text-ink font-bold hover:text-[#E91E8C] transition-colors" aria-label="Why Horizon">
-                <span>Why Horizon</span>
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
-              <a href="/about/#how-it-works" class="neu-raised h-10 px-5 rounded-full flex items-center justify-between no-underline text-ink font-bold hover:text-[#E91E8C] transition-colors" aria-label="How it works">
-                <span>How it works</span>
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
-            </div>
           </section>
           <section class="py-12 px-4 max-w-xl mx-auto text-center">
             <h2 class="text-2xl font-bold text-ink mb-2">New here?</h2>
