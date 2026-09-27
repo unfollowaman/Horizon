@@ -21,15 +21,12 @@ const Attribution: React.FC = () => {
     <div className={styles.privacyContainer}>
       <header className={`${styles.header} neu-raised`}>
         <h1 className={styles.pageTitle}><span className={styles.textGradient}>Attribution &amp; Sourcing</span></h1>
+        <p className={styles.pageSubtitle}>
+          Horizon is committed to full transparency regarding third-party creative assets and official examination material used across our educational platform.
+        </p>
       </header>
 
       <div className={styles.contentCard}>
-        <div className={`${styles.section} neu-raised`}>
-          <p style={{ color: 'var(--muted-foreground)', fontSize: '1.125rem', lineHeight: '1.7', margin: 0 }}>
-            Horizon is committed to full transparency regarding third-party creative assets and official examination material used across our educational platform.
-          </p>
-        </div>
-
         <section className={`${styles.section} neu-raised`}>
           <h2>Educational Content Sourcing</h2>
           <p>

@@ -1300,13 +1300,11 @@ export const PUBLIC_STATIC_PAGES = [
     },
     contentHtml: wrapInMainLayout(`
       <div class="space-y-6 max-w-4xl mx-auto w-full">
-        <header class="neu-raised p-6 sm:p-8 rounded-2xl">
+        <header class="neu-raised p-6 sm:p-8 rounded-2xl text-center space-y-3">
           <h1 class="text-2xl sm:text-4xl font-bold text-ink mb-2"><span class="text-gradient">Attribution &amp; Sourcing</span></h1>
+          <p class="text-ink/80 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed m-0">Horizon is committed to full transparency regarding third-party creative assets and official examination material used across our educational platform.</p>
         </header>
         <div class="space-y-6">
-          <div class="neu-raised p-6 rounded-2xl">
-            <p class="text-ink/80 text-base leading-relaxed m-0">Horizon is committed to full transparency regarding third-party creative assets and official examination material used across our educational platform.</p>
-          </div>
           <section class="neu-raised p-6 rounded-2xl space-y-4">
             <h2 class="text-xl font-bold text-ink">Educational Content Sourcing</h2>
             <p class="text-ink/90 leading-relaxed">Previous Year Question (PYQ) papers hosted on Horizon are official examination papers originally published by the <strong>Rajasthan Board of Secondary Education (RBSE)</strong> via their official website (<a href="https://rajeduboard.rajasthan.gov.in" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">rajeduboard.rajasthan.gov.in</a>).</p>
