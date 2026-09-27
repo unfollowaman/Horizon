@@ -1415,7 +1415,23 @@ export async function main() {
     process.exit(1);
   }
 
-  const templateHtml = fs.readFileSync(templatePath, 'utf-8');
+  let templateHtml = fs.readFileSync(templatePath, 'utf-8');
+
+  // Inline primary stylesheet to eliminate 1st-party render-blocking CSS
+  const assetsDir = path.join(distDir, 'assets');
+  if (fs.existsSync(assetsDir)) {
+    const cssFiles = fs.readdirSync(assetsDir).filter(f => /^index-.*\.css$/.test(f));
+    if (cssFiles.length > 0) {
+      const primaryCssPath = path.join(assetsDir, cssFiles[0]);
+      const primaryCssContent = fs.readFileSync(primaryCssPath, 'utf-8');
+
+      const cssLinkRegex = /<link\s+rel="stylesheet"\s+[^>]*href="\/assets\/index-[^"]+\.css"[^>]*>/i;
+      if (cssLinkRegex.test(templateHtml)) {
+        templateHtml = templateHtml.replace(cssLinkRegex, () => `<style>${primaryCssContent}</style>`);
+        console.log(`Inlined ${cssFiles[0]} into production HTML template.`);
+      }
+    }
+  }
 
   console.log('Pre-rendering public static information pages...');
   for (const pageConfig of PUBLIC_STATIC_PAGES) {
