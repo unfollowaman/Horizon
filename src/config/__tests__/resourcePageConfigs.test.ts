@@ -34,9 +34,9 @@ describe('resourcePageConfigs Optimization & Correctness', () => {
     const sampleResources: Partial<Resource>[] = [
       { id: '1', medium: 'english' },
       { id: '2', medium: 'hindi' },
-      { id: '3', medium: undefined },
+      { id: '3', medium: undefined as unknown as Resource['medium'] },
       { id: '4', medium: 'english' },
-      { id: '5', medium: '' },
+      { id: '5', medium: '' as unknown as Resource['medium'] },
     ];
 
     const baseline = extractNotesMediumsBaseline(sampleResources as Resource[]);
@@ -49,7 +49,7 @@ describe('resourcePageConfigs Optimization & Correctness', () => {
   it('demonstrates measurable performance improvement over chained map/filter baseline', () => {
     const largeResources: Partial<Resource>[] = [];
     const years = ['2024', '2023', '2022', '2021', '2020', '2019', ''];
-    const mediums = ['english', 'hindi', 'marathi', 'gujarati', ''];
+    const mediums = ['english', 'hindi', 'marathi', 'gujarati', ''] as Resource['medium'][];
 
     for (let i = 0; i < 50000; i++) {
       largeResources.push({
