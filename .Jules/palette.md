@@ -25,3 +25,7 @@
 ## 2026-04-03 - WAI-ARIA Modal Drawers & Escape Dismissal in Mobile Overlays
 **Learning:** Slide-out navigation panels and mobile drawer overlays rendered over full-screen interfaces (such as PDF readers) must declare `role="dialog"`, `aria-modal="true"`, and descriptive `aria-label="Mobile navigation menu"` attributes so screen readers isolate modal context. Attaching a global `keydown` listener for `KeyboardEvent.key === 'Escape'` when the modal state is active ensures users can dismiss mobile menus effortlessly using standard keyboard controls.
 **Action:** Always declare `role="dialog"`, `aria-modal="true"`, and `Escape` key event dismissal on mobile slide-out navigation drawers.
+
+## 2026-04-04 - Dynamic ARIA Label Toggle Actions for Accordion Triggers
+**Learning:** In expandable accordion trees and chapter cards, screen reader users receive clearer action intent when interactive toggle buttons dynamically prefix `aria-label` values with the specific action (e.g. `Expand Chapter 1: Real Numbers` vs `Collapse Chapter 1: Real Numbers`) alongside `aria-expanded={isOpen}`. Pairing action-prefixed ARIA labels with `focus-visible:ring-offset-2` ensures keyboard navigation renders clean, unobstructed focus rings over neumorphic card borders.
+**Action:** Always dynamically indicate the action (`Expand` / `Collapse`) in `aria-label` attributes on accordion trigger controls alongside `aria-expanded`.
