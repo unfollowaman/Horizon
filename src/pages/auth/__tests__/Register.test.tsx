@@ -168,7 +168,9 @@ describe('Register Component', () => {
 
     const submitButton = container?.querySelector('button[type="submit"]') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
+    expect(submitButton.getAttribute('aria-busy')).toBe('true');
     expect(submitButton.textContent).toBe('Registering...');
+    expect(submitButton.querySelector('svg')).not.toBeNull();
 
     await act(async () => {
       resolveRegister({ user: { id: '123' } } as never);
