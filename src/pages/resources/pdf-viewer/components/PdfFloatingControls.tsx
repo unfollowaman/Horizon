@@ -12,6 +12,7 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
   return (
     <>
       <button
+        type="button"
         onClick={onBack}
         className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label="Go Back"
@@ -23,6 +24,7 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
       </button>
 
       <button
+        type="button"
         onClick={toggleMobileMenu}
         className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -57,7 +59,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
   return (
     <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}>
       <div className={styles.menuItemsContainer}>
-        <button onClick={zoomIn} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom In">
+        <button type="button" onClick={zoomIn} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom In">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -65,7 +67,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
         </button>
-        <button onClick={zoomOut} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom Out">
+        <button type="button" onClick={zoomOut} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom Out">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -73,7 +75,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
           </svg>
         </button>
         {toggleRotation && (
-          <button onClick={toggleRotation} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Rotate Screen">
+          <button type="button" onClick={toggleRotation} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Rotate Screen">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 9V4a1 1 0 0 0-1-1h-5" />
               <path d="M21 3l-6 6" />
@@ -84,7 +86,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
             </svg>
           </button>
         )}
-        <button onClick={handleShare} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Share">
+        <button type="button" onClick={handleShare} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Share">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
             <circle cx="6" cy="12" r="3"></circle>
@@ -95,6 +97,7 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
         </button>
       </div>
       <button
+        type="button"
         onClick={toggleThreeDotsMenu}
         className={`${styles.toggleBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
         aria-label="More options"
