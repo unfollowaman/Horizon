@@ -85,7 +85,7 @@ describe('ClassSubjectSelector Component Tests', () => {
     expect(activeStep?.className).toContain('text-[#E91E8C]');
   });
 
-  it('2. Renders subject cards with subject names, descriptions, and CTA View buttons', async () => {
+  it('2. Renders subject cards with subject names, descriptions, and circular arrow CTA', async () => {
     const handleSelectSubject = vi.fn();
     const handleBack = vi.fn();
 
@@ -104,10 +104,8 @@ describe('ClassSubjectSelector Component Tests', () => {
 
     const mathCard = container?.querySelector('[aria-label="View syllabus for Class 8 Mathematics"]');
     expect(mathCard).not.toBeNull();
-    expect(mathCard?.textContent).not.toContain('Class 8');
     expect(mathCard?.textContent).toContain('Mathematics');
     expect(mathCard?.textContent).toContain('Explore math concepts.');
-    expect(mathCard?.textContent).toContain('View');
 
     const scienceCard = container?.querySelector('[aria-label="View syllabus for Class 8 Science"]');
     expect(scienceCard).not.toBeNull();
