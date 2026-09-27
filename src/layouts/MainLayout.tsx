@@ -6,7 +6,7 @@ import RouteErrorFallback from '../components/RouteErrorFallback';
 import { useDelayedLoading } from '../hooks/useDelayedLoading';
 
 const DelayedPageLoader: React.FC = () => {
-  const showLoading = useDelayedLoading(true, 250);
+  const showLoading = useDelayedLoading(true, 400);
   if (!showLoading) return null;
   return <PageLoader />;
 };
