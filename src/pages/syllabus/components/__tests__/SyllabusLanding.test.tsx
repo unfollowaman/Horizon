@@ -54,7 +54,7 @@ describe('SyllabusLanding', () => {
     expect(stepIndicator?.textContent).not.toContain('03');
   });
 
-  it('renders class cards in grid format with SVG placeholders, class titles, descriptions, and View CTA', () => {
+  it('renders horizontal class cards with SVG illustrations, class titles, descriptions, and circular arrow CTA', () => {
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -69,7 +69,9 @@ describe('SyllabusLanding', () => {
     expect(container?.textContent).toContain('Class 8th');
     expect(container?.textContent).toContain('Class 9th');
     expect(container?.textContent).toContain('Class 10th');
-    expect(container?.textContent).toContain('View');
+
+    // Confirm descriptions from SUPPORTED_CLASSES are rendered
+    expect(container?.textContent).toContain('NCERT & CBSE syllabus breakdown for Class 8 subjects.');
 
     // Confirm circular class number badges and subject/chapter counts are NOT rendered on front-end cards
     expect(container?.textContent).not.toContain('08');
@@ -89,7 +91,7 @@ describe('SyllabusLanding', () => {
       );
     });
 
-    const class8Card = container?.querySelector('[aria-label="Select Class 8th"]');
+    const class8Card = container?.querySelector('[aria-label="View Class 8th syllabus"]');
     expect(class8Card).not.toBeNull();
 
     act(() => {
