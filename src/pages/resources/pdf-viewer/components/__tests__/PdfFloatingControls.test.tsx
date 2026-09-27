@@ -36,7 +36,7 @@ describe('PdfFloatingControls', () => {
       toggleMobileMenu: vi.fn(),
     };
 
-    it('renders top back and mobile menu buttons with ARIA labels and focus-visible styling', () => {
+    it('renders top back and mobile menu buttons with explicit type="button", ARIA labels, and focus-visible styling', () => {
       act(() => {
         root?.render(<PdfTopControls {...defaultTopProps} />);
       });
@@ -46,6 +46,9 @@ describe('PdfFloatingControls', () => {
 
       expect(backBtn).not.toBeNull();
       expect(menuBtn).not.toBeNull();
+
+      expect(backBtn?.getAttribute('type')).toBe('button');
+      expect(menuBtn?.getAttribute('type')).toBe('button');
 
       expect(backBtn?.className).toContain('focus-visible:ring-2');
       expect(backBtn?.className).toContain('focus-visible:ring-ink/20');
@@ -74,7 +77,7 @@ describe('PdfFloatingControls', () => {
       handleShare: vi.fn(),
     };
 
-    it('renders bottom control buttons with ARIA attributes and focus-visible styling', () => {
+    it('renders bottom control buttons with explicit type="button", ARIA attributes, and focus-visible styling', () => {
       act(() => {
         root?.render(<PdfBottomControls {...defaultBottomProps} />);
       });
@@ -90,6 +93,12 @@ describe('PdfFloatingControls', () => {
       expect(rotateBtn).not.toBeNull();
       expect(shareBtn).not.toBeNull();
       expect(toggleBtn).not.toBeNull();
+
+      expect(zoomInBtn?.getAttribute('type')).toBe('button');
+      expect(zoomOutBtn?.getAttribute('type')).toBe('button');
+      expect(rotateBtn?.getAttribute('type')).toBe('button');
+      expect(shareBtn?.getAttribute('type')).toBe('button');
+      expect(toggleBtn?.getAttribute('type')).toBe('button');
 
       expect(zoomInBtn?.className).toContain('focus-visible:ring-2');
       expect(zoomOutBtn?.className).toContain('focus-visible:ring-2');

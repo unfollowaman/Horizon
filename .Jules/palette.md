@@ -25,3 +25,7 @@
 ## 2026-04-03 - WAI-ARIA Modal Drawers & Escape Dismissal in Mobile Overlays
 **Learning:** Slide-out navigation panels and mobile drawer overlays rendered over full-screen interfaces (such as PDF readers) must declare `role="dialog"`, `aria-modal="true"`, and descriptive `aria-label="Mobile navigation menu"` attributes so screen readers isolate modal context. Attaching a global `keydown` listener for `KeyboardEvent.key === 'Escape'` when the modal state is active ensures users can dismiss mobile menus effortlessly using standard keyboard controls.
 **Action:** Always declare `role="dialog"`, `aria-modal="true"`, and `Escape` key event dismissal on mobile slide-out navigation drawers.
+
+## 2026-04-03 - Explicit type="button" on Custom Floating Reader Controls
+**Learning:** Icon-only interactive buttons in overlay toolbars or floating control bars (such as PDF viewer controls) must always include `type="button"`. Without explicit `type="button"`, default HTML button behavior defaults to `type="submit"`, which can cause unexpected form submissions or page reloads when embedded inside form containers or multi-step reader workflows.
+**Action:** Always specify explicit `type="button"` on all non-submitting action buttons in floating toolbars, modal drawers, and popovers.
