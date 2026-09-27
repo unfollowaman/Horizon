@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   SUPPORTED_CLASSES,
@@ -13,8 +13,9 @@ import ProfileButton from '../../components/ProfileButton';
 import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
 import SyllabusSkeleton from './components/SyllabusSkeleton';
+import { lazyWithRetry } from '../../utils/lazyWithRetry';
 
-const SyllabusFlowchart = lazy(() => import('./components/SyllabusFlowchart'));
+const SyllabusFlowchart = lazyWithRetry(() => import('./components/SyllabusFlowchart'));
 
 export const SyllabusPage: React.FC = () => {
   const { classSlug, subjectSlug } = useParams<{ classSlug?: string; subjectSlug?: string }>();
