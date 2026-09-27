@@ -9,9 +9,9 @@ interface ClassSubjectSelectorProps {
   onBackToClasses: () => void;
 }
 
-// Subject Card Illustrations for Top Placeholder Section
+// Subject Card Illustrations for Compact Icon Containers
 const MathIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="16" y="14" width="48" height="52" rx="6" fill="#1A1A2E" opacity="0.08" />
       <rect x="18" y="12" width="44" height="52" rx="6" fill="#FFFFFF" />
@@ -25,7 +25,7 @@ const MathIllustration: React.FC = () => (
 );
 
 const ScienceIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M34 18H46V30L56 52C58 56 55 62 50 62H30C25 62 22 56 24 52L34 30V18Z" fill="#1A1A2E" opacity="0.08" />
       <path d="M36 16H44V28L54 50C56 54 53 60 48 60H32C27 60 24 54 26 50L36 28V16Z" fill="#FFFFFF" stroke="#1A1A2E" strokeWidth="2" strokeLinejoin="round" opacity="0.9" />
@@ -38,7 +38,7 @@ const ScienceIllustration: React.FC = () => (
 );
 
 const SocialScienceIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="40" cy="38" r="22" fill="#1A1A2E" opacity="0.08" />
       <circle cx="40" cy="36" r="20" fill="#FFFFFF" stroke="#E91E8C" strokeWidth="2" />
@@ -51,7 +51,7 @@ const SocialScienceIllustration: React.FC = () => (
 );
 
 const LanguageIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="18" y="16" width="44" height="48" rx="4" fill="#1A1A2E" opacity="0.08" />
       <rect x="20" y="14" width="40" height="48" rx="4" fill="#FFFFFF" stroke="#1A1A2E" strokeWidth="1.5" />
@@ -71,7 +71,8 @@ const getSubjectIllustration = (slug: string, name: string) => {
   return (
     <img
       src="/assets/SVG Illustrations/study-notes.svg"
-      alt={`${name} Illustration`}
+      alt=""
+      aria-hidden="true"
       className="w-full h-full object-contain"
     />
   );
@@ -143,8 +144,8 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
         </div>
       </header>
 
-      {/* Subject Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-[18px] mb-8 sm:mb-10">
+      {/* Single-Column Horizontal Subject Cards Stack */}
+      <div className="flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10">
         {subjects.map((subj) => (
           <div
             key={subj.slug}
@@ -158,44 +159,39 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
             tabIndex={0}
             role="button"
             aria-label={`View syllabus for ${currentClass.name} ${subj.name}`}
-            className="neu-raised p-3.5 sm:p-[14px] rounded-2xl flex flex-col justify-between items-center text-center h-full cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+            className="neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0"
           >
-            {/* Top Placeholder Section */}
-            <div className="w-full h-24 sm:h-32 neu-recessed rounded-xl flex items-center justify-center p-2 sm:p-3 overflow-hidden shrink-0 mb-3 sm:mb-[12px]">
+            {/* LEFT: Compact Icon Container */}
+            <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-xl flex items-center justify-center p-2 shrink-0 overflow-hidden">
               {getSubjectIllustration(subj.slug, subj.name)}
             </div>
 
-            {/* Middle Section: Subject Title & Description */}
-            <div className="flex flex-col items-center text-center w-full space-y-1 sm:space-y-[3px]">
-              <h2 className="text-base sm:text-xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 line-clamp-1 w-full text-center">
+            {/* CENTER: Subject Title & Left-Aligned Description */}
+            <div className="flex-1 min-w-0 space-y-1 text-left">
+              <h2 className="text-base sm:text-lg font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 truncate">
                 {subj.name}
               </h2>
-              <p className="text-xs sm:text-sm text-ink/70 leading-snug m-0 line-clamp-2 w-full text-center">
+              <p className="text-xs sm:text-sm text-ink/70 leading-snug sm:leading-relaxed m-0">
                 {subj.description || 'Explore chapter hierarchy, subtopics, and practice exercises.'}
               </p>
             </div>
 
-            {/* Bottom Section: View CTA Button */}
-            <div className="pt-3.5 sm:pt-4 w-full mt-auto">
-              <div className="w-full py-1.5 sm:py-2 px-3 flex items-center justify-center text-xs sm:text-sm gap-1.5 font-bold neu-raised-sm rounded-lg group-hover:neu-raised-sm-hover text-ink text-center transition-all">
-                <svg
-                  aria-hidden="true"
-                  className="shrink-0 text-[#E91E8C]"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                  <path d="M22 3h-6a4 4 0 0 1 3-3h7z"></path>
-                </svg>
-                <span>View</span>
-              </div>
+            {/* RIGHT: Circular Neumorphic Arrow Action Button */}
+            <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
+              <svg
+                aria-hidden="true"
+                className="w-4 h-4 text-[#E91E8C] shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
             </div>
           </div>
         ))}
