@@ -29,7 +29,7 @@ describe('Attribution Page', () => {
     root = null;
   });
 
-  it('renders Attribution & Sourcing heading and sections', () => {
+  it('renders Attribution & Sourcing heading and subtitle together inside header card', () => {
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -38,8 +38,14 @@ describe('Attribution Page', () => {
       );
     });
 
-    const h1 = container?.querySelector('h1');
+    const header = container?.querySelector('header');
+    expect(header).not.toBeNull();
+
+    const h1 = header?.querySelector('h1');
     expect(h1?.textContent).toContain('Attribution & Sourcing');
+
+    const subtitle = header?.querySelector('p');
+    expect(subtitle?.textContent).toContain('Horizon is committed to full transparency regarding third-party creative assets');
 
     const h2s = container?.querySelectorAll('h2');
     expect(h2s?.[0].textContent).toContain('Educational Content Sourcing');
