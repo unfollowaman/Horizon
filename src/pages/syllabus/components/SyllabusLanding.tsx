@@ -12,7 +12,7 @@ interface SyllabusLandingProps {
 
 // Compact SVG Illustration Placeholders for Class Cards
 const BookStackIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Book Stack */}
       <rect x="14" y="52" width="52" height="10" rx="2" fill="#1A1A2E" opacity="0.15" />
@@ -30,7 +30,7 @@ const BookStackIllustration: React.FC = () => (
 );
 
 const ChecklistIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="18" y="14" width="44" height="52" rx="5" fill="#1A1A2E" opacity="0.08" />
       <rect x="20" y="12" width="40" height="52" rx="5" fill="#FFFFFF" className="neu-card" />
@@ -51,7 +51,7 @@ const ChecklistIllustration: React.FC = () => (
 );
 
 const GradCapIllustration: React.FC = () => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
+  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
     <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M26 42C26 42 28 52 40 52C52 52 54 42 54 42V48C54 52 48 55 40 55C32 55 26 52 26 48V42Z" fill="#1A1A2E" opacity="0.85" />
       <polygon points="40,20 68,31 40,42 12,31" fill="#E91E8C" />
@@ -141,8 +141,8 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         </div>
       </header>
 
-      {/* Class Cards Grid (2-column on mobile, 3-column on desktop matching PYQ/Notes grid format) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-[18px] mb-8 sm:mb-10">
+      {/* Single-Column Horizontal Class Cards Stack */}
+      <div className="flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10">
         {classes.map((cls) => {
           const classNameFormatted = cls.name.endsWith('th') ? cls.name : `${cls.name}th`;
 
@@ -158,47 +158,40 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
               }}
               tabIndex={0}
               role="button"
-              aria-label={`Select ${classNameFormatted}`}
-              className="neu-raised p-3.5 sm:p-[14px] rounded-2xl flex flex-col justify-between h-full cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+              aria-label={`View ${classNameFormatted} syllabus`}
+              className="neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0"
             >
-              <div className="flex flex-col items-center text-center w-full">
-                {/* Top Section: SVG Illustration Placeholder Container */}
-                <div className="w-full h-24 sm:h-32 neu-recessed rounded-xl flex items-center justify-center p-2 sm:p-3 overflow-hidden shrink-0 mb-3 sm:mb-[12px]">
-                  {getCardIllustration(cls.id)}
-                </div>
-
-                {/* Middle Section: Class Title & Description */}
-                <div className="space-y-1 sm:space-y-[3px] text-center px-1 w-full">
-                  <h2 className="text-base sm:text-xl font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 line-clamp-1">
-                    {classNameFormatted}
-                  </h2>
-                  <p className="text-xs sm:text-sm text-ink/70 leading-snug m-0 line-clamp-2">
-                    {cls.description}
-                  </p>
-                </div>
+              {/* LEFT: Compact Icon Container */}
+              <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-xl flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                {getCardIllustration(cls.id)}
               </div>
 
-              {/* Bottom Section: View Button CTA */}
-              <div className="pt-3.5 sm:pt-4 w-full mt-auto">
-                <div className="w-full py-1.5 sm:py-2 px-3 flex items-center justify-center text-xs sm:text-sm gap-1.5 font-bold neu-raised-sm rounded-lg group-hover:neu-raised-sm-hover text-ink text-center transition-all">
-                  <svg
-                    aria-hidden="true"
-                    className="shrink-0 text-[#E91E8C]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                  </svg>
-                  <span>View</span>
-                </div>
+              {/* CENTER: Title & Left-Aligned Description */}
+              <div className="flex-1 min-w-0 space-y-1 text-left">
+                <h2 className="text-base sm:text-lg font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 truncate">
+                  {classNameFormatted}
+                </h2>
+                <p className="text-xs sm:text-sm text-ink/70 leading-snug sm:leading-relaxed m-0">
+                  {cls.description}
+                </p>
+              </div>
+
+              {/* RIGHT: Circular Neumorphic Arrow Action Button */}
+              <div className="w-10 h-10 sm:w-11 sm:h-11 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
+                <svg
+                  aria-hidden="true"
+                  className="w-5 h-5 text-[#E91E8C] shrink-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
               </div>
             </div>
           );
