@@ -11,7 +11,7 @@ const mockClass: ClassOption = {
   id: '8',
   name: 'Class 8',
   slug: 'class-8',
-  description: 'NCERT & CBSE syllabus breakdown for Class 8 subjects.',
+  description: 'NCERT & CBSE syllabus with chapter-wise learning resources.',
 };
 
 const mockSubjects: SubjectOption[] = [
