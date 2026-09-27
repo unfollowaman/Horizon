@@ -20,19 +20,19 @@ export const SUPPORTED_CLASSES: ClassOption[] = [
     id: '8',
     name: 'Class 8',
     slug: 'class-8',
-    description: 'NCERT & CBSE syllabus breakdown for Class 8 subjects.',
+    description: 'NCERT & CBSE syllabus with chapter-wise learning resources.',
   },
   {
     id: '9',
     name: 'Class 9',
     slug: 'class-9',
-    description: 'NCERT & NCF-SE 2026-27 framework including Kaveri, Ganga & Shardā readers.',
+    description: 'NCERT & CBSE 2026–27 syllabus with structured resources.',
   },
   {
     id: '10',
     name: 'Class 10',
     slug: 'class-10',
-    description: 'Complete board examination syllabus for Class 10 subjects including Hindi Course A & B.',
+    description: 'Complete board-exam syllabus with chapter-wise learning resources.',
   },
 ];
 

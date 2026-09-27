@@ -71,7 +71,7 @@ describe('SyllabusLanding', () => {
     expect(container?.textContent).toContain('Class 10th');
 
     // Confirm descriptions from SUPPORTED_CLASSES are rendered
-    expect(container?.textContent).toContain('NCERT & CBSE syllabus breakdown for Class 8 subjects.');
+    expect(container?.textContent).toContain('NCERT & CBSE syllabus with chapter-wise learning resources.');
 
     // Confirm circular class number badges and subject/chapter counts are NOT rendered on front-end cards
     expect(container?.textContent).not.toContain('08');
