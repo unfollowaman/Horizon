@@ -165,7 +165,7 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
             className="neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0"
           >
             {/* LEFT: Compact Icon Container */}
-            <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-2 shrink-0 overflow-hidden">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-1 sm:p-1.5 shrink-0 overflow-hidden">
               {getSubjectIllustration(subj.slug, subj.name)}
             </div>
 
