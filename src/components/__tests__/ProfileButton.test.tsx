@@ -57,8 +57,10 @@ describe('ProfileButton Component', () => {
     const link = container?.querySelector('a');
     expect(link).not.toBeNull();
     expect(link?.getAttribute('aria-label')).toBe('Log in');
+    expect(link?.getAttribute('title')).toBe('Log in');
     expect(link?.getAttribute('href')).toBe('/login');
     expect(link?.className).toContain('focus-visible:ring-2');
+    expect(link?.className).toContain('focus-visible:ring-[#E91E8C]');
     const svg = link?.querySelector('svg');
     expect(svg?.getAttribute('aria-hidden')).toBe('true');
   });
@@ -84,6 +86,7 @@ describe('ProfileButton Component', () => {
     const link = container?.querySelector('a');
     expect(link).not.toBeNull();
     expect(link?.getAttribute('aria-label')).toBe("Aman Sharma's Profile");
+    expect(link?.getAttribute('title')).toBe("Aman Sharma's Profile");
     expect(link?.getAttribute('href')).toBe('/dashboard');
     expect(link?.textContent).toBe('AM');
   });
@@ -109,6 +112,7 @@ describe('ProfileButton Component', () => {
     const link = container?.querySelector('a');
     expect(link).not.toBeNull();
     expect(link?.getAttribute('aria-label')).toBe('Go to Dashboard');
+    expect(link?.getAttribute('title')).toBe('Go to Dashboard');
     expect(link?.getAttribute('href')).toBe('/dashboard');
     expect(link?.textContent).toBe('U');
   });

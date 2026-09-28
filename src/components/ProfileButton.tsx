@@ -33,9 +33,10 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({ onClick, className }) => 
   return (
     <Link
       to={user ? "/dashboard" : "/login"}
-      className={className || "w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer no-underline overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"}
+      className={className || "w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer no-underline overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"}
       onClick={onClick}
       aria-label={ariaLabel}
+      title={ariaLabel}
     >
       {content}
     </Link>
