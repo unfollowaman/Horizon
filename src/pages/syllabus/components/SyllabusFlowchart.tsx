@@ -191,42 +191,42 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
               )}
 
               {/* Chapter Action Buttons Row */}
-              <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-2.5 border-t border-ink/10 mt-auto min-w-0">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-2.5 border-t border-ink/10 mt-auto min-w-0 w-full">
                 <Link
                   to={notesPath}
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`View notes for Chapter ${chapter.chapter_number}`}
-                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-0.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] min-w-0"
+                  className="neu-raised-sm neu-raised-sm-hover rounded-full py-1.5 sm:py-2 px-3.5 sm:px-4 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] shrink-0"
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
-                  <span className="truncate">Notes</span>
+                  <span className="whitespace-nowrap">Notes</span>
                 </Link>
 
                 <Link
                   to={pyqPath}
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`View PYQs for Chapter ${chapter.chapter_number}`}
-                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-0.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] min-w-0"
+                  className="neu-raised-sm neu-raised-sm-hover rounded-full py-1.5 sm:py-2 px-3.5 sm:px-4 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] shrink-0"
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <span className="truncate">PYQs</span>
+                  <span className="whitespace-nowrap">PYQs</span>
                 </Link>
 
                 <Link
                   to={notesPath}
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`View important questions for Chapter ${chapter.chapter_number}`}
-                  className="neu-raised-sm neu-raised-hover rounded-xl py-2 px-0.5 sm:px-2 flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] min-w-0"
+                  className="neu-raised-sm neu-raised-sm-hover rounded-full py-1.5 sm:py-2 px-3.5 sm:px-4 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-bold text-ink hover:text-[#E91E8C] transition-all no-underline text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] shrink-0"
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="9" strokeWidth={2} />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m0 4h.01" />
                   </svg>
-                  <span className="truncate tracking-tight">imp.questions</span>
+                  <span className="whitespace-nowrap">imp.questions</span>
                 </Link>
               </div>
 

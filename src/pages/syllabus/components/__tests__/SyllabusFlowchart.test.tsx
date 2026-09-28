@@ -186,6 +186,15 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(notesLink?.getAttribute('href')).toBe('/notes/class-10/english');
     expect(pyqLink?.getAttribute('href')).toBe('/library/class-10/english');
+
+    // Verify pill shape styling and font sizing
+    expect(notesLink?.className).toContain('rounded-full');
+    expect(notesLink?.className).toContain('text-xs');
+    expect(pyqLink?.className).toContain('rounded-full');
+    expect(pyqLink?.className).toContain('text-xs');
+    expect(impLink?.className).toContain('rounded-full');
+    expect(impLink?.className).toContain('text-xs');
+
     expect(container?.textContent).toContain('Notes');
     expect(container?.textContent).toContain('PYQs');
     expect(container?.textContent).toContain('imp.questions');
