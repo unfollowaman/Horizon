@@ -7,23 +7,6 @@ interface SyllabusTopicNodeProps {
 }
 
 export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) => {
-  const isGrammar = topic.topic_type === 'grammar';
-  const isExercise = topic.topic_type === 'exercise';
-
-  const typeBadgeClass = isGrammar
-    ? 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300'
-    : isExercise
-    ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300'
-    : 'bg-black/5 text-ink/80 border-black/10';
-
-  const typeLabel = isGrammar
-    ? 'Grammar'
-    : isExercise
-    ? 'Exercise'
-    : topic.topic_type
-    ? topic.topic_type.charAt(0).toUpperCase() + topic.topic_type.slice(1)
-    : 'Topic';
-
   // Extract resources if available
   const resources: Resource[] = topic.resources || [];
 
@@ -47,18 +30,9 @@ export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) =
         </div>
 
         <div className="space-y-0.5 min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap min-w-0">
-            {topic.topic_type && (
-              <span
-                className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0 ${typeBadgeClass}`}
-              >
-                {typeLabel}
-              </span>
-            )}
-            <h4 className="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1 leading-snug">
-              {topic.title}
-            </h4>
-          </div>
+          <h4 className="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1 leading-snug">
+            {topic.title}
+          </h4>
           {topic.description && (
             <p className="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 pt-0.5 break-words">
               {topic.description}

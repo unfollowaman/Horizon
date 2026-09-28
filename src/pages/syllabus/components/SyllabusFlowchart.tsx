@@ -234,7 +234,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
               {hasTopics && isOpen && (
                 <div
                   id={`chapter-topics-${chapter.id}`}
-                  className="space-y-2.5 mt-3 pt-2 border-t border-ink/5"
+                  className="space-y-3 sm:space-y-4 mt-3 pt-2 border-t border-ink/5"
                 >
                   {topics.map((topic) => (
                     <SyllabusTopicNode key={topic.id} topic={topic} />

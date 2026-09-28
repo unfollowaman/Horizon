@@ -191,7 +191,7 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
     expect(profileBtn).not.toBeNull();
   });
 
-  it('7. Renders chapters and topics in display order and respects topic_type badges', async () => {
+  it('7. Renders chapters and topics in display order', async () => {
     vi.spyOn(learningAPI, 'fetchSyllabusHierarchy').mockResolvedValue({
       data: [
         {
@@ -255,9 +255,9 @@ describe('S6 Syllabus Flowchart UI & Routing Integration Tests', () => {
       toggleBtn?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container?.textContent).toContain('Topic');
-    expect(container?.textContent).toContain('Exercise');
-    expect(container?.textContent).toContain('Grammar');
+    expect(container?.textContent).toContain('Chemical Equations');
+    expect(container?.textContent).toContain('Exercise 1.1');
+    expect(container?.textContent).toContain('Subject-Verb Agreement');
   });
 
   it('8. Resource links appear ONLY when actual topic-resource mappings exist without creating fake links', async () => {
