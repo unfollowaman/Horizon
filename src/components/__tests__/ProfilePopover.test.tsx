@@ -79,9 +79,10 @@ describe('ProfilePopover Component', () => {
     expect(triggerBtn).not.toBeNull();
     expect(triggerBtn?.getAttribute('type')).toBe('button');
     expect(triggerBtn?.getAttribute('aria-label')).toBe("Aman Sharma's profile menu");
+    expect(triggerBtn?.getAttribute('title')).toBe("Aman Sharma's profile menu");
     expect(triggerBtn?.getAttribute('aria-haspopup')).toBe('true');
     expect(triggerBtn?.getAttribute('aria-expanded')).toBe('false');
-    expect(triggerBtn?.className).toContain('focus-visible:ring-2');
+    expect(triggerBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
   it('toggles popover menu open and renders accessible controls with focus rings and ARIA labels', () => {
@@ -111,6 +112,10 @@ describe('ProfilePopover Component', () => {
     });
 
     expect(triggerBtn.getAttribute('aria-expanded')).toBe('true');
+
+    const menuContainer = container?.querySelector('div[role="dialog"]');
+    expect(menuContainer).not.toBeNull();
+    expect(menuContainer?.getAttribute('aria-label')).toBe('User account options');
 
     const viewProfileLink = container?.querySelector('a[href="/dashboard"]');
     expect(viewProfileLink).not.toBeNull();

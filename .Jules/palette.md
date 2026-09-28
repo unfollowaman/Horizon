@@ -33,3 +33,7 @@
 ## 2026-04-05 - High-Contrast Focus Rings & Native Hover Tooltips on Header Icon Links
 **Learning:** Icon-only navigation links in top headers (such as `ProfileButton`) benefit significantly from pairing dynamic `aria-label` values with matching `title={ariaLabel}` attributes to provide instant fallback hover tooltips for mouse users. Upgrading low-contrast default focus ring styles (`focus-visible:ring-ink/20`) to high-contrast brand accent utilities (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) guarantees clear keyboard navigation focus visibility against soft neumorphic card backgrounds and elevated header borders.
 **Action:** Always pair `aria-label` with `title` on icon-only navigation links, and use brand accent `focus-visible:ring-[#E91E8C]` focus indicators.
+
+## 2026-04-06 - Accessible Popover Overlays & High-Contrast Focus Rings
+**Learning:** Profile popover menus and user account dropdowns rendered over headers must declare `role="dialog"` and `aria-label="User account options"` so screen readers convey overlay context. Pairing dynamic `aria-label` with matching `title` attributes on avatar buttons provides native hover tooltips for mouse users, while `focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2` guarantees visible keyboard focus over neumorphic card backgrounds.
+**Action:** Always declare `role="dialog"` and `aria-label` on popover overlays, and use brand pink focus ring utilities with `focus-visible:ring-offset-2` on avatar triggers.
