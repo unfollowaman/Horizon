@@ -155,7 +155,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
   });
 
-  it('3. renders action buttons (Notes, PYQs, imp.questions) on chapter tiles', async () => {
+  it('3. renders action buttons (Notes, PYQs, Top Qs) on chapter tiles', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -197,7 +197,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     expect(container?.textContent).toContain('Notes');
     expect(container?.textContent).toContain('PYQs');
-    expect(container?.textContent).toContain('imp.questions');
+    expect(container?.textContent).toContain('Top Qs');
   });
 
   it('4. renders resource action links with aria-labels and focus-visible styling when expanded', async () => {

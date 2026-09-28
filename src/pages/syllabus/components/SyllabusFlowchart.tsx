@@ -226,7 +226,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                     <circle cx="12" cy="12" r="9" strokeWidth={2} />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m0 4h.01" />
                   </svg>
-                  <span className="whitespace-nowrap">imp.questions</span>
+                  <span className="whitespace-nowrap">Top Qs</span>
                 </Link>
               </div>
 
