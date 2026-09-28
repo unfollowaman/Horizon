@@ -81,6 +81,28 @@ describe('SyllabusLanding', () => {
     expect(container?.textContent).not.toContain('Chapters');
   });
 
+  it('renders exact SVG illustration assets for Class 8, Class 9, and Class 10 with accessible alt text', () => {
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />
+        </MemoryRouter>
+      );
+    });
+
+    const class8Img = container?.querySelector('img[alt="Class 8 illustration"]') as HTMLImageElement | null;
+    expect(class8Img).not.toBeNull();
+    expect(class8Img?.src).toContain('/assets/SVG%20Illustrations/class-8.svg');
+
+    const class9Img = container?.querySelector('img[alt="Class 9 illustration"]') as HTMLImageElement | null;
+    expect(class9Img).not.toBeNull();
+    expect(class9Img?.src).toContain('/assets/SVG%20Illustrations/class-9.svg');
+
+    const class10Img = container?.querySelector('img[alt="Class 10 illustration"]') as HTMLImageElement | null;
+    expect(class10Img).not.toBeNull();
+    expect(class10Img?.src).toContain('/assets/SVG%20Illustrations/class-10.svg');
+  });
+
   it('triggers onSelectClass callback on click and keyboard enter', () => {
     const handleSelectClass = vi.fn();
     act(() => {

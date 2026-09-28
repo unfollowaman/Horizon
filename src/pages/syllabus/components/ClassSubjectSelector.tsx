@@ -9,70 +9,73 @@ interface ClassSubjectSelectorProps {
   onBackToClasses: () => void;
 }
 
-// Subject Card Illustrations for Compact Icon Containers
-const MathIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="16" y="14" width="48" height="52" rx="6" fill="#1A1A2E" opacity="0.08" />
-      <rect x="18" y="12" width="44" height="52" rx="6" fill="#FFFFFF" />
-      <path d="M28 26H38M33 21V31" stroke="#E91E8C" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M44 26H54" stroke="#1A1A2E" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-      <path d="M28 44L36 52M36 44L28 52" stroke="#1A1A2E" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-      <path d="M44 46H54M44 52H54" stroke="#E91E8C" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="50" cy="38" r="2.5" fill="#FFC107" />
-    </svg>
-  </div>
-);
-
-const ScienceIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M34 18H46V30L56 52C58 56 55 62 50 62H30C25 62 22 56 24 52L34 30V18Z" fill="#1A1A2E" opacity="0.08" />
-      <path d="M36 16H44V28L54 50C56 54 53 60 48 60H32C27 60 24 54 26 50L36 28V16Z" fill="#FFFFFF" stroke="#1A1A2E" strokeWidth="2" strokeLinejoin="round" opacity="0.9" />
-      <path d="M28 46C28 46 34 42 40 46C46 50 52 46 52 46L48 58H32L28 46Z" fill="#E91E8C" opacity="0.85" />
-      <circle cx="36" cy="50" r="2" fill="#FFFFFF" opacity="0.9" />
-      <circle cx="43" cy="53" r="1.5" fill="#FFFFFF" opacity="0.9" />
-      <circle cx="40" cy="24" r="3" fill="#FFC107" />
-    </svg>
-  </div>
-);
-
-const SocialScienceIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="40" cy="38" r="22" fill="#1A1A2E" opacity="0.08" />
-      <circle cx="40" cy="36" r="20" fill="#FFFFFF" stroke="#E91E8C" strokeWidth="2" />
-      <path d="M20 36H60" stroke="#E91E8C" strokeWidth="1.5" strokeDasharray="2 2" />
-      <ellipse cx="40" cy="36" rx="10" ry="20" stroke="#1A1A2E" strokeWidth="1.5" opacity="0.5" />
-      <path d="M28 62H52" stroke="#1A1A2E" strokeWidth="3" strokeLinecap="round" />
-      <path d="M40 56V62" stroke="#1A1A2E" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  </div>
-);
-
-const LanguageIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="18" y="16" width="44" height="48" rx="4" fill="#1A1A2E" opacity="0.08" />
-      <rect x="20" y="14" width="40" height="48" rx="4" fill="#FFFFFF" stroke="#1A1A2E" strokeWidth="1.5" />
-      <path d="M26 24H54M26 32H48M26 40H50M26 48H40" stroke="#E91E8C" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="50" cy="48" r="4" fill="#FFC107" />
-    </svg>
-  </div>
-);
-
 const getSubjectIllustration = (slug: string, name: string) => {
   const lower = `${slug} ${name}`.toLowerCase();
-  if (lower.includes('math')) return <MathIllustration />;
-  if (lower.includes('science') && !lower.includes('social')) return <ScienceIllustration />;
-  if (lower.includes('social') || lower.includes('history') || lower.includes('geography')) return <SocialScienceIllustration />;
-  if (lower.includes('english') || lower.includes('hindi') || lower.includes('sanskrit') || lower.includes('language')) return <LanguageIllustration />;
+
+  if (lower.includes('social') || lower.includes('history') || lower.includes('geography') || lower.includes('civics')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/social-science.svg"
+        alt="Social Science illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  if (lower.includes('science')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/science.svg"
+        alt="Science illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  if (lower.includes('math')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/mathematics.svg"
+        alt="Mathematics illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  if (lower.includes('hindi')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/Hindi.svg"
+        alt="Hindi illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  if (lower.includes('english')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/english.svg"
+        alt="English illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  if (lower.includes('sanskrit')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/sanskrit.svg"
+        alt="Sanskrit illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
 
   return (
     <img
       src="/assets/SVG Illustrations/study-notes.svg"
-      alt=""
-      aria-hidden="true"
+      alt={`${name} illustration`}
       className="w-full h-full object-contain"
     />
   );

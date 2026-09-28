@@ -67,4 +67,32 @@ describe('Attribution Page', () => {
     const rbseLink = container?.querySelector('a[href="https://rajeduboard.rajasthan.gov.in"]');
     expect(rbseLink).not.toBeNull();
   });
+
+  it('renders Storyset attribution links for education, people, medical, work, home, and nature illustrations', () => {
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <Attribution />
+        </MemoryRouter>
+      );
+    });
+
+    const educationLink = container?.querySelector('a[href="https://storyset.com/education"]');
+    expect(educationLink?.textContent).toContain('Education illustrations');
+
+    const peopleLink = container?.querySelector('a[href="https://storyset.com/people"]');
+    expect(peopleLink?.textContent).toContain('People illustrations');
+
+    const medicalLink = container?.querySelector('a[href="https://storyset.com/medical"]');
+    expect(medicalLink?.textContent).toContain('Medical illustrations');
+
+    const workLink = container?.querySelector('a[href="https://storyset.com/work"]');
+    expect(workLink?.textContent).toContain('Work illustrations');
+
+    const homeLink = container?.querySelector('a[href="https://storyset.com/home"]');
+    expect(homeLink?.textContent).toContain('Home illustrations');
+
+    const natureLink = container?.querySelector('a[href="https://storyset.com/nature"]');
+    expect(natureLink?.textContent).toContain('Nature illustrations');
+  });
 });

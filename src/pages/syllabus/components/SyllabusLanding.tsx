@@ -10,70 +10,43 @@ interface SyllabusLandingProps {
   onSelectClass: (classSlug: string) => void;
 }
 
-// Compact SVG Illustration Placeholders for Class Cards
-const BookStackIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Book Stack */}
-      <rect x="14" y="52" width="52" height="10" rx="2" fill="#1A1A2E" opacity="0.15" />
-      <rect x="16" y="50" width="48" height="10" rx="2" fill="#E91E8C" opacity="0.9" />
-      <rect x="20" y="52" width="40" height="6" rx="1" fill="#FFFFFF" opacity="0.9" />
-
-      <rect x="20" y="38" width="44" height="9" rx="2" fill="#1A1A2E" opacity="0.8" />
-      <rect x="23" y="40" width="38" height="5" rx="1" fill="#FFFFFF" opacity="0.85" />
-
-      <rect x="16" y="26" width="48" height="9" rx="2" fill="#E91E8C" />
-      <rect x="19" y="28" width="42" height="5" rx="1" fill="#FFFFFF" />
-      <path d="M52 26V38L55 35L58 38V26H52Z" fill="#FFC107" />
-    </svg>
-  </div>
-);
-
-const ChecklistIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="18" y="14" width="44" height="52" rx="5" fill="#1A1A2E" opacity="0.08" />
-      <rect x="20" y="12" width="40" height="52" rx="5" fill="#FFFFFF" className="neu-card" />
-      <rect x="32" y="9" width="16" height="6" rx="1.5" fill="#E91E8C" />
-
-      <circle cx="28" cy="24" r="3" fill="#E91E8C" />
-      <path d="M26.5 24L27.5 25L29.5 23" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="34" y="22.5" width="20" height="3" rx="1.5" fill="#1A1A2E" opacity="0.3" />
-
-      <circle cx="28" cy="35" r="3" fill="#E91E8C" />
-      <path d="M26.5 35L27.5 36L29.5 34" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="34" y="33.5" width="17" height="3" rx="1.5" fill="#1A1A2E" opacity="0.3" />
-
-      <circle cx="28" cy="46" r="3" fill="#1A1A2E" opacity="0.15" />
-      <rect x="34" y="44.5" width="18" height="3" rx="1.5" fill="#1A1A2E" opacity="0.2" />
-    </svg>
-  </div>
-);
-
-const GradCapIllustration: React.FC = () => (
-  <div className="w-full h-full flex items-center justify-center shrink-0 opacity-90" aria-hidden="true">
-    <svg viewBox="0 0 80 80" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M26 42C26 42 28 52 40 52C52 52 54 42 54 42V48C54 52 48 55 40 55C32 55 26 52 26 48V42Z" fill="#1A1A2E" opacity="0.85" />
-      <polygon points="40,20 68,31 40,42 12,31" fill="#E91E8C" />
-      <polygon points="40,22 62,31 40,40 18,31" fill="#C2185B" opacity="0.4" />
-      <circle cx="40" cy="31" r="2.5" fill="#FFC107" />
-      <path d="M40 31C40 31 54 33 57 40" stroke="#FFC107" strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="55.5" y="40" width="4.5" height="7" rx="1" fill="#FFC107" />
-    </svg>
-  </div>
-);
-
-const getCardIllustration = (classId: string) => {
-  switch (classId) {
-    case '8':
-      return <BookStackIllustration />;
-    case '9':
-      return <ChecklistIllustration />;
-    case '10':
-      return <GradCapIllustration />;
-    default:
-      return <BookStackIllustration />;
+const getCardIllustration = (classId: string, classSlug?: string) => {
+  const normalized = `${classId} ${classSlug || ''}`.trim();
+  if (normalized.includes('8')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/class-8.svg"
+        alt="Class 8 illustration"
+        className="w-full h-full object-contain"
+      />
+    );
   }
+  if (normalized.includes('9')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/class-9.svg"
+        alt="Class 9 illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+  if (normalized.includes('10')) {
+    return (
+      <img
+        src="/assets/SVG Illustrations/class-10.svg"
+        alt="Class 10 illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  return (
+    <img
+      src="/assets/SVG Illustrations/class-8.svg"
+      alt="Class illustration"
+      className="w-full h-full object-contain"
+    />
+  );
 };
 
 export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
@@ -163,7 +136,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
             >
               {/* LEFT: Compact Icon Container */}
               <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-2 shrink-0 overflow-hidden">
-                {getCardIllustration(cls.id)}
+                {getCardIllustration(cls.id, cls.slug)}
               </div>
 
               {/* CENTER: Title & Left-Aligned Description */}
