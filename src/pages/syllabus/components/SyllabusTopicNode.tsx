@@ -28,28 +28,48 @@ export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) =
   const resources: Resource[] = topic.resources || [];
 
   return (
-    <div className="neu-recessed p-2 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all min-w-0">
-      <div className="space-y-1 min-w-0 flex-1">
-        <div className="flex items-center gap-2 flex-wrap min-w-0">
-          <span
-            className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0 ${typeBadgeClass}`}
+    <div className="neu-recessed p-2.5 sm:p-3 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all min-w-0">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Left Neumorphic Circular Checkmark Badge */}
+        <div className="w-7 h-7 sm:w-8 sm:h-8 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
+          <svg
+            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
-            {typeLabel}
-          </span>
-          <h4 className="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1">
-            {topic.title}
-          </h4>
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
         </div>
-        {topic.description && (
-          <p className="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 pt-0.5 break-words">
-            {topic.description}
-          </p>
-        )}
+
+        <div className="space-y-0.5 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            {topic.topic_type && (
+              <span
+                className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0 ${typeBadgeClass}`}
+              >
+                {typeLabel}
+              </span>
+            )}
+            <h4 className="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1 leading-snug">
+              {topic.title}
+            </h4>
+          </div>
+          {topic.description && (
+            <p className="text-xs sm:text-caption text-ink/70 leading-relaxed m-0 pt-0.5 break-words">
+              {topic.description}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Linked Learning Resources */}
       {resources.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap shrink-0 pt-1 sm:pt-0">
+        <div className="flex items-center gap-2 flex-wrap shrink-0 pt-1 sm:pt-0 pl-10 sm:pl-0">
           {resources.map((res) => (
             <Link
               key={res.id}

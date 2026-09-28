@@ -155,7 +155,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(container?.textContent).not.toContain('Fundamental Theorem of Arithmetic');
   });
 
-  it('3. renders action buttons (Notes, PYQ Papers, imp.questions) on chapter tiles', async () => {
+  it('3. renders action buttons (Notes, PYQs, imp.questions) on chapter tiles', async () => {
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -177,7 +177,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
 
     // Verify Action Buttons
     const notesLink = container?.querySelector('a[aria-label="View notes for Chapter 1"]') as HTMLAnchorElement | null;
-    const pyqLink = container?.querySelector('a[aria-label="View PYQ papers for Chapter 1"]') as HTMLAnchorElement | null;
+    const pyqLink = container?.querySelector('a[aria-label="View PYQs for Chapter 1"]') as HTMLAnchorElement | null;
     const impLink = container?.querySelector('a[aria-label="View important questions for Chapter 1"]') as HTMLAnchorElement | null;
 
     expect(notesLink).not.toBeNull();
@@ -187,7 +187,7 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(notesLink?.getAttribute('href')).toBe('/notes/class-10/english');
     expect(pyqLink?.getAttribute('href')).toBe('/library/class-10/english');
     expect(container?.textContent).toContain('Notes');
-    expect(container?.textContent).toContain('PYQ Papers');
+    expect(container?.textContent).toContain('PYQs');
     expect(container?.textContent).toContain('imp.questions');
   });
 
