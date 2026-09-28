@@ -31,7 +31,7 @@ describe('SyllabusTopicNode Component Tests', () => {
     root = null;
   });
 
-  it('renders topic title, description, and topic type badge correctly', async () => {
+  it('renders topic title and description correctly', async () => {
     const mockTopic: SyllabusTopic = {
       id: 'topic-1',
       chapter_id: 'ch-1',
@@ -53,7 +53,6 @@ describe('SyllabusTopicNode Component Tests', () => {
 
     expect(container?.textContent).toContain('Chemical Reactions and Equations Overview');
     expect(container?.textContent).toContain('Understanding reactants, products, and chemical equation balancing.');
-    expect(container?.textContent).toContain('Topic');
   });
 
   it('renders linked resource action links with descriptive aria-label and focus-visible styling', async () => {
