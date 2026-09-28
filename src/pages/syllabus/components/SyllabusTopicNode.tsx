@@ -28,7 +28,7 @@ export const SyllabusTopicNode: React.FC<SyllabusTopicNodeProps> = ({ topic }) =
   const resources: Resource[] = topic.resources || [];
 
   return (
-    <div className="neu-recessed p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all min-w-0">
+    <div className="neu-recessed p-2 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all min-w-0">
       <div className="space-y-1 min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
           <span
