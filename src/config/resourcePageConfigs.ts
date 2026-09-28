@@ -15,7 +15,12 @@ export const pyqConfig: ResourcePageConfig = {
   getThirdFilterDesktopLabel: () => 'All Years',
   getThirdFilterMobileLabel: () => 'Years',
   extractThirdFilterValues: (resources: Resource[]) => {
-    const years = new Set(resources.map(r => r.year).filter(Boolean) as string[]);
+    const years = resources.reduce((acc, r) => {
+      if (r.year) {
+        acc.add(r.year);
+      }
+      return acc;
+    }, new Set<string>());
     return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
   },
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
@@ -47,7 +52,12 @@ export const notesConfig: ResourcePageConfig = {
   getThirdFilterDesktopLabel: () => 'All Mediums',
   getThirdFilterMobileLabel: () => 'Mediums',
   extractThirdFilterValues: (resources: Resource[]) => {
-    const rawMediums = new Set(resources.map(r => r.medium).filter(Boolean) as string[]);
+    const rawMediums = resources.reduce((acc, r) => {
+      if (r.medium) {
+        acc.add(r.medium);
+      }
+      return acc;
+    }, new Set<string>());
     return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
   },
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
