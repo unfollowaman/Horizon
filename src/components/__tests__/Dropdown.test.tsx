@@ -30,7 +30,7 @@ describe('Dropdown component', () => {
     root = null;
   });
 
-  it('renders correctly with default props and aria-label', () => {
+  it('renders correctly with default props, aria-label, and brand focus ring styling', () => {
     act(() => {
       root?.render(<Dropdown value="Class 10" onChange={vi.fn()} options={options} ariaLabel="Filter by class" />);
     });
@@ -40,6 +40,7 @@ describe('Dropdown component', () => {
     expect(triggerBtn?.getAttribute('aria-haspopup')).toBe('listbox');
     expect(triggerBtn?.getAttribute('aria-expanded')).toBe('false');
     expect(triggerBtn?.textContent).toContain('Class 10');
+    expect(triggerBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
   it('opens options list when clicked and sets proper ARIA attributes', () => {
@@ -60,6 +61,11 @@ describe('Dropdown component', () => {
     expect(optionElements?.length).toBe(3);
     expect(optionElements?.[2].getAttribute('aria-selected')).toBe('true');
     expect(optionElements?.[0].getAttribute('aria-selected')).toBe('false');
+    expect(optionElements?.[2].className).toContain('focus-visible:ring-[#E91E8C]');
+
+    const selectedCheckmark = optionElements?.[2].querySelector('svg[aria-hidden="true"]');
+    expect(selectedCheckmark).not.toBeNull();
+    expect(optionElements?.[0].querySelector('svg[aria-hidden="true"]')).toBeNull();
   });
 
   it('calls onChange when an option is clicked', () => {

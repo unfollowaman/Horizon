@@ -69,7 +69,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options, ar
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={ariaLabel}
-        className="w-full neu-raised hover:neu-raised-hover rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 text-left"
+        className="w-full neu-raised hover:neu-raised-hover rounded-lg h-[clamp(48px,6vw,64px)] flex items-center px-[clamp(12px,2vw,16px)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 text-left"
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleTriggerKeyDown}
       >
@@ -97,7 +97,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options, ar
                   key={option}
                   role="option"
                   aria-selected={isSelected}
-                  className={`w-full text-left px-[clamp(12px,2vw,16px)] py-1 cursor-pointer hover:bg-black/5 focus-visible:bg-black/5 focus-visible:outline-none text-[clamp(14px,1.5vw,18px)] font-medium ${isSelected ? 'font-bold bg-black/5' : ''}`}
+                  className={`w-full flex items-center justify-between text-left px-[clamp(12px,2vw,16px)] py-1.5 cursor-pointer hover:bg-black/5 focus-visible:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-inset rounded-md text-[clamp(14px,1.5vw,18px)] font-medium transition-colors ${isSelected ? 'font-bold bg-black/5 text-[#E91E8C]' : ''}`}
                   onClick={() => {
                     onChange(option);
                     setIsOpen(false);
@@ -105,7 +105,21 @@ export const Dropdown: React.FC<DropdownProps> = ({ value, onChange, options, ar
                   }}
                   onKeyDown={(e) => handleOptionKeyDown(e, index)}
                 >
-                  {option}
+                  <span className="truncate">{option}</span>
+                  {isSelected && (
+                    <svg
+                      className="w-4 h-4 text-[#E91E8C] shrink-0 ml-2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
                 </button>
               );
             })}
