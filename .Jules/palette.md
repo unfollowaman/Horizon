@@ -29,3 +29,7 @@
 ## 2026-04-04 - Dynamic ARIA Label Toggle Actions for Accordion Triggers
 **Learning:** In expandable accordion trees and chapter cards, screen reader users receive clearer action intent when interactive toggle buttons dynamically prefix `aria-label` values with the specific action (e.g. `Expand Chapter 1: Real Numbers` vs `Collapse Chapter 1: Real Numbers`) alongside `aria-expanded={isOpen}`. Pairing action-prefixed ARIA labels with `focus-visible:ring-offset-2` ensures keyboard navigation renders clean, unobstructed focus rings over neumorphic card borders.
 **Action:** Always dynamically indicate the action (`Expand` / `Collapse`) in `aria-label` attributes on accordion trigger controls alongside `aria-expanded`.
+
+## 2026-04-05 - High-Contrast Focus Rings & Native Hover Tooltips on Header Icon Links
+**Learning:** Icon-only navigation links in top headers (such as `ProfileButton`) benefit significantly from pairing dynamic `aria-label` values with matching `title={ariaLabel}` attributes to provide instant fallback hover tooltips for mouse users. Upgrading low-contrast default focus ring styles (`focus-visible:ring-ink/20`) to high-contrast brand accent utilities (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) guarantees clear keyboard navigation focus visibility against soft neumorphic card backgrounds and elevated header borders.
+**Action:** Always pair `aria-label` with `title` on icon-only navigation links, and use brand accent `focus-visible:ring-[#E91E8C]` focus indicators.
