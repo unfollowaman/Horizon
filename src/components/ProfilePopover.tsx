@@ -44,14 +44,16 @@ const ProfilePopover: React.FC = () => {
   if (!user || !profile) return null;
 
   const initials = profile.name ? profile.name.substring(0, 2).toUpperCase() : 'U';
+  const ariaLabel = profile.name ? `${profile.name}'s profile menu` : 'User profile menu';
 
   return (
     <div className={styles.popoverContainer} ref={popoverRef}>
       <button
         type="button"
-        className={`${styles.avatarBtn} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
+        className={`${styles.avatarBtn} neu-raised neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
         onClick={togglePopover}
-        aria-label={profile.name ? `${profile.name}'s profile menu` : 'User profile menu'}
+        aria-label={ariaLabel}
+        title={ariaLabel}
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
@@ -63,7 +65,7 @@ const ProfilePopover: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className={`${styles.popoverMenu} neu-raised`}>
+        <div className={`${styles.popoverMenu} neu-raised`} role="dialog" aria-label="User account options">
           <div className={styles.popoverHeader}>
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile Avatar" className={styles.popoverAvatar} />
