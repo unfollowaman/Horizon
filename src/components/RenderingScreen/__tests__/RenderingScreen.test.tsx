@@ -83,4 +83,14 @@ describe('RenderingScreen', () => {
     expect(canvasElement).not.toBeNull();
     expect(canvasElement?.getAttribute('aria-hidden')).toBe('true');
   });
+
+  it('uses window.crypto.getRandomValues for random generation during dot grid initialization', () => {
+    const getRandomValuesSpy = vi.spyOn(window.crypto, 'getRandomValues');
+
+    act(() => {
+      root?.render(<RenderingScreen />);
+    });
+
+    expect(getRandomValuesSpy).toHaveBeenCalled();
+  });
 });
