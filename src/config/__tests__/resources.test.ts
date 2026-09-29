@@ -37,11 +37,11 @@ describe('Navigation Links Configuration', () => {
     expect(hiddenSystemLink).toBeUndefined();
   });
 
-  it('returns exactly 3 distinct active features in getAllFeatures', () => {
+  it('returns exactly 3 distinct active features in getAllFeatures in syllabus -> notes -> pyq order', () => {
     const features = getAllFeatures();
     expect(features).toHaveLength(3);
-    expect(features.map(f => f.id)).toEqual(['pyq', 'notes', 'syllabus']);
-    expect(features.map(f => f.path)).toEqual(['/library', '/notes', '/syllabus/']);
+    expect(features.map(f => f.id)).toEqual(['syllabus', 'notes', 'pyq']);
+    expect(features.map(f => f.path)).toEqual(['/syllabus/', '/notes', '/library']);
   });
 
   it('SYLLABUS_NAV_CONFIG is configured with trailing slash /syllabus/', () => {

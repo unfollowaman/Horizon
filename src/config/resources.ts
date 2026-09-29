@@ -53,24 +53,28 @@ export const SYSTEM_NAV_LINKS = [
 ];
 
 export const getAllFeatures = () => {
-  const activeCategories = Object.values(RESOURCE_CATEGORIES)
-    .filter((cat): cat is ResourceCategoryConfig => Boolean(cat) && !cat.isComingSoon)
-    .map(cat => ({
-      title: cat.title,
-      desc: cat.description,
-      path: cat.path,
-      id: cat.id
-    }));
+  const syllabus = {
+    title: SYLLABUS_NAV_CONFIG.title,
+    desc: SYLLABUS_NAV_CONFIG.description,
+    path: SYLLABUS_NAV_CONFIG.path,
+    id: SYLLABUS_NAV_CONFIG.id,
+  };
 
-  return [
-    ...activeCategories,
-    {
-      title: SYLLABUS_NAV_CONFIG.title,
-      desc: SYLLABUS_NAV_CONFIG.description,
-      path: SYLLABUS_NAV_CONFIG.path,
-      id: SYLLABUS_NAV_CONFIG.id,
-    }
-  ];
+  const notes = RESOURCE_CATEGORIES.notes && !RESOURCE_CATEGORIES.notes.isComingSoon ? {
+    title: RESOURCE_CATEGORIES.notes.title,
+    desc: RESOURCE_CATEGORIES.notes.description,
+    path: RESOURCE_CATEGORIES.notes.path,
+    id: RESOURCE_CATEGORIES.notes.id,
+  } : null;
+
+  const pyq = RESOURCE_CATEGORIES.pyq && !RESOURCE_CATEGORIES.pyq.isComingSoon ? {
+    title: RESOURCE_CATEGORIES.pyq.title,
+    desc: RESOURCE_CATEGORIES.pyq.description,
+    path: RESOURCE_CATEGORIES.pyq.path,
+    id: RESOURCE_CATEGORIES.pyq.id,
+  } : null;
+
+  return [syllabus, notes, pyq].filter((f): f is NonNullable<typeof f> => Boolean(f));
 };
 
 export const getNavLinks = () => {
