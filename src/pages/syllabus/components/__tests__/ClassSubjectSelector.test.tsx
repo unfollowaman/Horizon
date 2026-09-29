@@ -17,6 +17,10 @@ const mockClass: ClassOption = {
 const mockSubjects: SubjectOption[] = [
   { id: 'mathematics', name: 'Mathematics', slug: 'mathematics', description: 'Explore math concepts.' },
   { id: 'science', name: 'Science', slug: 'science', description: 'Explore science concepts.' },
+  { id: 'social-science', name: 'Social Science', slug: 'social-science', description: 'Explore social science.' },
+  { id: 'hindi', name: 'Hindi', slug: 'hindi', description: 'Explore Hindi.' },
+  { id: 'english', name: 'English', slug: 'english', description: 'Explore English.' },
+  { id: 'sanskrit', name: 'Sanskrit', slug: 'sanskrit', description: 'Explore Sanskrit.' },
 ];
 
 describe('ClassSubjectSelector Component Tests', () => {
@@ -85,7 +89,49 @@ describe('ClassSubjectSelector Component Tests', () => {
     expect(activeStep?.className).toContain('text-[#E91E8C]');
   });
 
-  it('2. Renders subject cards with subject names, descriptions, and circular arrow CTA', async () => {
+  it('2. Renders subject cards with subject names, descriptions, circular arrow CTA, and exact SVG illustration assets', async () => {
+    const handleSelectSubject = vi.fn();
+    const handleBack = vi.fn();
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <ClassSubjectSelector
+            currentClass={mockClass}
+            subjects={mockSubjects}
+            onSelectSubject={handleSelectSubject}
+            onBackToClasses={handleBack}
+          />
+        </MemoryRouter>
+      );
+    });
+
+    const mathImg = container?.querySelector('img[alt="Mathematics illustration"]') as HTMLImageElement | null;
+    expect(mathImg).not.toBeNull();
+    expect(mathImg?.src).toContain('/assets/SVG%20Illustrations/mathematics.svg');
+
+    const scienceImg = container?.querySelector('img[alt="Science illustration"]') as HTMLImageElement | null;
+    expect(scienceImg).not.toBeNull();
+    expect(scienceImg?.src).toContain('/assets/SVG%20Illustrations/science.svg');
+
+    const socialScienceImg = container?.querySelector('img[alt="Social Science illustration"]') as HTMLImageElement | null;
+    expect(socialScienceImg).not.toBeNull();
+    expect(socialScienceImg?.src).toContain('/assets/SVG%20Illustrations/social-science.svg');
+
+    const hindiImg = container?.querySelector('img[alt="Hindi illustration"]') as HTMLImageElement | null;
+    expect(hindiImg).not.toBeNull();
+    expect(hindiImg?.src).toContain('/assets/SVG%20Illustrations/Hindi.svg');
+
+    const englishImg = container?.querySelector('img[alt="English illustration"]') as HTMLImageElement | null;
+    expect(englishImg).not.toBeNull();
+    expect(englishImg?.src).toContain('/assets/SVG%20Illustrations/english.svg');
+
+    const sanskritImg = container?.querySelector('img[alt="Sanskrit illustration"]') as HTMLImageElement | null;
+    expect(sanskritImg).not.toBeNull();
+    expect(sanskritImg?.src).toContain('/assets/SVG%20Illustrations/sanskrit.svg');
+  });
+
+  it('3. Renders subject cards with subject names and descriptions', async () => {
     const handleSelectSubject = vi.fn();
     const handleBack = vi.fn();
 

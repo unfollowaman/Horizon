@@ -58,8 +58,23 @@ const Attribution: React.FC = () => {
               </a>
             </li>
             <li>
+              <a href="https://storyset.com/medical" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Medical illustrations — Storyset
+              </a>
+            </li>
+            <li>
               <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 Work illustrations — Storyset
+              </a>
+            </li>
+            <li>
+              <a href="https://storyset.com/home" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Home illustrations — Storyset
+              </a>
+            </li>
+            <li>
+              <a href="https://storyset.com/nature" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Nature illustrations — Storyset
               </a>
             </li>
             <li>
