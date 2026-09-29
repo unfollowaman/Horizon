@@ -10,7 +10,6 @@ export const handleDownload = async (url: string, resource: Resource, e?: { prev
   }
 
   if (!canDownload(resource)) {
-    console.warn("Download blocked by permissions.");
     return;
   }
 

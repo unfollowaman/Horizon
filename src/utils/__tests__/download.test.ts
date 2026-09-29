@@ -57,6 +57,34 @@ describe('handleDownload', () => {
     vi.restoreAllMocks();
   });
 
+  it('should return early when resource cannot be downloaded', async () => {
+    // Arrange
+    const mockUrl = 'https://example.com/file.pdf';
+    const mockResource: Resource = {
+      id: '123',
+      title: 'Test File',
+      file_path: 'pdfs/file.pdf',
+      resource_type: 'notes',
+      subject: 'Math',
+      description: 'Test Description',
+      medium: 'english',
+      uploadDate: '2023-01-01',
+      pdfUrl: 'https://example.com/file.pdf',
+      thumbnailUrl: '',
+      allow_download: false,
+    };
+
+    vi.spyOn(permissions, 'canDownload').mockReturnValue(false);
+
+    // Act
+    await handleDownload(mockUrl, mockResource);
+
+    // Assert
+    expect(permissions.canDownload).toHaveBeenCalledWith(mockResource);
+    expect(window.fetch).not.toHaveBeenCalled();
+    expect(document.createElement).not.toHaveBeenCalled();
+  });
+
   it('should fallback to native download if fetch fails', async () => {
     // Arrange
     const mockUrl = 'https://example.com/file.pdf';
