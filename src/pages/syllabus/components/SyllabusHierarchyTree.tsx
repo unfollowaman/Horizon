@@ -122,7 +122,7 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
                 className="w-full flex items-center justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-2xl cursor-pointer group min-w-0"
               >
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 neu-raised rounded-full flex items-center justify-center shrink-0 font-bold text-[#E91E8C] text-sm sm:text-base">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[#E91E8C] text-sm sm:text-base">
                     {chapter.chapter_number}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -135,9 +135,9 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
                   </div>
                 </div>
 
-                <div className="w-8 h-8 neu-raised rounded-full flex items-center justify-center shrink-0 text-ink">
+                <div className="w-8 h-8 neu-raised-sm rounded-full flex items-center justify-center shrink-0 text-[#E91E8C]">
                   <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-2.5 h-2.5 sm:w-3 sm:h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
