@@ -121,7 +121,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   <div className="flex flex-row items-center justify-between gap-3 min-w-0 w-full">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
                       {/* Chapter Number Badge */}
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised-sm rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
                         {chapter.chapter_number}
                       </div>
 
@@ -136,9 +136,9 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                     </div>
 
                     {/* Right side arrow toggle icon */}
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
                       <svg
-                        className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                        className={`w-2.5 h-2.5 sm:w-3 sm:h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -147,7 +147,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2.5}
+                          strokeWidth={2}
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
@@ -166,7 +166,7 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
                   <div className="flex flex-row items-center justify-between gap-3 min-w-0 w-full">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
                       {/* Chapter Number Badge */}
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 neu-raised-sm rounded-full flex items-center justify-center font-bold text-[#E91E8C] text-base sm:text-lg shrink-0">
                         {chapter.chapter_number}
                       </div>
 
