@@ -183,12 +183,12 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
             <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
               <svg
                 aria-hidden="true"
-                className="w-4 h-4 text-[#E91E8C] shrink-0"
+                className="w-2 h-2 text-[#E91E8C] shrink-0"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
