@@ -56,10 +56,22 @@ describe('MaterialCard', () => {
     expect(container?.textContent).toContain('Chapter 1: Real Numbers Notes');
     expect(container?.textContent).toContain('2024');
 
+    const cardMainLink = container?.querySelector('a[href="/resource/101"]:not([aria-label])');
+    expect(cardMainLink).not.toBeNull();
+    expect(cardMainLink?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(cardMainLink?.className).toContain('focus-visible:ring-offset-2');
+
     const viewLink = container?.querySelector('a[aria-label="View Chapter 1: Real Numbers Notes"]');
     expect(viewLink).not.toBeNull();
     expect(viewLink?.getAttribute('href')).toBe('/resource/101');
     expect(viewLink?.className).toContain('flex-1 min-w-0');
+    expect(viewLink?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(viewLink?.className).toContain('focus-visible:ring-offset-2');
+
+    const downloadButton = container?.querySelector('button[aria-label="Download Chapter 1: Real Numbers Notes"]');
+    expect(downloadButton).not.toBeNull();
+    expect(downloadButton?.className).toContain('focus-visible:ring-[#E91E8C]');
+    expect(downloadButton?.className).toContain('focus-visible:ring-offset-2');
   });
 
   it('renders dynamic flex classes for PYQ resource buttons on mobile', () => {

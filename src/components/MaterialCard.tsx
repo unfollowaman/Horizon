@@ -194,7 +194,7 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
       <Link
         to={`/resource/${resource.id}`}
         state={{ fromApp: true }}
-        className="w-full flex flex-col items-center text-center no-underline text-ink group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 rounded-md"
+        className="w-full flex flex-col items-center text-center no-underline text-ink group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-md"
       >
         <div className="w-full h-[100px] neu-recessed text-muted-foreground rounded-md mb-[12px] flex items-center justify-center overflow-hidden shrink-0">
           {resource.thumbnailUrl ? (
@@ -217,7 +217,7 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
           aria-label={`View ${cardTitle}`}
           className={`${
             isPYQ ? 'flex-none w-auto md:flex-1 md:min-w-0' : 'flex-1 min-w-0'
-          } p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
+          } p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
         >
           <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#pdfGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <defs>
@@ -240,7 +240,7 @@ const MaterialCard: React.FC<MaterialCardProps> = React.memo(({ resource }) => {
             type="button"
             onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
             aria-label={`Download ${cardTitle}`}
-            className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
+            className="flex-1 min-w-0 p-[6px_8px] md:p-[6px_4px] flex items-center justify-center whitespace-normal text-[11px] leading-[1.15] gap-[4px] font-bold neu-raised-sm rounded-md hover:neu-raised-sm-hover no-underline text-ink text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
           >
             <svg aria-hidden="true" className="hidden md:block shrink-0" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke={`url(#dlGrad-${resource.id})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <defs>
