@@ -23,6 +23,12 @@ function bell(value: number, center: number, spread: number) {
   return Math.exp(-(distance * distance));
 }
 
+function getRandomFloat(): number {
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  return array[0] / 0x100000000;
+}
+
 function AnimatedDotField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -48,19 +54,19 @@ function AnimatedDotField() {
 
       for (let row = 0; row < rows; row += 1) {
         for (let column = 0; column < columns; column += 1) {
-          const star = Math.random() < 0.1;
+          const star = getRandomFloat() < 0.1;
           next.push({
             x: column * GRID_SIZE + GRID_SIZE / 2,
             y: row * GRID_SIZE + GRID_SIZE / 2,
-            baseOpacity: 0.22 + Math.random() * 0.3,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.65 + Math.random() * 1.5,
-            delay: Math.random() * 0.4,
-            starPower: star ? 0.65 + Math.random() * 0.35 : 0,
-            tint: Math.random(),
-            flareOffset: Math.random() * 8,
-            flareLength: 0.05 + Math.random() * 0.05,
-            flareSpeed: 0.1 + Math.random() * 0.18,
+            baseOpacity: 0.22 + getRandomFloat() * 0.3,
+            phase: getRandomFloat() * Math.PI * 2,
+            speed: 0.65 + getRandomFloat() * 1.5,
+            delay: getRandomFloat() * 0.4,
+            starPower: star ? 0.65 + getRandomFloat() * 0.35 : 0,
+            tint: getRandomFloat(),
+            flareOffset: getRandomFloat() * 8,
+            flareLength: 0.05 + getRandomFloat() * 0.05,
+            flareSpeed: 0.1 + getRandomFloat() * 0.18,
           });
         }
       }
