@@ -37,3 +37,7 @@
 ## 2026-04-06 - Accessible Popover Overlays & High-Contrast Focus Rings
 **Learning:** Profile popover menus and user account dropdowns rendered over headers must declare `role="dialog"` and `aria-label="User account options"` so screen readers convey overlay context. Pairing dynamic `aria-label` with matching `title` attributes on avatar buttons provides native hover tooltips for mouse users, while `focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2` guarantees visible keyboard focus over neumorphic card backgrounds.
 **Action:** Always declare `role="dialog"` and `aria-label` on popover overlays, and use brand pink focus ring utilities with `focus-visible:ring-offset-2` on avatar triggers.
+
+## 2026-04-07 - High-Contrast Focus Rings & Mouse Tooltip Coupling on Floating Overlay Controls
+**Learning:** Floating overlay controls (such as PDF viewer floating buttons) rendered over content canvases require high-contrast focus rings (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) so keyboard navigation remains clearly visible against variable document backgrounds. Coupling `aria-label` with matching `title` attributes on icon-only buttons provides native mouse hover tooltips without additional JS popover dependencies, while `aria-hidden="true"` on inner SVGs prevents redundant screen reader announcements.
+**Action:** Always pair `aria-label` with matching `title` tooltips and `aria-hidden="true"` on inner SVGs for icon-only floating overlay action buttons.

@@ -13,10 +13,11 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
     <>
       <button
         onClick={onBack}
-        className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
+        className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label="Go Back"
+        title="Go Back"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -24,10 +25,11 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
 
       <button
         onClick={toggleMobileMenu}
-        className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
+        className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+        title={isMobileMenuOpen ? "Close menu" : "Open menu"}
       >
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
@@ -57,24 +59,39 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
   return (
     <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}>
       <div className={styles.menuItemsContainer}>
-        <button onClick={zoomIn} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom In">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <button
+          onClick={zoomIn}
+          className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+          aria-label="Zoom In"
+          title="Zoom In"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             <line x1="11" y1="8" x2="11" y2="14"></line>
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
         </button>
-        <button onClick={zoomOut} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Zoom Out">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <button
+          onClick={zoomOut}
+          className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+          aria-label="Zoom Out"
+          title="Zoom Out"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
         </button>
         {toggleRotation && (
-          <button onClick={toggleRotation} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Rotate Screen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <button
+            onClick={toggleRotation}
+            className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+            aria-label="Rotate Screen"
+            title="Rotate Screen"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M20 9V4a1 1 0 0 0-1-1h-5" />
               <path d="M21 3l-6 6" />
               <path d="M4 15v5a1 1 0 0 0 1 1h5" />
@@ -84,8 +101,13 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
             </svg>
           </button>
         )}
-        <button onClick={handleShare} className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`} aria-label="Share">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <button
+          onClick={handleShare}
+          className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
+          aria-label="Share"
+          title="Share"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="18" cy="5" r="3"></circle>
             <circle cx="6" cy="12" r="3"></circle>
             <circle cx="18" cy="19" r="3"></circle>
@@ -96,17 +118,18 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
       </div>
       <button
         onClick={toggleThreeDotsMenu}
-        className={`${styles.toggleBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20`}
+        className={`${styles.toggleBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
         aria-label="More options"
+        title={isThreeDotsMenuOpen ? "Close options" : "More options"}
         aria-expanded={isThreeDotsMenuOpen}
       >
         {isThreeDotsMenuOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="1"></circle>
             <circle cx="12" cy="5" r="1"></circle>
             <circle cx="12" cy="19" r="1"></circle>
