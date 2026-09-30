@@ -37,3 +37,7 @@
 ## 2026-04-06 - Accessible Popover Overlays & High-Contrast Focus Rings
 **Learning:** Profile popover menus and user account dropdowns rendered over headers must declare `role="dialog"` and `aria-label="User account options"` so screen readers convey overlay context. Pairing dynamic `aria-label` with matching `title` attributes on avatar buttons provides native hover tooltips for mouse users, while `focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2` guarantees visible keyboard focus over neumorphic card backgrounds.
 **Action:** Always declare `role="dialog"` and `aria-label` on popover overlays, and use brand pink focus ring utilities with `focus-visible:ring-offset-2` on avatar triggers.
+
+## 2026-04-07 - WAI-ARIA Progressbar & Pressed State Accessibility in Multi-Step Onboarding
+**Learning:** Multi-step wizard workflows require `role="progressbar"` with `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and dynamic `aria-valuetext` (e.g. "Step 2 of 5") so screen reader users receive clear progression announcements. Option selection buttons benefit from `aria-pressed={isSelected}` to explicitly announce active toggle states, while explicit `type="button"` attributes prevent unexpected form submissions during keyboard navigation.
+**Action:** Always wrap progress indicator bars with full WAI-ARIA `progressbar` attributes, use `aria-pressed` on option selection buttons, and add brand pink `focus-visible:ring-[#E91E8C]` focus indicators across multi-step wizard controls.

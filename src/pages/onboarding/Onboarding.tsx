@@ -126,7 +126,15 @@ const Onboarding: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-ink">
-      <div className="w-full h-2 bg-[var(--bg-raised)]">
+      <div
+        role="progressbar"
+        aria-label="Onboarding progress"
+        aria-valuenow={step}
+        aria-valuemin={1}
+        aria-valuemax={5}
+        aria-valuetext={`Step ${step} of 5`}
+        className="w-full h-2 bg-[var(--bg-raised)]"
+      >
         <div
           className="h-full bg-accent transition-all duration-300"
           style={{ width: `${(step / 5) * 100}%` }}
@@ -137,7 +145,12 @@ const Onboarding: React.FC = () => {
         <div className="w-full max-w-md neu-card rounded-2xl overflow-hidden animate-fade-rise">
           <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--bg-raised)]">
             {step > 1 ? (
-              <button onClick={handleBack} className="text-sm font-medium hover:text-accent transition-colors">
+              <button
+                type="button"
+                onClick={handleBack}
+                aria-label="Go to previous step"
+                className="text-sm font-medium hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-md"
+              >
                 &larr; Back
               </button>
             ) : (
@@ -155,8 +168,9 @@ const Onboarding: React.FC = () => {
                   Don't worry, you can always change this information later.
                 </p>
                 <button
+                  type="button"
                   onClick={handleNext}
-                  className="w-full py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all"
+                  className="w-full py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   Continue
                 </button>
@@ -169,9 +183,11 @@ const Onboarding: React.FC = () => {
                 <div className="grid gap-2">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
                     <button
+                      type="button"
                       key={cls}
                       onClick={() => setStudentClass(cls)}
-                      className={`py-2 px-4 rounded-xl transition-all ${
+                      aria-pressed={studentClass === cls}
+                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studentClass === cls
                           ? 'neu-recessed text-accent font-bold'
                           : 'neu-raised neu-raised-hover'
@@ -182,9 +198,10 @@ const Onboarding: React.FC = () => {
                   ))}
                 </div>
                 <button
+                  type="button"
                   onClick={handleNext}
                   disabled={!studentClass || saving}
-                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Saving...' : 'Continue'}
                 </button>
@@ -197,9 +214,11 @@ const Onboarding: React.FC = () => {
                 <div className="grid gap-2">
                   {['English', 'Hindi'].map((medium) => (
                     <button
+                      type="button"
                       key={medium}
                       onClick={() => setStudyMedium(medium)}
-                      className={`py-2 px-4 rounded-xl transition-all ${
+                      aria-pressed={studyMedium === medium}
+                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studyMedium === medium
                           ? 'neu-recessed text-accent font-bold'
                           : 'neu-raised neu-raised-hover'
@@ -210,9 +229,10 @@ const Onboarding: React.FC = () => {
                   ))}
                 </div>
                 <button
+                  type="button"
                   onClick={handleNext}
                   disabled={!studyMedium || saving}
-                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Saving...' : 'Continue'}
                 </button>
@@ -242,7 +262,7 @@ const Onboarding: React.FC = () => {
                   </div>
 
                   <div className="w-full flex flex-col gap-3">
-                    <label className="w-full py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors">
+                    <label className="w-full py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
                       {uploading ? 'Uploading...' : 'Upload Photo'}
                       <input
                         type="file"
@@ -254,9 +274,10 @@ const Onboarding: React.FC = () => {
                       />
                     </label>
                     <button
+                      type="button"
                       onClick={handleNext}
                       disabled={uploading}
-                      className="w-full py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors"
+                      className="w-full py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                     >
                       {avatarUrl ? 'Continue' : 'Skip'}
                     </button>
@@ -297,9 +318,10 @@ const Onboarding: React.FC = () => {
                 </div>
 
                 <button
+                  type="button"
                   onClick={handleFinish}
                   disabled={saving}
-                  className="w-full mt-4 py-4 px-4 text-accent rounded-full font-bold text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50"
+                  className="w-full mt-4 py-4 px-4 text-accent rounded-full font-bold text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Finishing...' : 'Finish Setup'}
                 </button>
