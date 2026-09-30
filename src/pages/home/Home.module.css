@@ -778,21 +778,26 @@
   border-radius: var(--radius-full);
   padding: 10px var(--spacing-3); /* px-6 py-2.5 -> px-6 is 24px */
   font-size: 0.875rem; /* text-sm */
+  font-weight: 700;
   color: var(--color-ink);
   transition: transform 150ms ease;
   min-height: var(--spacing-11); /* min-h-[44px] */
   cursor: pointer;
   white-space: nowrap;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .highlightsSubmitBtn:hover {
   transform: scale(1.03);
 }
 
-.highlightsSubmitBtn:focus {
+.highlightsSubmitBtn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-ink);
+  box-shadow: 0 0 0 2px #E91E8C;
 }
 
 /* ================= FOOTER SECTION ================= */
