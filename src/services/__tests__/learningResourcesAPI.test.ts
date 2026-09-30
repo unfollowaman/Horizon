@@ -592,7 +592,7 @@ describe('learningResourcesAPI', () => {
       const startReduce = performance.now();
       let reduceCounts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
       for (let i = 0; i < 10; i++) {
-        reduceCounts = sampleData.reduce((acc, row) => {
+        reduceCounts = sampleData.reduce<Record<string, number>>((acc, row) => {
           if (!row.student_class) return acc;
           const strClass = String(row.student_class);
           const match = strClass.match(/\d+/);
@@ -608,10 +608,10 @@ describe('learningResourcesAPI', () => {
       const endReduce = performance.now();
 
       // Divide counts by 10 since loop ran 10 iterations
-      const normalizedLoopCounts = {
-        '8': loopCounts['8'] / 10,
-        '9': loopCounts['9'] / 10,
-        '10': loopCounts['10'] / 10,
+      const normalizedLoopCounts: Record<string, number> = {
+        '8': (loopCounts['8'] || 0) / 10,
+        '9': (loopCounts['9'] || 0) / 10,
+        '10': (loopCounts['10'] || 0) / 10,
       };
 
       expect(reduceCounts).toEqual(normalizedLoopCounts);
