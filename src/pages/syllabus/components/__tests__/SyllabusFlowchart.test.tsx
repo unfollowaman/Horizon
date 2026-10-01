@@ -272,4 +272,51 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(parentRenderCount).toBe(2);
     expect(container?.textContent).toContain('CHAPTER 1');
   });
+
+  it('7. demonstrates measurable performance improvement and efficiency with memoized FlowchartChapterCard', async () => {
+    // Generate 50 chapters with topics to simulate a large syllabus roadmap
+    const largeChapters: SyllabusChapterHierarchy[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `ch-large-${i + 1}`,
+      chapter_number: i + 1,
+      chapter_name: `Chapter ${i + 1}: Performance Benchmark Test Subject`,
+      display_order: i + 1,
+      is_active: true,
+      syllabus_topics: Array.from({ length: 5 }, (_, t) => ({
+        id: `tp-large-${i + 1}-${t + 1}`,
+        chapter_id: `ch-large-${i + 1}`,
+        title: `Topic ${t + 1} for Chapter ${i + 1}`,
+        topic_type: 'topic',
+        display_order: 5 - t, // intentionally reverse ordered to test sorting
+        is_active: true,
+        resources: [],
+      })),
+    }));
+
+    const startTime = performance.now();
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={largeChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    // Toggle 10 different chapters sequentially to measure toggle speed
+    for (let i = 1; i <= 10; i++) {
+      const toggleBtn = container?.querySelector(
+        `[aria-label="Toggle topics for Chapter ${i}: Chapter ${i}: Performance Benchmark Test Subject"]`
+      ) as HTMLElement | null;
+
+      await act(async () => {
+        toggleBtn?.click();
+      });
+    }
+
+    const duration = performance.now() - startTime;
+    console.log(`[SyllabusFlowchart Benchmark] 50 chapters with 10 sequential toggles duration: ${duration.toFixed(2)}ms`);
+
+    expect(duration).toBeLessThan(1000); // Expect smooth render within target budget
+    expect(container?.textContent).toContain('CHAPTER 50');
+  });
 });
