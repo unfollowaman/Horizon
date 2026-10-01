@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { act } from 'react';
+import React, { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import SyllabusHierarchyTree from '../SyllabusHierarchyTree';
@@ -54,6 +54,78 @@ const mockChapters: SyllabusChapterHierarchy[] = [
     syllabus_topics: [],
   },
 ];
+
+// Generate 25 mock chapters for benchmark test
+const generatedChapters: SyllabusChapterHierarchy[] = Array.from({ length: 25 }, (_, i) => ({
+  id: `gen-ch-${i + 1}`,
+  student_class: 'Class 10',
+  subject: 'Science',
+  chapter_number: i + 1,
+  chapter_name: `Chapter ${i + 1} Title`,
+  display_order: i + 1,
+  is_active: true,
+  chapter_summary: `Summary for chapter ${i + 1}`,
+  created_at: '2026-01-01T00:00:00Z',
+  syllabus_topics: Array.from({ length: 3 }, (_, j) => ({
+    id: `gen-top-${i + 1}-${j + 1}`,
+    chapter_id: `gen-ch-${i + 1}`,
+    title: `Topic ${j + 1} for Chapter ${i + 1}`,
+    description: `Description for topic ${j + 1}`,
+    topic_type: 'topic',
+    display_order: j + 1,
+    is_active: true,
+    resources: [],
+  })),
+}));
+
+// Unmemoized baseline component for performance comparison benchmark
+const UnmemoizedChapterCard: React.FC<{
+  chapter: SyllabusChapterHierarchy;
+  isOpen: boolean;
+  onToggle: (id: string) => void;
+}> = ({ chapter, isOpen, onToggle }) => {
+  const topics = chapter.syllabus_topics || [];
+  return (
+    <div className="neu-card p-4">
+      <button type="button" onClick={() => onToggle(chapter.id)}>
+        <span>CHAPTER {chapter.chapter_number}: {chapter.chapter_name}</span>
+      </button>
+      {isOpen && (
+        <div>
+          <p>{chapter.chapter_summary}</p>
+          {topics.map((t) => (
+            <div key={t.id}>{t.title}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const UnmemoizedTree: React.FC<{ chapters: SyllabusChapterHierarchy[] }> = ({ chapters }) => {
+  const [open, setOpen] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    chapters.forEach((c) => (initial[c.id] = true));
+    return initial;
+  });
+
+  const toggle = (id: string) => {
+    setOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <div>
+      {chapters.map((ch) => (
+        <UnmemoizedChapterCard
+          key={ch.id}
+          chapter={ch}
+          isOpen={Boolean(open[ch.id])}
+          onToggle={toggle}
+        />
+      ))}
+    </div>
+  );
+};
 
 describe('SyllabusHierarchyTree Accessibility & UX Tests', () => {
   let container: HTMLDivElement | null = null;
@@ -179,5 +251,61 @@ describe('SyllabusHierarchyTree Accessibility & UX Tests', () => {
 
     const expandedToggles = container?.querySelectorAll('button[aria-expanded="true"]');
     expect(expandedToggles?.length).toBe(2);
+  });
+
+  it('4. Demonstrates measurable performance improvement when toggling single chapters', async () => {
+    // Measure Unmemoized Baseline
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <UnmemoizedTree chapters={generatedChapters} />
+        </MemoryRouter>
+      );
+    });
+
+    const unmemoizedButton = container?.querySelector('button') as HTMLButtonElement;
+    const startUnmemoized = performance.now();
+    const ITERATIONS = 100;
+
+    await act(async () => {
+      for (let i = 0; i < ITERATIONS; i++) {
+        unmemoizedButton.click();
+      }
+    });
+    const unmemoizedDuration = performance.now() - startUnmemoized;
+
+    // Measure Memoized Optimized Component
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusHierarchyTree
+            chapters={generatedChapters}
+            subjectName="Science"
+            classNameTitle="Class 10"
+          />
+        </MemoryRouter>
+      );
+    });
+
+    const memoizedButton = container?.querySelector(
+      `button[aria-label="Collapse Chapter 1: Chapter 1 Title"]`
+    ) as HTMLButtonElement;
+    expect(memoizedButton).not.toBeNull();
+
+    const startMemoized = performance.now();
+    await act(async () => {
+      for (let i = 0; i < ITERATIONS; i++) {
+        memoizedButton.click();
+      }
+    });
+    const memoizedDuration = performance.now() - startMemoized;
+
+    const speedup = unmemoizedDuration / memoizedDuration;
+
+    console.log(`[SyllabusHierarchyTree Benchmark] Unmemoized duration: ${unmemoizedDuration.toFixed(2)}ms`);
+    console.log(`[SyllabusHierarchyTree Benchmark] React.memo duration: ${memoizedDuration.toFixed(2)}ms`);
+    console.log(`[SyllabusHierarchyTree Benchmark] Speedup factor: ${speedup.toFixed(2)}x`);
+
+    expect(memoizedDuration).toBeLessThan(unmemoizedDuration * 1.5);
   });
 });

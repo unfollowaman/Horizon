@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { SyllabusChapterHierarchy } from '../../../types';
 import SyllabusTopicNode from './SyllabusTopicNode';
 
@@ -7,6 +7,94 @@ interface SyllabusHierarchyTreeProps {
   subjectName: string;
   classNameTitle: string;
 }
+
+interface HierarchyChapterCardProps {
+  chapter: SyllabusChapterHierarchy;
+  isOpen: boolean;
+  onToggle: (id: string) => void;
+}
+
+/**
+ * ⚡ Performance Optimization:
+ * Wrapped with React.memo to prevent unnecessary virtual DOM reconciliations across all chapter cards
+ * when a single chapter accordion state is toggled in SyllabusHierarchyTree.
+ */
+const HierarchyChapterCard: React.FC<HierarchyChapterCardProps> = React.memo(({
+  chapter,
+  isOpen,
+  onToggle,
+}) => {
+  const topics = chapter.syllabus_topics || [];
+
+  return (
+    <div className="neu-card rounded-2xl p-4 sm:p-6 space-y-4 transition-all min-w-0">
+      {/* Chapter Header Toggle Button */}
+      <button
+        type="button"
+        onClick={() => onToggle(chapter.id)}
+        aria-expanded={isOpen}
+        aria-label={`${isOpen ? 'Collapse' : 'Expand'} Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
+        className="w-full flex items-center justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-2xl cursor-pointer group min-w-0"
+      >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[#E91E8C] text-sm sm:text-base">
+            {chapter.chapter_number}
+          </div>
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
+              CHAPTER {chapter.chapter_number}
+            </span>
+            <h3 className="text-base sm:text-xl font-bold text-ink group-hover:text-[#E91E8C] transition-colors m-0 break-words leading-snug">
+              {chapter.chapter_name}
+            </h3>
+          </div>
+        </div>
+
+        <div className="w-8 h-8 neu-raised-sm rounded-full flex items-center justify-center shrink-0 text-[#E91E8C]">
+          <svg
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </button>
+
+      {/* Chapter Details & Topic Nodes */}
+      {isOpen && (
+        <div className="space-y-4 pt-2 border-t border-ink/5 min-w-0">
+          {chapter.chapter_summary && (
+            <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words m-0 bg-black/5 p-3 rounded-xl">
+              {chapter.chapter_summary}
+            </p>
+          )}
+
+          {topics.length > 0 ? (
+            <div className="space-y-2.5 min-w-0">
+              {topics.map((topic) => (
+                <SyllabusTopicNode key={topic.id} topic={topic} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs sm:text-sm text-ink/60 italic p-3 text-center">
+              No topics listed under this chapter.
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+});
+
+HierarchyChapterCard.displayName = 'HierarchyChapterCard';
 
 export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
   chapters,
@@ -40,24 +128,24 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
     }
   }, [chapters]);
 
-  const toggleChapter = (id: string) => {
+  const toggleChapter = useCallback((id: string) => {
     setOpenChapters((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
-  };
+  }, []);
 
-  const expandAll = () => {
+  const expandAll = useCallback(() => {
     const next: Record<string, boolean> = {};
     chapters.forEach((ch) => {
       next[ch.id] = true;
     });
     setOpenChapters(next);
-  };
+  }, [chapters]);
 
-  const collapseAll = () => {
+  const collapseAll = useCallback(() => {
     setOpenChapters({});
-  };
+  }, []);
 
   if (!chapters || chapters.length === 0) {
     return (
@@ -104,80 +192,14 @@ export const SyllabusHierarchyTree: React.FC<SyllabusHierarchyTreeProps> = ({
 
       {/* Chapters Accordion */}
       <div className="space-y-4 min-w-0">
-        {chapters.map((chapter) => {
-          const isOpen = Boolean(openChapters[chapter.id]);
-          const topics = chapter.syllabus_topics || [];
-
-          return (
-            <div
-              key={chapter.id}
-              className="neu-card rounded-2xl p-4 sm:p-6 space-y-4 transition-all min-w-0"
-            >
-              {/* Chapter Header Toggle Button */}
-              <button
-                type="button"
-                onClick={() => toggleChapter(chapter.id)}
-                aria-expanded={isOpen}
-                aria-label={`${isOpen ? 'Collapse' : 'Expand'} Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
-                className="w-full flex items-center justify-between gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-2xl cursor-pointer group min-w-0"
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 neu-raised-sm rounded-full flex items-center justify-center shrink-0 font-bold text-[#E91E8C] text-sm sm:text-base">
-                    {chapter.chapter_number}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block">
-                      CHAPTER {chapter.chapter_number}
-                    </span>
-                    <h3 className="text-base sm:text-xl font-bold text-ink group-hover:text-[#E91E8C] transition-colors m-0 break-words leading-snug">
-                      {chapter.chapter_name}
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="w-8 h-8 neu-raised-sm rounded-full flex items-center justify-center shrink-0 text-[#E91E8C]">
-                  <svg
-                    className={`w-2.5 h-2.5 sm:w-3 sm:h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </button>
-
-              {/* Chapter Details & Topic Nodes */}
-              {isOpen && (
-                <div className="space-y-4 pt-2 border-t border-ink/5 min-w-0">
-                  {chapter.chapter_summary && (
-                    <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words m-0 bg-black/5 p-3 rounded-xl">
-                      {chapter.chapter_summary}
-                    </p>
-                  )}
-
-                  {topics.length > 0 ? (
-                    <div className="space-y-2.5 min-w-0">
-                      {topics.map((topic) => (
-                        <SyllabusTopicNode key={topic.id} topic={topic} />
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs sm:text-sm text-ink/60 italic p-3 text-center">
-                      No topics listed under this chapter.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {chapters.map((chapter) => (
+          <HierarchyChapterCard
+            key={chapter.id}
+            chapter={chapter}
+            isOpen={Boolean(openChapters[chapter.id])}
+            onToggle={toggleChapter}
+          />
+        ))}
       </div>
     </div>
   );
