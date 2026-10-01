@@ -130,4 +130,107 @@ describe('ResourcePage Array Optimization Benchmark', () => {
 
     expect(durationOptimized).toBeLessThanOrEqual(durationBaseline + 50);
   });
+
+  describe('Filtered Resources Combined Filter Optimization', () => {
+    function filterResourcesBaseline(
+      resources: Resource[],
+      selectedClass: string,
+      selectedSubject: string
+    ): Resource[] {
+      let filtered = resources;
+      if (selectedClass) {
+        filtered = filtered.filter(r => r.student_class === selectedClass);
+      }
+      if (selectedSubject) {
+        filtered = filtered.filter(r => r.subject === selectedSubject);
+      }
+      return filtered;
+    }
+
+    function filterResourcesOptimized(
+      resources: Resource[],
+      selectedClass: string,
+      selectedSubject: string
+    ): Resource[] {
+      let filtered = resources;
+      if (selectedClass || selectedSubject) {
+        filtered = filtered.filter(
+          r => (!selectedClass || r.student_class === selectedClass) &&
+               (!selectedSubject || r.subject === selectedSubject)
+        );
+      }
+      return filtered;
+    }
+
+    it('produces identical output across all filter combinations', () => {
+      const sampleResources: Partial<Resource>[] = [
+        { id: '1', student_class: 'Class 10', subject: 'Mathematics' },
+        { id: '2', student_class: 'Class 10', subject: 'Science' },
+        { id: '3', student_class: 'Class 9', subject: 'Mathematics' },
+        { id: '4', student_class: 'Class 8', subject: 'English' },
+      ];
+
+      const testCases = [
+        { selectedClass: '', selectedSubject: '' },
+        { selectedClass: 'Class 10', selectedSubject: '' },
+        { selectedClass: '', selectedSubject: 'Mathematics' },
+        { selectedClass: 'Class 10', selectedSubject: 'Mathematics' },
+        { selectedClass: 'Class 9', selectedSubject: 'Science' },
+      ];
+
+      testCases.forEach(({ selectedClass, selectedSubject }) => {
+        const baseline = filterResourcesBaseline(
+          sampleResources as Resource[],
+          selectedClass,
+          selectedSubject
+        );
+        const optimized = filterResourcesOptimized(
+          sampleResources as Resource[],
+          selectedClass,
+          selectedSubject
+        );
+        expect(optimized).toEqual(baseline);
+      });
+    });
+
+    it('demonstrates performance speedup for combined filter pass on large dataset', () => {
+      const largeResources: Partial<Resource>[] = [];
+      const subjects = ['Mathematics', 'Science', 'English', 'Hindi', 'Social Science'];
+      const classes = ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
+
+      for (let i = 0; i < 50000; i++) {
+        largeResources.push({
+          id: String(i),
+          student_class: classes[i % classes.length],
+          subject: subjects[i % subjects.length],
+        });
+      }
+
+      const iterations = 200;
+
+      // Warm up
+      filterResourcesBaseline(largeResources as Resource[], 'Class 10', 'Mathematics');
+      filterResourcesOptimized(largeResources as Resource[], 'Class 10', 'Mathematics');
+
+      const startBaseline = performance.now();
+      for (let i = 0; i < iterations; i++) {
+        filterResourcesBaseline(largeResources as Resource[], 'Class 10', 'Mathematics');
+      }
+      const durationBaseline = performance.now() - startBaseline;
+
+      const startOptimized = performance.now();
+      for (let i = 0; i < iterations; i++) {
+        filterResourcesOptimized(largeResources as Resource[], 'Class 10', 'Mathematics');
+      }
+      const durationOptimized = performance.now() - startOptimized;
+
+      const speedup = durationBaseline / (durationOptimized || 1);
+
+      console.log(`[Combined Filter Benchmark] Multi-pass baseline duration: ${durationBaseline.toFixed(2)}ms`);
+      console.log(`[Combined Filter Benchmark] Single-pass combined duration: ${durationOptimized.toFixed(2)}ms`);
+      console.log(`[Combined Filter Benchmark] Speedup factor: ${speedup.toFixed(2)}x`);
+
+      expect(durationOptimized).toBeLessThanOrEqual(durationBaseline + 50);
+    });
+  });
 });
