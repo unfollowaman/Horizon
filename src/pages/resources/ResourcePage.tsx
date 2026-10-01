@@ -358,11 +358,11 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const filteredResources = useMemo(() => {
     let filtered = allResources;
 
-    if (selectedClass) {
-      filtered = filtered.filter(r => r.student_class === selectedClass);
-    }
-    if (selectedSubject) {
-      filtered = filtered.filter(r => r.subject === selectedSubject);
+    if (selectedClass || selectedSubject) {
+      filtered = filtered.filter(
+        r => (!selectedClass || r.student_class === selectedClass) &&
+             (!selectedSubject || r.subject === selectedSubject)
+      );
     }
 
     // Pass the actual current label for "all" so `config.filterByThirdFilter` can ignore it.
