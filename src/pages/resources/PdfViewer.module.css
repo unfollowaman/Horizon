@@ -56,7 +56,17 @@
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
+  background-color: var(--bg-base);
   box-sizing: border-box;
+}
+
+.pdfContentWrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .pdfDocument {
