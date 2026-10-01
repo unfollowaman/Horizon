@@ -21,6 +21,7 @@ const NotificationSettings: React.FC = () => {
           onClick={handleBack}
           className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center shrink-0 cursor-pointer text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
           aria-label="Go Back"
+          title="Go Back"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="19" y1="12" x2="5" y2="12"></line>

@@ -205,21 +205,20 @@ export const fetchSyllabusChapterCounts = async (): Promise<{ data: Record<strin
     return { data: null, error };
   }
 
-  const counts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
+  const initialCounts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
 
-  if (data) {
-    for (const row of data) {
-      if (!row.student_class) continue;
-      const strClass = String(row.student_class);
-      const match = strClass.match(/\d+/);
-      if (match) {
-        const classId = match[0];
-        if (counts[classId] !== undefined) {
-          counts[classId] = (counts[classId] || 0) + 1;
-        }
+  const counts = (data || []).reduce((acc, row) => {
+    if (!row.student_class) return acc;
+    const strClass = String(row.student_class);
+    const match = strClass.match(/\d+/);
+    if (match) {
+      const classId = match[0];
+      if (acc[classId] !== undefined) {
+        acc[classId] = (acc[classId] || 0) + 1;
       }
     }
-  }
+    return acc;
+  }, initialCounts);
 
   return { data: counts, error: null };
 };

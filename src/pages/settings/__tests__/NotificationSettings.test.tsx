@@ -53,6 +53,8 @@ describe('NotificationSettings Component', () => {
 
     const backButton = container?.querySelector('button[aria-label="Go Back"]');
     expect(backButton).not.toBeNull();
+    expect(backButton?.getAttribute('title')).toBe('Go Back');
+    expect(backButton?.className).toContain('focus-visible:ring-[#E91E8C]');
 
     const h2s = Array.from(container?.querySelectorAll('h2') || []);
     expect(h2s.map(h => h.textContent)).toContain('Push Notifications');

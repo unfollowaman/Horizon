@@ -36,7 +36,7 @@ describe('PdfFloatingControls', () => {
       toggleMobileMenu: vi.fn(),
     };
 
-    it('renders top back and mobile menu buttons with ARIA labels and focus-visible styling', () => {
+    it('renders top back and mobile menu buttons with ARIA labels, title tooltips, and high-contrast focus-visible styling', () => {
       act(() => {
         root?.render(<PdfTopControls {...defaultTopProps} />);
       });
@@ -47,19 +47,26 @@ describe('PdfFloatingControls', () => {
       expect(backBtn).not.toBeNull();
       expect(menuBtn).not.toBeNull();
 
+      expect(backBtn?.getAttribute('title')).toBe('Go Back');
+      expect(menuBtn?.getAttribute('title')).toBe('Open menu');
+
+      expect(backBtn?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+      expect(menuBtn?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+
       expect(backBtn?.className).toContain('focus-visible:ring-2');
-      expect(backBtn?.className).toContain('focus-visible:ring-ink/20');
+      expect(backBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
       expect(menuBtn?.className).toContain('focus-visible:ring-2');
-      expect(menuBtn?.className).toContain('focus-visible:ring-ink/20');
+      expect(menuBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
     });
 
-    it('toggles mobile menu button ARIA label when open', () => {
+    it('toggles mobile menu button ARIA label and title tooltip when open', () => {
       act(() => {
         root?.render(<PdfTopControls {...defaultTopProps} isMobileMenuOpen={true} />);
       });
 
       const menuBtn = container?.querySelector('button[aria-label="Close menu"]');
       expect(menuBtn).not.toBeNull();
+      expect(menuBtn?.getAttribute('title')).toBe('Close menu');
     });
   });
 
@@ -74,7 +81,7 @@ describe('PdfFloatingControls', () => {
       handleShare: vi.fn(),
     };
 
-    it('renders bottom control buttons with ARIA attributes and focus-visible styling', () => {
+    it('renders bottom control buttons with ARIA attributes, title tooltips, and high-contrast focus-visible styling', () => {
       act(() => {
         root?.render(<PdfBottomControls {...defaultBottomProps} />);
       });
@@ -91,11 +98,21 @@ describe('PdfFloatingControls', () => {
       expect(shareBtn).not.toBeNull();
       expect(toggleBtn).not.toBeNull();
 
+      expect(zoomInBtn?.getAttribute('title')).toBe('Zoom In');
+      expect(zoomOutBtn?.getAttribute('title')).toBe('Zoom Out');
+      expect(rotateBtn?.getAttribute('title')).toBe('Rotate Screen');
+      expect(shareBtn?.getAttribute('title')).toBe('Share');
+      expect(toggleBtn?.getAttribute('title')).toBe('More options');
+
+      expect(zoomInBtn?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+      expect(zoomOutBtn?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+
       expect(zoomInBtn?.className).toContain('focus-visible:ring-2');
-      expect(zoomOutBtn?.className).toContain('focus-visible:ring-2');
-      expect(rotateBtn?.className).toContain('focus-visible:ring-2');
-      expect(shareBtn?.className).toContain('focus-visible:ring-2');
-      expect(toggleBtn?.className).toContain('focus-visible:ring-2');
+      expect(zoomInBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+      expect(zoomOutBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+      expect(rotateBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+      expect(shareBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+      expect(toggleBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
 
       expect(toggleBtn?.getAttribute('aria-expanded')).toBe('false');
     });
@@ -128,13 +145,14 @@ describe('PdfFloatingControls', () => {
       expect(toggleRotationMock).toHaveBeenCalledTimes(1);
     });
 
-    it('updates aria-expanded attribute when three-dots menu is open', () => {
+    it('updates aria-expanded attribute and title tooltip when three-dots menu is open', () => {
       act(() => {
         root?.render(<PdfBottomControls {...defaultBottomProps} isThreeDotsMenuOpen={true} />);
       });
 
       const toggleBtn = container?.querySelector('button[aria-label="More options"]');
       expect(toggleBtn?.getAttribute('aria-expanded')).toBe('true');
+      expect(toggleBtn?.getAttribute('title')).toBe('Close options');
     });
   });
 });
