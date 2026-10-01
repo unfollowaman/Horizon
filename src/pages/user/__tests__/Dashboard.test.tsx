@@ -154,4 +154,81 @@ describe('Dashboard Component Accessibility & UX', () => {
     const avatarImg = container?.querySelector('img[alt="Aman Sharma\'s profile photo"]');
     expect(avatarImg).not.toBeNull();
   });
+
+  describe('formatMemberSince date formatting', () => {
+    const renderWithProfileCreatedAt = (createdAtValue: string | undefined | null) => {
+      vi.mocked(useAuth).mockReturnValue({
+        user: { id: 'usr-1', email: 'student@example.com' },
+        profile: {
+          id: 'usr-1',
+          name: 'Aman Sharma',
+          student_class: 'Class 10',
+          study_medium: 'English',
+          created_at: createdAtValue,
+        },
+        loading: false,
+        signOut: vi.fn(),
+        refreshProfile: vi.fn(),
+      } as never);
+
+      vi.mocked(useDashboardProgress).mockReturnValue({
+        isLoadingProgress: false,
+        progressData: null,
+      });
+
+      act(() => {
+        root?.render(
+          <MemoryRouter>
+            <Dashboard />
+          </MemoryRouter>
+        );
+      });
+    };
+
+    it('renders "Not set" when profile.created_at is an invalid date string', () => {
+      renderWithProfileCreatedAt('invalid-date-string');
+      const memberSinceLabel = Array.from(container?.querySelectorAll('span') || []).find(
+        (span) => span.textContent?.trim() === 'Member Since'
+      );
+      expect(memberSinceLabel).not.toBeUndefined();
+      const memberSinceValue = memberSinceLabel?.nextElementSibling;
+      expect(memberSinceValue?.textContent?.trim()).toBe('Not set');
+    });
+
+    it('renders formatted date when profile.created_at is a valid date string', () => {
+      renderWithProfileCreatedAt('2024-01-15T00:00:00.000Z');
+      const memberSinceLabel = Array.from(container?.querySelectorAll('span') || []).find(
+        (span) => span.textContent?.trim() === 'Member Since'
+      );
+      expect(memberSinceLabel).not.toBeUndefined();
+      const memberSinceValue = memberSinceLabel?.nextElementSibling;
+      expect(memberSinceValue?.textContent?.trim()).toBe('January 2024');
+    });
+
+    it('renders "Not set" when profile.created_at is missing or undefined', () => {
+      renderWithProfileCreatedAt(undefined);
+      const memberSinceLabel = Array.from(container?.querySelectorAll('span') || []).find(
+        (span) => span.textContent?.trim() === 'Member Since'
+      );
+      expect(memberSinceLabel).not.toBeUndefined();
+      const memberSinceValue = memberSinceLabel?.nextElementSibling;
+      expect(memberSinceValue?.textContent?.trim()).toBe('Not set');
+    });
+
+    it('renders "Not set" when Date.prototype.toLocaleDateString throws an error', () => {
+      const spy = vi.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(() => {
+        throw new Error('Locale error');
+      });
+
+      renderWithProfileCreatedAt('2024-01-15T00:00:00.000Z');
+      const memberSinceLabel = Array.from(container?.querySelectorAll('span') || []).find(
+        (span) => span.textContent?.trim() === 'Member Since'
+      );
+      expect(memberSinceLabel).not.toBeUndefined();
+      const memberSinceValue = memberSinceLabel?.nextElementSibling;
+      expect(memberSinceValue?.textContent?.trim()).toBe('Not set');
+
+      spy.mockRestore();
+    });
+  });
 });
