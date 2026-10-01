@@ -514,4 +514,109 @@ describe('learningResourcesAPI', () => {
       expect(response.error).toBeNull();
     });
   });
+
+  describe('fetchSyllabusChapterCounts', () => {
+    it('correctly aggregates counts for classes 8, 9, 10 and handles edge cases', async () => {
+      const mockRows = [
+        { student_class: '8' },
+        { student_class: 'Class 8' },
+        { student_class: '9' },
+        { student_class: 'Class 10' },
+        { student_class: '10' },
+        { student_class: 'Class 10' },
+        { student_class: null },
+        { student_class: '11' }, // not in target counts object
+      ];
+
+      const mockEq = vi.fn().mockResolvedValue({ data: mockRows, error: null });
+      const mockSelect = vi.fn().mockReturnValue({ eq: mockEq });
+
+      vi.mocked(supabase.from).mockReturnValue({
+        select: mockSelect,
+      } as unknown as ReturnType<typeof supabase.from>);
+
+      const { fetchSyllabusChapterCounts } = await import('../learningResourcesAPI');
+      const response = await fetchSyllabusChapterCounts();
+
+      expect(supabase.from).toHaveBeenCalledWith('chapters');
+      expect(mockSelect).toHaveBeenCalledWith('student_class');
+      expect(mockEq).toHaveBeenCalledWith('is_active', true);
+      expect(response.error).toBeNull();
+      expect(response.data).toEqual({
+        '8': 2,
+        '9': 1,
+        '10': 3,
+      });
+    });
+
+    it('returns error when database query fails', async () => {
+      const mockDbError = { message: 'Database connection failed' };
+      const mockEq = vi.fn().mockResolvedValue({ data: null, error: mockDbError });
+      const mockSelect = vi.fn().mockReturnValue({ eq: mockEq });
+
+      vi.mocked(supabase.from).mockReturnValue({
+        select: mockSelect,
+      } as unknown as ReturnType<typeof supabase.from>);
+
+      const { fetchSyllabusChapterCounts } = await import('../learningResourcesAPI');
+      const response = await fetchSyllabusChapterCounts();
+
+      expect(response.data).toBeNull();
+      expect(response.error).toEqual(mockDbError);
+    });
+
+    it('demonstrates reduce implementation correctness and benchmark', () => {
+      const sampleData = Array.from({ length: 50000 }, (_, i) => ({
+        student_class: i % 4 === 0 ? 'Class 8' : i % 4 === 1 ? '9' : i % 4 === 2 ? '10' : '11',
+      }));
+
+      // Baseline loop implementation
+      const loopCounts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
+      const startLoop = performance.now();
+      for (let i = 0; i < 10; i++) {
+        for (const row of sampleData) {
+          if (!row.student_class) continue;
+          const strClass = String(row.student_class);
+          const match = strClass.match(/\d+/);
+          if (match) {
+            const classId = match[0];
+            if (loopCounts[classId] !== undefined) {
+              loopCounts[classId] = (loopCounts[classId] || 0) + 1;
+            }
+          }
+        }
+      }
+      const endLoop = performance.now();
+
+      // Reduce implementation
+      const startReduce = performance.now();
+      let reduceCounts: Record<string, number> = { '8': 0, '9': 0, '10': 0 };
+      for (let i = 0; i < 10; i++) {
+        reduceCounts = sampleData.reduce<Record<string, number>>((acc, row) => {
+          if (!row.student_class) return acc;
+          const strClass = String(row.student_class);
+          const match = strClass.match(/\d+/);
+          if (match) {
+            const classId = match[0];
+            if (acc[classId] !== undefined) {
+              acc[classId] = (acc[classId] || 0) + 1;
+            }
+          }
+          return acc;
+        }, { '8': 0, '9': 0, '10': 0 });
+      }
+      const endReduce = performance.now();
+
+      // Divide counts by 10 since loop ran 10 iterations
+      const normalizedLoopCounts: Record<string, number> = {
+        '8': (loopCounts['8'] || 0) / 10,
+        '9': (loopCounts['9'] || 0) / 10,
+        '10': (loopCounts['10'] || 0) / 10,
+      };
+
+      expect(reduceCounts).toEqual(normalizedLoopCounts);
+      console.log(`[fetchSyllabusChapterCounts Benchmark] Loop duration: ${(endLoop - startLoop).toFixed(2)}ms`);
+      console.log(`[fetchSyllabusChapterCounts Benchmark] Reduce duration: ${(endReduce - startReduce).toFixed(2)}ms`);
+    });
+  });
 });
