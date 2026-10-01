@@ -13,6 +13,7 @@ interface PdfDocumentRendererProps {
   numPages: number | null;
   containerRef: React.RefObject<HTMLDivElement | null>;
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  contentRef?: React.RefObject<HTMLDivElement | null>;
   pageRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
   setTransformRef: React.MutableRefObject<((x: number, y: number, scale: number) => void) | null>;
   handleTransformed: (ref: { state: { positionX: number, positionY: number, scale: number }, instance?: { contentComponent?: HTMLElement | null } }) => void;
@@ -36,6 +37,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
   numPages,
   containerRef,
   scrollContainerRef,
+  contentRef,
   pageRefs,
   setTransformRef,
   handleTransformed,
@@ -213,37 +215,39 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                       touchAction: currentScale <= 1.01 ? 'pan-y' : 'pan-x pan-y'
                     }}
                   >
-                    {pdfError ? (
-                       <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
-                    ) : (
-                    <Document
-                      file={pdfData || signedUrl}
-                      onLoadSuccess={onDocumentLoadSuccess}
-                      onLoadError={onDocumentLoadError}
-                      onSourceError={onDocumentSourceError}
-                      loading={<div style={{ display: 'none' }} />}
-                      className={styles.pdfDocument}
-                    >
-                      {Array.from(new Array(numPages || 0), (_, index) => (
-                        <div
-                          key={`page_${index + 1}`}
-                          className={styles.reactPdfPage}
-                          ref={(el) => { pageRefs.current[index] = el; }}
-                          data-page-index={index}
-                        >
-                          <Page
-                            pageNumber={index + 1}
-                            width={containerWidth || Math.min(window.innerWidth, 800)}
-                            scale={1}
-                            rotate={rotation}
-                            renderTextLayer={false}
-                            renderAnnotationLayer={false}
-                            loading={<div className="h-64 w-full animate-pulse neu-recessed rounded-xl"></div>}
-                          />
-                        </div>
-                      ))}
-                    </Document>
-                    )}
+                    <div className={styles.pdfContentWrapper} ref={contentRef}>
+                      {pdfError ? (
+                         <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
+                      ) : (
+                      <Document
+                        file={pdfData || signedUrl}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        onLoadError={onDocumentLoadError}
+                        onSourceError={onDocumentSourceError}
+                        loading={<div style={{ display: 'none' }} />}
+                        className={styles.pdfDocument}
+                      >
+                        {Array.from(new Array(numPages || 0), (_, index) => (
+                          <div
+                            key={`page_${index + 1}`}
+                            className={styles.reactPdfPage}
+                            ref={(el) => { pageRefs.current[index] = el; }}
+                            data-page-index={index}
+                          >
+                            <Page
+                              pageNumber={index + 1}
+                              width={containerWidth || Math.min(window.innerWidth, 800)}
+                              scale={1}
+                              rotate={rotation}
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              loading={<div className="h-64 w-full animate-pulse neu-recessed rounded-xl"></div>}
+                            />
+                          </div>
+                        ))}
+                      </Document>
+                      )}
+                    </div>
                   </div>
                 </TransformComponent>
               </>

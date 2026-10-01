@@ -10,6 +10,7 @@ import { usePdfProgress } from './pdf-viewer/hooks/usePdfProgress';
 import { usePdfControls } from './pdf-viewer/hooks/usePdfControls';
 import { usePdfSlider } from './pdf-viewer/hooks/usePdfSlider';
 import { usePdfKeyboardShortcuts } from './pdf-viewer/hooks/usePdfKeyboardShortcuts';
+import { useBottomRubberBand } from '../../hooks/useBottomRubberBand';
 import { PdfMobileMenu } from './pdf-viewer/components/PdfMobileMenu';
 import { PdfPageSlider } from './pdf-viewer/components/PdfPageSlider';
 import { PdfTopControls } from './pdf-viewer/components/PdfFloatingControls';
@@ -36,7 +37,10 @@ const PdfViewer: React.FC = () => {
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const setTransformRef = useRef<((x: number, y: number, scale: number) => void) | null>(null);
+
+  useBottomRubberBand(scrollContainerRef, contentRef);
   const transformStateRef = useRef<{ positionX: number, positionY: number, scale: number }>({ positionX: 0, positionY: 0, scale: 1 });
 
   const { currentPage, setCurrentPage } = usePdfProgress({ id, user, resource, numPages, pageRefs });
@@ -245,6 +249,7 @@ const PdfViewer: React.FC = () => {
           numPages={numPages}
           containerRef={containerRef}
           scrollContainerRef={scrollContainerRef}
+          contentRef={contentRef}
           pageRefs={pageRefs}
           setTransformRef={setTransformRef}
           handleTransformed={handleTransformed}
