@@ -100,6 +100,37 @@ describe('HeaderNavOptimization', () => {
     expect(activeMobileLink?.getAttribute('href')).toBe('/library');
   });
 
+  it('renders accessible mobile navigation dialog panel with high-contrast focus rings', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/']}>
+          <Home />
+        </MemoryRouter>
+      );
+    });
+
+    const dialogPanel = container?.querySelector('div[role="dialog"][aria-modal="true"]');
+    expect(dialogPanel).not.toBeNull();
+    expect(dialogPanel?.getAttribute('aria-label')).toBe('Mobile navigation menu');
+
+    const hamburgerBtn = container?.querySelector('button[aria-label="Open menu"]');
+    expect(hamburgerBtn).not.toBeNull();
+    expect(hamburgerBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+
+    const closeBtn = container?.querySelector('button[aria-label="Close menu"]');
+    expect(closeBtn).not.toBeNull();
+    expect(closeBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
+
+    const signInLink = container?.querySelector('a[href="/login"]');
+    if (signInLink) {
+      expect(signInLink.className).toContain('focus-visible:ring-[#E91E8C]');
+    }
+
+    const navLink = container?.querySelector('nav[aria-label="Mobile navigation"] a');
+    expect(navLink).not.toBeNull();
+    expect(navLink?.className).toContain('focus-visible:ring-[#E91E8C]');
+  });
+
   it('demonstrates structural equivalence and elimination of intermediate array allocation', () => {
     interface NavItem {
       label: string;
