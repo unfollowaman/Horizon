@@ -41,6 +41,8 @@ describe('SyllabusLanding', () => {
 
     const backButton = container?.querySelector('button[aria-label="Go Back"]');
     expect(backButton).not.toBeNull();
+    expect(backButton?.getAttribute('title')).toBe('Go Back');
+    expect(backButton?.className).toContain('focus-visible:ring-[#E91E8C]');
 
     expect(container?.textContent).toContain('Choose Your Class');
     expect(container?.textContent).toContain('Class');

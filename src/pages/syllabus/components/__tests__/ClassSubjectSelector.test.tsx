@@ -66,7 +66,8 @@ describe('ClassSubjectSelector Component Tests', () => {
     // Back button
     const backBtn = container?.querySelector('button[aria-label="Back to Classes"]');
     expect(backBtn).not.toBeNull();
-    expect(backBtn?.className).toContain('focus-visible:ring-2');
+    expect(backBtn?.getAttribute('title')).toBe('Back to Classes');
+    expect(backBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
 
     // Primary Heading
     const heading = container?.querySelector('h1');

@@ -62,8 +62,9 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+          className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
           aria-label="Go Back"
+          title="Go Back"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
