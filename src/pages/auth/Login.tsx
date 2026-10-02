@@ -25,8 +25,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
-      <h1>Login</h1>
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
+      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[400px] mx-auto min-w-0">
+        <h1>Login</h1>
       <p>Enter your credentials to access your account.</p>
 
       {error && <div role="alert" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
@@ -76,6 +77,7 @@ const Login: React.FC = () => {
         Don't have an account? <Link to="/register" className="text-[#E91E8C] font-semibold hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]">Register here</Link>.
       </p>
     </div>
+  </div>
   );
 };
 
