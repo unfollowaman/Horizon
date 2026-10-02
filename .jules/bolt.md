@@ -9,3 +9,7 @@
 ## 2026-04-01 - Memoizing Syllabus Flowchart Chapter Cards and Topic Sorting
 **Learning:** In interactive syllabus visualizers (`SyllabusFlowchart`), toggling one chapter card re-renders all 15-25 chapter cards in the grid and repeatedly mutates/re-sorts topic arrays during render. Extracting `FlowchartChapterCard` into a `React.memo` component, memoizing sorted topics with `useMemo`, and wrapping event handlers in `useCallback` eliminates virtual DOM reconciliation for unchanged chapters and prevents array mutations on every state update.
 **Action:** Always wrap repeated card items in interactive syllabus/roadmap grids with `React.memo` and memoize topic sorting using `useMemo` with non-mutating array copies.
+
+## 2026-04-02 - Caching Sub-Element Refs in High-Frequency Animation Loops
+**Learning:** In continuous 60–120fps animation loops (`requestAnimationFrame`), calling `querySelector` inside frame update handlers (such as `applyState(t)`) forces DOM element searching and selector parsing thousands of times per second (e.g., 18 queries/frame = 1,080 to 2,160 queries/sec). Capturing direct sub-element React refs during JSX mapping eliminates DOM queries during frame ticks and provides a >2x speedup.
+**Action:** Always store sub-element references in React `useRef` arrays when animating child DOM nodes inside high-frequency `requestAnimationFrame` loops.
