@@ -141,9 +141,9 @@ const Onboarding: React.FC = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
+      <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4">
         <div className="w-full max-w-md neu-card rounded-2xl overflow-hidden animate-fade-rise">
-          <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--bg-raised)]">
+          <div className="px-5 py-3 flex justify-between items-center border-b border-[var(--bg-raised)]">
             {step > 1 ? (
               <button
                 type="button"
@@ -159,18 +159,18 @@ const Onboarding: React.FC = () => {
             <span className="text-sm font-medium text-gray-500">Step {step} of 5</span>
           </div>
 
-          <div className="p-8">
+          <div className="p-4 sm:p-6">
             {step === 1 && (
-              <div className="text-center space-y-6">
-                <h1 className="text-3xl font-bold">Welcome to Horizon</h1>
-                <p className="text-gray-600">
+              <div className="text-center space-y-4 sm:space-y-6">
+                <h1 className="text-2xl sm:text-3xl font-bold">Welcome to Horizon</h1>
+                <p className="text-gray-600 text-sm sm:text-base">
                   Horizon will personalize your experience based on your choices.
                   Don't worry, you can always change this information later.
                 </p>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="w-full py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   Continue
                 </button>
@@ -178,8 +178,8 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 2 && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-center mb-6">Select your Class</h2>
+              <div className="space-y-3 sm:space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Select your Class</h2>
                 <div className="grid gap-2">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
                     <button
@@ -201,7 +201,7 @@ const Onboarding: React.FC = () => {
                   type="button"
                   onClick={handleNext}
                   disabled={!studentClass || saving}
-                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full mt-4 py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Saving...' : 'Continue'}
                 </button>
@@ -209,8 +209,8 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 3 && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-center mb-6">Study Medium</h2>
+              <div className="space-y-3 sm:space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Study Medium</h2>
                 <div className="grid gap-2">
                   {['English', 'Hindi'].map((medium) => (
                     <button
@@ -232,7 +232,7 @@ const Onboarding: React.FC = () => {
                   type="button"
                   onClick={handleNext}
                   disabled={!studyMedium || saving}
-                  className="w-full mt-8 py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full mt-4 py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Saving...' : 'Continue'}
                 </button>
@@ -240,29 +240,29 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 4 && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-center mb-2">Profile Photo</h2>
-                <p className="text-center text-gray-500 mb-6">Optional - customize your profile</p>
+              <div className="space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Profile Photo</h2>
+                <p className="text-center text-gray-500 text-sm mb-4">Optional - customize your profile</p>
 
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-4">
                   <div className="relative">
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
                         alt="Profile"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-100 shadow-md"
                       />
                     ) : (
-                      <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow-md">
-                        <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow-md">
+                        <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                         </svg>
                       </div>
                     )}
                   </div>
 
-                  <div className="w-full flex flex-col gap-3">
-                    <label className="w-full py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
+                  <div className="w-full flex flex-col gap-2.5">
+                    <label className="w-full py-2.5 sm:py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
                       {uploading ? 'Uploading...' : 'Upload Photo'}
                       <input
                         type="file"
@@ -277,7 +277,7 @@ const Onboarding: React.FC = () => {
                       type="button"
                       onClick={handleNext}
                       disabled={uploading}
-                      className="w-full py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                      className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                     >
                       {avatarUrl ? 'Continue' : 'Skip'}
                     </button>
@@ -287,30 +287,30 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 5 && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-center mb-6">Review Profile</h2>
+              <div className="space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Review Profile</h2>
 
-                <div className="bg-[var(--bg-raised)] p-6 rounded-2xl flex flex-col items-center gap-4 neu-recessed">
+                <div className="bg-[var(--bg-raised)] p-4 sm:p-5 rounded-2xl flex flex-col items-center gap-3 neu-recessed">
                   {avatarUrl ? (
                     <img
                       src={avatarUrl}
                       alt="Profile"
-                      className="w-24 h-24 rounded-full object-cover shadow-sm"
+                      className="w-20 h-20 rounded-full object-cover shadow-sm"
                     />
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center shadow-sm">
-                      <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center shadow-sm">
+                      <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                       </svg>
                     </div>
                   )}
 
-                  <div className="w-full space-y-3 mt-4">
-                    <div className="flex justify-between items-center py-2 border-b border-[var(--bg-base)]">
+                  <div className="w-full space-y-2 mt-2">
+                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
                       <span className="text-gray-500 font-medium">Class</span>
                       <span className="font-bold">{studentClass}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-[var(--bg-base)]">
+                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
                       <span className="text-gray-500 font-medium">Medium</span>
                       <span className="font-bold">{studyMedium}</span>
                     </div>
@@ -321,7 +321,7 @@ const Onboarding: React.FC = () => {
                   type="button"
                   onClick={handleFinish}
                   disabled={saving}
-                  className="w-full mt-4 py-4 px-4 text-accent rounded-full font-bold text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full mt-3 py-3 px-4 text-accent rounded-full font-bold text-base sm:text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   {saving ? 'Finishing...' : 'Finish Setup'}
                 </button>
