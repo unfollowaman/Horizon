@@ -151,4 +151,24 @@ describe('Home HighlightsSection Subscription Form', () => {
       resolveRegister({});
     });
   });
+
+  it('renders footer social links with title attributes matching aria-labels', () => {
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <Home />
+        </MemoryRouter>
+      );
+    });
+
+    const socialLinks = container?.querySelectorAll('footer a[aria-label]');
+    expect(socialLinks).not.toBeNull();
+    expect(socialLinks?.length).toBeGreaterThan(0);
+
+    socialLinks?.forEach((link) => {
+      const ariaLabel = link.getAttribute('aria-label');
+      const title = link.getAttribute('title');
+      expect(title).toBe(ariaLabel);
+    });
+  });
 });
