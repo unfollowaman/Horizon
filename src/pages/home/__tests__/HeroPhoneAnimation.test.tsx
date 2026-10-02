@@ -120,9 +120,9 @@ describe('HeroPhoneAnimation Optimization & Correctness', () => {
     const containers = Array.from(testContainer.querySelectorAll('.iconContainer'));
     for (let iter = 0; iter < ITERATIONS; iter++) {
       containers.forEach(el => {
-        const img = el.querySelector('img');
-        const box = el.querySelector('.iconBox');
-        const label = el.querySelector('.iconLabel');
+        const img = el.querySelector('img') as HTMLImageElement | null;
+        const box = el.querySelector('.iconBox') as HTMLDivElement | null;
+        const label = el.querySelector('.iconLabel') as HTMLDivElement | null;
 
         if (img) img.style.width = '50px';
         if (box) box.style.opacity = '1';
