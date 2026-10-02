@@ -41,3 +41,7 @@
 ## 2026-04-07 - High-Contrast Focus Rings & Mouse Tooltip Coupling on Floating Overlay Controls
 **Learning:** Floating overlay controls (such as PDF viewer floating buttons) rendered over content canvases require high-contrast focus rings (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) so keyboard navigation remains clearly visible against variable document backgrounds. Coupling `aria-label` with matching `title` attributes on icon-only buttons provides native mouse hover tooltips without additional JS popover dependencies, while `aria-hidden="true"` on inner SVGs prevents redundant screen reader announcements.
 **Action:** Always pair `aria-label` with matching `title` tooltips and `aria-hidden="true"` on inner SVGs for icon-only floating overlay action buttons.
+
+## 2026-04-08 - Accessible WAI-ARIA Loading Status Semantics on Skeleton Page Loaders
+**Learning:** Full-page and component skeleton loaders (such as `DashboardSkeleton`) must declare `role="status"` and a descriptive `aria-label` (e.g. `aria-label="Loading student dashboard"`) on their root container alongside an explicit `<span className="sr-only">Loading student dashboard...</span>` element. Wrapping the visual placeholder shapes in `<div aria-hidden="true">` prevents screen readers from navigating through empty layout blocks while giving immediate status feedback to assistive technologies.
+**Action:** Always add `role="status"`, descriptive `aria-label`, `.sr-only` announcement text, and `aria-hidden="true"` on visual placeholder shapes in skeleton loading components.
