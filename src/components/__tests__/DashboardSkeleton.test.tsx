@@ -1,4 +1,4 @@
-import React, { act } from 'react';
+import { act } from 'react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createRoot, type Root } from 'react-dom/client';
 import DashboardSkeleton from '../DashboardSkeleton';
