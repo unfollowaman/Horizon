@@ -5,7 +5,7 @@ import { getAllFeatures } from '../config/resources';
 import type { ResourceType } from '../types';
 
 interface OtherResourcesProps {
-  currentCategoryId: ResourceType | 'updates'; // The id of the current category to exclude
+  currentCategoryId: ResourceType | 'syllabus' | 'updates'; // The id of the current category to exclude
 }
 
 const OtherResourcesComponent: React.FC<OtherResourcesProps> = ({ currentCategoryId }) => {
