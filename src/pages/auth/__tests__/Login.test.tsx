@@ -64,6 +64,15 @@ describe('Login Component', () => {
       );
     });
 
+    const outerContainer = container?.firstElementChild as HTMLDivElement;
+    expect(outerContainer?.className).toContain('w-[min(96vw,1600px)]');
+    expect(outerContainer?.className).toContain('px-[clamp(16px,2vw,32px)]');
+
+    const card = outerContainer?.querySelector('.neu-card') as HTMLDivElement;
+    expect(card).not.toBeNull();
+    expect(card?.className).toContain('max-w-[400px]');
+    expect(card?.className).toContain('w-full');
+
     const heading = container?.querySelector('h1');
     expect(heading?.textContent).toBe('Login');
 

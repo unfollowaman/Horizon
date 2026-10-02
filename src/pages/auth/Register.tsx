@@ -27,8 +27,8 @@ const Register: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] p-2">
-        <div className="neu-card rounded-2xl p-8 w-full max-w-[400px] mx-auto text-center flex flex-col items-center">
+      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
+        <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[400px] mx-auto min-w-0 text-center flex flex-col items-center">
           <img
             src="/assets/SVG Illustrations/confirm-email.svg"
             alt=""
@@ -50,8 +50,9 @@ const Register: React.FC = () => {
   }
 
   return (
-    <div className="neu-card rounded-2xl p-8 max-w-[400px] mx-auto mt-8">
-      <h1>Register</h1>
+    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
+      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[400px] mx-auto min-w-0">
+        <h1>Register</h1>
       <p>Create a new account to access resources.</p>
 
       {error && <div role="alert" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
@@ -111,6 +112,7 @@ const Register: React.FC = () => {
         Already have an account? <Link to="/login" className="text-[#E91E8C] font-semibold hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]">Login here</Link>.
       </p>
     </div>
+  </div>
   );
 };
 
