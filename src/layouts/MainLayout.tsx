@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import PageLoader from '../components/loading/PageLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouteErrorFallback from '../components/RouteErrorFallback';
+import SkipToContent from '../components/SkipToContent';
 import { useDelayedLoading } from '../hooks/useDelayedLoading';
 
 const DelayedPageLoader: React.FC = () => {
@@ -21,7 +22,8 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-base)] font-body text-ink w-full max-w-full overflow-x-clip">
-      <main className="flex-1 flex flex-col w-full max-w-full max-md:px-0 max-md:py-0 md:p-8 min-w-0">
+      <SkipToContent />
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col w-full max-w-full max-md:px-0 max-md:py-0 md:p-8 min-w-0 focus:outline-none">
         <ErrorBoundary
           key={`${location.pathname}-${resetKey}`}
           fallback={<RouteErrorFallback onRetry={handleRetry} />}
