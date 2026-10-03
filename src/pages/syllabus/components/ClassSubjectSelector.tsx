@@ -81,7 +81,8 @@ const getSubjectIllustration = (slug: string, name: string) => {
   );
 };
 
-export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
+// Memoized to prevent unnecessary virtual DOM reconciliations during parent re-renders
+export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = React.memo(({
   currentClass,
   subjects,
   onSelectSubject,
@@ -202,6 +203,8 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ClassSubjectSelector.displayName = 'ClassSubjectSelector';
 
 export default ClassSubjectSelector;

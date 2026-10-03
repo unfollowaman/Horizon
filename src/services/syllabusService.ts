@@ -60,6 +60,9 @@ export function normalizeClassId(classInput: string | null | undefined): string 
   return null;
 }
 
+// Internal cache for memoized subjects per class ID to avoid redundant array allocations and string transformations
+const subjectsCache: Record<string, SubjectOption[]> = {};
+
 /**
  * Gets subjects list for class id ('8', '9', '10') or slug ('class-8', etc)
  */
@@ -67,14 +70,18 @@ export function getSubjectsForClass(classInput: string | null | undefined): Subj
   const classId = normalizeClassId(classInput);
   if (!classId || !CLASS_SUBJECTS[classId]) return [];
 
-  return CLASS_SUBJECTS[classId].map((subjectName) => {
-    const slug = subjectToSlug(subjectName) || subjectName.toLowerCase().replace(/\s+/g, '-');
-    return {
-      id: slug,
-      name: subjectName,
-      slug,
-    };
-  });
+  if (!subjectsCache[classId]) {
+    subjectsCache[classId] = CLASS_SUBJECTS[classId].map((subjectName) => {
+      const slug = subjectToSlug(subjectName) || subjectName.toLowerCase().replace(/\s+/g, '-');
+      return {
+        id: slug,
+        name: subjectName,
+        slug,
+      };
+    });
+  }
+
+  return subjectsCache[classId];
 }
 
 /**
