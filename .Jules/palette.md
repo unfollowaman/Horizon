@@ -41,3 +41,7 @@
 ## 2026-04-07 - High-Contrast Focus Rings & Mouse Tooltip Coupling on Floating Overlay Controls
 **Learning:** Floating overlay controls (such as PDF viewer floating buttons) rendered over content canvases require high-contrast focus rings (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) so keyboard navigation remains clearly visible against variable document backgrounds. Coupling `aria-label` with matching `title` attributes on icon-only buttons provides native mouse hover tooltips without additional JS popover dependencies, while `aria-hidden="true"` on inner SVGs prevents redundant screen reader announcements.
 **Action:** Always pair `aria-label` with matching `title` tooltips and `aria-hidden="true"` on inner SVGs for icon-only floating overlay action buttons.
+
+## 2026-04-08 - Native Title Tooltips on Material Card Links & Action Controls
+**Learning:** Resource material cards in grid feeds and resource lists benefit from coupling explicit `aria-label` attributes with matching `title` tooltips (e.g., `title={`View ${cardTitle}`}` and `title={`Download ${cardTitle}`}`) on main card link wrappers, "View" action links, and "Download" buttons. This provides desktop mouse users with instant native browser hover tooltips that describe the specific target resource, complementing high-contrast `focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2` keyboard focus indicators.
+**Action:** Always pair `aria-label` with matching `title` attributes on card link wrappers and action buttons in card grid lists.
