@@ -21,25 +21,28 @@ describe('PdfDocumentRenderer Page Numbers Optimization', () => {
     const numPages = 150;
     const iterations = 50000;
 
+    let totalLengthBaseline = 0;
     // Baseline: Creating array on every render
     const startBaseline = performance.now();
     for (let i = 0; i < iterations; i++) {
       const arr = Array.from(new Array(numPages || 0), (_, index) => index + 1);
-      // simulate accessing array
-      const _len = arr.length;
+      totalLengthBaseline += arr.length;
     }
     const endBaseline = performance.now();
     const durationBaseline = endBaseline - startBaseline;
 
+    let totalLengthOptimized = 0;
     // Optimized: Reusing memoized array reference across render frames
     const memoizedPageNumbers = Array.from({ length: numPages }, (_, index) => index + 1);
     const startOptimized = performance.now();
     for (let i = 0; i < iterations; i++) {
       const arr = memoizedPageNumbers;
-      const _len = arr.length;
+      totalLengthOptimized += arr.length;
     }
     const endOptimized = performance.now();
     const durationOptimized = endOptimized - startOptimized;
+
+    expect(totalLengthBaseline).toBe(totalLengthOptimized);
 
     console.log(`[PdfDocumentRenderer Benchmark] Un-memoized duration (${iterations} renders): ${durationBaseline.toFixed(2)}ms`);
     console.log(`[PdfDocumentRenderer Benchmark] Memoized duration (${iterations} renders): ${durationOptimized.toFixed(2)}ms`);
