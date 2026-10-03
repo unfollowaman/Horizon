@@ -6,6 +6,7 @@ import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import ProfilePopover from '../../components/ProfilePopover';
 import ProfileButton from '../../components/ProfileButton';
+import SkipToContent from '../../components/SkipToContent';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Home.module.css';
 
@@ -509,8 +510,9 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)]">
+      <SkipToContent />
       <Header />
-      <main className="flex-1 w-full flex flex-col">
+      <main id="main-content" tabIndex={-1} className="flex-1 w-full flex flex-col focus:outline-none">
         <HeroSection />
         <FeaturesSection />
         {!loading && !session && <HighlightsSection />}

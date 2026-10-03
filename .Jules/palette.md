@@ -41,3 +41,7 @@
 ## 2026-04-07 - High-Contrast Focus Rings & Mouse Tooltip Coupling on Floating Overlay Controls
 **Learning:** Floating overlay controls (such as PDF viewer floating buttons) rendered over content canvases require high-contrast focus rings (`focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`) so keyboard navigation remains clearly visible against variable document backgrounds. Coupling `aria-label` with matching `title` attributes on icon-only buttons provides native mouse hover tooltips without additional JS popover dependencies, while `aria-hidden="true"` on inner SVGs prevents redundant screen reader announcements.
 **Action:** Always pair `aria-label` with matching `title` tooltips and `aria-hidden="true"` on inner SVGs for icon-only floating overlay action buttons.
+
+## 2026-04-08 - Accessible Skip-To-Content Links & Programmatic Focus Management
+**Learning:** Top-level layout wrappers (`MainLayout` and `Home`) require an accessible `SkipToContent` link (`<a href="#main-content">`) paired with `tabIndex={-1}` and `focus:outline-none` on `<main id="main-content">`. Using `sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100]` ensures the link remains hidden until keyboard users press Tab on page load, providing an immediate bypass for repetitive header navigation.
+**Action:** Always include a `SkipToContent` link targeting `<main id="main-content" tabIndex={-1}>` on top-level layout containers.
