@@ -121,6 +121,11 @@ describe('ProfilePopover Component', () => {
     expect(viewProfileLink).not.toBeNull();
     expect(viewProfileLink?.className).toContain('focus-visible:ring-2');
 
+    const settingsLink = container?.querySelector('a[href="/settings/notifications"]');
+    expect(settingsLink).not.toBeNull();
+    expect(settingsLink?.textContent).toBe('Settings');
+    expect(settingsLink?.className).toContain('focus-visible:ring-2');
+
     const signOutBtn = Array.from(container?.querySelectorAll('button') || []).find(
       (btn) => btn.textContent === 'Sign Out'
     );

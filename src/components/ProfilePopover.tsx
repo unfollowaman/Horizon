@@ -86,6 +86,13 @@ const ProfilePopover: React.FC = () => {
             >
               View Profile
             </Link>
+            <Link
+              to="/settings/notifications"
+              className={`${styles.popoverLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
+              onClick={closePopover}
+            >
+              Settings
+            </Link>
             <button
               type="button"
               onClick={handleSignOut}

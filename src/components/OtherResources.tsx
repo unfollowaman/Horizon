@@ -1,18 +1,20 @@
-import type React from 'react';
+import React, { useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './OtherResources.module.css';
 import { getAllFeatures } from '../config/resources';
 import type { ResourceType } from '../types';
 
 interface OtherResourcesProps {
-  currentCategoryId: ResourceType | 'updates'; // The id of the current category to exclude
+  currentCategoryId: ResourceType | 'syllabus' | 'updates'; // The id of the current category to exclude
 }
 
-const OtherResources: React.FC<OtherResourcesProps> = ({ currentCategoryId }) => {
-  // Filter out the current category and take the first 4
-  const displayFeatures = getAllFeatures()
-    .filter(f => f.id !== currentCategoryId)
-    .slice(0, 4);
+const OtherResourcesComponent: React.FC<OtherResourcesProps> = ({ currentCategoryId }) => {
+  // Memoize feature filtering to prevent redundant array allocations and method calls on parent re-renders
+  const displayFeatures = useMemo(() => {
+    return getAllFeatures()
+      .filter(f => f.id !== currentCategoryId)
+      .slice(0, 4);
+  }, [currentCategoryId]);
 
   return (
     <div className={styles.otherResourcesContainer}>
@@ -33,5 +35,8 @@ const OtherResources: React.FC<OtherResourcesProps> = ({ currentCategoryId }) =>
     </div>
   );
 };
+
+const OtherResources = memo(OtherResourcesComponent);
+OtherResources.displayName = 'OtherResources';
 
 export default OtherResources;

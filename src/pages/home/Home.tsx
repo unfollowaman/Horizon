@@ -481,19 +481,19 @@ const Footer = React.memo(() => {
 
         {/* Socials */}
         <div className={styles.footerSocials}>
-          <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Instagram">
+          <a href="https://www.instagram.com/unfollowaman_" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Instagram" title="Instagram">
             <img src="/assets/Social Links/instagram.png" alt="Instagram" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
-          <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="X (formerly Twitter)">
+          <a href="https://x.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="X (formerly Twitter)" title="X (formerly Twitter)">
             <img src="/assets/Social Links/twitter-x.png" alt="X (formerly Twitter)" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
-          <a href="mailto:tryhorizon18@gmail.com" className={styles.footerSocialLink} aria-label="Gmail">
+          <a href="mailto:tryhorizon18@gmail.com" className={styles.footerSocialLink} aria-label="Gmail" title="Gmail">
             <img src="/assets/Social Links/gmail.png" alt="Gmail" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
-          <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="GitHub">
+          <a href="https://github.com/unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="GitHub" title="GitHub">
             <img src="/assets/Social Links/github.png" alt="GitHub" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
-          <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Substack">
+          <a href="https://substack.com/@unfollowaman" target="_blank" rel="noopener noreferrer" className={styles.footerSocialLink} aria-label="Substack" title="Substack">
             <img src="/assets/Social Links/substack.png" alt="Substack" width="24" height="24" loading="lazy" decoding="async" className={styles.footerSocialIcon} />
           </a>
         </div>

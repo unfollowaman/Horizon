@@ -162,6 +162,14 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
     calculateActivePage();
   }, [handleScroll, calculateActivePage]);
 
+  // OPTIMIZATION: Memoize 1-based page numbers array based on `numPages`.
+  // Prevents `Array.from(new Array(numPages))` reallocation on every render frame
+  // during zoom pinch/pan, scroll, or UI controls toggle.
+  const pageNumbers = React.useMemo(() => {
+    const count = numPages || 0;
+    return Array.from({ length: count }, (_, index) => index + 1);
+  }, [numPages]);
+
   return (
     <div
       ref={containerRef}
@@ -227,15 +235,15 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                         loading={<div style={{ display: 'none' }} />}
                         className={styles.pdfDocument}
                       >
-                        {Array.from(new Array(numPages || 0), (_, index) => (
+                        {pageNumbers.map((pageNumber, index) => (
                           <div
-                            key={`page_${index + 1}`}
+                            key={`page_${pageNumber}`}
                             className={styles.reactPdfPage}
                             ref={(el) => { pageRefs.current[index] = el; }}
                             data-page-index={index}
                           >
                             <Page
-                              pageNumber={index + 1}
+                              pageNumber={pageNumber}
                               width={containerWidth || Math.min(window.innerWidth, 800)}
                               scale={1}
                               rotate={rotation}

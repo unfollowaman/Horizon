@@ -52,4 +52,33 @@ describe('OtherResources', () => {
       expect(link.className).toContain('rounded-2xl');
     });
   });
+
+  it('correctly updates rendered features when currentCategoryId prop changes', () => {
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <OtherResources currentCategoryId="notes" />
+        </MemoryRouter>
+      );
+    });
+
+    // When currentCategoryId is 'notes', Study Notes should be excluded and PYQ Papers included
+    expect(container?.textContent).not.toContain('Study Notes');
+    expect(container?.textContent).toContain('PYQ Papers');
+    expect(container?.textContent).toContain('Syllabus');
+
+    // Update prop to 'syllabus'
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <OtherResources currentCategoryId="syllabus" />
+        </MemoryRouter>
+      );
+    });
+
+    // When currentCategoryId is 'syllabus', Syllabus should be excluded and Study Notes & PYQ Papers included
+    expect(container?.textContent).not.toContain('Syllabus');
+    expect(container?.textContent).toContain('Study Notes');
+    expect(container?.textContent).toContain('PYQ Papers');
+  });
 });
