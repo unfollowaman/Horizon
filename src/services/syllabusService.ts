@@ -60,6 +60,10 @@ export function normalizeClassId(classInput: string | null | undefined): string 
   return null;
 }
 
+// ⚡ Cache subject lists per class ID ('8', '9', '10') to return stable array references
+// and prevent repeated array allocations and string transformations on every render frame.
+const subjectsCache: Record<string, SubjectOption[]> = {};
+
 /**
  * Gets subjects list for class id ('8', '9', '10') or slug ('class-8', etc)
  */
@@ -67,7 +71,11 @@ export function getSubjectsForClass(classInput: string | null | undefined): Subj
   const classId = normalizeClassId(classInput);
   if (!classId || !CLASS_SUBJECTS[classId]) return [];
 
-  return CLASS_SUBJECTS[classId].map((subjectName) => {
+  if (subjectsCache[classId]) {
+    return subjectsCache[classId];
+  }
+
+  const result = CLASS_SUBJECTS[classId].map((subjectName) => {
     const slug = subjectToSlug(subjectName) || subjectName.toLowerCase().replace(/\s+/g, '-');
     return {
       id: slug,
@@ -75,6 +83,9 @@ export function getSubjectsForClass(classInput: string | null | undefined): Subj
       slug,
     };
   });
+
+  subjectsCache[classId] = result;
+  return result;
 }
 
 /**

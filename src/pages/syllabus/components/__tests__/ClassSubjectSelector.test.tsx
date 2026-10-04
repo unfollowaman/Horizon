@@ -3,7 +3,8 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import ClassSubjectSelector from '../ClassSubjectSelector';
-import type { ClassOption, SubjectOption } from '../../../../services/syllabusService';
+import { getSubjectsForClass, CLASS_SUBJECTS, type ClassOption, type SubjectOption } from '../../../../services/syllabusService';
+import { subjectToSlug } from '../../../../utils/urlHelper';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -196,5 +197,65 @@ describe('ClassSubjectSelector Component Tests', () => {
       scienceCard?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     });
     expect(handleSelectSubject).toHaveBeenCalledWith('science');
+  });
+
+  it('4. Returns stable array reference across repeated getSubjectsForClass calls', () => {
+    const res1 = getSubjectsForClass('8');
+    const res2 = getSubjectsForClass('class-8');
+    const res3 = getSubjectsForClass('8');
+
+    expect(res1).toBe(res2);
+    expect(res2).toBe(res3);
+    expect(res1.length).toBeGreaterThan(0);
+  });
+
+  it('5. Demonstrates measurable performance speedup for cached getSubjectsForClass vs unmemoized mapping', () => {
+    // Uncached baseline function simulation
+    const unmemoizedGetSubjectsForClass = (classId: string): SubjectOption[] => {
+      if (!CLASS_SUBJECTS[classId]) return [];
+      return CLASS_SUBJECTS[classId].map((subjectName) => {
+        const slug = subjectToSlug(subjectName) || subjectName.toLowerCase().replace(/\s+/g, '-');
+        return {
+          id: slug,
+          name: subjectName,
+          slug,
+        };
+      });
+    };
+
+    const iterations = 100_000;
+
+    // Benchmark unmemoized
+    const startUnmemoized = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      unmemoizedGetSubjectsForClass('8');
+      unmemoizedGetSubjectsForClass('9');
+      unmemoizedGetSubjectsForClass('10');
+    }
+    const endUnmemoized = performance.now();
+    const unmemoizedDuration = endUnmemoized - startUnmemoized;
+
+    // Warm cache
+    getSubjectsForClass('8');
+    getSubjectsForClass('9');
+    getSubjectsForClass('10');
+
+    // Benchmark memoized
+    const startMemoized = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      getSubjectsForClass('8');
+      getSubjectsForClass('9');
+      getSubjectsForClass('10');
+    }
+    const endMemoized = performance.now();
+    const memoizedDuration = endMemoized - startMemoized;
+
+    const speedup = unmemoizedDuration / (memoizedDuration || 0.001);
+
+    console.log(`[ClassSubjectSelector Benchmark] Unmemoized duration: ${unmemoizedDuration.toFixed(2)}ms`);
+    console.log(`[ClassSubjectSelector Benchmark] Memoized duration: ${memoizedDuration.toFixed(2)}ms`);
+    console.log(`[ClassSubjectSelector Benchmark] Speedup factor: ${speedup.toFixed(2)}x`);
+
+    expect(memoizedDuration).toBeLessThan(unmemoizedDuration);
   });
 });
