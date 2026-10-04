@@ -34,7 +34,21 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export const HeroPhoneAnimation: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // Cache direct sub-element references to avoid O(n) DOM queries on every animation frame (60-120fps)
+  const iconElementsRef = useRef<{
+    container: HTMLDivElement | null;
+    box: HTMLDivElement | null;
+    img: HTMLImageElement | null;
+    label: HTMLDivElement | null;
+  }[]>([]);
+
+  const getIconElements = (idx: number) => {
+    if (!iconElementsRef.current[idx]) {
+      iconElementsRef.current[idx] = { container: null, box: null, img: null, label: null };
+    }
+    return iconElementsRef.current[idx];
+  };
+
   const mascotRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
@@ -189,10 +203,10 @@ export const HeroPhoneAnimation: React.FC = () => {
       ringRef.current.style.opacity = `${(1 - settle) * 0.5 * clamp(t / 900, 0, 1) * globalFade}`;
     }
 
-    // Icons
+    // Icons (using cached DOM element refs instead of querySelector calls)
     iconsConfig.forEach((config, idx) => {
-      const el = iconRefs.current[idx];
-      if (!el) return;
+      const icon = iconElementsRef.current[idx];
+      if (!icon || !icon.container) return;
 
       let x: number, y: number, opacity: number, labelOpacity: number;
 
@@ -244,31 +258,28 @@ export const HeroPhoneAnimation: React.FC = () => {
         labelOpacity = 1;
       }
 
-      el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-      el.style.opacity = `${opacity * globalFade}`;
+      icon.container.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      icon.container.style.opacity = `${opacity * globalFade}`;
 
-      const img = el.querySelector('img');
-      if (img) {
+      if (icon.img) {
         // Slightly scale down the icon when it settles into the box
         const currentIconSize = lerp(iconSize, iconSize * 0.75, settle);
-        img.style.width = `${currentIconSize}px`;
+        icon.img.style.width = `${currentIconSize}px`;
       }
 
-      const box = el.querySelector(`.${styles.iconBox}`) as HTMLDivElement;
-      if (box) {
-        box.style.opacity = `${settle}`;
+      if (icon.box) {
+        icon.box.style.opacity = `${settle}`;
         const boxWidth = clamp(110 * scaleX, 85, 115);
         const boxHeight = clamp(85 * scaleX, 65, 90);
-        box.style.width = `${boxWidth}px`;
-        box.style.height = `${boxHeight}px`;
+        icon.box.style.width = `${boxWidth}px`;
+        icon.box.style.height = `${boxHeight}px`;
         // Transform is handled in CSS: translate(-50%, -50%)
       }
 
-      const label = el.querySelector('.iconLabel') as HTMLDivElement;
-      if (label) {
-        label.style.opacity = `${labelOpacity * globalFade}`;
-        label.style.fontSize = `${labelFontSize}px`;
-        label.style.maxWidth = `${labelMaxWidth}px`;
+      if (icon.label) {
+        icon.label.style.opacity = `${labelOpacity * globalFade}`;
+        icon.label.style.fontSize = `${labelFontSize}px`;
+        icon.label.style.maxWidth = `${labelMaxWidth}px`;
       }
     });
   };
@@ -337,11 +348,16 @@ export const HeroPhoneAnimation: React.FC = () => {
           {iconsConfig.map((config, idx) => (
             <div
               key={config.label}
-              ref={el => { iconRefs.current[idx] = el; }}
+              ref={el => { getIconElements(idx).container = el; }}
               className={styles.iconContainer}
             >
-              <div className={`${styles.iconBox} neu-raised`} style={{ opacity: 0 }} />
+              <div
+                ref={el => { getIconElements(idx).box = el; }}
+                className={`${styles.iconBox} neu-raised`}
+                style={{ opacity: 0 }}
+              />
               <img
+                ref={el => { getIconElements(idx).img = el; }}
                 src={`/assets/hero/${config.asset}`}
                 alt={config.label}
                 width="80"
@@ -351,7 +367,10 @@ export const HeroPhoneAnimation: React.FC = () => {
                 fetchPriority="high"
                 className={styles.iconImage}
               />
-              <div className={`iconLabel ${styles.iconLabel}`}>
+              <div
+                ref={el => { getIconElements(idx).label = el; }}
+                className={`iconLabel ${styles.iconLabel}`}
+              >
                 {config.label}
               </div>
             </div>
