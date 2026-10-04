@@ -45,3 +45,7 @@
 ## 2026-04-08 - Accessible WAI-ARIA Loading Status Semantics on Skeleton Page Loaders
 **Learning:** Full-page and component skeleton loaders (such as `DashboardSkeleton`) must declare `role="status"` and a descriptive `aria-label` (e.g. `aria-label="Loading student dashboard"`) on their root container alongside an explicit `<span className="sr-only">Loading student dashboard...</span>` element. Wrapping the visual placeholder shapes in `<div aria-hidden="true">` prevents screen readers from navigating through empty layout blocks while giving immediate status feedback to assistive technologies.
 **Action:** Always add `role="status"`, descriptive `aria-label`, `.sr-only` announcement text, and `aria-hidden="true"` on visual placeholder shapes in skeleton loading components.
+
+## 2026-04-09 - WAI-ARIA aria-hidden="true" on Decorative Visual Shapes & SVGs
+**Learning:** Decorative SVG icons inside labelled interactive controls (such as top header back buttons) and decorative empty-state illustration images (with `alt=""`) must declare `aria-hidden="true"`. Omitting `aria-hidden="true"` can cause screen readers to announce unhandled vector paths or image nodes before reading the primary element label or message text.
+**Action:** Always include `aria-hidden="true"` on non-text SVG icons inside labelled buttons and on decorative illustration images.
