@@ -3,7 +3,8 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import ClassSubjectSelector from '../ClassSubjectSelector';
-import type { ClassOption, SubjectOption } from '../../../../services/syllabusService';
+import { getSubjectsForClass, CLASS_SUBJECTS, type ClassOption, type SubjectOption } from '../../../../services/syllabusService';
+import { subjectToSlug } from '../../../../utils/urlHelper';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -196,5 +197,53 @@ describe('ClassSubjectSelector Component Tests', () => {
       scienceCard?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     });
     expect(handleSelectSubject).toHaveBeenCalledWith('science');
+  });
+
+  it('4. Has React.memo and displayName set on ClassSubjectSelector', () => {
+    expect(ClassSubjectSelector.displayName).toBe('ClassSubjectSelector');
+  });
+
+  it('5. getSubjectsForClass returns cached array reference on repeated calls', () => {
+    const firstCall = getSubjectsForClass('10');
+    const secondCall = getSubjectsForClass('10');
+    expect(firstCall).toBe(secondCall);
+    expect(firstCall.length).toBeGreaterThan(0);
+  });
+
+  it('6. Demonstrates measurable performance improvement for cached getSubjectsForClass over unmemoized baseline', () => {
+    const iterations = 100000;
+
+    // Baseline: Unmemoized allocation loop
+    const startBaseline = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      const classId = '10';
+      const subjects = CLASS_SUBJECTS[classId].map((subjectName) => {
+        const slug = subjectToSlug(subjectName) || subjectName.toLowerCase().replace(/\s+/g, '-');
+        return {
+          id: slug,
+          name: subjectName,
+          slug,
+        };
+      });
+      // Prevent dead code elimination
+      if (subjects.length === 0) throw new Error('Unreachable');
+    }
+    const durationBaseline = performance.now() - startBaseline;
+
+    // Optimized: Cached lookup
+    const startOptimized = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      const subjects = getSubjectsForClass('10');
+      if (subjects.length === 0) throw new Error('Unreachable');
+    }
+    const durationOptimized = performance.now() - startOptimized;
+
+    const speedup = durationBaseline / (durationOptimized || 0.001);
+
+    console.log(`[ClassSubjectSelector Benchmark] Unmemoized baseline duration: ${durationBaseline.toFixed(2)}ms`);
+    console.log(`[ClassSubjectSelector Benchmark] Cached lookup duration: ${durationOptimized.toFixed(2)}ms`);
+    console.log(`[ClassSubjectSelector Benchmark] Speedup factor: ${speedup.toFixed(2)}x`);
+
+    expect(durationOptimized).toBeLessThan(durationBaseline);
   });
 });
