@@ -72,11 +72,12 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
           return;
         }
 
-        // Create a set of unique chapters for the syllabus and group by subject
+        // Create a set of unique chapters for the syllabus and group by subject using single-pass loops
         const syllabusChapterIds = new Set<string>();
         const subjectTotals: Record<string, Set<string>> = {};
 
-        syllabusData.forEach(resource => {
+        for (let i = 0; i < syllabusData.length; i++) {
+          const resource = syllabusData[i];
           if (resource.chapter_id) {
             syllabusChapterIds.add(resource.chapter_id);
             const subject = resource.subject || 'Other';
@@ -85,10 +86,18 @@ export function useDashboardProgress({ user, profile }: UseDashboardProgressProp
             }
             subjectTotals[subject].add(resource.chapter_id);
           }
-        });
+        }
 
-        // Check which completions are within the current syllabus
-        const completedChapterIds = new Set(completionsData?.map(c => c.chapter_id) || []);
+        // Check which completions are within current syllabus using single-pass set population without array allocation
+        const completedChapterIds = new Set<string>();
+        if (completionsData) {
+          for (let i = 0; i < completionsData.length; i++) {
+            const chapterId = completionsData[i].chapter_id;
+            if (chapterId) {
+              completedChapterIds.add(chapterId);
+            }
+          }
+        }
 
         let syllabusCompletedChapters = 0;
         const subjectProgress: Record<
