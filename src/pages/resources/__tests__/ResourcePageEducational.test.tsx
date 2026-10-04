@@ -157,6 +157,12 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
     expect(jsonLdData['@context']).toBe('https://schema.org');
     expect(jsonLdData['@type']).toBe('CollectionPage');
     expect(jsonLdData.provider.name).toBe('Horizon');
+
+    // Check header back button SVG aria-hidden
+    const backBtn = container?.querySelector('button[aria-label="Go Back"]');
+    expect(backBtn).not.toBeNull();
+    const backSvg = backBtn?.querySelector('svg');
+    expect(backSvg?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('renders crawlable educational HTML section and sets SEO metadata on /notes', async () => {
@@ -187,5 +193,24 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
 
     const paragraph = guideSection?.querySelector('p');
     expect(paragraph?.textContent).toBe('Comprehensive chapter-wise revision notes designed to help students quickly grasp key concepts, formulas, and topics.');
+  });
+
+  it('renders aria-hidden="true" on empty state illustration when no resources exist', async () => {
+    vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
+      data: [],
+      error: null
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <ResourcePage config={pyqConfig} />
+        </MemoryRouter>
+      );
+    });
+
+    const emptyImg = container?.querySelector('img[src="/assets/SVG Illustrations/no-content-available.svg"]');
+    expect(emptyImg).not.toBeNull();
+    expect(emptyImg?.getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -388,7 +388,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           aria-label="Go Back"
           title="Go Back"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
@@ -486,6 +486,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           <img
             src="/assets/SVG Illustrations/no-content-available.svg"
             alt=""
+            aria-hidden="true"
             width="192"
             height="192"
             loading="lazy"
