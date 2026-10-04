@@ -58,11 +58,13 @@ describe('MaterialCard', () => {
 
     const cardMainLink = container?.querySelector('a[href="/resource/101"]:not([aria-label])');
     expect(cardMainLink).not.toBeNull();
+    expect(cardMainLink?.getAttribute('title')).toBe('View Chapter 1: Real Numbers Notes');
     expect(cardMainLink?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(cardMainLink?.className).toContain('focus-visible:ring-offset-2');
 
     const viewLink = container?.querySelector('a[aria-label="View Chapter 1: Real Numbers Notes"]');
     expect(viewLink).not.toBeNull();
+    expect(viewLink?.getAttribute('title')).toBe('View Chapter 1: Real Numbers Notes');
     expect(viewLink?.getAttribute('href')).toBe('/resource/101');
     expect(viewLink?.className).toContain('flex-1 min-w-0');
     expect(viewLink?.className).toContain('focus-visible:ring-[#E91E8C]');
@@ -70,6 +72,7 @@ describe('MaterialCard', () => {
 
     const downloadButton = container?.querySelector('button[aria-label="Download Chapter 1: Real Numbers Notes"]');
     expect(downloadButton).not.toBeNull();
+    expect(downloadButton?.getAttribute('title')).toBe('Download Chapter 1: Real Numbers Notes');
     expect(downloadButton?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(downloadButton?.className).toContain('focus-visible:ring-offset-2');
   });
