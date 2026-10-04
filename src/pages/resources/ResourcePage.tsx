@@ -500,6 +500,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
               type="button"
               onClick={() => navigate(basePath)}
               aria-label="Clear all active filters"
+              title="Clear all active filters"
               className="mt-4 px-5 py-2.5 font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               Clear Filters

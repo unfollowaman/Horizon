@@ -30,15 +30,17 @@ describe('Dropdown component', () => {
     root = null;
   });
 
-  it('renders correctly with default props and aria-label', () => {
+  it('renders correctly with default props, title attribute, and high-contrast focus ring', () => {
     act(() => {
       root?.render(<Dropdown value="Class 10" onChange={vi.fn()} options={options} ariaLabel="Filter by class" />);
     });
 
     const triggerBtn = container?.querySelector('button[aria-label="Filter by class"]');
     expect(triggerBtn).not.toBeNull();
+    expect(triggerBtn?.getAttribute('title')).toBe('Filter by class');
     expect(triggerBtn?.getAttribute('aria-haspopup')).toBe('listbox');
     expect(triggerBtn?.getAttribute('aria-expanded')).toBe('false');
+    expect(triggerBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(triggerBtn?.textContent).toContain('Class 10');
   });
 
@@ -60,6 +62,34 @@ describe('Dropdown component', () => {
     expect(optionElements?.length).toBe(3);
     expect(optionElements?.[2].getAttribute('aria-selected')).toBe('true');
     expect(optionElements?.[0].getAttribute('aria-selected')).toBe('false');
+
+    // Check checkmark icon on selected option
+    const selectedCheckmark = optionElements?.[2].querySelector('svg[aria-hidden="true"]');
+    expect(selectedCheckmark).not.toBeNull();
+    expect(selectedCheckmark?.getAttribute('class')).toContain('text-[#E91E8C]');
+
+    // Check inset focus ring styling on option
+    expect(optionElements?.[2].className).toContain('focus-visible:ring-inset');
+  });
+
+  it('dismisses listbox when Escape key is pressed on open trigger button', () => {
+    act(() => {
+      root?.render(<Dropdown value="Class 10" onChange={vi.fn()} options={options} ariaLabel="Filter by class" />);
+    });
+
+    const triggerBtn = container?.querySelector('button[aria-label="Filter by class"]') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    expect(triggerBtn.getAttribute('aria-expanded')).toBe('true');
+
+    act(() => {
+      triggerBtn.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+
+    expect(triggerBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(container?.querySelector('[role="listbox"]')).toBeNull();
   });
 
   it('calls onChange when an option is clicked', () => {
