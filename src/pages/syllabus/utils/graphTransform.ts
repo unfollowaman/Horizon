@@ -58,12 +58,15 @@ export function transformHierarchyToGraph(chapters: SyllabusChapterHierarchy[]):
     };
   }
 
-  // Sort chapters by display_order or chapter_number
-  const sortedChapters = [...chapters].sort((a, b) => {
-    const orderA = a.display_order ?? a.chapter_number ?? 0;
-    const orderB = b.display_order ?? b.chapter_number ?? 0;
-    return orderA - orderB;
-  });
+  // Skip array allocation and sorting when chapters count is <= 1
+  const sortedChapters =
+    chapters.length > 1
+      ? [...chapters].sort((a, b) => {
+          const orderA = a.display_order ?? a.chapter_number ?? 0;
+          const orderB = b.display_order ?? b.chapter_number ?? 0;
+          return orderA - orderB;
+        })
+      : chapters;
 
   const nodes: GraphNode[] = [];
   const edges: GraphEdge[] = [];
@@ -71,14 +74,21 @@ export function transformHierarchyToGraph(chapters: SyllabusChapterHierarchy[]):
   let maxGraphWidth = 0;
   let maxGraphHeight = 0;
 
-  sortedChapters.forEach((chapter, colIndex) => {
+  // Single-pass indexed loop eliminating closure allocation
+  for (let colIndex = 0; colIndex < sortedChapters.length; colIndex++) {
+    const chapter = sortedChapters[colIndex];
     const colX = PADDING + colIndex * (CHAPTER_WIDTH + COLUMN_GAP);
     const chapterY = PADDING;
 
-    const topics = [...(chapter.syllabus_topics || [])].sort((a, b) => a.display_order - b.display_order);
+    const rawTopics = chapter.syllabus_topics || [];
+    // Skip topic array allocation and sorting when topics count is <= 1
+    const topics =
+      rawTopics.length > 1
+        ? [...rawTopics].sort((a, b) => a.display_order - b.display_order)
+        : rawTopics;
 
     const chapterNodeId = `chapter-${chapter.id}`;
-    const chapterNode: GraphNode = {
+    nodes.push({
       id: chapterNodeId,
       type: 'chapter',
       x: colX,
@@ -92,22 +102,20 @@ export function transformHierarchyToGraph(chapters: SyllabusChapterHierarchy[]):
         topicCount: topics.length,
         chapterId: chapter.id,
       },
-    };
-
-    nodes.push(chapterNode);
+    });
 
     let currentColumnBottom = chapterY + CHAPTER_HEIGHT;
     let lastNodeId = chapterNodeId;
     let lastNodeY = chapterY;
     let lastNodeHeight = CHAPTER_HEIGHT;
 
-    topics.forEach((topic, topicIdx) => {
-      const isFirstTopic = topicIdx === 0;
-      const gap = isFirstTopic ? HEADER_GAP : ROW_GAP;
+    for (let topicIdx = 0; topicIdx < topics.length; topicIdx++) {
+      const topic = topics[topicIdx];
+      const gap = topicIdx === 0 ? HEADER_GAP : ROW_GAP;
       const topicY = lastNodeY + lastNodeHeight + gap;
       const topicNodeId = `topic-${topic.id}`;
 
-      const topicNode: GraphNode = {
+      nodes.push({
         id: topicNodeId,
         type: 'topic',
         x: colX,
@@ -121,31 +129,24 @@ export function transformHierarchyToGraph(chapters: SyllabusChapterHierarchy[]):
           resources: topic.resources || [],
           chapterId: chapter.id,
         },
-      };
-
-      nodes.push(topicNode);
+      });
 
       // Edge connecting previous node to current topic node in sequence
-      const edgeStartX = colX + CHAPTER_WIDTH / 2;
-      const edgeStartY = lastNodeY + lastNodeHeight;
-      const edgeEndX = colX + TOPIC_WIDTH / 2;
-      const edgeEndY = topicY;
-
       edges.push({
         id: `edge-${lastNodeId}-${topic.id}`,
         source: lastNodeId,
         target: topicNodeId,
-        startX: edgeStartX,
-        startY: edgeStartY,
-        endX: edgeEndX,
-        endY: edgeEndY,
+        startX: colX + CHAPTER_WIDTH / 2,
+        startY: lastNodeY + lastNodeHeight,
+        endX: colX + TOPIC_WIDTH / 2,
+        endY: topicY,
       });
 
       lastNodeId = topicNodeId;
       lastNodeY = topicY;
       lastNodeHeight = TOPIC_HEIGHT;
       currentColumnBottom = topicY + TOPIC_HEIGHT;
-    });
+    }
 
     const colRight = colX + CHAPTER_WIDTH + PADDING;
     if (colRight > maxGraphWidth) {
@@ -156,7 +157,7 @@ export function transformHierarchyToGraph(chapters: SyllabusChapterHierarchy[]):
     if (colBottom > maxGraphHeight) {
       maxGraphHeight = colBottom;
     }
-  });
+  }
 
   return {
     nodes,

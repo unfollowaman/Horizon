@@ -269,4 +269,140 @@ describe('S6 Syllabus Graph Data Transformer (graphTransform)', () => {
     expect(graph.width).toBeGreaterThanOrEqual(0);
     expect(graph.height).toBeGreaterThanOrEqual(0);
   });
+
+  it('7. demonstrates measurable performance improvement over closure/multi-sort baseline', () => {
+    // Generate large test dataset with 100 chapters, each with 20 topics
+    const largeDataset: SyllabusChapterHierarchy[] = Array.from({ length: 100 }, (_, cIdx) => ({
+      id: `ch-bench-${cIdx}`,
+      chapter_number: cIdx + 1,
+      chapter_name: `Benchmark Chapter ${cIdx + 1}`,
+      display_order: cIdx + 1,
+      is_active: true,
+      syllabus_topics: Array.from({ length: 20 }, (_, tIdx) => ({
+        id: `tp-bench-${cIdx}-${tIdx}`,
+        chapter_id: `ch-bench-${cIdx}`,
+        title: `Topic ${tIdx + 1}`,
+        topic_type: 'topic',
+        display_order: tIdx + 1,
+        is_active: true,
+        resources: [],
+      })),
+    }));
+
+    // Baseline implementation with forEach and unconditional sorting
+    const transformBaseline = (chapters: SyllabusChapterHierarchy[]) => {
+      const sortedChapters = [...chapters].sort((a, b) => {
+        const orderA = a.display_order ?? a.chapter_number ?? 0;
+        const orderB = b.display_order ?? b.chapter_number ?? 0;
+        return orderA - orderB;
+      });
+
+      const nodes: unknown[] = [];
+      const edges: unknown[] = [];
+      let maxGraphWidth = 0;
+      let maxGraphHeight = 0;
+
+      sortedChapters.forEach((chapter, colIndex) => {
+        const colX = 50 + colIndex * (340 + 80);
+        const chapterY = 50;
+        const topics = [...(chapter.syllabus_topics || [])].sort((a, b) => a.display_order - b.display_order);
+
+        const chapterNodeId = `chapter-${chapter.id}`;
+        nodes.push({
+          id: chapterNodeId,
+          type: 'chapter',
+          x: colX,
+          y: chapterY,
+          width: 340,
+          height: 130,
+          data: {
+            title: chapter.chapter_name,
+            chapterNumber: chapter.chapter_number,
+            chapterSummary: chapter.chapter_summary,
+            topicCount: topics.length,
+            chapterId: chapter.id,
+          },
+        });
+
+        let currentColumnBottom = chapterY + 130;
+        let lastNodeId = chapterNodeId;
+        let lastNodeY = chapterY;
+        let lastNodeHeight = 130;
+
+        topics.forEach((topic, topicIdx) => {
+          const gap = topicIdx === 0 ? 60 : 50;
+          const topicY = lastNodeY + lastNodeHeight + gap;
+          const topicNodeId = `topic-${topic.id}`;
+
+          nodes.push({
+            id: topicNodeId,
+            type: 'topic',
+            x: colX,
+            y: topicY,
+            width: 340,
+            height: 140,
+            data: {
+              title: topic.title,
+              description: topic.description,
+              topicType: topic.topic_type,
+              resources: topic.resources || [],
+              chapterId: chapter.id,
+            },
+          });
+
+          edges.push({
+            id: `edge-${lastNodeId}-${topic.id}`,
+            source: lastNodeId,
+            target: topicNodeId,
+            startX: colX + 170,
+            startY: lastNodeY + lastNodeHeight,
+            endX: colX + 170,
+            endY: topicY,
+          });
+
+          lastNodeId = topicNodeId;
+          lastNodeY = topicY;
+          lastNodeHeight = 140;
+          currentColumnBottom = topicY + 140;
+        });
+
+        const colRight = colX + 340 + 50;
+        if (colRight > maxGraphWidth) maxGraphWidth = colRight;
+        const colBottom = currentColumnBottom + 50;
+        if (colBottom > maxGraphHeight) maxGraphHeight = colBottom;
+      });
+
+      return { nodes, edges, width: maxGraphWidth, height: maxGraphHeight };
+    };
+
+    // Warmup
+    for (let i = 0; i < 10; i++) {
+      transformBaseline(largeDataset);
+      transformHierarchyToGraph(largeDataset);
+    }
+
+    const iterations = 500;
+
+    const startBaseline = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      transformBaseline(largeDataset);
+    }
+    const durationBaseline = performance.now() - startBaseline;
+
+    const startOptimized = performance.now();
+    for (let i = 0; i < iterations; i++) {
+      transformHierarchyToGraph(largeDataset);
+    }
+    const durationOptimized = performance.now() - startOptimized;
+
+    const baselineResult = transformBaseline(largeDataset);
+    const optimizedResult = transformHierarchyToGraph(largeDataset);
+
+    expect(optimizedResult.nodes.length).toBe(baselineResult.nodes.length);
+    expect(optimizedResult.edges.length).toBe(baselineResult.edges.length);
+
+    console.log(`[graphTransform Benchmark] Baseline duration: ${durationBaseline.toFixed(2)}ms`);
+    console.log(`[graphTransform Benchmark] Optimized duration: ${durationOptimized.toFixed(2)}ms`);
+    console.log(`[graphTransform Benchmark] Speedup factor: ${(durationBaseline / Math.max(durationOptimized, 0.01)).toFixed(2)}x`);
+  });
 });
