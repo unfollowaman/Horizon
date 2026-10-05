@@ -49,6 +49,11 @@ describe('RootFallback and Root Error Boundary Integration', () => {
     const logo = container?.querySelector('img');
     expect(logo).not.toBeNull();
     expect(logo?.getAttribute('src')).toBe('/assets/favicon/logo.avif');
+    expect(logo?.getAttribute('alt')).toBe('');
+    expect(logo?.getAttribute('aria-hidden')).toBe('true');
+
+    const button = container?.querySelector('button');
+    expect(button?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
   it('triggers window.location.reload when Reload Page button is clicked', () => {
