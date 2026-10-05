@@ -10,7 +10,8 @@ export const RootFallback: FC = () => {
       <div className="flex flex-col items-center justify-center p-8 neu-card rounded-2xl w-full max-w-md text-center">
         <img
           src="/assets/favicon/logo.avif"
-          alt="Horizon Logo"
+          alt=""
+          aria-hidden="true"
           width="64"
           height="64"
           loading="eager"
@@ -26,7 +27,7 @@ export const RootFallback: FC = () => {
         <button
           type="button"
           onClick={handleReload}
-          className="px-6 py-2.5 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink transition-all"
+          className="px-6 py-2.5 neu-raised-sm neu-raised-sm-hover rounded-xl text-body1 font-semibold text-ink transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
         >
           Reload Page
         </button>
