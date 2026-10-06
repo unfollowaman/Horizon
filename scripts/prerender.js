@@ -1316,9 +1316,15 @@ export const PUBLIC_STATIC_PAGES = [
             <h2 class="text-xl font-bold text-ink">Illustrations</h2>
             <h3 class="text-lg font-bold text-ink">Storyset</h3>
             <ul class="list-disc list-inside space-y-2 text-ink/90">
-              <li><a href="https://storyset.com/education" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Education illustrations — Storyset</a></li>
-              <li><a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">People illustrations — Storyset</a></li>
-              <li><a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Work illustrations — Storyset</a></li>
+              <li><a href="https://storyset.com/inspiration" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Notes — Storyset</a></li>
+              <li><a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">PYQ Papers — Storyset</a></li>
+              <li><a href="https://storyset.com/education" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Class 9 Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Class 10 Syllabus, English Syllabus, Sanskrit Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/medical" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Science Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Mathematics Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/home" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Hindi Syllabus — Storyset</a></li>
+              <li><a href="https://storyset.com/nature" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Social Science Syllabus — Storyset</a></li>
               <li><a href="https://storyset.com/city" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">City illustrations — Storyset</a></li>
               <li><a href="https://storyset.com/user" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">User illustrations — Storyset</a></li>
               <li><a href="https://storyset.com/communication" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Communication illustrations — Storyset</a></li>

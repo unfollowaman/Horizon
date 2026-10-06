@@ -124,7 +124,7 @@ export function getClassIllustrationMeta(classInput: string | null | undefined):
       alt: 'Class 9 illustration',
       attribution: {
         url: 'https://storyset.com/education',
-        text: 'Education illustrations by Storyset',
+        text: 'Class 9 Syllabus illustrations by Storyset',
       },
     };
   }
@@ -134,7 +134,7 @@ export function getClassIllustrationMeta(classInput: string | null | undefined):
       alt: 'Class 10 illustration',
       attribution: {
         url: 'https://storyset.com/people',
-        text: 'People illustrations by Storyset',
+        text: 'Class 10 Syllabus illustrations by Storyset',
       },
     };
   }
@@ -162,7 +162,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'Social Science illustration',
       attribution: {
         url: 'https://storyset.com/nature',
-        text: 'Nature illustrations by Storyset',
+        text: 'Social Science Syllabus illustrations by Storyset',
       },
     };
   }
@@ -172,7 +172,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'Science illustration',
       attribution: {
         url: 'https://storyset.com/medical',
-        text: 'Medical illustrations by Storyset',
+        text: 'Science Syllabus illustrations by Storyset',
       },
     };
   }
@@ -182,7 +182,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'Mathematics illustration',
       attribution: {
         url: 'https://storyset.com/work',
-        text: 'Work illustrations by Storyset',
+        text: 'Mathematics Syllabus illustrations by Storyset',
       },
     };
   }
@@ -192,7 +192,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'Hindi illustration',
       attribution: {
         url: 'https://storyset.com/home',
-        text: 'Home illustrations by Storyset',
+        text: 'Hindi Syllabus illustrations by Storyset',
       },
     };
   }
@@ -202,7 +202,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'English illustration',
       attribution: {
         url: 'https://storyset.com/people',
-        text: 'People illustrations by Storyset',
+        text: 'English Syllabus illustrations by Storyset',
       },
     };
   }
@@ -212,7 +212,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
       alt: 'Sanskrit illustration',
       attribution: {
         url: 'https://storyset.com/people',
-        text: 'People illustrations by Storyset',
+        text: 'Sanskrit Syllabus illustrations by Storyset',
       },
     };
   }
