@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Fragment } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { Resource, ResourceType } from '../../types';
 import { fetchLearningResources } from '../../services/learningResourcesAPI';
@@ -13,7 +13,6 @@ import {
 } from '../../utils/urlHelper';
 
 import { Dropdown } from '../../components/Dropdown';
-import LibraryInFeedAd from '../../components/LibraryInFeedAd';
 import MaterialCard from '../../components/MaterialCard';
 import MaterialCardSkeleton from '../../components/MaterialCardSkeleton';
 import OtherResources from '../../components/OtherResources';
@@ -32,7 +31,6 @@ export interface ResourcePageConfig {
   emptyMessageTitle: string;
   emptyMessageSubtitle: string;
   otherResourcesCategory: ResourceType | 'updates';
-  showInFeedAd?: boolean;
   getThirdFilterDesktopLabel: (defaultLabel: string) => string;
   getThirdFilterMobileLabel: (defaultLabel: string) => string;
   extractThirdFilterValues: (resources: Resource[]) => string[];
@@ -509,15 +507,9 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
-          {filteredResources.map((resource, index) => {
-            const showAd = config.showInFeedAd && index === 2;
-            return (
-              <Fragment key={resource.id}>
-                {showAd && <LibraryInFeedAd key="library-in-feed-ad" />}
-                <MaterialCard resource={resource} />
-              </Fragment>
-            );
-          })}
+          {filteredResources.map((resource) => (
+            <MaterialCard key={resource.id} resource={resource} />
+          ))}
         </div>
       )}
 
