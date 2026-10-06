@@ -30,7 +30,7 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
   if (type === 'pyq') {
     return (
       <img
-        src="/assets/SVG Illustrations/pyq-papers.svg"
+        src="/assets/SVG Illustrations/pyq-pdf-cards.svg"
         alt="PYQ Papers"
         className="w-full h-full object-contain"
       />
@@ -40,7 +40,7 @@ const DefaultIllustration: React.FC<{ type: string }> = ({ type }) => {
   if (type === 'notes') {
     return (
       <img
-        src="/assets/SVG Illustrations/study-notes.svg"
+        src="/assets/SVG Illustrations/notes-pdf-cards.svg"
         alt="Study Notes Illustration"
         className="w-full h-full object-contain"
       />

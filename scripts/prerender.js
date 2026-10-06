@@ -1318,7 +1318,7 @@ export const PUBLIC_STATIC_PAGES = [
             <ul class="list-disc list-inside space-y-2 text-ink/90">
               <li><a href="https://storyset.com/inspiration" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Syllabus — Storyset</a></li>
               <li><a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Notes — Storyset</a></li>
-              <li><a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">PYQ Papers — Storyset</a></li>
+              <li><a href="https://storyset.com/user" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">PYQ Papers — Storyset</a></li>
               <li><a href="https://storyset.com/education" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Class 9 Syllabus — Storyset</a></li>
               <li><a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Class 10 Syllabus, English Syllabus, Sanskrit Syllabus — Storyset</a></li>
               <li><a href="https://storyset.com/medical" target="_blank" rel="noopener noreferrer" class="text-[#E91E8C] font-semibold underline">Science Syllabus — Storyset</a></li>
@@ -2216,8 +2216,8 @@ export function renderMaterialCardHtml(resource) {
   const cardSubtitle = resource.year || resource.subject || '';
 
   const illustrationSrc = isPYQ
-    ? '/assets/SVG Illustrations/pyq-papers.svg'
-    : '/assets/SVG Illustrations/study-notes.svg';
+    ? '/assets/SVG Illustrations/pyq-pdf-cards.svg'
+    : '/assets/SVG Illustrations/notes-pdf-cards.svg';
 
   return `
     <div class="neu-raised p-[14px] rounded-xl flex flex-col h-full items-center text-center min-w-0">

@@ -83,8 +83,11 @@ describe('Attribution Page', () => {
     const notesLink = container?.querySelector('a[href="https://storyset.com/people"]');
     expect(notesLink?.textContent).toContain('Notes — Storyset');
 
-    const pyqLink = container?.querySelector('a[href="https://storyset.com/work"]');
-    expect(pyqLink?.textContent).toContain('PYQ Papers — Storyset');
+    const pyqLinks = container?.querySelectorAll('a[href="https://storyset.com/user"]');
+    const hasPyqLabel = Array.from(pyqLinks || []).some((link) =>
+      link.textContent?.includes('PYQ Papers — Storyset')
+    );
+    expect(hasPyqLabel).toBe(true);
 
     const educationLink = container?.querySelector('a[href="https://storyset.com/education"]');
     expect(educationLink?.textContent).toContain('Class 9 Syllabus — Storyset');
@@ -113,8 +116,10 @@ describe('Attribution Page', () => {
     const cityLink = container?.querySelector('a[href="https://storyset.com/city"]');
     expect(cityLink?.textContent).toContain('City illustrations — Storyset');
 
-    const userLink = container?.querySelector('a[href="https://storyset.com/user"]');
-    expect(userLink?.textContent).toContain('User illustrations — Storyset');
+    const hasUserLabel = Array.from(pyqLinks || []).some((link) =>
+      link.textContent?.includes('User illustrations — Storyset')
+    );
+    expect(hasUserLabel).toBe(true);
 
     const communicationLink = container?.querySelector('a[href="https://storyset.com/communication"]');
     expect(communicationLink?.textContent).toContain('Communication illustrations — Storyset');

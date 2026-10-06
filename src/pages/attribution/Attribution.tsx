@@ -58,7 +58,7 @@ const Attribution: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+              <a href="https://storyset.com/user" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 PYQ Papers — Storyset
               </a>
             </li>
