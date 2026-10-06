@@ -68,7 +68,7 @@ describe('Attribution Page', () => {
     expect(rbseLink).not.toBeNull();
   });
 
-  it('renders Storyset attribution links for education, people, medical, work, home, and nature illustrations', () => {
+  it('renders Storyset attribution links with website-purpose labels and original URLs', () => {
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -77,31 +77,46 @@ describe('Attribution Page', () => {
       );
     });
 
-    const syllabusLink = container?.querySelector('a[href="https://storyset.com/inspiration?utm_source=chatgpt.com"]');
+    const syllabusLink = container?.querySelector('a[href="https://storyset.com/inspiration"]');
     expect(syllabusLink?.textContent).toContain('Syllabus — Storyset');
 
-    const notesLink = container?.querySelector('a[href="https://storyset.com/people?utm_source=chatgpt.com"]');
+    const notesLink = container?.querySelector('a[href="https://storyset.com/people"]');
     expect(notesLink?.textContent).toContain('Notes — Storyset');
 
-    const pyqLink = container?.querySelector('a[href="https://storyset.com/work?utm_source=chatgpt.com"]');
+    const pyqLink = container?.querySelector('a[href="https://storyset.com/work"]');
     expect(pyqLink?.textContent).toContain('PYQ Papers — Storyset');
 
     const educationLink = container?.querySelector('a[href="https://storyset.com/education"]');
-    expect(educationLink?.textContent).toContain('Education illustrations');
+    expect(educationLink?.textContent).toContain('Class 9 Syllabus — Storyset');
 
-    const peopleLink = container?.querySelector('a[href="https://storyset.com/people"]');
-    expect(peopleLink?.textContent).toContain('People illustrations');
+    const peopleLinks = container?.querySelectorAll('a[href="https://storyset.com/people"]');
+    const hasClass10Label = Array.from(peopleLinks || []).some((link) =>
+      link.textContent?.includes('Class 10 Syllabus, English Syllabus, Sanskrit Syllabus — Storyset')
+    );
+    expect(hasClass10Label).toBe(true);
 
     const medicalLink = container?.querySelector('a[href="https://storyset.com/medical"]');
-    expect(medicalLink?.textContent).toContain('Medical illustrations');
+    expect(medicalLink?.textContent).toContain('Science Syllabus — Storyset');
 
-    const workLink = container?.querySelector('a[href="https://storyset.com/work"]');
-    expect(workLink?.textContent).toContain('Work illustrations');
+    const workLinks = container?.querySelectorAll('a[href="https://storyset.com/work"]');
+    const hasMathLabel = Array.from(workLinks || []).some((link) =>
+      link.textContent?.includes('Mathematics Syllabus — Storyset')
+    );
+    expect(hasMathLabel).toBe(true);
 
     const homeLink = container?.querySelector('a[href="https://storyset.com/home"]');
-    expect(homeLink?.textContent).toContain('Home illustrations');
+    expect(homeLink?.textContent).toContain('Hindi Syllabus — Storyset');
 
     const natureLink = container?.querySelector('a[href="https://storyset.com/nature"]');
-    expect(natureLink?.textContent).toContain('Nature illustrations');
+    expect(natureLink?.textContent).toContain('Social Science Syllabus — Storyset');
+
+    const cityLink = container?.querySelector('a[href="https://storyset.com/city"]');
+    expect(cityLink?.textContent).toContain('City illustrations — Storyset');
+
+    const userLink = container?.querySelector('a[href="https://storyset.com/user"]');
+    expect(userLink?.textContent).toContain('User illustrations — Storyset');
+
+    const communicationLink = container?.querySelector('a[href="https://storyset.com/communication"]');
+    expect(communicationLink?.textContent).toContain('Communication illustrations — Storyset');
   });
 });

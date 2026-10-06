@@ -48,48 +48,48 @@ const Attribution: React.FC = () => {
           <h3>Storyset</h3>
           <ul>
             <li>
-              <a href="https://storyset.com/inspiration?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+              <a href="https://storyset.com/inspiration" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 Syllabus — Storyset
               </a>
             </li>
             <li>
-              <a href="https://storyset.com/people?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+              <a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 Notes — Storyset
               </a>
             </li>
             <li>
-              <a href="https://storyset.com/work?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+              <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 PYQ Papers — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/education" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                Education illustrations — Storyset
+                Class 9 Syllabus — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/people" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                People illustrations — Storyset
+                Class 10 Syllabus, English Syllabus, Sanskrit Syllabus — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/medical" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                Medical illustrations — Storyset
+                Science Syllabus — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                Work illustrations — Storyset
+                Mathematics Syllabus — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/home" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                Home illustrations — Storyset
+                Hindi Syllabus — Storyset
               </a>
             </li>
             <li>
               <a href="https://storyset.com/nature" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
-                Nature illustrations — Storyset
+                Social Science Syllabus — Storyset
               </a>
             </li>
             <li>
