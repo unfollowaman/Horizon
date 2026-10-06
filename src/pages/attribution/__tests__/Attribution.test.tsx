@@ -77,6 +77,15 @@ describe('Attribution Page', () => {
       );
     });
 
+    const syllabusLink = container?.querySelector('a[href="https://storyset.com/inspiration?utm_source=chatgpt.com"]');
+    expect(syllabusLink?.textContent).toContain('Syllabus — Storyset');
+
+    const notesLink = container?.querySelector('a[href="https://storyset.com/people?utm_source=chatgpt.com"]');
+    expect(notesLink?.textContent).toContain('Notes — Storyset');
+
+    const pyqLink = container?.querySelector('a[href="https://storyset.com/work?utm_source=chatgpt.com"]');
+    expect(pyqLink?.textContent).toContain('PYQ Papers — Storyset');
+
     const educationLink = container?.querySelector('a[href="https://storyset.com/education"]');
     expect(educationLink?.textContent).toContain('Education illustrations');
 

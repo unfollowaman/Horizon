@@ -48,6 +48,21 @@ const Attribution: React.FC = () => {
           <h3>Storyset</h3>
           <ul>
             <li>
+              <a href="https://storyset.com/inspiration?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Syllabus — Storyset
+              </a>
+            </li>
+            <li>
+              <a href="https://storyset.com/people?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                Notes — Storyset
+              </a>
+            </li>
+            <li>
+              <a href="https://storyset.com/work?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
+                PYQ Papers — Storyset
+              </a>
+            </li>
+            <li>
               <a href="https://storyset.com/education" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>
                 Education illustrations — Storyset
               </a>

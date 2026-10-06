@@ -259,6 +259,37 @@ const HeroSection = React.memo(() => (
 ));
 HeroSection.displayName = 'HeroSection';
 
+const getFeatureIllustration = (id: string) => {
+  if (id === 'syllabus') {
+    return (
+      <img
+        src="/assets/SVG Illustrations/syllabus.svg"
+        alt="Syllabus illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+  if (id === 'notes') {
+    return (
+      <img
+        src="/assets/SVG Illustrations/notes.svg"
+        alt="Study Notes illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+  if (id === 'pyq') {
+    return (
+      <img
+        src="/assets/SVG Illustrations/pyqs.svg"
+        alt="PYQ Papers illustration"
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+  return null;
+};
+
 const FeaturesSection = React.memo(() => {
   const [hasReachedFeatures, setHasReachedFeatures] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -303,7 +334,7 @@ const FeaturesSection = React.memo(() => {
           {getAllFeatures().map((f, i) => (
             <div
               key={i}
-              className={`${styles.featureCard} animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}
+              className={`${styles.featureCard} group animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}
               onMouseEnter={() => {
                 if (f.path === '/library') preloadLibrary();
                 if (f.path === '/notes') preloadStudyNotes();
@@ -314,8 +345,34 @@ const FeaturesSection = React.memo(() => {
               ) : null}
               <div className={styles.featureCardInner} />
               <div className={styles.featureCardContent}>
-                <h3 className={styles.featureCardTitle}>{f.title}</h3>
-                <p className={styles.featureCardDesc}>{f.desc}</p>
+                {/* LEFT: Compact Icon Container */}
+                <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-0 shrink-0 overflow-hidden">
+                  {getFeatureIllustration(f.id)}
+                </div>
+
+                {/* CENTER: Title & Left-Aligned Description */}
+                <div className="flex-1 min-w-0 space-y-1 text-left">
+                  <h3 className={styles.featureCardTitle}>{f.title}</h3>
+                  <p className={styles.featureCardDesc}>{f.desc}</p>
+                </div>
+
+                {/* RIGHT: Circular Neumorphic Arrow Action Button */}
+                <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
+                  <svg
+                    aria-hidden="true"
+                    className="w-2 h-2 text-[#E91E8C] shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </div>
               </div>
             </div>
           ))}
