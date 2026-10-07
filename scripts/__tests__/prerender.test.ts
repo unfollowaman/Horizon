@@ -197,6 +197,18 @@ describe('prerender script unit tests', () => {
     expect(escapeHtml('Science & Technology <Class 10>')).toBe('Science &amp; Technology &lt;Class 10&gt;');
   });
 
+  it('verifies that index.html contains deferred third-party script loading for adsbygoogle and gtag', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const indexHtmlPath = path.resolve(__dirname, '../../index.html');
+    const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf-8');
+
+    expect(indexHtmlContent).toContain('window.addEventListener("load"');
+    expect(indexHtmlContent).toContain('adsbygoogle.js');
+    expect(indexHtmlContent).toContain('gtag/js');
+    expect(indexHtmlContent).not.toContain('<script async src="https://pagead2.googlesyndication.com');
+  });
+
   it('prerenders static information pages with valid titles, canonicals, json-ld, and body content', () => {
     expect(PUBLIC_STATIC_PAGES).toHaveLength(6);
     const paths = PUBLIC_STATIC_PAGES.map((p) => p.path);
