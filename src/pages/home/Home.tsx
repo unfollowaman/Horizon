@@ -56,7 +56,7 @@ const Header = React.memo(() => {
       <div className={`${styles.desktopHeader} ${scrolledPastHero ? styles.desktopHeaderScrolled : styles.desktopHeaderTop}`}>
         {/* Brand Logo (Desktop) */}
         <Link to="/" className={`${styles.brandLogoDesktop} neu-raised`}>
-          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" fetchPriority="high" className={styles.brandLogoImg} />
+          <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" className={styles.brandLogoImg} />
           <div className={styles.brandLogoDivider}></div>
           <span className={styles.brandLogoText}>
             Horizon
@@ -238,7 +238,7 @@ const HeroSection = React.memo(() => (
 
       {/* Brand Pill Logo */}
       <Link to="/" onClick={() => window.scrollTo(0, 0)} className={`animate-fade-rise ${styles.heroBrandPill} neu-raised no-underline`}>
-        <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="eager" decoding="async" fetchPriority="high" className={styles.heroBrandPillImg} />
+        <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="eager" decoding="async" className={styles.heroBrandPillImg} />
         <span className={styles.heroBrandPillText}>
           Horizon
         </span>

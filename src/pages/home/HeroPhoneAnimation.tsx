@@ -368,7 +368,7 @@ export const HeroPhoneAnimation: React.FC = () => {
                 height="80"
                 loading="eager"
                 decoding="async"
-                fetchPriority="high"
+                fetchPriority={config.asset === 'notes.avif' ? 'high' : undefined}
                 className={styles.iconImage}
               />
               <div
