@@ -350,6 +350,10 @@ export const HeroPhoneAnimation: React.FC = () => {
               key={config.label}
               ref={el => { getIconElements(idx).container = el; }}
               className={styles.iconContainer}
+              style={{
+                transform: `translate(${config.grid.x * renderScaleX}px, ${config.grid.y}px) translate(-50%, -50%)`,
+                opacity: 1,
+              }}
             >
               <div
                 ref={el => { getIconElements(idx).box = el; }}
