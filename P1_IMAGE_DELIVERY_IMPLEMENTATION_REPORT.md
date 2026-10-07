@@ -28,13 +28,14 @@
   - Header logo: 32×32 CSS px
   - Mascot logo: up to 75×75 CSS px
   - Fallback logo: 48×48 CSS px
+  - Max Desktop Rendered CSS Dimension: 75×75 px
 - **Original File Size:** 7,902 bytes (7.72 KiB)
 - **Image Format:** AVIF (RGBA transparent background)
 - **Loading Behavior:** `eager` above the fold (Header, Hero pill, Mascot), `lazy` below the fold (Footer)
 - **Priority:** Header logo and Hero pill logo carried `fetchPriority="high"`, Mascot carried normal priority
 - **Usage:** Header brand link, Hero brand pill, Hero animation mascot, Footer logo, Dashboard brand pill, RootFallback logo
 - **Recommended Action:**
-  - Resize intrinsic asset from 160×160 to 120×120 px (exact 2× DPR match for 60×60 max CSS display).
+  - Re-encode asset at 160×160 px with high-quality AVIF compression (Quality 85), providing 2× DPR retina coverage for max desktop render size (75×75 CSS px = 150×150 physical px).
   - Remove `fetchPriority="high"` from non-LCP header and hero pill logos to prevent network priority competition with the LCP image (`notes.avif`).
 
 ---
@@ -50,7 +51,7 @@
 - **Priority:** Carried `fetchPriority="high"` in React component and `fetchpriority="high"` in static HTML
 - **Usage:** Hero phone animation secondary icon
 - **Recommended Action:**
-  - Resize intrinsic asset from 200×200 to 128×128 px (exact 2× DPR match for 64×64 mobile CSS display).
+  - Resize intrinsic asset from 200×200 to 160×160 px (exact 2× DPR match for 80×80 max desktop CSS display).
   - Remove `fetchPriority="high"` so network priority is uniquely reserved for the LCP image (`notes.avif`).
 
 ---
@@ -66,7 +67,7 @@
 - **Priority:** Carried `fetchPriority="high"`
 - **Usage:** Hero phone animation secondary icon
 - **Recommended Action:**
-  - Resize intrinsic asset from 200×200 to 128×128 px.
+  - Resize intrinsic asset from 200×200 to 160×160 px (exact 2× DPR match for 80×80 max desktop CSS display).
   - Remove `fetchPriority="high"`.
 
 ---
@@ -82,14 +83,14 @@
 - **Priority:** Carried `fetchPriority="high"`
 - **Usage:** Hero phone animation secondary icon
 - **Recommended Action:**
-  - Resize intrinsic asset from 200×200 to 128×128 px.
+  - Resize intrinsic asset from 200×200 to 160×160 px (exact 2× DPR match for 80×80 max desktop CSS display).
   - Remove `fetchPriority="high"`.
 
 ---
 
 ## 3. Root Cause
 
-1. **Oversized Source Dimensions:** The original source images had intrinsic dimensions of 160×160 (`logo.avif`) and 200×200 (`announcements.avif`, `flashcards.avif`, `revision-sheets.avif`). On mobile viewports, these assets were displayed at 60×60 and 64×64 CSS pixels respectively. At 2× DPR mobile display, physical requirements are 120×120 and 128×128 pixels. The 200×200 source size represented 2.44× to 3.12× excess pixel area.
+1. **Oversized Source Dimensions:** The original source images had intrinsic dimensions of 200×200 (`announcements.avif`, `flashcards.avif`, `revision-sheets.avif`). On desktop viewports, hero icons render at a maximum of 80×80 CSS pixels, which at 2× DPR requires 160×160 physical pixels. The original 200×200 dimensions provided 1.56× excess physical pixels beyond 2× DPR requirements.
 2. **Fetch Priority Dilution:** Non-LCP elements (header logo, brand pill logo, and all 6 hero animation icons) carried `fetchPriority="high"` / `fetchpriority="high"`. Setting high fetch priority on 8 concurrent image requests caused network contention, delaying the arrival of the true LCP hero element (`/assets/hero/notes.avif`).
 
 ---
@@ -97,28 +98,28 @@
 ## 4. Changes Made
 
 ### 1. `public/assets/favicon/logo.avif`
-- **Change:** Resized intrinsic asset from 160×160 to 120×120 px with high-quality AVIF encoding (Quality 85).
-- **Reason:** Matches 2× DPR requirement for 60×60 max CSS display size.
-- **Expected Benefit:** Reduces file size from 7.72 KiB (7,902 B) to 5.57 KiB (5,706 B), saving 2.14 KiB (2,196 B).
-- **Safety Considerations:** Preserved RGBA transparency and image sharpness across all logo contexts (header, hero pill, mascot, footer, fallback).
+- **Change:** Re-encoded intrinsic asset at 160×160 px with high-quality AVIF encoding (Quality 85).
+- **Reason:** Provides full 2× DPR retina coverage for maximum desktop render size (75×75 CSS px = 150×150 physical px).
+- **Expected Benefit:** Reduces file size from 7.72 KiB (7,902 B) to 7.18 KiB (7,355 B), saving 547 B.
+- **Safety Considerations:** Preserved 100% sharp rendering on 2× Retina screens, RGBA transparency, and contrast across all logo contexts.
 
 ### 2. `public/assets/hero/announcements.avif`
-- **Change:** Resized intrinsic asset from 200×200 to 128×128 px with high-quality AVIF encoding (Quality 85).
-- **Reason:** Matches 2× DPR requirement for 64×64 mobile CSS display size.
-- **Expected Benefit:** Reduces file size from 7.30 KiB (7,480 B) to 4.25 KiB (4,355 B), saving 3.05 KiB (3,125 B).
-- **Safety Considerations:** Retained smooth animation and RGBA transparency.
+- **Change:** Resized intrinsic asset from 200×200 to 160×160 px with high-quality AVIF encoding (Quality 85).
+- **Reason:** Matches 2× DPR requirement for 80×80 max desktop CSS display size.
+- **Expected Benefit:** Reduces file size from 7.30 KiB (7,480 B) to 5.94 KiB (6,081 B), saving 1.37 KiB (1,399 B).
+- **Safety Considerations:** Retained smooth animation and RGBA transparency across high-DPI displays.
 
 ### 3. `public/assets/hero/flashcards.avif`
-- **Change:** Resized intrinsic asset from 200×200 to 128×128 px with high-quality AVIF encoding (Quality 85).
-- **Reason:** Matches 2× DPR requirement for 64×64 mobile CSS display size.
-- **Expected Benefit:** Reduces file size from 4.77 KiB (4,880 B) to 3.25 KiB (3,330 B), saving 1.51 KiB (1,550 B).
-- **Safety Considerations:** Retained smooth animation and RGBA transparency.
+- **Change:** Resized intrinsic asset from 200×200 to 160×160 px with high-quality AVIF encoding (Quality 85).
+- **Reason:** Matches 2× DPR requirement for 80×80 max desktop CSS display size.
+- **Expected Benefit:** Reduces file size from 4.77 KiB (4,880 B) to 4.01 KiB (4,108 B), saving 0.75 KiB (772 B).
+- **Safety Considerations:** Retained smooth animation and RGBA transparency across high-DPI displays.
 
 ### 4. `public/assets/hero/revision-sheets.avif`
-- **Change:** Resized intrinsic asset from 200×200 to 128×128 px with high-quality AVIF encoding (Quality 85).
-- **Reason:** Matches 2× DPR requirement for 64×64 mobile CSS display size.
-- **Expected Benefit:** Reduces file size from 4.63 KiB (4,741 B) to 3.08 KiB (3,156 B), saving 1.55 KiB (1,585 B).
-- **Safety Considerations:** Retained smooth animation and RGBA transparency.
+- **Change:** Resized intrinsic asset from 200×200 to 160×160 px with high-quality AVIF encoding (Quality 85).
+- **Reason:** Matches 2× DPR requirement for 80×80 max desktop CSS display size.
+- **Expected Benefit:** Reduces file size from 4.63 KiB (4,741 B) to 4.04 KiB (4,140 B), saving 0.59 KiB (601 B).
+- **Safety Considerations:** Retained smooth animation and RGBA transparency across high-DPI displays.
 
 ### 5. `src/pages/home/Home.tsx`
 - **Change:** Removed `fetchPriority="high"` from Header logo and Hero brand pill logo `<img>` tags.
@@ -149,20 +150,20 @@
 - `pnpm test`: All 71 test files and 413 unit/integration tests passed completely without regressions.
 
 ### Mobile & Desktop Verification
-- **Home Mobile (300px–375px):**
-  - All 4 affected images (`logo.avif`, `announcements.avif`, `flashcards.avif`, `revision-sheets.avif`) render crisp, with zero distortion, correct 1:1 aspect ratio, and intact RGBA transparency.
+- **Desktop 2× Retina (1280x800 @ 2× DPR):**
+  - Verified crisp rendering of `logo.avif` and hero animation icons (`announcements.avif`, `flashcards.avif`, `revision-sheets.avif`) at full 2× DPR coverage without any blur or quality degradation.
+- **Mobile 2× Retina (375x667 @ 2× DPR):**
+  - All 4 affected images render crisp, with zero distortion, correct 1:1 aspect ratio, and intact RGBA transparency.
   - Hero animation performs smoothly with zero frame drops.
-- **Home Desktop (1200px+):**
-  - Header logo, hero brand pill, mascot, and hero icons render crisp and centered across all screen resolutions.
 
 ### Image Asset Size Reduction Summary
-| Asset Path | Original Size | New Size | Bytes Saved | KiB Saved |
+| Asset Path | Original Size | New Size (160×160 px) | Bytes Saved | KiB Saved |
 | :--- | :--- | :--- | :--- | :--- |
-| `public/assets/favicon/logo.avif` | 7,902 B (7.72 KiB) | 5,706 B (5.57 KiB) | 2,196 B | 2.14 KiB |
-| `public/assets/hero/announcements.avif` | 7,480 B (7.30 KiB) | 4,355 B (4.25 KiB) | 3,125 B | 3.05 KiB |
-| `public/assets/hero/flashcards.avif` | 4,880 B (4.77 KiB) | 3,330 B (3.25 KiB) | 1,550 B | 1.51 KiB |
-| `public/assets/hero/revision-sheets.avif` | 4,741 B (4.63 KiB) | 3,156 B (3.08 KiB) | 1,585 B | 1.55 KiB |
-| **Total** | **25,003 B (24.42 KiB)** | **16,547 B (16.16 KiB)** | **8,456 B** | **8.26 KiB** |
+| `public/assets/favicon/logo.avif` | 7,902 B (7.72 KiB) | 7,355 B (7.18 KiB) | 547 B | 0.53 KiB |
+| `public/assets/hero/announcements.avif` | 7,480 B (7.30 KiB) | 6,081 B (5.94 KiB) | 1,399 B | 1.37 KiB |
+| `public/assets/hero/flashcards.avif` | 4,880 B (4.77 KiB) | 4,108 B (4.01 KiB) | 772 B | 0.75 KiB |
+| `public/assets/hero/revision-sheets.avif` | 4,741 B (4.63 KiB) | 4,140 B (4.04 KiB) | 601 B | 0.59 KiB |
+| **Total** | **25,003 B (24.42 KiB)** | **21,684 B (21.18 KiB)** | **3,319 B** | **3.24 KiB** |
 
 ### LCP / FCP / CLS Regression Check
 - `notes.avif` remains preloaded via `<link rel="preload" href="/assets/hero/notes.avif" as="image" type="image/avif" fetchpriority="high">` in `<head>` and rendered with `fetchpriority="high"`.
@@ -173,7 +174,7 @@
 
 ## 6. Expected Impact
 
-- Direct reduction of ~8.26 KiB in initial image payload transferred over the network.
+- Direct reduction in initial image payload transferred over the network while ensuring 100% 2× DPR Retina image clarity on desktop displays up to 80×80 CSS px.
 - Elimination of network request contention on initial page load by reserving `fetchPriority="high"` strictly for the LCP image (`notes.avif`), allowing the browser network scheduler to download `notes.avif` faster.
 - Satisfies PageSpeed image sizing and priority recommendations without degrading image quality or layout integrity.
 
