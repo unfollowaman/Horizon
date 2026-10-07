@@ -1,0 +1,25 @@
+# Horizon
+
+> Horizon is a free, open-access educational platform providing secondary school students (Classes 8th to 10th) with comprehensive study notes, official previous year question papers (PYQs), and NCERT & CBSE syllabus breakdowns.
+
+## Overview
+
+Horizon simplifies exam preparation for NCERT and CBSE curricula (including RBSE board coverage) by delivering structured, mobile-friendly study materials without paywalls, popups, or intrusive advertisements.
+
+## Key Resources & Sections
+
+- [Home Page](https://unfollowaman.tech/): Central portal for Horizon educational materials and platform updates.
+- [PYQ Library](https://unfollowaman.tech/library/): Official previous year question papers for Class 8th, 9th, and 10th subjects, organized by year and medium.
+- [Study Notes](https://unfollowaman.tech/notes/): Chapter-by-chapter student notes, key definitions, formulas, and topic summaries in English and Hindi medium.
+- [Syllabus Directory](https://unfollowaman.tech/syllabus/): Interactive curriculum hierarchy and flowchart breakdowns mapping NCERT & CBSE subjects to learning modules.
+- [About Horizon](https://unfollowaman.tech/about/): Platform mission, background, educational principles, and usage guide.
+- [Contact & Support](https://unfollowaman.tech/contact/): Official contact details, support requests, and community links.
+- [Attribution & Sourcing](https://unfollowaman.tech/attribution/): Content sourcing policy, RBSE paper attributions, and third-party visual asset licenses.
+- [Terms of Service](https://unfollowaman.tech/terms/): Platform usage terms and educational content guidelines.
+- [Privacy Policy](https://unfollowaman.tech/privacy-policy/): Privacy commitments and data protection practices.
+
+## Usage Guidelines for AI Agents
+
+- All public pages listed above are statically pre-rendered HTML documents and accessible without client-side JavaScript execution.
+- PDF documents and full study note views are hosted under public resource routes (`/resource/<id>/`) mapped in our public sitemap.
+- Unauthenticated access is fully supported for all public educational pages. Private/authenticated routes (`/dashboard`, `/settings`) do not contain public educational materials.
