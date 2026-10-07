@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
-import { supabase } from '../services/supabase';
 import type { Session, User } from '@supabase/supabase-js';
-import { logout } from '../services/auth';
 import type { Profile } from '../types';
 
 interface AuthContextType {
@@ -30,64 +28,78 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     let isMounted = true;
-
-    const fetchProfile = async (sessionUser: User) => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
-        .eq('id', sessionUser.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile in AuthContext:', error);
-      }
-
-      if (isMounted) {
-        setProfile(data);
-      }
-    };
+    let subscription: { unsubscribe: () => void } | null = null;
 
     const initializeAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      try {
+        const { supabase } = await import('../services/supabase');
 
-      if (isMounted) {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user);
-        } else {
-          setProfile(null);
+        const fetchProfile = async (sessionUser: User) => {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
+            .eq('id', sessionUser.id)
+            .single();
+
+          if (error) {
+            console.error('Error fetching profile in AuthContext:', error);
+          }
+
+          if (isMounted) {
+            setProfile(data);
+          }
+        };
+
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (isMounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user);
+          } else {
+            setProfile(null);
+          }
+          setLoading(false);
         }
-        setLoading(false);
+
+        const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
+          async (_event, newSession) => {
+            if (!isMounted) return;
+
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+
+            if (newSession?.user) {
+              await fetchProfile(newSession.user);
+            } else {
+              setProfile(null);
+            }
+            setLoading(false);
+          }
+        );
+        subscription = sub;
+      } catch (err) {
+        console.error('Failed to initialize auth dynamically:', err);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
-        if (!isMounted) return;
-
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-
-        if (newSession?.user) {
-          await fetchProfile(newSession.user);
-        } else {
-          setProfile(null);
-        }
-        setLoading(false);
-      }
-    );
-
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
   const refreshProfile = useCallback(async () => {
     if (user) {
+      const { supabase } = await import('../services/supabase');
       const { data, error } = await supabase
         .from('profiles')
         .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
@@ -103,6 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   const signOut = useCallback(async () => {
+    const { logout } = await import('../services/auth');
     await logout();
   }, []);
 

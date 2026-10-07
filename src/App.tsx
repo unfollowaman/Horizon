@@ -3,14 +3,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Core layout and non-lazy components
 import Home from './pages/home/Home';
-import MainLayout from './layouts/MainLayout';
 import ScrollToTop from './components/ScrollToTop';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
 import { lazyWithRetry } from './utils/lazyWithRetry';
 
-// Lazy loaded pages & fallback screens with dynamic import retry mechanism
+// Lazy loaded layout & pages with dynamic import retry mechanism
+const MainLayout = lazyWithRetry(() => import('./layouts/MainLayout'));
 const Library = lazyWithRetry(() => import('./pages/resources/LibraryRoute'));
 const ResourceDetails = lazyWithRetry(() => import('./pages/resources/ResourceDetails'));
 const Dashboard = lazyWithRetry(() => import('./pages/user/Dashboard'));
@@ -39,7 +39,7 @@ function App() {
           <Route path="/onboarding" element={<Suspense fallback={<PageLoader />}><Onboarding /></Suspense>} />
           <Route path="/" element={<Home />} />
 
-          <Route element={<MainLayout />}>
+          <Route element={<Suspense fallback={<PageLoader />}><MainLayout /></Suspense>}>
             {/* Small static pages are intentionally kept in the main bundle. */}
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
