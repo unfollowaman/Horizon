@@ -23,24 +23,41 @@
       gtag("js", new Date());
       gtag("config", "G-0TBLST0MRT");
 
-      // Defer third-party non-critical scripts until after initial page load
+      // Defer third-party non-critical scripts until user interaction or delayed fallback
       window.addEventListener("load", function() {
-        var loadScript = function(src, attrs) {
-          var s = document.createElement("script");
-          s.src = src;
-          if (attrs) {
-            for (var key in attrs) {
-              s.setAttribute(key, attrs[key]);
-            }
-          }
-          document.body.appendChild(s);
-        };
+        var loaded = false;
+        var loadThirdParty = function() {
+          if (loaded) return;
+          loaded = true;
 
-        var delay = window.requestIdleCallback ? window.requestIdleCallback : function(cb) { setTimeout(cb, 1000); };
-        delay(function() {
+          // Remove interaction listeners
+          var events = ["pointerdown", "touchstart", "scroll", "keydown", "mousemove"];
+          events.forEach(function(ev) {
+            window.removeEventListener(ev, loadThirdParty, { passive: true });
+          });
+
+          var loadScript = function(src, attrs) {
+            var s = document.createElement("script");
+            s.src = src;
+            if (attrs) {
+              for (var key in attrs) {
+                s.setAttribute(key, attrs[key]);
+              }
+            }
+            document.body.appendChild(s);
+          };
+
           loadScript("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9895594998996093", { crossorigin: "anonymous" });
           loadScript("https://www.googletagmanager.com/gtag/js?id=G-0TBLST0MRT", { async: "true" });
+        };
+
+        var events = ["pointerdown", "touchstart", "scroll", "keydown", "mousemove"];
+        events.forEach(function(ev) {
+          window.addEventListener(ev, loadThirdParty, { passive: true, once: true });
         });
+
+        // Fallback timer if user doesn't interact within 3.5s after load
+        setTimeout(loadThirdParty, 3500);
       });
     </script>
   </body>

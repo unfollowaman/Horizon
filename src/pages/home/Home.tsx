@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { register } from '../../services/auth';
 import HomeAd from '../../components/HomeAd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
@@ -398,6 +397,7 @@ const HighlightsSection = React.memo(() => {
     setLoading(true);
     setError('');
     try {
+      const { register } = await import('../../services/auth');
       await register(email, password, name);
       setIsSuccess(true);
     } catch (err: unknown) {
