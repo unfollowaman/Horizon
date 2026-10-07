@@ -87,6 +87,12 @@
 - **Font Rendering**: Zero FOUC/layout shift observed. `Playfair Display` and `Instrument Serif` render as expected.
 - **Navigation & Interactions**: All routes, links, and interactive components operate normally.
 
+### Lightweight Verification of Deferred AdSense/GA Loading
+- **Script Execution**: Confirmed via Playwright automation script (`verify_adsense_ga.py`) that the deferred loading callback executes after window `load` and appends `<script>` elements for `adsbygoogle.js` and `gtag.js` to `document.body`.
+- **Zero Console/Page Errors**: Confirmed 0 console errors and 0 uncaught JavaScript page exceptions.
+- **DataLayer & Analytics Stub**: Confirmed `window.dataLayer` array and `window.gtag` function stub remain intact and operational.
+- **Rendering & User Experience**: Deferred third-party loading causes zero interference with initial viewport rendering or page interactions.
+
 ---
 
 ## 6. Expected Impact
