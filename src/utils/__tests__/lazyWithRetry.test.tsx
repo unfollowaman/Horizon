@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React, { Suspense, act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { retryImport, lazyWithRetry } from '../lazyWithRetry';
+import { retryImport, lazyWithRetry, isChunkLoadError, CHUNK_RELOAD_GUARD_KEY } from '../lazyWithRetry';
 import ErrorBoundary from '../../components/ErrorBoundary';
 
 // Enable React act environment flag for React 19 testing
@@ -15,6 +15,7 @@ describe('lazyWithRetry utility', () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
+    sessionStorage.clear();
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -31,8 +32,29 @@ describe('lazyWithRetry utility', () => {
     }
     container = null;
     root = null;
+    sessionStorage.clear();
     vi.useRealTimers();
     vi.restoreAllMocks();
+  });
+
+  describe('isChunkLoadError helper', () => {
+    it('correctly identifies stale/missing chunk errors', () => {
+      expect(isChunkLoadError(new TypeError('Failed to fetch dynamically imported module'))).toBe(true);
+      expect(isChunkLoadError(new Error('Importing a module script failed'))).toBe(true);
+      expect(isChunkLoadError(new Error('Loading chunk 5 failed'))).toBe(true);
+      expect(isChunkLoadError(new Error('error loading dynamically imported module'))).toBe(true);
+
+      const chunkErr = new Error('Custom chunk error');
+      chunkErr.name = 'ChunkLoadError';
+      expect(isChunkLoadError(chunkErr)).toBe(true);
+    });
+
+    it('returns false for unrelated application errors', () => {
+      expect(isChunkLoadError(new Error('Database query failed'))).toBe(false);
+      expect(isChunkLoadError(new TypeError('Cannot read property of undefined'))).toBe(false);
+      expect(isChunkLoadError(null)).toBe(false);
+      expect(isChunkLoadError(undefined)).toBe(false);
+    });
   });
 
   describe('retryImport function', () => {
@@ -59,7 +81,8 @@ describe('lazyWithRetry utility', () => {
       expect(importFn).toHaveBeenCalledTimes(2);
     });
 
-    it('re-throws the final error when retries are exhausted', async () => {
+    it('re-throws the final error when retries are exhausted and guard is already active', async () => {
+      sessionStorage.setItem(CHUNK_RELOAD_GUARD_KEY, 'true');
       const networkError = new TypeError('Failed to fetch dynamically imported module');
       const importFn = vi.fn().mockRejectedValue(networkError);
 
@@ -76,6 +99,34 @@ describe('lazyWithRetry utility', () => {
       await expect(promise).rejects.toThrow('Failed to fetch dynamically imported module');
       expect(caughtError).toBe(networkError);
       expect(importFn).toHaveBeenCalledTimes(3);
+    });
+
+    it('triggers window.location.reload when chunk error occurs and guard is not set', async () => {
+      const reloadSpy = vi.fn();
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { reload: reloadSpy },
+      });
+
+      const chunkError = new TypeError('Failed to fetch dynamically imported module');
+      const importFn = vi.fn().mockRejectedValue(chunkError);
+
+      const promise = retryImport(importFn, 1, 50, 2);
+      promise.catch(() => {}); // Catch handled promise rejection to prevent unhandled rejection warning
+
+      await vi.advanceTimersByTimeAsync(50);
+
+      expect(reloadSpy).toHaveBeenCalledTimes(1);
+      expect(sessionStorage.getItem(CHUNK_RELOAD_GUARD_KEY)).toBe('true');
+    });
+
+    it('clears reload guard on a successful import', async () => {
+      sessionStorage.setItem(CHUNK_RELOAD_GUARD_KEY, 'true');
+      const importFn = vi.fn().mockResolvedValue({ default: MockComponent });
+
+      await retryImport(importFn, 3, 100, 2);
+
+      expect(sessionStorage.getItem(CHUNK_RELOAD_GUARD_KEY)).toBeNull();
     });
   });
 
@@ -110,7 +161,8 @@ describe('lazyWithRetry utility', () => {
       expect(importFn).toHaveBeenCalledTimes(2);
     });
 
-    it('triggers ErrorBoundary when retries are exhausted', async () => {
+    it('triggers ErrorBoundary when retries are exhausted and reload guard prevents infinite reloads', async () => {
+      sessionStorage.setItem(CHUNK_RELOAD_GUARD_KEY, 'true');
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const importFn = vi.fn().mockRejectedValue(new Error('Persistent Chunk Failure'));

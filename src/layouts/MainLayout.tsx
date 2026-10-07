@@ -1,9 +1,10 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import PageLoader from '../components/loading/PageLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouteErrorFallback from '../components/RouteErrorFallback';
 import { useDelayedLoading } from '../hooks/useDelayedLoading';
+import { CHUNK_RELOAD_GUARD_KEY } from '../utils/lazyWithRetry';
 
 const DelayedPageLoader: React.FC = () => {
   const showLoading = useDelayedLoading(true, 400);
@@ -15,7 +16,25 @@ const MainLayout: React.FC = () => {
   const location = useLocation();
   const [resetKey, setResetKey] = useState(0);
 
+  // Clear reload guard whenever the route location changes successfully
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(CHUNK_RELOAD_GUARD_KEY);
+    }
+  }, [location.pathname]);
+
   const handleRetry = () => {
+    // If a lazy component enters a rejected state, incrementing resetKey alone cannot clear
+    // React.lazy's internal cached rejection. Performing a page reload guarantees a fresh JS execution context.
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(CHUNK_RELOAD_GUARD_KEY);
+      try {
+        window.location.reload();
+        return;
+      } catch {
+        // Fallback for test environments where window.location.reload is unmocked
+      }
+    }
     setResetKey((prev) => prev + 1);
   };
 

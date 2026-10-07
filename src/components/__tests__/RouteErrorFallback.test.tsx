@@ -62,7 +62,7 @@ describe('RouteErrorFallback and MainLayout Error Boundary Integration', () => {
     expect(goHomeLink?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
 
-  it('calls onRetry callback when Try Again button is clicked', () => {
+  it('calls onRetry callback and updates button state to Retrying... when clicked', () => {
     const onRetryMock = vi.fn();
 
     act(() => {
@@ -73,17 +73,22 @@ describe('RouteErrorFallback and MainLayout Error Boundary Integration', () => {
       );
     });
 
-    const buttons = container?.querySelectorAll('button');
-    const tryAgainButton = Array.from(buttons || []).find(
-      (btn) => btn.textContent?.includes('Try Again')
-    );
-
-    expect(tryAgainButton).toBeDefined();
+    const tryAgainButton = container?.querySelector('button');
+    expect(tryAgainButton?.textContent).toContain('Try Again');
 
     act(() => {
       tryAgainButton?.click();
     });
 
+    expect(onRetryMock).toHaveBeenCalledTimes(1);
+    expect(tryAgainButton?.textContent).toContain('Retrying...');
+    expect(tryAgainButton?.getAttribute('disabled')).toBe('');
+    expect(tryAgainButton?.getAttribute('aria-busy')).toBe('true');
+
+    // Duplicate taps while retrying are ignored
+    act(() => {
+      tryAgainButton?.click();
+    });
     expect(onRetryMock).toHaveBeenCalledTimes(1);
   });
 
