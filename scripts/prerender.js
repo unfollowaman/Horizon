@@ -811,7 +811,7 @@ export const PUBLIC_STATIC_PAGES = [
         <header>
           <div class="flex justify-between items-center p-4">
             <a href="/" class="neu-raised flex items-center gap-2 p-2 rounded-xl no-underline text-ink">
-              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" fetchpriority="high" class="w-8 h-8 rounded-full" />
+              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="eager" decoding="async" class="w-8 h-8 rounded-full" />
               <span class="font-bold text-lg">Horizon</span>
             </a>
             <nav class="flex items-center gap-4" aria-label="Main navigation">
@@ -827,7 +827,7 @@ export const PUBLIC_STATIC_PAGES = [
         <main class="flex-1 w-full flex flex-col">
           <section class="text-center py-12 px-4 max-w-4xl mx-auto space-y-6">
             <a href="/" class="neu-raised inline-flex items-center gap-2 px-4 py-1.5 rounded-full no-underline text-ink font-bold">
-              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="20" height="20" loading="eager" decoding="async" fetchpriority="high" class="w-5 h-5 rounded-full" />
+              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="20" height="20" loading="eager" decoding="async" class="w-5 h-5 rounded-full" />
               <span>Horizon</span>
             </a>
             <h1 class="text-3xl sm:text-5xl font-extrabold text-ink leading-tight">
@@ -848,23 +848,23 @@ export const PUBLIC_STATIC_PAGES = [
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Study Notes</div>
                   </div>
                   <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 160px) translate(-50%, -50%); opacity: 1;">
-                    <img src="/assets/hero/pyq-papers.avif" alt="PYQ Papers" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <img src="/assets/hero/pyq-papers.avif" alt="PYQ Papers" width="80" height="80" loading="eager" decoding="async" class="w-16 h-auto drop-shadow-md z-20" />
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">PYQ Papers</div>
                   </div>
                   <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(92px, 235px) translate(-50%, -50%); opacity: 1;">
-                    <img src="/assets/hero/mcq-sheets.avif" alt="MCQ Sheets" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <img src="/assets/hero/mcq-sheets.avif" alt="MCQ Sheets" width="80" height="80" loading="eager" decoding="async" class="w-16 h-auto drop-shadow-md z-20" />
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">MCQ Sheets</div>
                   </div>
                   <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 235px) translate(-50%, -50%); opacity: 1;">
-                    <img src="/assets/hero/flashcards.avif" alt="Flashcards" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <img src="/assets/hero/flashcards.avif" alt="Flashcards" width="80" height="80" loading="eager" decoding="async" class="w-16 h-auto drop-shadow-md z-20" />
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Flashcards</div>
                   </div>
                   <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(92px, 310px) translate(-50%, -50%); opacity: 1;">
-                    <img src="/assets/hero/announcements.avif" alt="Announcements" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <img src="/assets/hero/announcements.avif" alt="Announcements" width="80" height="80" loading="eager" decoding="async" class="w-16 h-auto drop-shadow-md z-20" />
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Announcements</div>
                   </div>
                   <div class="absolute top-0 left-0 flex flex-col items-center pointer-events-none z-10" style="transform: translate(208px, 310px) translate(-50%, -50%); opacity: 1;">
-                    <img src="/assets/hero/revision-sheets.avif" alt="Revision Sheets" width="80" height="80" loading="eager" decoding="async" fetchpriority="high" class="w-16 h-auto drop-shadow-md z-20" />
+                    <img src="/assets/hero/revision-sheets.avif" alt="Revision Sheets" width="80" height="80" loading="eager" decoding="async" class="w-16 h-auto drop-shadow-md z-20" />
                     <div class="text-[11px] font-semibold text-gray-600 mt-1.5 text-center">Revision Sheets</div>
                   </div>
                 </div>
