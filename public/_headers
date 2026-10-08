@@ -3,7 +3,22 @@
   Cache-Control: public, max-age=14400, must-revalidate
   Access-Control-Allow-Origin: *
 
+/.well-known/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=14400, must-revalidate
+  Access-Control-Allow-Origin: *
+
 /ai-catalog.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=14400, must-revalidate
+  Access-Control-Allow-Origin: *
+
+/.well-known/ai-catalog.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=14400, must-revalidate
+  Access-Control-Allow-Origin: *
+
+/.well-known/ai-plugin.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=14400, must-revalidate
   Access-Control-Allow-Origin: *

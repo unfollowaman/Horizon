@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Horizon Educational Catalog",
+  "name_for_model": "horizon_catalog",
+  "description_for_human": "Catalog of free educational resources, study notes, PYQs, and syllabus for Classes 8, 9, and 10.",
+  "description_for_model": "Catalog of free educational resources, study notes, previous year question papers (PYQs), and NCERT/CBSE syllabus frameworks for Classes 8, 9, and 10.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://unfollowaman.tech/ai-catalog.json"
+  },
+  "logo_url": "https://unfollowaman.tech/assets/favicon/logo.avif",
+  "contact_email": "tryhorizon18@gmail.com",
+  "legal_info_url": "https://unfollowaman.tech/terms/"
+}
