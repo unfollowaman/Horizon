@@ -288,9 +288,11 @@ export const HeroPhoneAnimation: React.FC = () => {
     if (prefersReducedMotion || !isVisible) return;
 
     let frameId: number;
-    const startTime = performance.now();
+    let timerId: ReturnType<typeof setTimeout>;
+    let startTime: number | null = null;
 
     const animate = (time: number) => {
+      if (startTime === null) startTime = time;
       let t = (time - startTime) % TOTAL;
       if (t < 0) t += TOTAL;
 
@@ -298,8 +300,16 @@ export const HeroPhoneAnimation: React.FC = () => {
       frameId = requestAnimationFrame(animate);
     };
 
-    frameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frameId);
+    // Defer animation loop start by a short delay so the initial hydration paint
+    // is stationary and perfectly matches pre-rendered HTML during early LCP/Speed Index capture
+    timerId = setTimeout(() => {
+      frameId = requestAnimationFrame(animate);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timerId);
+      cancelAnimationFrame(frameId);
+    };
   }, [prefersReducedMotion, isVisible]);
 
   useEffect(() => {
