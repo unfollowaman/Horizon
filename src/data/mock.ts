@@ -1,25 +1,4 @@
-import type { Resource, Announcement } from '../types';
-
-export const mockAnnouncements: Announcement[] = [
-  {
-    id: 'a1',
-    title: 'Welcome to Horizon!',
-    description: 'We are excited to launch our new educational resource platform.',
-    date: '2023-10-26T10:00:00Z',
-  },
-  {
-    id: 'a2',
-    title: 'New Physics Notes Uploaded',
-    description: 'Check out the new study materials for Chapter 5.',
-    date: '2023-10-27T14:30:00Z',
-  },
-  {
-    id: 'a3',
-    title: 'Midterm Exam Schedule',
-    description: 'The schedule for the upcoming midterm exams has been posted.',
-    date: '2023-10-28T09:15:00Z',
-  },
-];
+import type { Resource } from '../types';
 
 export const mockResources: Resource[] = [
   {
