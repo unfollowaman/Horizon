@@ -423,3 +423,9 @@ entrypoint = "./functions/resource-access/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/resource-access/*.html" ]
+
+[functions.subscribe-push]
+enabled = true
+verify_jwt = true
+import_map = "./functions/resource-access/deno.json"
+entrypoint = "./functions/subscribe-push/index.ts"
