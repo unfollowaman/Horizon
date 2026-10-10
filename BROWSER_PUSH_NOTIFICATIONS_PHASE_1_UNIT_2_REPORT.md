@@ -7,9 +7,9 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
 ### Created / Modified Files:
 
 1. **Created**: `supabase/functions/subscribe-push/index.ts`
-   - Edge Function entry point implementing authentication, payload validation, strict SSRF push endpoint validation, Option A profile-derived targeting, service-role persistence on `public.push_subscriptions`, duplicate endpoint conflict handling, and CORS response headers.
+   - Edge Function entry point implementing explicit Bearer token authentication, 16 KB payload size limit enforcement, payload validation, strict SSRF push endpoint validation, Option A profile-derived targeting, service-role persistence on `public.push_subscriptions`, duplicate endpoint conflict handling, and CORS response headers.
 2. **Created**: `supabase/functions/subscribe-push/test.ts`
-   - Unit test suite verifying CORS headers and SSRF push endpoint validation rules.
+   - Unit test suite verifying Bearer token extraction/validation, request body size limit constants, CORS headers, and SSRF push endpoint validation rules.
 3. **Modified**: `supabase/config.toml`
    - Registered `[functions.subscribe-push]` edge function with `enabled = true`, `verify_jwt = true`, `import_map = "./functions/resource-access/deno.json"`, and `entrypoint = "./functions/subscribe-push/index.ts"`.
 
@@ -20,7 +20,7 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
 ### Request Specification:
 - **HTTP Method**: `POST` (Preflight `OPTIONS` supported).
 - **Headers**:
-  - `Authorization`: `Bearer <user_access_token>` (Mandatory).
+  - `Authorization`: `Bearer <token>` (Mandatory exact format).
   - `Content-Type`: `application/json`.
   - `Origin`: Origin header validated against allowed domain list (`https://unfollowaman.tech` and local dev origins).
 - **Request Body**:
@@ -50,7 +50,7 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
   ```json
   { "success": false, "error": "<specific error description>" }
   ```
-- **401 Unauthorized** (Missing or invalid Bearer token):
+- **401 Unauthorized** (Missing, empty, or malformed Bearer token / auth error):
   ```json
   { "success": false, "error": "Unauthorized" }
   ```
@@ -62,6 +62,10 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
   ```json
   { "success": false, "error": "Push subscription endpoint already registered to another account" }
   ```
+- **413 Payload Too Large** (Request body exceeds 16 KB):
+  ```json
+  { "success": false, "error": "Request payload too large" }
+  ```
 - **500 Internal Server Error** (Database exception without leaking internal credentials):
   ```json
   { "success": false, "error": "Internal server error" }
@@ -71,10 +75,16 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
 
 ## 3. Security & Architecture Analysis
 
-### Authentication & Authorization:
-- Identity verification is mandatory using request-scoped `supabaseUser.auth.getUser()`.
+### Bearer Token Authentication & Authorization:
+- Explicitly extracts access token from `Authorization` header matching `Bearer <token>`. Rejects missing, empty, or non-Bearer authorization headers with HTTP 401.
+- Passes the extracted token explicitly to `supabaseUser.auth.getUser(accessToken)`.
 - Client-supplied `user_id` is never trusted or accepted from the payload body.
 - Service-role client (`supabaseAdmin`) is instantiated solely inside the Edge Function using `SUPABASE_SERVICE_ROLE_KEY` to perform administrative database queries/writes on `public.push_subscriptions` (where direct client `INSERT`/`UPDATE` is revoked). Service-role keys are never returned in responses or logs.
+
+### Request Payload Bounded Size Limit:
+- Enforces a strict 16 KB (`MAX_BODY_BYTES = 16384`) request body limit.
+- Checks both `Content-Length` header and array buffer length during payload reading before JSON parsing.
+- Oversized bodies immediately yield HTTP `413 Payload Too Large`.
 
 ### SSRF & Endpoint Validation:
 Push endpoints are treated as untrusted URLs and validated via `validatePushEndpoint()` using the platform `URL` parser:
@@ -114,10 +124,10 @@ Push endpoints are treated as untrusted URLs and validated via `validatePushEndp
 2. `npx tsc --noEmit`
    - **Result**: `BLOCKED` — `tsc` package runner is not available in the sandbox.
 
-### Static Analysis & Verification:
-- Code structure and imports verified via `read_file`.
+### Static Analysis & Code Review:
+- Code structure, imports, and syntax verified via `read_file`.
 - Preflight CORS handling and origin validation match project standards in `supabase/functions/resource-access/index.ts`.
-- Configuration additions in `supabase/config.toml` verified and aligned with existing function registrations.
+- Configuration additions in `supabase/config.toml` verified (`verify_jwt = true`).
 
 ---
 

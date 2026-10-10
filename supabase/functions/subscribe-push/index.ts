@@ -9,6 +9,8 @@ export const ALLOWED_ORIGINS = [
   "http://127.0.0.1:5173",
 ];
 
+export const MAX_BODY_BYTES = 16384; // 16 KB maximum payload size
+
 export function getCorsHeaders(requestOrigin?: string | null): Record<string, string> {
   const envOrigins = Deno.env.get("ALLOWED_ORIGINS")
     ? Deno.env.get("ALLOWED_ORIGINS")!.split(",").map((o) => o.trim()).filter(Boolean)
@@ -31,6 +33,24 @@ export function getCorsHeaders(requestOrigin?: string | null): Record<string, st
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
+}
+
+export function extractBearerToken(authHeader: string | null): { token: string | null; error?: string } {
+  if (!authHeader || typeof authHeader !== "string") {
+    return { token: null, error: "Missing Authorization header" };
+  }
+
+  const trimmed = authHeader.trim();
+  if (!trimmed) {
+    return { token: null, error: "Empty Authorization header" };
+  }
+
+  const match = /^Bearer\s+(.+)$/i.exec(trimmed);
+  if (!match || !match[1] || !match[1].trim()) {
+    return { token: null, error: "Invalid Authorization header format. Must be 'Bearer <token>'" };
+  }
+
+  return { token: match[1].trim() };
 }
 
 export function validatePushEndpoint(endpointStr: unknown): { valid: boolean; error?: string; url?: URL } {
@@ -112,27 +132,30 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 3. Authenticate requesting user
+  // 3. Authenticate requesting user via Bearer token
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader) {
-    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+  const bearerResult = extractBearerToken(authHeader);
+  if (!bearerResult.token) {
+    return new Response(JSON.stringify({ success: false, error: bearerResult.error || "Unauthorized" }), {
       status: 401,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  const accessToken = bearerResult.token;
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
   const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 
   const {
     data: { user },
     error: authError,
-  } = await supabaseUser.auth.getUser();
+  } = await supabaseUser.auth.getUser(accessToken);
 
   if (authError || !user) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
@@ -141,10 +164,38 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Parse & validate request body
+  // 4. Enforce request body size limit & parse JSON
+  const contentLengthHeader = req.headers.get("content-length");
+  if (contentLengthHeader) {
+    const cl = parseInt(contentLengthHeader, 10);
+    if (!isNaN(cl) && cl > MAX_BODY_BYTES) {
+      return new Response(JSON.stringify({ success: false, error: "Request payload too large" }), {
+        status: 413,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+  }
+
+  let rawBodyText: string;
+  try {
+    const arrayBuffer = await req.arrayBuffer();
+    if (arrayBuffer.byteLength > MAX_BODY_BYTES) {
+      return new Response(JSON.stringify({ success: false, error: "Request payload too large" }), {
+        status: 413,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    rawBodyText = new TextDecoder().decode(arrayBuffer);
+  } catch (_e) {
+    return new Response(JSON.stringify({ success: false, error: "Failed to read request body" }), {
+      status: 400,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    body = JSON.parse(rawBodyText);
   } catch (_e) {
     return new Response(JSON.stringify({ success: false, error: "Invalid JSON payload" }), {
       status: 400,

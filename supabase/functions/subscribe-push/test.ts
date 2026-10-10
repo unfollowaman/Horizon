@@ -1,5 +1,32 @@
 import { assertEquals } from "jsr:@std/assert";
-import { validatePushEndpoint, getCorsHeaders } from "./index.ts";
+import { validatePushEndpoint, getCorsHeaders, extractBearerToken, MAX_BODY_BYTES } from "./index.ts";
+
+Deno.test("extractBearerToken - valid Bearer token", () => {
+  const res = extractBearerToken("Bearer sample-token-xyz-123");
+  assertEquals(res.token, "sample-token-xyz-123");
+});
+
+Deno.test("extractBearerToken - missing header", () => {
+  const res = extractBearerToken(null);
+  assertEquals(res.token, null);
+  assertEquals(res.error, "Missing Authorization header");
+});
+
+Deno.test("extractBearerToken - empty header", () => {
+  const res = extractBearerToken("   ");
+  assertEquals(res.token, null);
+  assertEquals(res.error, "Empty Authorization header");
+});
+
+Deno.test("extractBearerToken - malformed non-Bearer scheme", () => {
+  const res = extractBearerToken("Basic dXNlcjpwYXNz");
+  assertEquals(res.token, null);
+  assertEquals(res.error, "Invalid Authorization header format. Must be 'Bearer <token>'");
+});
+
+Deno.test("MAX_BODY_BYTES constant value", () => {
+  assertEquals(MAX_BODY_BYTES, 16384);
+});
 
 Deno.test("validatePushEndpoint - valid FCM endpoint", () => {
   const res = validatePushEndpoint("https://fcm.googleapis.com/fcm/send/test-token-123");
