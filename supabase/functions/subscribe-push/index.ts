@@ -101,6 +101,13 @@ export async function readBoundedBodyStream(
   return { text: decoded };
 }
 
+export function validateJsonObject(parsed: unknown): { valid: boolean; error?: string } {
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { valid: false, error: "Request body must be a JSON object" };
+  }
+  return { valid: true };
+}
+
 export function validatePushEndpoint(endpointStr: unknown): { valid: boolean; error?: string; url?: URL } {
   if (typeof endpointStr !== "string" || !endpointStr.trim()) {
     return { valid: false, error: "Missing or invalid push endpoint" };
@@ -239,15 +246,25 @@ Deno.serve(async (req) => {
     });
   }
 
-  let body: Record<string, unknown>;
+  let rawParsed: unknown;
   try {
-    body = JSON.parse(streamResult.text);
+    rawParsed = JSON.parse(streamResult.text);
   } catch (_e) {
     return new Response(JSON.stringify({ success: false, error: "Invalid JSON payload" }), {
       status: 400,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  const jsonObjectValidation = validateJsonObject(rawParsed);
+  if (!jsonObjectValidation.valid) {
+    return new Response(JSON.stringify({ success: false, error: jsonObjectValidation.error }), {
+      status: 400,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const body = rawParsed as Record<string, unknown>;
 
   const subObj = (typeof body.subscription === "object" && body.subscription !== null)
     ? (body.subscription as Record<string, unknown>)

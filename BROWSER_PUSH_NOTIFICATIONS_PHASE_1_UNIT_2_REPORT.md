@@ -7,9 +7,9 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
 ### Created / Modified Files:
 
 1. **Created**: `supabase/functions/subscribe-push/index.ts`
-   - Edge Function entry point implementing explicit Bearer token authentication, 16 KB payload size limit enforcement via bounded stream reading (`req.body.getReader()`), payload validation, strict SSRF push endpoint validation, Option A profile-derived targeting, service-role persistence on `public.push_subscriptions`, duplicate endpoint conflict handling, and CORS response headers.
+   - Edge Function entry point implementing explicit Bearer token authentication, 16 KB payload size limit enforcement via bounded stream reading (`req.body.getReader()`), JSON object shape validation (`validateJsonObject`), payload validation, strict SSRF push endpoint validation, Option A profile-derived targeting, service-role persistence on `public.push_subscriptions`, duplicate endpoint conflict handling, and CORS response headers.
 2. **Created**: `supabase/functions/subscribe-push/test.ts`
-   - Unit test suite verifying Bearer token extraction/validation, bounded stream reader cancellation on oversized payloads, request body size limit constants, CORS headers, and SSRF push endpoint validation rules.
+   - Unit test suite verifying Bearer token extraction/validation, JSON object shape validation (`validateJsonObject`), bounded stream reader cancellation on oversized payloads, request body size limit constants, CORS headers, and SSRF push endpoint validation rules.
 3. **Modified**: `supabase/config.toml`
    - Registered `[functions.subscribe-push]` edge function with `enabled = true`, `verify_jwt = true`, `import_map = "./functions/resource-access/deno.json"`, and `entrypoint = "./functions/subscribe-push/index.ts"`.
 
@@ -23,7 +23,7 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
   - `Authorization`: `Bearer <token>` (Mandatory exact format).
   - `Content-Type`: `application/json`.
   - `Origin`: Origin header validated against allowed domain list (`https://unfollowaman.tech` and local dev origins).
-- **Request Body**:
+- **Request Body**: Must be a non-null plain JSON object (non-array, non-primitive).
   ```json
   {
     "subscription": {
@@ -46,7 +46,7 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
   ```json
   { "success": true, "message": "Push subscription updated successfully" }
   ```
-- **400 Bad Request** (Malformed JSON, invalid/missing keys, invalid endpoint URL, or stream read error):
+- **400 Bad Request** (Malformed JSON, non-object JSON shape like null/array/primitive, invalid/missing keys, invalid endpoint URL, or stream read error):
   ```json
   { "success": false, "error": "<specific error description>" }
   ```
@@ -81,10 +81,10 @@ Unit 2 implements the trusted server-side entry point `subscribe-push` as a Supa
 - Client-supplied `user_id` is never trusted or accepted from the payload body.
 - Service-role client (`supabaseAdmin`) is instantiated solely inside the Edge Function using `SUPABASE_SERVICE_ROLE_KEY` to perform administrative database queries/writes on `public.push_subscriptions` (where direct client `INSERT`/`UPDATE` is revoked). Service-role keys are never returned in responses or logs.
 
-### Request Payload Bounded Size Limit (Streaming Read):
+### Request Payload Bounded Size Limit & Object Shape Validation:
 - Enforces a strict 16 KB (`MAX_BODY_BYTES = 16384`) request body limit using `readBoundedBodyStream()`.
 - Streams request chunks incrementally via `req.body.getReader()`. If total accumulated bytes exceed 16 KB at any chunk, the stream reader is cancelled immediately via `reader.cancel()`, and the request is aborted with HTTP `413 Payload Too Large`.
-- Protects memory against oversized payloads regardless of whether `Content-Length` header is present, missing, or misleading.
+- Immediately following JSON parsing, `validateJsonObject()` verifies that the parsed result is a non-null plain object. Rejects `null`, arrays, numbers, strings, and booleans with HTTP 400 (`Request body must be a JSON object`).
 
 ### SSRF & Endpoint Validation:
 Push endpoints are treated as untrusted URLs and validated via `validatePushEndpoint()` using the platform `URL` parser:
@@ -125,7 +125,7 @@ Push endpoints are treated as untrusted URLs and validated via `validatePushEndp
    - **Result**: `BLOCKED` — `tsc` package runner is not available in the sandbox.
 
 ### Static Analysis & Code Review:
-- Code structure, imports, stream reader handling, and syntax verified via `read_file`.
+- Code structure, imports, stream reader handling, JSON object validation, and syntax verified via `read_file`.
 - Preflight CORS handling and origin validation match project standards in `supabase/functions/resource-access/index.ts`.
 - Configuration additions in `supabase/config.toml` verified (`verify_jwt = true`).
 

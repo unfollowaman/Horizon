@@ -4,6 +4,7 @@ import {
   getCorsHeaders,
   extractBearerToken,
   readBoundedBodyStream,
+  validateJsonObject,
   MAX_BODY_BYTES,
 } from "./index.ts";
 
@@ -28,6 +29,29 @@ Deno.test("extractBearerToken - malformed non-Bearer scheme", () => {
   const res = extractBearerToken("Basic dXNlcjpwYXNz");
   assertEquals(res.token, null);
   assertEquals(res.error, "Invalid Authorization header format. Must be 'Bearer <token>'");
+});
+
+Deno.test("validateJsonObject - accept valid plain object", () => {
+  const res = validateJsonObject({ subscription: {} });
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validateJsonObject - reject null", () => {
+  const res = validateJsonObject(null);
+  assertEquals(res.valid, false);
+  assertEquals(res.error, "Request body must be a JSON object");
+});
+
+Deno.test("validateJsonObject - reject array", () => {
+  const res = validateJsonObject(["subscription"]);
+  assertEquals(res.valid, false);
+  assertEquals(res.error, "Request body must be a JSON object");
+});
+
+Deno.test("validateJsonObject - reject primitives (number, string, boolean)", () => {
+  assertEquals(validateJsonObject(123).valid, false);
+  assertEquals(validateJsonObject("a string").valid, false);
+  assertEquals(validateJsonObject(true).valid, false);
 });
 
 Deno.test("MAX_BODY_BYTES constant value", () => {
