@@ -1,6 +1,7 @@
 import { assertEquals } from "jsr:@std/assert";
 import {
   extractBearerToken,
+  validateContentType,
   isUserAdmin,
   validateJsonObject,
   validateSendNotificationRequest,
@@ -30,6 +31,34 @@ Deno.test("extractBearerToken - malformed non-Bearer scheme", () => {
   const res = extractBearerToken("Basic dXNlcjpwYXNz");
   assertEquals(res.token, null);
   assertEquals(res.error, "Invalid Authorization header format. Must be 'Bearer <token>'");
+});
+
+Deno.test("validateContentType - accept application/json", () => {
+  const res = validateContentType("application/json");
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validateContentType - accept application/json with parameters and uppercase", () => {
+  const res = validateContentType("APPLICATION/JSON; charset=utf-8");
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validateContentType - reject missing Content-Type header", () => {
+  const res = validateContentType(null);
+  assertEquals(res.valid, false);
+  assertEquals(res.error, "Missing Content-Type header. Must be 'application/json'");
+});
+
+Deno.test("validateContentType - reject unsupported Content-Type (text/plain)", () => {
+  const res = validateContentType("text/plain");
+  assertEquals(res.valid, false);
+  assertEquals(res.error, "Unsupported Content-Type. Must be 'application/json'");
+});
+
+Deno.test("validateContentType - reject tricky substring match (text/html; application/json)", () => {
+  const res = validateContentType("text/html; application/json");
+  assertEquals(res.valid, false);
+  assertEquals(res.error, "Unsupported Content-Type. Must be 'application/json'");
 });
 
 Deno.test("isUserAdmin - true for user with admin role in app_metadata", () => {

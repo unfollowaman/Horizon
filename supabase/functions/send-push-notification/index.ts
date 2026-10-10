@@ -35,6 +35,20 @@ export function getCorsHeaders(requestOrigin?: string | null): Record<string, st
   };
 }
 
+export function validateContentType(contentTypeHeader: string | null): { valid: boolean; error?: string } {
+  if (!contentTypeHeader || typeof contentTypeHeader !== "string") {
+    return { valid: false, error: "Missing Content-Type header. Must be 'application/json'" };
+  }
+
+  const mediaType = contentTypeHeader.split(";")[0].trim().toLowerCase();
+
+  if (mediaType !== "application/json") {
+    return { valid: false, error: "Unsupported Content-Type. Must be 'application/json'" };
+  }
+
+  return { valid: true };
+}
+
 export function extractBearerToken(authHeader: string | null): { token: string | null; error?: string } {
   if (!authHeader || typeof authHeader !== "string") {
     return { token: null, error: "Missing Authorization header" };
@@ -214,7 +228,17 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 3. Authenticate requesting user via Bearer token
+  // 3. Validate Content-Type header (application/json required)
+  const contentTypeHeader = req.headers.get("content-type") ?? req.headers.get("Content-Type");
+  const ctValidation = validateContentType(contentTypeHeader);
+  if (!ctValidation.valid) {
+    return new Response(JSON.stringify({ success: false, error: ctValidation.error }), {
+      status: 415,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // 4. Authenticate requesting user via Bearer token
   const authHeader = req.headers.get("Authorization");
   const bearerResult = extractBearerToken(authHeader);
   if (!bearerResult.token) {
@@ -246,7 +270,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Authorize administrator via trusted app_metadata.role
+  // 5. Authorize administrator via trusted app_metadata.role
   if (!isUserAdmin(user)) {
     return new Response(JSON.stringify({ success: false, error: "Forbidden: Administrator role required" }), {
       status: 403,
@@ -254,7 +278,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 5. Enforce request body size limit via bounded stream read & parse JSON
+  // 6. Enforce request body size limit via bounded stream read & parse JSON
   const contentLengthHeader = req.headers.get("content-length");
   if (contentLengthHeader) {
     const cl = parseInt(contentLengthHeader, 10);
@@ -301,7 +325,7 @@ Deno.serve(async (req) => {
 
   const body = rawParsed as Record<string, unknown>;
 
-  // 6. Validate notification request parameters and Option A targeting rules
+  // 7. Validate notification request parameters and Option A targeting rules
   const validationResult = validateSendNotificationRequest(body);
   if (!validationResult.valid || !validationResult.payload) {
     return new Response(JSON.stringify({ success: false, error: validationResult.error }), {
@@ -312,7 +336,7 @@ Deno.serve(async (req) => {
 
   const payload = validationResult.payload;
 
-  // 7. Query active subscribers count using service-role client according to Option A targeting rules
+  // 8. Query active subscribers count using service-role client according to Option A targeting rules
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
   let recipientCount = 0;
