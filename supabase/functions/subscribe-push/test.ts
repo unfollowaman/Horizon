@@ -1,5 +1,11 @@
 import { assertEquals } from "jsr:@std/assert";
-import { validatePushEndpoint, getCorsHeaders, extractBearerToken, MAX_BODY_BYTES } from "./index.ts";
+import {
+  validatePushEndpoint,
+  getCorsHeaders,
+  extractBearerToken,
+  readBoundedBodyStream,
+  MAX_BODY_BYTES,
+} from "./index.ts";
 
 Deno.test("extractBearerToken - valid Bearer token", () => {
   const res = extractBearerToken("Bearer sample-token-xyz-123");
@@ -26,6 +32,41 @@ Deno.test("extractBearerToken - malformed non-Bearer scheme", () => {
 
 Deno.test("MAX_BODY_BYTES constant value", () => {
   assertEquals(MAX_BODY_BYTES, 16384);
+});
+
+Deno.test("readBoundedBodyStream - normal payload within limit", async () => {
+  const payload = JSON.stringify({ subscription: { endpoint: "https://fcm.googleapis.com/fcm/send/123" } });
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    body: payload,
+  });
+
+  const res = await readBoundedBodyStream(req, 1024);
+  assertEquals(res.oversized, undefined);
+  assertEquals(res.text, payload);
+});
+
+Deno.test("readBoundedBodyStream - oversized payload stream cancelled", async () => {
+  const oversizedData = new Uint8Array(2000);
+  oversizedData.fill(65); // 'A's
+
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(oversizedData);
+      controller.close();
+    },
+  });
+
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    body: stream,
+    // @ts-ignore stream body requires duplex in node fetch
+    duplex: "half",
+  });
+
+  const res = await readBoundedBodyStream(req, 1000);
+  assertEquals(res.oversized, true);
+  assertEquals(res.text, undefined);
 });
 
 Deno.test("validatePushEndpoint - valid FCM endpoint", () => {

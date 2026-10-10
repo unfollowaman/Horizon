@@ -53,6 +53,54 @@ export function extractBearerToken(authHeader: string | null): { token: string |
   return { token: match[1].trim() };
 }
 
+export async function readBoundedBodyStream(
+  req: Request,
+  maxBytes: number = MAX_BODY_BYTES
+): Promise<{ text?: string; oversized?: boolean; error?: string }> {
+  if (!req.body) {
+    return { text: "" };
+  }
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+      if (value) {
+        totalBytes += value.byteLength;
+        if (totalBytes > maxBytes) {
+          try {
+            await reader.cancel("Payload exceeds maximum permitted size");
+          } catch (_e) {
+            // Reader cancel errors are non-fatal
+          }
+          return { oversized: true };
+        }
+        chunks.push(value);
+      }
+    }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Error reading request body stream" };
+  } finally {
+    reader.releaseLock();
+  }
+
+  const merged = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  const decoded = new TextDecoder().decode(merged);
+  return { text: decoded };
+}
+
 export function validatePushEndpoint(endpointStr: unknown): { valid: boolean; error?: string; url?: URL } {
   if (typeof endpointStr !== "string" || !endpointStr.trim()) {
     return { valid: false, error: "Missing or invalid push endpoint" };
@@ -164,7 +212,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Enforce request body size limit & parse JSON
+  // 4. Enforce request body size limit via bounded stream read & parse JSON
   const contentLengthHeader = req.headers.get("content-length");
   if (contentLengthHeader) {
     const cl = parseInt(contentLengthHeader, 10);
@@ -176,18 +224,16 @@ Deno.serve(async (req) => {
     }
   }
 
-  let rawBodyText: string;
-  try {
-    const arrayBuffer = await req.arrayBuffer();
-    if (arrayBuffer.byteLength > MAX_BODY_BYTES) {
-      return new Response(JSON.stringify({ success: false, error: "Request payload too large" }), {
-        status: 413,
-        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    rawBodyText = new TextDecoder().decode(arrayBuffer);
-  } catch (_e) {
-    return new Response(JSON.stringify({ success: false, error: "Failed to read request body" }), {
+  const streamResult = await readBoundedBodyStream(req, MAX_BODY_BYTES);
+  if (streamResult.oversized) {
+    return new Response(JSON.stringify({ success: false, error: "Request payload too large" }), {
+      status: 413,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  if (streamResult.error || streamResult.text === undefined) {
+    return new Response(JSON.stringify({ success: false, error: "Failed to read request body stream" }), {
       status: 400,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
@@ -195,7 +241,7 @@ Deno.serve(async (req) => {
 
   let body: Record<string, unknown>;
   try {
-    body = JSON.parse(rawBodyText);
+    body = JSON.parse(streamResult.text);
   } catch (_e) {
     return new Response(JSON.stringify({ success: false, error: "Invalid JSON payload" }), {
       status: 400,
