@@ -165,6 +165,30 @@ export type Profile = {
   created_at?: string;
 }
 
+export type PushSubscriptionRow = {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  student_class: string;
+  study_medium: string;
+  user_agent: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AnnouncementRow = {
+  id: string;
+  title: string;
+  body: string;
+  target_class: string;
+  target_medium: string;
+  created_by: string;
+  created_at: string;
+};
+
 // Stage 4 Syllabus Types
 export type SyllabusTopic = {
   id: string;
@@ -401,6 +425,74 @@ export interface Database {
             foreignKeyName: "syllabus_topic_resources_resource_id_fkey"
             columns: ["resource_id"]
             referencedRelation: "learning_resources"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      push_subscriptions: {
+        Row: PushSubscriptionRow
+        Insert: {
+          id?: string
+          user_id: string
+          endpoint: string
+          p256dh: string
+          auth: string
+          student_class?: string
+          study_medium?: string
+          user_agent?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          endpoint?: string
+          p256dh?: string
+          auth?: string
+          student_class?: string
+          study_medium?: string
+          user_agent?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            referencedSchema: "auth"
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      announcements: {
+        Row: AnnouncementRow
+        Insert: {
+          id?: string
+          title: string
+          body: string
+          target_class?: string
+          target_medium?: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          body?: string
+          target_class?: string
+          target_medium?: string
+          created_by?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_created_by_fkey"
+            columns: ["created_by"]
+            referencedSchema: "auth"
+            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
