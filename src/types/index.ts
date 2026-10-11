@@ -165,6 +165,38 @@ export type Profile = {
   created_at?: string;
 }
 
+export type PushSubscriptionRow = {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  user_agent: string | null;
+  student_class: '8' | '9' | '10' | '11' | '12' | 'general_only';
+  study_medium: 'english' | 'hindi' | 'general_only';
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AnnouncementRow = {
+  id: string;
+  title: string;
+  body: string;
+  image_url: string | null;
+  destination_url: string;
+  target_class: '8' | '9' | '10' | '11' | '12' | 'all';
+  target_medium: 'english' | 'hindi' | 'all';
+  created_by: string | null;
+  status: 'draft' | 'sending' | 'sent' | 'failed';
+  total_sent: number;
+  total_successful: number;
+  total_failed: number;
+  sent_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 // Stage 4 Syllabus Types
 export type SyllabusTopic = {
   id: string;
@@ -342,6 +374,74 @@ export interface Database {
           onboarding_completed?: boolean
           name?: string | null
           created_at?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: PushSubscriptionRow
+        Insert: {
+          id?: string
+          user_id: string
+          endpoint: string
+          p256dh: string
+          auth: string
+          user_agent?: string | null
+          student_class: '8' | '9' | '10' | '11' | '12' | 'general_only'
+          study_medium: 'english' | 'hindi' | 'general_only'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          endpoint?: string
+          p256dh?: string
+          auth?: string
+          user_agent?: string | null
+          student_class?: '8' | '9' | '10' | '11' | '12' | 'general_only'
+          study_medium?: 'english' | 'hindi' | 'general_only'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      announcements: {
+        Row: AnnouncementRow
+        Insert: {
+          id?: string
+          title: string
+          body: string
+          image_url?: string | null
+          destination_url?: string
+          target_class?: '8' | '9' | '10' | '11' | '12' | 'all'
+          target_medium?: 'english' | 'hindi' | 'all'
+          created_by?: string | null
+          status?: 'draft' | 'sending' | 'sent' | 'failed'
+          total_sent?: number
+          total_successful?: number
+          total_failed?: number
+          sent_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          body?: string
+          image_url?: string | null
+          destination_url?: string
+          target_class?: '8' | '9' | '10' | '11' | '12' | 'all'
+          target_medium?: 'english' | 'hindi' | 'all'
+          created_by?: string | null
+          status?: 'draft' | 'sending' | 'sent' | 'failed'
+          total_sent?: number
+          total_successful?: number
+          total_failed?: number
+          sent_at?: string | null
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
