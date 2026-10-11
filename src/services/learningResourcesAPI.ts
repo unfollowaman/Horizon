@@ -103,7 +103,7 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
   if (filters.resource_type) query = query.eq('resource_type', filters.resource_type);
   if (filters.student_class) query = query.eq('student_class', filters.student_class);
   if (filters.subject) query = query.eq('subject', filters.subject);
-  if (filters.medium) query = query.eq('medium', filters.medium);
+  if (filters.medium) query = query.or(`medium.eq.${filters.medium},medium.is.null`);
   if (filters.neqId) query = query.neq('id', filters.neqId);
   if (filters.limit) query = query.limit(filters.limit);
 
@@ -123,7 +123,7 @@ export const fetchLearningResources = async (filters: FetchResourcesFilters = {}
     if (filters.resource_type) legacyQuery = legacyQuery.eq('resource_type', filters.resource_type);
     if (filters.student_class) legacyQuery = legacyQuery.eq('student_class', filters.student_class);
     if (filters.subject) legacyQuery = legacyQuery.eq('subject', filters.subject);
-    if (filters.medium) legacyQuery = legacyQuery.eq('medium', filters.medium);
+    if (filters.medium) legacyQuery = legacyQuery.or(`medium.eq.${filters.medium},medium.is.null`);
     if (filters.neqId) legacyQuery = legacyQuery.neq('id', filters.neqId);
     if (filters.limit) legacyQuery = legacyQuery.limit(filters.limit);
 

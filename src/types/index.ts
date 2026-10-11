@@ -8,7 +8,7 @@ export interface Resource {
   title: string;
   description?: string | null;
   resource_type: ResourceType;
-  medium: Medium;
+  medium: Medium | null;
   uploadDate: string;
   pdfUrl: string;
   thumbnailUrl: string;
@@ -57,7 +57,7 @@ export type LearningResource = {
   description?: string | null;
   student_class?: string | null;
   resource_type: ResourceType;
-  medium: Medium;
+  medium: Medium | null;
   file_path?: string | null;
   pdf_url?: string | null;
   thumbnail_url?: string | null;
@@ -85,7 +85,7 @@ export type LearningResourceRow = {
   description?: string | null;
   student_class?: string | number | null;
   resource_type: ResourceType;
-  medium: Medium;
+  medium: Medium | null;
   file_path?: string | null;
   pdf_url?: string | null;
   thumbnail_url?: string | null;
@@ -240,7 +240,7 @@ export interface Database {
           description?: string | null
           student_class?: string | null
           resource_type: ResourceType
-          medium: Medium
+          medium?: Medium | null
           file_path?: string | null
           pdf_url?: string | null
           thumbnail_url?: string | null
@@ -257,7 +257,7 @@ export interface Database {
           description?: string | null
           student_class?: string | null
           resource_type?: ResourceType
-          medium?: Medium
+          medium?: Medium | null
           file_path?: string | null
           pdf_url?: string | null
           thumbnail_url?: string | null

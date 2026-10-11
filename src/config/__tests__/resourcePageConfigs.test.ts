@@ -46,6 +46,51 @@ describe('resourcePageConfigs Optimization & Correctness', () => {
     expect(optimized).toEqual(['English', 'Hindi']);
   });
 
+  describe('notesConfig.filterByThirdFilter Shared Medium Filtering', () => {
+    const sampleResources: Partial<Resource>[] = [
+      { id: '1', title: 'English Science Notes', medium: 'english' },
+      { id: '2', title: 'Hindi Science Notes', medium: 'hindi' },
+      { id: '3', title: 'Shared Sanskrit Notes', medium: null },
+      { id: '4', title: 'Shared Grammar Notes', medium: undefined as unknown as Resource['medium'] },
+    ];
+
+    it('1. English filter includes English resources and shared NULL-medium resources', () => {
+      const filtered = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'English');
+      const titles = filtered.map(r => r.title);
+      expect(titles).toContain('English Science Notes');
+      expect(titles).toContain('Shared Sanskrit Notes');
+      expect(titles).toContain('Shared Grammar Notes');
+    });
+
+    it('2. English filter excludes Hindi-only resources', () => {
+      const filtered = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'English');
+      const titles = filtered.map(r => r.title);
+      expect(titles).not.toContain('Hindi Science Notes');
+    });
+
+    it('3. Hindi filter includes Hindi resources and shared NULL-medium resources', () => {
+      const filtered = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'Hindi');
+      const titles = filtered.map(r => r.title);
+      expect(titles).toContain('Hindi Science Notes');
+      expect(titles).toContain('Shared Sanskrit Notes');
+      expect(titles).toContain('Shared Grammar Notes');
+    });
+
+    it('4. Hindi filter excludes English-only resources', () => {
+      const filtered = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'Hindi');
+      const titles = filtered.map(r => r.title);
+      expect(titles).not.toContain('English Science Notes');
+    });
+
+    it('5. "All Mediums" continues returning resources of every medium', () => {
+      const filteredAll = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'All Mediums');
+      expect(filteredAll).toHaveLength(4);
+
+      const filteredDefault = notesConfig.filterByThirdFilter(sampleResources as Resource[], 'Mediums');
+      expect(filteredDefault).toHaveLength(4);
+    });
+  });
+
   it('demonstrates measurable performance improvement over chained map/filter baseline', () => {
     const largeResources: Partial<Resource>[] = [];
     const years = ['2024', '2023', '2022', '2021', '2020', '2019', ''];

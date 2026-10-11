@@ -61,7 +61,8 @@ export const notesConfig: ResourcePageConfig = {
   },
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
     if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
-      return resources.filter(r => r.medium && r.medium.toLowerCase() === filterValue.toLowerCase());
+      const lowerFilter = filterValue.toLowerCase();
+      return resources.filter(r => !r.medium || r.medium.toLowerCase() === lowerFilter);
     }
     return resources;
   },

@@ -272,18 +272,21 @@ describe('learningResourcesAPI', () => {
       expect(response.data?.[0].student_class).toBe('Class 10');
     });
 
-    it('applies all provided filters including chapters', async () => {
+    it('applies all provided filters including chapters and shared NULL-medium OR query', async () => {
       const mockLimit = vi.fn();
       const mockNeq = vi.fn();
       const mockEq = vi.fn();
+      const mockOr = vi.fn();
 
       const queryChain = {
         eq: mockEq,
+        or: mockOr,
         neq: mockNeq,
         limit: mockLimit,
       };
 
       mockEq.mockReturnValue(queryChain);
+      mockOr.mockReturnValue(queryChain);
       mockNeq.mockReturnValue(queryChain);
       mockLimit.mockResolvedValue({ data: [], error: null });
 
@@ -309,7 +312,7 @@ describe('learningResourcesAPI', () => {
       expect(mockEq).toHaveBeenCalledWith('resource_type', 'notes');
       expect(mockEq).toHaveBeenCalledWith('student_class', 'Class 10');
       expect(mockEq).toHaveBeenCalledWith('subject', 'Mathematics');
-      expect(mockEq).toHaveBeenCalledWith('medium', 'english');
+      expect(mockOr).toHaveBeenCalledWith('medium.eq.english,medium.is.null');
       expect(mockNeq).toHaveBeenCalledWith('id', 'res-99');
       expect(mockLimit).toHaveBeenCalledWith(5);
       expect(response.data).toEqual([]);
@@ -384,13 +387,16 @@ describe('learningResourcesAPI', () => {
 
       let callCount = 0;
       const primaryMockEq = vi.fn();
+      const primaryMockOr = vi.fn();
       const legacyMockEq = vi.fn();
+      const legacyMockOr = vi.fn();
 
       vi.mocked(supabase.from).mockImplementation(() => {
         callCount++;
         if (callCount === 1) {
           const chain = {
             eq: primaryMockEq.mockImplementation(() => chain),
+            or: primaryMockOr.mockImplementation(() => chain),
             then: (resolve: (arg: { data: null; error: typeof missingColumnError }) => void) =>
               resolve({ data: null, error: missingColumnError }),
           };
@@ -398,6 +404,7 @@ describe('learningResourcesAPI', () => {
         } else {
           const chain = {
             eq: legacyMockEq.mockImplementation(() => chain),
+            or: legacyMockOr.mockImplementation(() => chain),
             then: (resolve: (arg: { data: LearningResourceRow[]; error: null }) => void) =>
               resolve({ data: legacyRows, error: null }),
           };
@@ -409,9 +416,9 @@ describe('learningResourcesAPI', () => {
 
       expect(callCount).toBe(2);
       expect(primaryMockEq).toHaveBeenCalledWith('resource_type', 'notes');
-      expect(primaryMockEq).toHaveBeenCalledWith('medium', 'english');
+      expect(primaryMockOr).toHaveBeenCalledWith('medium.eq.english,medium.is.null');
       expect(legacyMockEq).toHaveBeenCalledWith('resource_type', 'notes');
-      expect(legacyMockEq).toHaveBeenCalledWith('medium', 'english');
+      expect(legacyMockOr).toHaveBeenCalledWith('medium.eq.english,medium.is.null');
       expect(response.error).toBeNull();
       expect(response.data).toHaveLength(1);
       expect(response.data?.[0].id).toBe('res-legacy-filtered');
