@@ -405,14 +405,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "push_subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedSchema: "auth"
-          }
-        ]
+        Relationships: []
       }
       announcements: {
         Row: AnnouncementRow
@@ -450,14 +443,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "announcements_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "users"
-            referencedSchema: "auth"
-          }
-        ]
+        Relationships: []
       }
       syllabus_topics: {
         Row: SyllabusTopic
