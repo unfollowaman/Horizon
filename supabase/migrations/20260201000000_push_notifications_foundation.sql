@@ -60,6 +60,10 @@ GRANT SELECT, DELETE ON public.push_subscriptions TO authenticated;
 -- Grant SELECT on announcements to authenticated and anonymous users
 GRANT SELECT ON public.announcements TO authenticated, anon;
 
+-- Explicit grants for service_role (used by Edge Functions / Admin API)
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.push_subscriptions TO service_role;
+GRANT SELECT, INSERT, UPDATE ON public.announcements TO service_role;
+
 -- 4. Enable Row Level Security (RLS) & Policies
 ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
