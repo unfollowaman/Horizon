@@ -46,6 +46,13 @@ describe('PdfViewer Fallback Screens', () => {
   let root: Root | null = null;
 
   beforeEach(() => {
+    if (typeof globalThis.ResizeObserver === 'undefined') {
+      globalThis.ResizeObserver = class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      } as unknown as typeof ResizeObserver;
+    }
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);

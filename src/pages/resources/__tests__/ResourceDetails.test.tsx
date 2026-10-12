@@ -207,7 +207,7 @@ describe('ResourceDetails Public Educational Landing Page', () => {
 
     await act(async () => {
       root?.render(
-        <MemoryRouter initialEntries={['/resource/pyq-201']}>
+        <MemoryRouter key="pyq-route" initialEntries={['/resource/pyq-201']}>
           <Routes>
             <Route path="/resource/:id" element={<ResourceDetails />} />
           </Routes>
@@ -654,6 +654,11 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     // Notes must NOT render download button
     let downloadBtn = container?.querySelector('button[aria-label^="Download"]');
     expect(downloadBtn).toBeNull();
+
+    act(() => {
+      root?.unmount();
+    });
+    root = createRoot(container!);
 
     // 2. PYQ Resource
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
