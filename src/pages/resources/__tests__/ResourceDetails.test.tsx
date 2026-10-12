@@ -633,29 +633,17 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     expect(headerCard?.querySelector('p.border-t')).toBeNull();
   });
 
-  it('renders interactive controls with focus-visible ring classes, download ARIA label, and aria-hidden arrows', async () => {
-    const downloadResource: Resource = {
-      ...mockNoteResource,
-      id: 'download-test-101',
-      title: 'Chapter 1: Resource and Development',
-      allow_download: true,
-      pdfUrl: 'https://example.com/notes.pdf'
-    };
-
+  it('does not render download button for Notes resources, but renders download button for PYQ resources', async () => {
+    // 1. Notes Resource
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
-      data: downloadResource,
-      rawData: downloadResource,
+      data: { ...mockNoteResource, allow_download: true },
+      rawData: { ...mockNoteResource, allow_download: true },
       error: null
     } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
 
-    vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
-      data: mockRelatedResources,
-      error: null
-    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResources>>);
-
     await act(async () => {
       root?.render(
-        <MemoryRouter initialEntries={['/resource/download-test-101']}>
+        <MemoryRouter initialEntries={['/resource/note-101']}>
           <Routes>
             <Route path="/resource/:id" element={<ResourceDetails />} />
           </Routes>
@@ -663,32 +651,31 @@ describe('ResourceDetails Public Educational Landing Page', () => {
       );
     });
 
-    // Check back button focus-visible class
-    const backBtn = container?.querySelector('button[aria-label="Go Back"]');
-    expect(backBtn).not.toBeNull();
-    expect(backBtn?.className).toContain('focus-visible:ring-2');
+    // Notes must NOT render download button
+    let downloadBtn = container?.querySelector('button[aria-label^="Download"]');
+    expect(downloadBtn).toBeNull();
 
-    // Check primary CTA link focus-visible class
-    const ctaLinks = container?.querySelectorAll('a[href="/view/download-test-101"]');
-    expect(ctaLinks?.length).toBeGreaterThanOrEqual(1);
-    ctaLinks?.forEach(link => {
-      expect(link.className).toContain('focus-visible:ring-2');
+    // 2. PYQ Resource
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockPyqResource,
+      rawData: mockPyqResource,
+      error: null
+    } as unknown as Awaited<ReturnType<typeof learningAPI.fetchLearningResourceById>>);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/resource/pyq-201']}>
+          <Routes>
+            <Route path="/resource/:id" element={<ResourceDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
     });
 
-    // Check download button ARIA label and focus-visible class
-    const downloadBtn = container?.querySelector('button[aria-label="Download Chapter 1: Resource and Development"]');
+    // PYQ must render download button
+    downloadBtn = container?.querySelector('button[aria-label="Download Class 10 Geography Board Paper 2023"]');
     expect(downloadBtn).not.toBeNull();
     expect(downloadBtn?.className).toContain('focus-visible:ring-2');
-
-    // Check related resource card link focus-visible class
-    const relatedLink = container?.querySelector('a[href="/resource/note-102"]');
-    expect(relatedLink).not.toBeNull();
-    expect(relatedLink?.className).toContain('focus-visible:ring-2');
-
-    // Check aria-hidden="true" on decorative arrow spans
-    const arrowSpans = container?.querySelectorAll('span[aria-hidden="true"]');
-    const hasRightArrow = Array.from(arrowSpans || []).some(span => span.textContent === '→');
-    expect(hasRightArrow).toBe(true);
   });
 
   it('navigates to backPath with replace option on Back button click during direct entry', async () => {

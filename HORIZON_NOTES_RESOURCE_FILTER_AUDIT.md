@@ -60,40 +60,31 @@ The following repository files are responsible for fetching, filtering, routing,
 
 ---
 
-## 3. Medium Filtering Logic
+## 3. Medium Filtering Logic & Confirmed Root Causes
 
-The application determines resource visibility for English-medium and Hindi-medium students through a multi-tier pipeline:
+### Issue 1 Root Cause: Missing Medium Option in Dropdown
+When a student navigated to the Notes page with a specific medium active (for instance, Hindi medium default from profile or URL), `ResourcePage.tsx` executed `fetchLearningResources({ resource_type: 'notes', medium: 'hindi' })`.
+The Supabase PostgREST query fetched records matching `medium = 'hindi' OR medium IS NULL`.
+Because all non-shared notes in the returned result set had `medium = 'hindi'`, no row in `allResources` contained `medium = 'english'`.
+`notesConfig.extractThirdFilterValues(allResources)` extracted unique medium strings directly from `allResources`. With zero English rows returned from the filtered query, `'English'` was omitted from the dropdown options. As a result, users could not select "English Medium" from the dropdown.
 
-### 1. Medium Source Priority
-1. **URL Slug / Query Parameters**: Highest priority. E.g., `/notes/class-10/english-medium/geography` or `?medium=english-medium`.
-2. **Student Profile Preference**: If no medium is specified in the URL, `ResourcePage.tsx` checks `profile?.study_medium` (from `AuthContext`). If set (e.g. `'english'` or `'hindi'`), it capitalizes the string (`'English'` or `'Hindi'`) and uses it as `selectedThirdFilter`.
-3. **All Mediums Option**: If the user selects "All Mediums" from the dropdown or navigates to `/notes/class-10/all-mediums`, `selectedThirdFilter` becomes `''` (empty string).
+**Fix Applied**:
+1. Updated `notesConfig.extractThirdFilterValues` in `src/config/resourcePageConfigs.ts` to initialize the options Set with `['English', 'Hindi']`. This guarantees both standard study mediums are always available in the dropdown regardless of the active filter or returned dataset.
+2. Verified `fetchLearningResources` in `src/services/learningResourcesAPI.ts` queries `.or("medium.eq.<medium>,medium.is.null")` so shared notes (`medium = NULL`) are retrieved under both English and Hindi filters.
+3. Verified `notesConfig.filterByThirdFilter` in `src/config/resourcePageConfigs.ts` passes records where `!r.medium` (or `r.medium === null`), rendering shared Sanskrit notes under both English and Hindi medium selections without card duplication.
 
-### 2. Dual Filtering Execution (Database + Frontend)
-Medium filtering is enforced in **both** the database query layer and the frontend JavaScript layer:
+---
 
-- **Database Query Layer (`learningResourcesAPI.ts`)**:
-  When `selectedThirdFilter` is set (e.g. `'English'`), `ResourcePage.tsx` normalizes it using `normalizeMediumValue('English')` -> `'english'` and passes it in `fetchFilters.medium`.
-  `fetchLearningResources` appends `.eq('medium', 'english')` to the Supabase PostgREST query:
-  ```ts
-  if (filters.medium) query = query.eq('medium', filters.medium);
-  ```
-- **Frontend JavaScript Layer (`resourcePageConfigs.ts`)**:
-  `notesConfig.filterByThirdFilter` filters the array returned by Supabase:
-  ```ts
-  filterByThirdFilter: (resources: Resource[], filterValue: string) => {
-    if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
-      return resources.filter(r => r.medium && r.medium.toLowerCase() === filterValue.toLowerCase());
-    }
-    return resources;
-  }
-  ```
+### Issue 2 Root Cause: Notes Resources Allowed Download Actions
+`canDownload(resource)` in `src/utils/permissions.ts` previously evaluated `return resource.allow_download !== false;`.
+For Notes records where `allow_download` was `null`, `undefined`, or `true`, `canDownload` evaluated to `true`.
+This caused download buttons to render on:
+- Grid cards (`src/components/MaterialCard.tsx`)
+- Resource details landing pages (`src/pages/resources/ResourceDetails.tsx`)
 
-### 3. Handling of `NULL` Medium Values
-If a record in `learning_resources` has `medium = NULL`:
-1. **Excluded in Supabase SQL Query**: PostgREST `.eq('medium', 'english')` translates to SQL `WHERE medium = 'english'`. In SQL, `NULL = 'english'` evaluates to `UNKNOWN` (false). Thus, records with `medium = NULL` are **completely filtered out at the database level** whenever a specific medium is active.
-2. **Excluded in Frontend JavaScript Filter**: The frontend filter requires `r.medium` to be truthy (`r.medium && r.medium.toLowerCase() === ...`). A `null` or `undefined` value evaluates to falsy and is filtered out.
-3. **Excluded in Dropdown Extraction**: `notesConfig.extractThirdFilterValues` only extracts mediums if `r.medium` is truthy (`if (r.medium) { acc.add(r.medium); }`).
+**Fix Applied**:
+Updated `canDownload` in `src/utils/permissions.ts` so that resources with `resource_type === 'notes'` return `false` unconditionally.
+This strictly enforces read-only access for Notes resources across all UI components, while preserving download functionality for non-notes resources (such as PYQ papers where `resource_type === 'pyq'` and `allow_download !== false`).
 
 ---
 
@@ -115,242 +106,86 @@ If a record in `learning_resources` has `medium = NULL`:
 
 ---
 
-## 5. Code Evidence
+## 5. Applied Fixes & Implementation Summary
 
-### Evidence A: Notes Configuration and Medium Filtering (`src/config/resourcePageConfigs.ts`)
+### 1. Medium Dropdown Extraction Fix (`src/config/resourcePageConfigs.ts`)
 ```ts
-// Lines 42-67 in src/config/resourcePageConfigs.ts
-export const notesConfig: ResourcePageConfig = {
-  resourceType: 'notes',
-  title: 'Study Notes',
-  metaTitle: 'Comprehensive Study Notes | Horizon - Free Student Library',
-  metaDescription: 'Explore free, subject-wise study notes organized by syllabus chapters for Class 8 to Class 12 in English and Hindi medium. Master concepts with clear chapter outlines and revision notes.',
-  includeChapters: true,
-  thirdFilterType: 'medium',
-  emptyMessageTitle: 'No study notes found.',
-  emptyMessageSubtitle: 'Try selecting a different class, subject, or medium.',
-  otherResourcesCategory: 'notes',
-  getThirdFilterDesktopLabel: () => 'All Mediums',
-  getThirdFilterMobileLabel: () => 'Mediums',
-  extractThirdFilterValues: (resources: Resource[]) => {
-    const rawMediums = resources.reduce((acc, r) => {
-      if (r.medium) {
-        acc.add(r.medium);
-      }
-      return acc;
-    }, new Set<string>());
-    return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
-  },
-  filterByThirdFilter: (resources: Resource[], filterValue: string) => {
-    if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
-      return resources.filter(r => r.medium && r.medium.toLowerCase() === filterValue.toLowerCase());
+extractThirdFilterValues: (resources: Resource[]) => {
+  const rawMediums = resources.reduce((acc, r) => {
+    if (r.medium) {
+      acc.add(r.medium);
     }
-    return resources;
-  },
-  sortResources: (resources: Resource[]) => { ... }
-};
-```
-
-### Evidence B: Supabase Resource Query and Database Filtering (`src/services/learningResourcesAPI.ts`)
-```ts
-// Lines 100-110 in src/services/learningResourcesAPI.ts
-export const fetchLearningResources = async (filters: FetchResourcesFilters = {}) => {
-  const selectQuery = filters.includeChapters
-    ? 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance, chapters(id, chapter_number, chapter_name, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance)'
-    : 'id, title, description, resource_type, medium, created_at, student_class, subject, year, chapter_id, allow_download, storage_bucket, file_path, chapter_summary, topics, key_concepts, important_terms, learning_objectives, exam_relevant_themes, study_guidance';
-
-  let query = supabase.from('learning_resources').select(selectQuery);
-
-  if (filters.resource_type) query = query.eq('resource_type', filters.resource_type);
-  if (filters.student_class) query = query.eq('student_class', filters.student_class);
-  if (filters.subject) query = query.eq('subject', filters.subject);
-  if (filters.medium) query = query.eq('medium', filters.medium);
-  if (filters.neqId) query = query.neq('id', filters.neqId);
-  if (filters.limit) query = query.limit(filters.limit);
-
-  const { data: initialData, error: initialError } = await query;
-```
-
-### Evidence C: Profile Default & URL Sync in ResourcePage (`src/pages/resources/ResourcePage.tsx`)
-```ts
-// Lines 180-189 in src/pages/resources/ResourcePage.tsx
-const fetchFilters: Parameters<typeof fetchLearningResources>[0] = {
-  resource_type: config.resourceType,
-  includeChapters: config.includeChapters,
-};
-
-if (config.resourceType === 'notes' && config.thirdFilterType === 'medium' && selectedThirdFilter) {
-  if (selectedThirdFilter !== 'Mediums' && selectedThirdFilter !== 'All Mediums') {
-    fetchFilters.medium = normalizeMediumValue(selectedThirdFilter);
-  }
+    return acc;
+  }, new Set<string>(['English', 'Hindi']));
+  return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
 }
-
-// Lines 265-280 in src/pages/resources/ResourcePage.tsx
-if (config.thirdFilterType === 'medium') {
-  if (qMedium) {
-    targetThirdFilter = slugToMedium(qMedium, uniqueThirdFilterValues) || '';
-  } else if (pathMediumSlug && isMediumSlug(pathMediumSlug)) {
-    if (pathMediumSlug === 'all-mediums') {
-      targetThirdFilter = '';
-    } else {
-      targetThirdFilter = slugToMedium(pathMediumSlug, uniqueThirdFilterValues) || '';
-    }
-  } else {
-    // Only default to student profile study_medium for notes resources
-    if (config.resourceType === 'notes' && profile?.study_medium) {
-      const profileMedium = profile.study_medium.trim();
-      targetThirdFilter = profileMedium.charAt(0).toUpperCase() + profileMedium.slice(1);
-    }
-  }
 ```
 
-### Evidence D: Frontend Post-Query Filtering (`src/pages/resources/ResourcePage.tsx`)
-```ts
-// Lines 319-333 in src/pages/resources/ResourcePage.tsx
-const filteredResources = useMemo(() => {
-  let filtered = allResources;
-
-  if (selectedClass || selectedSubject) {
-    filtered = filtered.filter(
-      r => (!selectedClass || r.student_class === selectedClass) &&
-           (!selectedSubject || r.subject === selectedSubject)
-    );
-  }
-
-  // Pass the actual current label for "all" so `config.filterByThirdFilter` can ignore it.
-  const effectiveThirdFilter = selectedThirdFilter || thirdFilterAllLabel;
-  filtered = config.filterByThirdFilter(filtered, effectiveThirdFilter);
-
-  return config.sortResources(filtered);
-}, [allResources, selectedClass, selectedSubject, selectedThirdFilter, thirdFilterAllLabel, config]);
-```
-
-### Evidence E: Dashboard Progress Medium Filter Query (`src/services/learningResourcesAPI.ts`)
-```ts
-// Lines 181-190 in src/services/learningResourcesAPI.ts
-export const fetchSyllabusChapters = async (studentClass: string, medium: Medium) => {
-  const { data, error } = await supabase
-    .from('learning_resources')
-    .select('chapter_id, subject')
-    .eq('resource_type', 'notes')
-    .eq('student_class', studentClass)
-    .eq('medium', medium)
-    .not('chapter_id', 'is', null);
-
-  return { data, error };
-};
-```
-
----
-
-## 6. Sanskrit Compatibility Assessment
-
-### Question: Would setting `medium = NULL` (or `medium = 'both'`) currently work for shared Sanskrit resources?
-
-### Answer: **NO**.
-
-Under the current implementation, setting `medium = NULL` (or `medium = 'both'`) on a Sanskrit note record in `learning_resources` will **FAIL** to display that note to students viewing either English medium or Hindi medium.
-
-#### Why it fails step-by-step:
-
-1. **Supabase Query Exclusion**:
-   When an English-medium student visits `/notes` (or when `selectedThirdFilter = 'English'`), `ResourcePage.tsx` sets `fetchFilters.medium = 'english'`. `fetchLearningResources` executes `.eq('medium', 'english')`. In SQL, `WHERE medium = 'english'` rejects rows where `medium IS NULL` or `medium = 'both'`. The database returns `[]` for that resource.
-
-2. **Frontend JavaScript Exclusion**:
-   Even if `fetchLearningResources` were modified to return all records without a database medium filter, `notesConfig.filterByThirdFilter` executes:
-   `resources.filter(r => r.medium && r.medium.toLowerCase() === filterValue.toLowerCase())`.
-   If `r.medium` is `null`, `r.medium` is falsy and the record is discarded. If `r.medium` is `'both'`, `'both'.toLowerCase() === 'english'` evaluates to `false` and the record is discarded.
-
-3. **Dashboard Progress Calculation Exclusion**:
-   When a student views their Dashboard, `useDashboardProgress.ts` calls `fetchSyllabusChapters(normalizedClass, profile.study_medium)`. `fetchSyllabusChapters` uses `.eq('medium', medium)` in its Supabase query. Any Sanskrit note with `medium = NULL` or `'both'` would be omitted from syllabus chapter totals and progress tracking.
-
----
-
-## 7. Required Changes
-
-To support shared Class 10 Sanskrit notes (or any shared resource) visible to both English-medium and Hindi-medium students without duplicating records or PDF files, the following minimal, targeted frontend/API changes are required:
-
-### 1. Data Contract & TypeScript Schema
-- Update `Medium` type in `src/types/index.ts` to allow shared medium representation if using a string constant (e.g. `export type Medium = 'english' | 'hindi' | 'both';`) or allow `medium: Medium | null`.
-
-### 2. Supabase Query Logic in `fetchLearningResources` (`src/services/learningResourcesAPI.ts`)
-- Modify `fetchLearningResources` so that when a `medium` filter is supplied, it fetches resources matching the requested medium **OR** shared resources (`medium = 'both'` or `medium IS NULL`):
+### 2. Shared Resource Query & Client Filter
+- **Supabase Query Layer (`src/services/learningResourcesAPI.ts`)**:
   ```ts
-  if (filters.medium) {
-    query = query.or(`medium.eq.${filters.medium},medium.eq.both,medium.is.null`);
-  }
+  if (filters.medium) query = query.or(`medium.eq.${filters.medium},medium.is.null`);
   ```
-
-### 3. Frontend Filter Logic in `notesConfig` (`src/config/resourcePageConfigs.ts`)
-- Update `notesConfig.filterByThirdFilter` so shared resources pass client-side filtering:
+- **Frontend Filter (`src/config/resourcePageConfigs.ts`)**:
   ```ts
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
     if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
       const lowerFilter = filterValue.toLowerCase();
-      return resources.filter(
-        r => !r.medium || r.medium === 'both' || r.medium.toLowerCase() === lowerFilter
-      );
+      return resources.filter(r => !r.medium || r.medium.toLowerCase() === lowerFilter);
     }
     return resources;
   }
   ```
 
-### 4. Dashboard Progress Query in `fetchSyllabusChapters` (`src/services/learningResourcesAPI.ts`)
-- Update `fetchSyllabusChapters` to include shared medium notes in chapter count calculations:
-  ```ts
-  export const fetchSyllabusChapters = async (studentClass: string, medium: Medium) => {
-    const { data, error } = await supabase
-      .from('learning_resources')
-      .select('chapter_id, subject')
-      .eq('resource_type', 'notes')
-      .eq('student_class', studentClass)
-      .or(`medium.eq.${medium},medium.eq.both,medium.is.null`)
-      .not('chapter_id', 'is', null);
-
-    return { data, error };
-  };
-  ```
+### 3. Read-Only Download Permissions for Notes (`src/utils/permissions.ts`)
+```ts
+export const canDownload = (resource: Partial<Pick<Resource, 'allow_download' | 'resource_type'>>): boolean => {
+  if (resource.resource_type === 'notes') {
+    return false;
+  }
+  return resource.allow_download !== false;
+};
+```
 
 ---
 
-## 8. Regression Risks
+## 6. Verification & Audit Results
 
-| Feature / Area | Risk Level | Mitigation Strategy |
+### A. Automated Unit & Integration Tests
+
+| Test Suite / File | Verified Behavior / Purpose | Result |
 | :--- | :--- | :--- |
-| **PYQ Papers (`/library`)** | **Zero Risk** | PYQs use `pyqConfig` with `thirdFilterType: 'year'`. Medium filtering logic in `ResourcePage.tsx` is guarded by `config.resourceType === 'notes' && config.thirdFilterType === 'medium'`. |
-| **Other Subjects (Science, Math, etc.)** | **Low Risk** | Non-Sanskrit notes explicitly specify `medium = 'english'` or `medium = 'hindi'`. Adding `.or(medium.eq.both,medium.is.null)` will not affect resources with explicit single-medium tags. |
-| **Syllabus Hierarchy View (`/syllabus`)** | **Zero Risk** | `fetchSyllabusHierarchy` joins resources through `syllabus_topic_resources` without filtering by `medium`. Shared Sanskrit notes mapped to Sanskrit syllabus topics already render properly. |
-| **Resource Details Page (`/resource/:id`)** | **Zero Risk** | `ResourceDetails` queries directly by `id` (`.eq('id', id)`). Direct page views and direct link sharing work regardless of medium value. |
-| **URL Parameter & Canonical URL Generation** | **Low Risk** | `buildCategoryUrl` and `slugToMedium` handle medium slugs. Shared Sanskrit notes under `/notes/class-10/english-medium/sanskrit` or `/notes/class-10/hindi-medium/sanskrit` will generate correct canonical URLs. |
+| `src/config/__tests__/resourcePageConfigs.test.ts` | Verifies `notesConfig.extractThirdFilterValues` always contains `'English'` and `'Hindi'` options even when returned resources contain only single-medium rows. Verifies `filterByThirdFilter` includes shared (`medium = null`) notes under both English and Hindi filters without duplicating cards. | **PASS** |
+| `src/utils/__tests__/permissions.test.ts` | Verifies `canDownload` returns `false` for `resource_type === 'notes'` unconditionally, and returns `true` for `resource_type === 'pyq'` where `allow_download !== false`. | **PASS** |
+| `src/components/__tests__/MaterialCard.test.tsx` | Verifies `MaterialCard` omits the Download button for Notes, and renders the Download button for PYQs. | **PASS** |
+| `src/pages/resources/__tests__/ResourceDetails.test.tsx` | Verifies `ResourceDetails` omits the Download button for Notes, and renders the Download button for PYQs. | **PASS** |
+| `src/pages/resources/__tests__/PdfViewer.test.tsx` | Verifies `PdfViewer` renders read-only canvas Controls (Zoom, Rotate, Share, Navigation) and omits any download, print, or open-in-new-tab links for Notes. | **PASS** |
+| `src/services/__tests__/learningResourcesAPI.test.ts` | Verifies Supabase query builder constructs `.or("medium.eq.<medium>,medium.is.null")`. | **PASS** |
 
 ---
 
-## 9. Verification Plan
+### B. PDF Viewer Implementation & Behavior Verification (`/view/:id`)
 
-### Test Suite 1: Automated Unit Tests
-1. **`learningResourcesAPI.test.ts`**:
-   - Test `fetchLearningResources({ resource_type: 'notes', medium: 'english' })` verifies `.or()` or combined medium condition is invoked on Supabase query.
-   - Test `fetchSyllabusChapters('10', 'english')` includes shared Sanskrit notes (`medium = 'both'` or `NULL`).
-2. **`ResourcePageOptimization.test.tsx` / `ResourcePageEducational.test.tsx`**:
-   - Mock `fetchLearningResources` returning a mix of English notes (`medium: 'english'`), Hindi notes (`medium: 'hindi'`), and shared Sanskrit notes (`medium: 'both'` or `null`).
-   - Verify that when `selectedThirdFilter = 'English'`, both English notes and shared Sanskrit notes appear in `filteredResources`.
-   - Verify that when `selectedThirdFilter = 'Hindi'`, both Hindi notes and shared Sanskrit notes appear in `filteredResources`.
-3. **`resources.test.ts` / `resourcePageConfigs.test.ts`**:
-   - Test `notesConfig.filterByThirdFilter` with `'English'` filter includes `{ medium: 'both' }` and `{ medium: null }` items.
+1. **Rendering Mechanism**:
+   - Component: `src/pages/resources/PdfViewer.tsx` -> `src/pages/resources/pdf-viewer/components/PdfDocumentRenderer.tsx`.
+   - Engine: `react-pdf` (`Document` and `Page` components) powered by PDF.js worker (`/pdf.worker.min.mjs`). Pages render onto HTML5 `<canvas>` elements inside `react-zoom-pan-pinch` transform containers.
+2. **Download / Print / Open-in-New-Tab Audit**:
+   - **Floating Controls (`PdfBottomControls`)**: Offers Zoom In, Zoom Out, Rotate Screen, Share, and More Options toggle. Contains zero download, print, save, or open-in-new-tab actions.
+   - **Mobile Menu (`PdfMobileMenu`)**: Renders internal routing links (`/`, `/syllabus`, `/notes`, `/library`, `/dashboard`) without external download actions.
+   - **Canvas & Event Protection**:
+     - `onContextMenu={(e) => e.preventDefault()}` on the canvas container prevents native right-click "Save image as..." and "Print...".
+     - `onDragStart={(e) => e.preventDefault()}` prevents dragging canvas images.
+     - `renderTextLayer={false}` and `renderAnnotationLayer={false}` prevent text selection overlays or external links.
+     - `usePdfKeyboardShortcuts.ts` intercepts and blocks `Ctrl+P`/`Cmd+P` (Print) and `Ctrl+S`/`Cmd+S` (Save).
+3. **Authorization & Storage Security**:
+   - `usePdfData.ts` verifies `isResourceProtected(resource)` (`storage_bucket === 'protected-resources'`).
+   - Authenticated session is required. `usePdfData.ts` invokes Supabase Edge Function `resource-access` with `{ resource_id }`.
+   - The Edge Function validates user authorization and generates a short-lived signed URL.
+   - `usePdfData.ts` fetches the PDF bytes as an `ArrayBuffer` in memory and passes it directly to `react-pdf`. No public storage bucket URL is ever exposed.
 
-### Test Suite 2: Manual Browser Verification
-1. **English-Medium Student Profile**:
-   - Log in or set profile medium to "English".
-   - Navigate to `/notes/class-10/sanskrit`.
-   - Verify Class 10 Sanskrit notes are visible and downloadable.
-2. **Hindi-Medium Student Profile**:
-   - Switch profile medium to "Hindi".
-   - Navigate to `/notes/class-10/sanskrit`.
-   - Verify the exact same Class 10 Sanskrit notes are visible and downloadable without missing cards.
-3. **Dropdown Medium Toggle**:
-   - Select "English Medium" from the medium dropdown -> verify Sanskrit note remains visible.
-   - Select "Hindi Medium" from the medium dropdown -> verify Sanskrit note remains visible.
-   - Select "All Mediums" -> verify Sanskrit note remains visible.
-4. **Detail Page Navigation & Viewer**:
-   - Click "View" on a Sanskrit note card -> verifies navigation to `/resource/:id`.
-   - Click "Open Full Notes" -> verifies PDF reader opens `/view/:id` without errors.
+---
+
+### C. Known Limitations
+
+1. **Client-Side Protection Boundary**: Client-side UI controls (hiding download buttons, disabling right-click context menus, and blocking print keyboard shortcuts) eliminate supported download actions. As with all web applications rendering content in browser viewports, technical users can inspect DOM canvas frames or capture screenshots.
+2. **PYQ Downloads Intact**: PYQ papers in the public `pdfs` bucket remain fully downloadable via `MaterialCard` and `ResourceDetails` download buttons.

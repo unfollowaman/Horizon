@@ -53,11 +53,12 @@ export const notesConfig: ResourcePageConfig = {
   extractThirdFilterValues: (resources: Resource[]) => {
     const rawMediums = resources.reduce((acc, r) => {
       if (r.medium) {
-        acc.add(r.medium);
+        const titleCase = r.medium.charAt(0).toUpperCase() + r.medium.slice(1).toLowerCase();
+        acc.add(titleCase);
       }
       return acc;
-    }, new Set<string>());
-    return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
+    }, new Set<string>(['English', 'Hindi']));
+    return Array.from(rawMediums).sort();
   },
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
     if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {

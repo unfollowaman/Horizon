@@ -154,4 +154,42 @@ describe('PdfViewer Fallback Screens', () => {
     expect(goBackBtn?.className).toContain('focus-visible:ring-2');
     expect(goBackBtn?.className).toContain('focus-visible:ring-[#E91E8C]');
   });
+
+  it('renders read-only PDF viewer without download, print, or open-in-new-tab controls', async () => {
+    vi.spyOn(usePdfDataModule, 'usePdfData').mockReturnValue({
+      resource: mockResource,
+      signedUrl: 'https://example.com/signed-note.pdf',
+      pdfData: new ArrayBuffer(8),
+      pdfError: null,
+      loading: false,
+      fetchSignedUrl: vi.fn()
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter initialEntries={['/view/note-1']}>
+          <Routes>
+            <Route path="/view/:id" element={<PdfViewer />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    // Check that top and bottom floating controls exist
+    expect(container?.querySelector('button[aria-label="Go Back"]')).not.toBeNull();
+    expect(container?.querySelector('button[aria-label="Zoom In"]')).not.toBeNull();
+    expect(container?.querySelector('button[aria-label="Zoom Out"]')).not.toBeNull();
+    expect(container?.querySelector('button[aria-label="Rotate Screen"]')).not.toBeNull();
+    expect(container?.querySelector('button[aria-label="Share"]')).not.toBeNull();
+
+    // Verify absence of any download, print, or open-in-new-tab controls or anchors
+    const downloadBtns = container?.querySelectorAll('button[aria-label*="Download"], a[aria-label*="Download"], a[download]');
+    expect(downloadBtns?.length).toBe(0);
+
+    const printBtns = container?.querySelectorAll('button[aria-label*="Print"], a[aria-label*="Print"]');
+    expect(printBtns?.length).toBe(0);
+
+    const newTabLinks = container?.querySelectorAll('a[target="_blank"]');
+    expect(newTabLinks?.length).toBe(0);
+  });
 });

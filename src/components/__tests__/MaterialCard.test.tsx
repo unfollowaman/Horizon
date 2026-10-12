@@ -68,10 +68,9 @@ describe('MaterialCard', () => {
     expect(viewLink?.className).toContain('focus-visible:ring-[#E91E8C]');
     expect(viewLink?.className).toContain('focus-visible:ring-offset-2');
 
+    // Notes resources must be read-only and must NOT render a download button
     const downloadButton = container?.querySelector('button[aria-label="Download Chapter 1: Real Numbers Notes"]');
-    expect(downloadButton).not.toBeNull();
-    expect(downloadButton?.className).toContain('focus-visible:ring-[#E91E8C]');
-    expect(downloadButton?.className).toContain('focus-visible:ring-offset-2');
+    expect(downloadButton).toBeNull();
   });
 
   it('renders dynamic flex classes for PYQ resource buttons on mobile', () => {
