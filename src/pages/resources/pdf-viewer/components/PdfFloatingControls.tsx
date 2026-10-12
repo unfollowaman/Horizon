@@ -12,7 +12,17 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
   return (
     <>
       <button
-        onClick={onBack}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onBack();
+        }}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onBack();
+        }}
         className={`${styles.floatingTopLeft} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label="Go Back"
         title="Go Back"
@@ -24,7 +34,17 @@ export const PdfTopControls: React.FC<PdfTopControlsProps> = ({ showControls, on
       </button>
 
       <button
-        onClick={toggleMobileMenu}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleMobileMenu();
+        }}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleMobileMenu();
+        }}
         className={`${styles.floatingTopRight} neu-raised rounded-full neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${showControls ? styles.controlsVisible : styles.controlsHidden}`}
         aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
         title={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -60,7 +80,17 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
     <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}>
       <div className={styles.menuItemsContainer}>
         <button
-          onClick={zoomIn}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            zoomIn();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoomIn();
+          }}
           className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
           aria-label="Zoom In"
           title="Zoom In"
@@ -73,7 +103,17 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
           </svg>
         </button>
         <button
-          onClick={zoomOut}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            zoomOut();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoomOut();
+          }}
           className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
           aria-label="Zoom Out"
           title="Zoom Out"
@@ -86,7 +126,17 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
         </button>
         {toggleRotation && (
           <button
-            onClick={toggleRotation}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleRotation();
+            }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleRotation();
+            }}
             className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
             aria-label="Rotate Screen"
             title="Rotate Screen"
@@ -102,7 +152,17 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
           </button>
         )}
         <button
-          onClick={handleShare}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleShare();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleShare();
+          }}
           className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
           aria-label="Share"
           title="Share"
@@ -117,7 +177,17 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
         </button>
       </div>
       <button
-        onClick={toggleThreeDotsMenu}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleThreeDotsMenu();
+        }}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleThreeDotsMenu();
+        }}
         className={`${styles.toggleBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
         aria-label="More options"
         title={isThreeDotsMenuOpen ? "Close options" : "More options"}

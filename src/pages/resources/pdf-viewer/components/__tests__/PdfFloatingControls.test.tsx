@@ -145,6 +145,63 @@ describe('PdfFloatingControls', () => {
       expect(toggleRotationMock).toHaveBeenCalledTimes(1);
     });
 
+    it('handles touch events correctly on Zoom In, Zoom Out, Rotate, Share, and Toggle buttons', () => {
+      const zoomInMock = vi.fn();
+      const zoomOutMock = vi.fn();
+      const rotateMock = vi.fn();
+      const shareMock = vi.fn();
+      const toggleMock = vi.fn();
+
+      act(() => {
+        root?.render(
+          <PdfBottomControls
+            {...defaultBottomProps}
+            zoomIn={zoomInMock}
+            zoomOut={zoomOutMock}
+            toggleRotation={rotateMock}
+            handleShare={shareMock}
+            toggleThreeDotsMenu={toggleMock}
+          />
+        );
+      });
+
+      const zoomInBtn = container?.querySelector('button[aria-label="Zoom In"]') as HTMLButtonElement;
+      const zoomOutBtn = container?.querySelector('button[aria-label="Zoom Out"]') as HTMLButtonElement;
+      const rotateBtn = container?.querySelector('button[aria-label="Rotate Screen"]') as HTMLButtonElement;
+      const shareBtn = container?.querySelector('button[aria-label="Share"]') as HTMLButtonElement;
+      const toggleBtn = container?.querySelector('button[aria-label="More options"]') as HTMLButtonElement;
+
+      const createTouchEvent = (type: string) => {
+        const event = new Event(type, { bubbles: true, cancelable: true });
+        return event;
+      };
+
+      act(() => {
+        zoomInBtn.dispatchEvent(createTouchEvent('touchend'));
+      });
+      expect(zoomInMock).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        zoomOutBtn.dispatchEvent(createTouchEvent('touchend'));
+      });
+      expect(zoomOutMock).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        rotateBtn.dispatchEvent(createTouchEvent('touchend'));
+      });
+      expect(rotateMock).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        shareBtn.dispatchEvent(createTouchEvent('touchend'));
+      });
+      expect(shareMock).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        toggleBtn.dispatchEvent(createTouchEvent('touchend'));
+      });
+      expect(toggleMock).toHaveBeenCalledTimes(1);
+    });
+
     it('updates aria-expanded attribute and title tooltip when three-dots menu is open', () => {
       act(() => {
         root?.render(<PdfBottomControls {...defaultBottomProps} isThreeDotsMenuOpen={true} />);
