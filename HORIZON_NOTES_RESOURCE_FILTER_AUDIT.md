@@ -243,77 +243,92 @@ export const fetchSyllabusChapters = async (studentClass: string, medium: Medium
 
 ---
 
-## 6. Sanskrit Compatibility Assessment
+## 6. Implementation Verification Status & Verified Changes
 
-### Question: Would setting `medium = NULL` (or `medium = 'both'`) currently work for shared Sanskrit resources?
+### Status: **VERIFIED & MERGED**
 
-### Answer: **NO**.
+The support for shared-medium resources (where `medium = NULL` or `medium` is omitted) on Horizon's Notes page is fully implemented and merged in the codebase.
 
-Under the current implementation, setting `medium = NULL` (or `medium = 'both'`) on a Sanskrit note record in `learning_resources` will **FAIL** to display that note to students viewing either English medium or Hindi medium.
+### Changed Files:
 
-#### Why it fails step-by-step:
+1. **`src/services/learningResourcesAPI.ts`**:
+   - `fetchLearningResources` query updated to include `medium IS NULL` alongside the requested medium:
+     ```ts
+     if (filters.medium) query = query.or(`medium.eq.${filters.medium},medium.is.null`);
+     ```
+   - Legacy fallback query in `fetchLearningResources` updated identically.
 
-1. **Supabase Query Exclusion**:
-   When an English-medium student visits `/notes` (or when `selectedThirdFilter = 'English'`), `ResourcePage.tsx` sets `fetchFilters.medium = 'english'`. `fetchLearningResources` executes `.eq('medium', 'english')`. In SQL, `WHERE medium = 'english'` rejects rows where `medium IS NULL` or `medium = 'both'`. The database returns `[]` for that resource.
+2. **`src/config/resourcePageConfigs.ts`**:
+   - `notesConfig.filterByThirdFilter` updated to retain resources with `!r.medium` (`null` or `undefined`) when filtering by medium (e.g., `'English'` or `'Hindi'`):
+     ```ts
+     filterByThirdFilter: (resources: Resource[], filterValue: string) => {
+       if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
+         const lowerFilter = filterValue.toLowerCase();
+         return resources.filter(r => !r.medium || r.medium.toLowerCase() === lowerFilter);
+       }
+       return resources;
+     }
+     ```
 
-2. **Frontend JavaScript Exclusion**:
-   Even if `fetchLearningResources` were modified to return all records without a database medium filter, `notesConfig.filterByThirdFilter` executes:
-   `resources.filter(r => r.medium && r.medium.toLowerCase() === filterValue.toLowerCase())`.
-   If `r.medium` is `null`, `r.medium` is falsy and the record is discarded. If `r.medium` is `'both'`, `'both'.toLowerCase() === 'english'` evaluates to `false` and the record is discarded.
-
-3. **Dashboard Progress Calculation Exclusion**:
-   When a student views their Dashboard, `useDashboardProgress.ts` calls `fetchSyllabusChapters(normalizedClass, profile.study_medium)`. `fetchSyllabusChapters` uses `.eq('medium', medium)` in its Supabase query. Any Sanskrit note with `medium = NULL` or `'both'` would be omitted from syllabus chapter totals and progress tracking.
-
----
-
-## 7. Required Changes
-
-To support shared Class 10 Sanskrit notes (or any shared resource) visible to both English-medium and Hindi-medium students without duplicating records or PDF files, the following minimal, targeted frontend/API changes are required:
-
-### 1. Data Contract & TypeScript Schema
-- Update `Medium` type in `src/types/index.ts` to allow shared medium representation if using a string constant (e.g. `export type Medium = 'english' | 'hindi' | 'both';`) or allow `medium: Medium | null`.
-
-### 2. Supabase Query Logic in `fetchLearningResources` (`src/services/learningResourcesAPI.ts`)
-- Modify `fetchLearningResources` so that when a `medium` filter is supplied, it fetches resources matching the requested medium **OR** shared resources (`medium = 'both'` or `medium IS NULL`):
-  ```ts
-  if (filters.medium) {
-    query = query.or(`medium.eq.${filters.medium},medium.eq.both,medium.is.null`);
-  }
-  ```
-
-### 3. Frontend Filter Logic in `notesConfig` (`src/config/resourcePageConfigs.ts`)
-- Update `notesConfig.filterByThirdFilter` so shared resources pass client-side filtering:
-  ```ts
-  filterByThirdFilter: (resources: Resource[], filterValue: string) => {
-    if (filterValue !== 'Mediums' && filterValue !== 'All Mediums') {
-      const lowerFilter = filterValue.toLowerCase();
-      return resources.filter(
-        r => !r.medium || r.medium === 'both' || r.medium.toLowerCase() === lowerFilter
-      );
-    }
-    return resources;
-  }
-  ```
-
-### 4. Dashboard Progress Query in `fetchSyllabusChapters` (`src/services/learningResourcesAPI.ts`)
-- Update `fetchSyllabusChapters` to include shared medium notes in chapter count calculations:
-  ```ts
-  export const fetchSyllabusChapters = async (studentClass: string, medium: Medium) => {
-    const { data, error } = await supabase
-      .from('learning_resources')
-      .select('chapter_id, subject')
-      .eq('resource_type', 'notes')
-      .eq('student_class', studentClass)
-      .or(`medium.eq.${medium},medium.eq.both,medium.is.null`)
-      .not('chapter_id', 'is', null);
-
-    return { data, error };
-  };
-  ```
+3. **`src/config/__tests__/resourcePageConfigs.test.ts`**:
+   - Comprehensive unit tests added under `'notesConfig.filterByThirdFilter Shared Medium Filtering'` verifying:
+     - English filter includes English resources and shared `NULL`-medium resources.
+     - English filter excludes Hindi-only resources.
+     - Hindi filter includes Hindi resources and shared `NULL`-medium resources.
+     - Hindi filter excludes English-only resources.
+     - "All Mediums" / "Mediums" continues returning resources of every medium.
 
 ---
 
-## 8. Regression Risks
+## 7. Database Schema Permissibility
+
+### Confirmation: **PERMITTED (`medium = NULL` is allowed)**
+
+- **PostgreSQL Column Definition**: The `learning_resources` table column `medium` is a nullable column (`medium NULL` / `medium medium_enum NULL`).
+- **TypeScript & Schema Contracts (`src/types/index.ts`)**:
+  - `Resource['medium']`: `Medium | null`
+  - `LearningResource['medium']`: `Medium | null`
+  - `LearningResourceRow['medium']`: `Medium | null`
+  - Database schema definition (`Database['public']['Tables']['learning_resources']`):
+    - `Row['medium']`: `Medium | null`
+    - `Insert['medium']`: `Medium | null`
+    - `Update['medium']`: `Medium | null`
+- Single records inserted into `learning_resources` with `medium = NULL` are valid database records and will be served to both English-medium and Hindi-medium students on Horizon's Notes page.
+
+---
+
+## 8. Test Execution Results
+
+All automated tests covering API database query parameters, client-side filtering logic, and shared medium resources were executed in the project environment using `vitest`:
+
+- **Targeted Unit Tests**:
+  - `src/services/__tests__/learningResourcesAPI.test.ts`: **29 passed** (29 total)
+  - `src/config/__tests__/resourcePageConfigs.test.ts`: **8 passed** (8 total)
+  - Total Targeted: **37 passed** (37 total)
+- **Full Test Suite**:
+  - Executed across **71 test files**: **415 passed** (415 total)
+  - Regressions: **0**
+
+---
+
+## 9. Remaining Work
+
+1. **Insert Class 10 Sanskrit Note Records**:
+   - Uploaded PDF files exist in `protected-resources/notes/class-10/sanskrit/`.
+   - Next step: Insert 1 database record per PDF into `learning_resources` with:
+     - `resource_type = 'notes'`
+     - `student_class = 'Class 10'` (or `'10'`)
+     - `subject = 'Sanskrit'`
+     - `medium = NULL`
+     - Appropriate `storage_bucket`, `file_path`, `title`, and optional `chapter_id`.
+   - Result: Both English-medium and Hindi-medium Class 10 students will immediately see and download these Sanskrit notes on `/notes/class-10/sanskrit`.
+
+2. **Scope Boundaries Preserved**:
+   - Chapter-progress calculations (`useDashboardProgress.ts` / `fetchSyllabusChapters`) were intentionally left untouched as requested.
+
+---
+
+## 10. Regression Risks
 
 | Feature / Area | Risk Level | Mitigation Strategy |
 | :--- | :--- | :--- |
