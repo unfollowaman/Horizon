@@ -30,20 +30,17 @@ describe('resourcePageConfigs Optimization & Correctness', () => {
     expect(optimized).toEqual(['2023', '2022', '2021']);
   });
 
-  it('notesConfig.extractThirdFilterValues extracts sorted title-case unique mediums correctly', () => {
-    const sampleResources: Partial<Resource>[] = [
-      { id: '1', medium: 'english' },
-      { id: '2', medium: 'hindi' },
-      { id: '3', medium: undefined as unknown as Resource['medium'] },
-      { id: '4', medium: 'english' },
-      { id: '5', medium: '' as unknown as Resource['medium'] },
+  it('notesConfig.extractThirdFilterValues always includes English and Hindi medium options', () => {
+    const sampleResourcesOnlyHindi: Partial<Resource>[] = [
+      { id: '1', medium: 'hindi' },
+      { id: '2', medium: null },
     ];
 
-    const baseline = extractNotesMediumsBaseline(sampleResources as Resource[]);
-    const optimized = notesConfig.extractThirdFilterValues(sampleResources as Resource[]);
+    const extracted = notesConfig.extractThirdFilterValues(sampleResourcesOnlyHindi as Resource[]);
 
-    expect(optimized).toEqual(baseline);
-    expect(optimized).toEqual(['English', 'Hindi']);
+    expect(extracted).toContain('English');
+    expect(extracted).toContain('Hindi');
+    expect(extracted).toEqual(['English', 'Hindi']);
   });
 
   describe('notesConfig.filterByThirdFilter Shared Medium Filtering', () => {

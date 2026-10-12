@@ -56,7 +56,7 @@ export const notesConfig: ResourcePageConfig = {
         acc.add(r.medium);
       }
       return acc;
-    }, new Set<string>());
+    }, new Set<string>(['English', 'Hindi']));
     return Array.from(rawMediums).map(m => m.charAt(0).toUpperCase() + m.slice(1)).sort();
   },
   filterByThirdFilter: (resources: Resource[], filterValue: string) => {
