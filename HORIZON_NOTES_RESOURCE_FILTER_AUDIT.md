@@ -149,19 +149,43 @@ export const canDownload = (resource: Partial<Pick<Resource, 'allow_download' | 
 
 ---
 
-## 6. Verification & Automated Test Coverage
+## 6. Verification & Audit Results
 
-| Test File | Test Case / Purpose | Result |
+### A. Automated Unit & Integration Tests
+
+| Test Suite / File | Verified Behavior / Purpose | Result |
 | :--- | :--- | :--- |
-| `src/config/__tests__/resourcePageConfigs.test.ts` | Verifies `notesConfig.extractThirdFilterValues` always contains `'English'` and `'Hindi'` options, and `filterByThirdFilter` includes shared (`medium = null`) notes under both filters without duplicate cards. | **PASS** |
-| `src/utils/__tests__/permissions.test.ts` | Verifies `canDownload` returns `false` for `resource_type === 'notes'` unconditionally, and `true` for PYQs where `allow_download !== false`. | **PASS** |
+| `src/config/__tests__/resourcePageConfigs.test.ts` | Verifies `notesConfig.extractThirdFilterValues` always contains `'English'` and `'Hindi'` options even when returned resources contain only single-medium rows. Verifies `filterByThirdFilter` includes shared (`medium = null`) notes under both English and Hindi filters without duplicating cards. | **PASS** |
+| `src/utils/__tests__/permissions.test.ts` | Verifies `canDownload` returns `false` for `resource_type === 'notes'` unconditionally, and returns `true` for `resource_type === 'pyq'` where `allow_download !== false`. | **PASS** |
 | `src/components/__tests__/MaterialCard.test.tsx` | Verifies `MaterialCard` omits the Download button for Notes, and renders the Download button for PYQs. | **PASS** |
 | `src/pages/resources/__tests__/ResourceDetails.test.tsx` | Verifies `ResourceDetails` omits the Download button for Notes, and renders the Download button for PYQs. | **PASS** |
+| `src/pages/resources/__tests__/PdfViewer.test.tsx` | Verifies `PdfViewer` renders read-only canvas Controls (Zoom, Rotate, Share, Navigation) and omits any download, print, or open-in-new-tab links for Notes. | **PASS** |
 | `src/services/__tests__/learningResourcesAPI.test.ts` | Verifies Supabase query builder constructs `.or("medium.eq.<medium>,medium.is.null")`. | **PASS** |
 
 ---
 
-## 7. Remaining Limitations
+### B. PDF Viewer Implementation & Behavior Verification (`/view/:id`)
 
-1. **Client-Side Content Protection Scope**: Client-side UI restrictions (disabling context menus, hiding download buttons, and intercepting print keyboard shortcuts) prevent supported download actions. However, as with all web applications, client-side controls cannot prevent DOM canvas inspection or screenshot capture.
-2. **Protected Storage Authorization**: Notes PDFs remain secured in private `protected-resources` storage, accessed exclusively through Edge Function short-lived signed URLs. Public bucket URLs are never exposed.
+1. **Rendering Mechanism**:
+   - Component: `src/pages/resources/PdfViewer.tsx` -> `src/pages/resources/pdf-viewer/components/PdfDocumentRenderer.tsx`.
+   - Engine: `react-pdf` (`Document` and `Page` components) powered by PDF.js worker (`/pdf.worker.min.mjs`). Pages render onto HTML5 `<canvas>` elements inside `react-zoom-pan-pinch` transform containers.
+2. **Download / Print / Open-in-New-Tab Audit**:
+   - **Floating Controls (`PdfBottomControls`)**: Offers Zoom In, Zoom Out, Rotate Screen, Share, and More Options toggle. Contains zero download, print, save, or open-in-new-tab actions.
+   - **Mobile Menu (`PdfMobileMenu`)**: Renders internal routing links (`/`, `/syllabus`, `/notes`, `/library`, `/dashboard`) without external download actions.
+   - **Canvas & Event Protection**:
+     - `onContextMenu={(e) => e.preventDefault()}` on the canvas container prevents native right-click "Save image as..." and "Print...".
+     - `onDragStart={(e) => e.preventDefault()}` prevents dragging canvas images.
+     - `renderTextLayer={false}` and `renderAnnotationLayer={false}` prevent text selection overlays or external links.
+     - `usePdfKeyboardShortcuts.ts` intercepts and blocks `Ctrl+P`/`Cmd+P` (Print) and `Ctrl+S`/`Cmd+S` (Save).
+3. **Authorization & Storage Security**:
+   - `usePdfData.ts` verifies `isResourceProtected(resource)` (`storage_bucket === 'protected-resources'`).
+   - Authenticated session is required. `usePdfData.ts` invokes Supabase Edge Function `resource-access` with `{ resource_id }`.
+   - The Edge Function validates user authorization and generates a short-lived signed URL.
+   - `usePdfData.ts` fetches the PDF bytes as an `ArrayBuffer` in memory and passes it directly to `react-pdf`. No public storage bucket URL is ever exposed.
+
+---
+
+### C. Known Limitations
+
+1. **Client-Side Protection Boundary**: Client-side UI controls (hiding download buttons, disabling right-click context menus, and blocking print keyboard shortcuts) eliminate supported download actions. As with all web applications rendering content in browser viewports, technical users can inspect DOM canvas frames or capture screenshots.
+2. **PYQ Downloads Intact**: PYQ papers in the public `pdfs` bucket remain fully downloadable via `MaterialCard` and `ResourceDetails` download buttons.
