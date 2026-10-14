@@ -63,14 +63,22 @@ const Onboarding: React.FC = () => {
     setSaving(false);
   };
 
+  const handleSelectClass = async (cls: string) => {
+    if (saving) return;
+    setStudentClass(cls);
+    await updateProfile({ student_class: cls });
+    setStep(3);
+  };
+
+  const handleSelectMedium = async (medium: string) => {
+    if (saving) return;
+    setStudyMedium(medium);
+    await updateProfile({ study_medium: medium });
+    setStep(4);
+  };
+
   const handleNext = async () => {
-    if (step === 2 && studentClass) {
-      await updateProfile({ student_class: studentClass });
-      setStep(3);
-    } else if (step === 3 && studyMedium) {
-      await updateProfile({ study_medium: studyMedium });
-      setStep(4);
-    } else if (step === 4) {
+    if (step === 4) {
       setStep(5);
     } else if (step === 1) {
       setStep(2);
@@ -148,10 +156,25 @@ const Onboarding: React.FC = () => {
               <button
                 type="button"
                 onClick={handleBack}
-                aria-label="Go to previous step"
-                className="text-sm font-medium hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rounded-md"
+                className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
+                aria-label="Go Back"
+                title="Go Back"
               >
-                &larr; Back
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
               </button>
             ) : (
               <div />
@@ -185,7 +208,8 @@ const Onboarding: React.FC = () => {
                     <button
                       type="button"
                       key={cls}
-                      onClick={() => setStudentClass(cls)}
+                      onClick={() => handleSelectClass(cls)}
+                      disabled={saving}
                       aria-pressed={studentClass === cls}
                       className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studentClass === cls
@@ -197,14 +221,6 @@ const Onboarding: React.FC = () => {
                     </button>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={!studentClass || saving}
-                  className="w-full mt-4 py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                >
-                  {saving ? 'Saving...' : 'Continue'}
-                </button>
               </div>
             )}
 
@@ -216,7 +232,8 @@ const Onboarding: React.FC = () => {
                     <button
                       type="button"
                       key={medium}
-                      onClick={() => setStudyMedium(medium)}
+                      onClick={() => handleSelectMedium(medium)}
+                      disabled={saving}
                       aria-pressed={studyMedium === medium}
                       className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studyMedium === medium
@@ -228,14 +245,6 @@ const Onboarding: React.FC = () => {
                     </button>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={!studyMedium || saving}
-                  className="w-full mt-4 py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                >
-                  {saving ? 'Saving...' : 'Continue'}
-                </button>
               </div>
             )}
 
