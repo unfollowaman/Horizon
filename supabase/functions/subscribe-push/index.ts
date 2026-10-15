@@ -30,7 +30,7 @@ export function getCorsHeaders(requestOrigin?: string | null): Record<string, st
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
     "Vary": "Origin",
   };
 }
@@ -51,6 +51,14 @@ export function extractBearerToken(authHeader: string | null): { token: string |
   }
 
   return { token: match[1].trim() };
+}
+
+export function isValidJsonContentType(contentType: string | null): boolean {
+  if (!contentType || typeof contentType !== "string") {
+    return false;
+  }
+  const mediaType = contentType.split(";")[0].trim().toLowerCase();
+  return mediaType === "application/json";
 }
 
 export async function readBoundedBodyStream(
@@ -158,8 +166,13 @@ export function validatePushEndpoint(endpointStr: unknown): { valid: boolean; er
     hostname === "fcm.googleapis.com" ||
     hostname === "updates.push.services.mozilla.com";
 
+  const isApplePush =
+    hostname === "push.apple.com" ||
+    hostname.endsWith(".push.apple.com") ||
+    /^([a-z0-9-]+-)?push\.apple\.com$/.test(hostname);
+
   const isAllowedSuffix =
-    hostname === "push.apple.com" || hostname.endsWith(".push.apple.com") ||
+    isApplePush ||
     hostname === "notify.windows.com" || hostname.endsWith(".notify.windows.com") ||
     hostname === "push.opera.com" || hostname.endsWith(".push.opera.com");
 
@@ -170,7 +183,15 @@ export function validatePushEndpoint(endpointStr: unknown): { valid: boolean; er
   return { valid: true, url: parsed };
 }
 
-Deno.serve(async (req) => {
+export interface HandlerDeps {
+  // Optional mock client injector for integration tests
+  // deno-lint-ignore no-explicit-any
+  supabaseUserClient?: any;
+  // deno-lint-ignore no-explicit-any
+  supabaseAdminClient?: any;
+}
+
+export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<Response> {
   const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
   const requestCorsHeaders = getCorsHeaders(requestOrigin);
 
@@ -179,16 +200,31 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: requestCorsHeaders });
   }
 
-  // 2. Enforce POST HTTP method
-  if (req.method !== "POST") {
+  // 2. Enforce allowed HTTP methods (POST, DELETE)
+  if (req.method !== "POST" && req.method !== "DELETE") {
     return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
       status: 405,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
 
-  // 3. Authenticate requesting user via Bearer token
-  const authHeader = req.headers.get("Authorization");
+  // 3. Validate Content-Type header for JSON payload
+  const contentType = req.headers.get("Content-Type") ?? req.headers.get("content-type");
+  if (!isValidJsonContentType(contentType)) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: "Unsupported Media Type: Content-Type must be application/json",
+      }),
+      {
+        status: 415,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // 4. Authenticate requesting user via Bearer token
+  const authHeader = req.headers.get("Authorization") ?? req.headers.get("authorization");
   const bearerResult = extractBearerToken(authHeader);
   if (!bearerResult.token) {
     return new Response(JSON.stringify({ success: false, error: bearerResult.error || "Unauthorized" }), {
@@ -203,7 +239,7 @@ Deno.serve(async (req) => {
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+  const supabaseUser = deps?.supabaseUserClient ?? createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 
@@ -219,8 +255,8 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Enforce request body size limit via bounded stream read & parse JSON
-  const contentLengthHeader = req.headers.get("content-length");
+  // 5. Enforce request body size limit via bounded stream read & parse JSON
+  const contentLengthHeader = req.headers.get("content-length") ?? req.headers.get("Content-Length");
   if (contentLengthHeader) {
     const cl = parseInt(contentLengthHeader, 10);
     if (!isNaN(cl) && cl > MAX_BODY_BYTES) {
@@ -271,14 +307,6 @@ Deno.serve(async (req) => {
     : body;
 
   const endpointRaw = subObj.endpoint;
-  const keysRaw = (typeof subObj.keys === "object" && subObj.keys !== null)
-    ? (subObj.keys as Record<string, unknown>)
-    : {};
-
-  const p256dh = keysRaw.p256dh;
-  const authKey = keysRaw.auth;
-
-  // Validate endpoint URL
   const endpointValidation = validatePushEndpoint(endpointRaw);
   if (!endpointValidation.valid) {
     return new Response(JSON.stringify({ success: false, error: endpointValidation.error }), {
@@ -286,6 +314,78 @@ Deno.serve(async (req) => {
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  const endpoint = endpointRaw as string;
+  const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  // -------------------------------------------------------------------
+  // DELETE Operation: Unsubscribe / Deactivation
+  // -------------------------------------------------------------------
+  if (req.method === "DELETE") {
+    // Look up existing subscription by endpoint
+    const { data: existingSub, error: findError } = await supabaseAdmin
+      .from("push_subscriptions")
+      .select("id, user_id, is_active")
+      .eq("endpoint", endpoint)
+      .maybeSingle();
+
+    if (findError) {
+      console.error("Database query error:", findError);
+      return new Response(JSON.stringify({ success: false, error: "Internal server error" }), {
+        status: 500,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Idempotent: If sub doesn't exist, treat as already deactivated
+    if (!existingSub) {
+      return new Response(JSON.stringify({ success: true, message: "Push subscription deactivated successfully" }), {
+        status: 200,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Ownership check: Ensure authenticated user owns the subscription
+    if (existingSub.user_id !== user.id) {
+      return new Response(JSON.stringify({ success: false, error: "Forbidden: Cannot deactivate a subscription owned by another user" }), {
+        status: 403,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Deactivate subscription constrained by both id and user_id
+    const { error: deactivateError } = await supabaseAdmin
+      .from("push_subscriptions")
+      .update({
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existingSub.id)
+      .eq("user_id", user.id);
+
+    if (deactivateError) {
+      console.error("Database update error:", deactivateError);
+      return new Response(JSON.stringify({ success: false, error: "Failed to deactivate subscription" }), {
+        status: 500,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true, message: "Push subscription deactivated successfully" }), {
+      status: 200,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // -------------------------------------------------------------------
+  // POST Operation: Subscribe / Update
+  // -------------------------------------------------------------------
+  const keysRaw = (typeof subObj.keys === "object" && subObj.keys !== null)
+    ? (subObj.keys as Record<string, unknown>)
+    : {};
+
+  const p256dh = keysRaw.p256dh;
+  const authKey = keysRaw.auth;
 
   // Validate p256dh key
   if (typeof p256dh !== "string" || !p256dh.trim() || p256dh.length < 20 || p256dh.length > 500) {
@@ -303,13 +403,10 @@ Deno.serve(async (req) => {
     });
   }
 
-  const endpoint = endpointRaw as string;
   const userAgentRaw = typeof body.user_agent === "string" ? body.user_agent : req.headers.get("user-agent");
   const userAgent = userAgentRaw ? userAgentRaw.slice(0, 512) : null;
 
-  // 5. Derive targeting from user profile (Option A)
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
-
+  // Derive targeting from user profile (Option A)
   const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("student_class, study_medium, onboarding_completed")
@@ -337,7 +434,7 @@ Deno.serve(async (req) => {
     }
   }
 
-  // 6. Check for existing subscription by endpoint
+  // Check for existing subscription by endpoint
   const { data: existingSub, error: findError } = await supabaseAdmin
     .from("push_subscriptions")
     .select("id, user_id, is_active")
@@ -361,7 +458,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Update existing subscription for the same user
+    // Update existing subscription constrained by both id and user_id
     const { error: updateError } = await supabaseAdmin
       .from("push_subscriptions")
       .update({
@@ -373,7 +470,8 @@ Deno.serve(async (req) => {
         is_active: true,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", existingSub.id);
+      .eq("id", existingSub.id)
+      .eq("user_id", user.id);
 
     if (updateError) {
       console.error("Database update error:", updateError);
@@ -415,4 +513,6 @@ Deno.serve(async (req) => {
     status: 201,
     headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
   });
-});
+}
+
+Deno.serve((req) => handleRequest(req));
