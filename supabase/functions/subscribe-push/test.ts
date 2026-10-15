@@ -133,7 +133,7 @@ Deno.test("validatePushEndpoint - valid Apple push endpoints", () => {
   assertEquals(res3.valid, true);
 });
 
-Deno.test("validatePushEndpoint - reject invalid Apple hostname lookalikes", () => {
+Deno.test("validatePushEndpoint - reject invalid Apple hostname lookalikes & malformed variants", () => {
   const res1 = validatePushEndpoint("https://fakeapple.com/send");
   assertEquals(res1.valid, false);
 
@@ -145,6 +145,24 @@ Deno.test("validatePushEndpoint - reject invalid Apple hostname lookalikes", () 
 
   const res4 = validatePushEndpoint("https://not-push.apple.com.attacker.net/send");
   assertEquals(res4.valid, false);
+
+  const res5 = validatePushEndpoint("https://p01push.apple.com/send");
+  assertEquals(res5.valid, false);
+
+  const res6 = validatePushEndpoint("https://apple.com/send");
+  assertEquals(res6.valid, false);
+
+  const res7 = validatePushEndpoint("http://p01-push.apple.com/send");
+  assertEquals(res7.valid, false);
+  assertEquals(res7.error, "Push endpoint must use HTTPS");
+
+  const res8 = validatePushEndpoint("https://user:pass@p01-push.apple.com/send");
+  assertEquals(res8.valid, false);
+  assertEquals(res8.error, "Push endpoint must not contain user credentials");
+
+  const res9 = validatePushEndpoint("https://p01-push.apple.com:8443/send");
+  assertEquals(res9.valid, false);
+  assertEquals(res9.error, "Push endpoint must use standard HTTPS port (443)");
 });
 
 Deno.test("validatePushEndpoint - valid Windows notify endpoint", () => {
@@ -229,13 +247,23 @@ interface MockSubscriptionRow {
   is_active: boolean;
 }
 
-function createMockSupabaseAdmin(
+interface RecordedMutation {
+  table: string;
+  action: "update" | "insert";
+  data: Record<string, unknown>;
+  eqFilters: Record<string, unknown>;
+}
+
+function createSpySupabaseAdmin(
   subscription: MockSubscriptionRow | null = null,
   profile: { student_class?: string; study_medium?: string; onboarding_completed?: boolean } | null = null,
   dbQueryError: Error | null = null,
   dbMutationError: Error | null = null
 ) {
+  const mutations: RecordedMutation[] = [];
+
   return {
+    mutations,
     from: (table: string) => {
       if (table === "profiles") {
         return {
@@ -253,10 +281,25 @@ function createMockSupabaseAdmin(
               maybeSingle: () => Promise.resolve({ data: subscription, error: dbQueryError }),
             }),
           }),
-          update: (_data: Record<string, unknown>) => ({
-            eq: () => Promise.resolve({ error: dbMutationError }),
-          }),
-          insert: (_data: Record<string, unknown>) => Promise.resolve({ error: dbMutationError }),
+          update: (data: Record<string, unknown>) => {
+            const eqFilters: Record<string, unknown> = {};
+            const chain = {
+              eq: (field: string, value: unknown) => {
+                eqFilters[field] = value;
+                return chain;
+              },
+              then: (onfulfilled?: (value: { error: Error | null }) => unknown) => {
+                mutations.push({ table, action: "update", data, eqFilters });
+                const res = { error: dbMutationError };
+                return Promise.resolve(onfulfilled ? onfulfilled(res) : res);
+              },
+            };
+            return chain;
+          },
+          insert: (data: Record<string, unknown>) => {
+            mutations.push({ table, action: "insert", data, eqFilters: {} });
+            return Promise.resolve({ error: dbMutationError });
+          },
         };
       }
       return {};
@@ -396,9 +439,9 @@ Deno.test("handleRequest - Invalid subscription payload (bad host) returns 400",
   assertEquals(json.error, "Push endpoint host is not in the approved allowlist");
 });
 
-Deno.test("handleRequest - Successful new subscription creation returns 201", async () => {
+Deno.test("handleRequest - Successful new subscription creation returns 201 and verifies DB insert payload", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const mockAdminClient = createMockSupabaseAdmin(null, { student_class: "10", study_medium: "english", onboarding_completed: true });
+  const mockAdminClient = createSpySupabaseAdmin(null, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
@@ -413,12 +456,22 @@ Deno.test("handleRequest - Successful new subscription creation returns 201", as
   const json = await res.json();
   assertEquals(json.success, true);
   assertEquals(json.message, "Push subscription created successfully");
+
+  // Verify DB mutation
+  assertEquals(mockAdminClient.mutations.length, 1);
+  const mutation = mockAdminClient.mutations[0];
+  assertEquals(mutation.action, "insert");
+  assertEquals(mutation.data.user_id, "user-123");
+  assertEquals(mutation.data.endpoint, "https://p01-push.apple.com/send/token123");
+  assertEquals(mutation.data.student_class, "10");
+  assertEquals(mutation.data.study_medium, "english");
+  assertEquals(mutation.data.is_active, true);
 });
 
-Deno.test("handleRequest - Update existing subscription for same user returns 200", async () => {
+Deno.test("handleRequest - Update existing subscription for same user returns 200 and verifies dual eq(id, user_id) targeting", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const existingSub = { id: "sub-1", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
-  const mockAdminClient = createMockSupabaseAdmin(existingSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
+  const existingSub = { id: "sub-1", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: false };
+  const mockAdminClient = createSpySupabaseAdmin(existingSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
@@ -433,12 +486,20 @@ Deno.test("handleRequest - Update existing subscription for same user returns 20
   const json = await res.json();
   assertEquals(json.success, true);
   assertEquals(json.message, "Push subscription updated successfully");
+
+  // Verify DB update targeted BOTH sub ID and user ID
+  assertEquals(mockAdminClient.mutations.length, 1);
+  const mutation = mockAdminClient.mutations[0];
+  assertEquals(mutation.action, "update");
+  assertEquals(mutation.eqFilters["id"], "sub-1");
+  assertEquals(mutation.eqFilters["user_id"], "user-123");
+  assertEquals(mutation.data.is_active, true);
 });
 
-Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user returns 409", async () => {
+Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user returns 409 and produces ZERO mutations", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const anotherUserSub = { id: "sub-1", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
-  const mockAdminClient = createMockSupabaseAdmin(anotherUserSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
+  const anotherUserSub = { id: "sub-999", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
+  const mockAdminClient = createSpySupabaseAdmin(anotherUserSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
@@ -452,12 +513,15 @@ Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user 
   assertEquals(res.status, 409);
   const json = await res.json();
   assertEquals(json.error, "Push subscription endpoint already registered to another account");
+
+  // Verify NO DB mutation occurred
+  assertEquals(mockAdminClient.mutations.length, 0);
 });
 
-Deno.test("handleRequest - Successful unsubscribe of user's own subscription returns 200", async () => {
+Deno.test("handleRequest - Successful unsubscribe of user's own subscription returns 200 and verifies dual eq(id, user_id) targeting with is_active=false", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const existingSub = { id: "sub-1", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
-  const mockAdminClient = createMockSupabaseAdmin(existingSub);
+  const existingSub = { id: "sub-777", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
+  const mockAdminClient = createSpySupabaseAdmin(existingSub);
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "DELETE",
@@ -472,12 +536,20 @@ Deno.test("handleRequest - Successful unsubscribe of user's own subscription ret
   const json = await res.json();
   assertEquals(json.success, true);
   assertEquals(json.message, "Push subscription deactivated successfully");
+
+  // Verify DB update set is_active = false for exact sub ID and user ID
+  assertEquals(mockAdminClient.mutations.length, 1);
+  const mutation = mockAdminClient.mutations[0];
+  assertEquals(mutation.action, "update");
+  assertEquals(mutation.eqFilters["id"], "sub-777");
+  assertEquals(mutation.eqFilters["user_id"], "user-123");
+  assertEquals(mutation.data.is_active, false);
 });
 
-Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another user returns 403", async () => {
+Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another user returns 403 and produces ZERO mutations", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const anotherUserSub = { id: "sub-1", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
-  const mockAdminClient = createMockSupabaseAdmin(anotherUserSub);
+  const anotherUserSub = { id: "sub-888", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
+  const mockAdminClient = createSpySupabaseAdmin(anotherUserSub);
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "DELETE",
@@ -491,11 +563,14 @@ Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another 
   assertEquals(res.status, 403);
   const json = await res.json();
   assertEquals(json.error, "Forbidden: Cannot deactivate a subscription owned by another user");
+
+  // Verify ZERO DB mutations occurred
+  assertEquals(mockAdminClient.mutations.length, 0);
 });
 
-Deno.test("handleRequest - Idempotent unsubscribe of missing subscription returns 200", async () => {
+Deno.test("handleRequest - Idempotent unsubscribe of missing subscription returns 200 and produces ZERO mutations", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const mockAdminClient = createMockSupabaseAdmin(null);
+  const mockAdminClient = createSpySupabaseAdmin(null);
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "DELETE",
@@ -510,11 +585,14 @@ Deno.test("handleRequest - Idempotent unsubscribe of missing subscription return
   const json = await res.json();
   assertEquals(json.success, true);
   assertEquals(json.message, "Push subscription deactivated successfully");
+
+  // Verify ZERO DB mutations occurred
+  assertEquals(mockAdminClient.mutations.length, 0);
 });
 
 Deno.test("handleRequest - Database error returns sanitized 500 response", async () => {
   const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const mockAdminClient = createMockSupabaseAdmin(null, null, new Error("PostgreSQL connection timeout"));
+  const mockAdminClient = createSpySupabaseAdmin(null, null, new Error("PostgreSQL connection timeout"));
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",

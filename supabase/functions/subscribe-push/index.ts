@@ -353,14 +353,15 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
       });
     }
 
-    // Deactivate subscription
+    // Deactivate subscription constrained by both id and user_id
     const { error: deactivateError } = await supabaseAdmin
       .from("push_subscriptions")
       .update({
         is_active: false,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", existingSub.id);
+      .eq("id", existingSub.id)
+      .eq("user_id", user.id);
 
     if (deactivateError) {
       console.error("Database update error:", deactivateError);
@@ -457,7 +458,7 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
       });
     }
 
-    // Update existing subscription for the same user
+    // Update existing subscription constrained by both id and user_id
     const { error: updateError } = await supabaseAdmin
       .from("push_subscriptions")
       .update({
@@ -469,7 +470,8 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
         is_active: true,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", existingSub.id);
+      .eq("id", existingSub.id)
+      .eq("user_id", user.id);
 
     if (updateError) {
       console.error("Database update error:", updateError);
