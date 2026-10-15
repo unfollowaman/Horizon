@@ -223,6 +223,7 @@ const Header = React.memo(() => {
 Header.displayName = 'Header';
 
 import { getAllFeatures } from '../../config/resources';
+import { useRevealOnScroll } from '../../hooks/useRevealOnScroll';
 
 const preloadLibrary = () => {
   import('../resources/LibraryRoute').catch(() => {});
@@ -292,6 +293,8 @@ const getFeatureIllustration = (id: string) => {
 const FeaturesSection = React.memo(() => {
   const [hasReachedFeatures, setHasReachedFeatures] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const features = getAllFeatures();
+  const { visibleIndices, registerRef } = useRevealOnScroll(features.length, 0.2);
 
   useEffect(() => {
     if (hasReachedFeatures) return;
@@ -330,10 +333,13 @@ const FeaturesSection = React.memo(() => {
         </div>
 
         <div className={styles.featuresGrid}>
-          {getAllFeatures().map((f, i) => (
+          {features.map((f, i) => (
             <div
               key={i}
-              className={`${styles.featureCard} group animate-fade-rise ${i % 3 === 1 ? 'animate-fade-rise-delay' : i % 3 === 2 ? 'animate-fade-rise-delay-2' : ''}`}
+              ref={registerRef(i)}
+              data-reveal-index={i}
+              style={{ transitionDelay: `${i * 120}ms` }}
+              className={`${styles.featureCard} group ${visibleIndices[i] ? styles.isVisible : ''}`}
               onMouseEnter={() => {
                 if (f.path === '/library') preloadLibrary();
                 if (f.path === '/notes') preloadStudyNotes();
