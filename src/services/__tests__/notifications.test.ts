@@ -23,7 +23,7 @@ describe('notifications service', () => {
   const originalPushManager = window.PushManager;
   const originalFetch = window.fetch;
 
-  const mockVapidKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-Skv69yViEuiBIa-Ib9-Skv69yViEuiBIa';
+  const mockVapidKey = 'BEl62iUYgUivxIkv69yViEuiBIa_Ib9_Skv69yViEuiBIa_Ib9_Skv69yViEuiBIa0=';
 
   beforeEach(() => {
     vi.clearAllMocks();
