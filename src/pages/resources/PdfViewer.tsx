@@ -19,19 +19,37 @@ import { PdfRenderErrorFallback } from './pdf-viewer/components/PdfRenderErrorFa
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 import { isResourceProtected } from '../../utils/resourceHelper';
 
+const formatClassLabel = (raw?: string | null): string => {
+  if (!raw) return '';
+  const trimmed = raw.trim();
+  if (/^\d+$/.test(trimmed)) return `Class ${trimmed}`;
+  return trimmed;
+};
+
 const PdfViewer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const [renderResetKey, setRenderResetKey] = useState<number>(0);
+  const [isRenderingFinished, setIsRenderingFinished] = useState<boolean>(false);
 
-  const { resource, signedUrl, pdfData, pdfError, loading, fetchSignedUrl } = usePdfData({ id, user, authLoading });
+  const {
+    resource,
+    signedUrl,
+    pdfData,
+    pdfError,
+    stage,
+    loadedBytes,
+    totalBytes,
+    setReady,
+    fetchSignedUrl,
+  } = usePdfData({ id, user, authLoading });
 
   const [numPages, setNumPages] = useState<number | null>(null);
   const [rotation, setRotation] = useState<number>(0);
 
   const toggleRotation = () => {
-    setRotation(prev => (prev === 0 ? 90 : 0));
+    setRotation((prev) => (prev === 0 ? 90 : 0));
     setIsThreeDotsMenuOpen(false);
   };
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -41,7 +59,11 @@ const PdfViewer: React.FC = () => {
   const setTransformRef = useRef<((x: number, y: number, scale: number) => void) | null>(null);
 
   useBottomRubberBand(scrollContainerRef, contentRef);
-  const transformStateRef = useRef<{ positionX: number, positionY: number, scale: number }>({ positionX: 0, positionY: 0, scale: 1 });
+  const transformStateRef = useRef<{ positionX: number; positionY: number; scale: number }>({
+    positionX: 0,
+    positionY: 0,
+    scale: 1,
+  });
 
   const { currentPage, setCurrentPage } = usePdfProgress({ id, user, resource, numPages, pageRefs });
 
@@ -80,6 +102,7 @@ const PdfViewer: React.FC = () => {
   const onDocumentLoadSuccess = (pdf: { numPages: number }) => {
     setNumPages(pdf.numPages);
     pageRefs.current = new Array(pdf.numPages).fill(null);
+    setReady();
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -106,43 +129,25 @@ const PdfViewer: React.FC = () => {
       try {
         await navigator.share({
           title: resource?.title || 'Learning Resource',
-          url: url
+          url: url,
         });
       } catch (err) {
-        console.error("Error sharing:", err);
+        console.error('Error sharing:', err);
       }
     } else {
-      navigator.clipboard.writeText(url).then(() => {
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
-      }).catch(err => {
-        console.error("Failed to copy link:", err);
-      });
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 3000);
+        })
+        .catch((err) => {
+          console.error('Failed to copy link:', err);
+        });
     }
   };
 
-  if (loading) {
-    return <RenderingScreen />;
-  }
-
-  if (!resource) {
-    return (
-      <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
-        <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
-          <h1 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h1>
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            aria-label="Go back to previous page"
-            className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  // Handle errors first
   if (pdfError === '401_UNAUTHORIZED') {
     return (
       <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
@@ -159,12 +164,18 @@ const PdfViewer: React.FC = () => {
             className="w-40 h-auto my-2"
           />
           <div className="flex flex-col gap-2 w-full max-w-[300px]">
-             <Link to="/login" className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
-               Log in
-             </Link>
-             <Link to="/register" className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center">
-               Create account
-             </Link>
+            <Link
+              to="/login"
+              className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center"
+            >
+              Log in
+            </Link>
+            <Link
+              to="/register"
+              className="block w-full p-2 font-bold neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center"
+            >
+              Create account
+            </Link>
           </div>
           <button
             type="button"
@@ -198,13 +209,45 @@ const PdfViewer: React.FC = () => {
     );
   }
 
+  if (!resource && stage !== 'connecting') {
+    return (
+      <div className={`${styles.pageContainer} justify-center items-center overflow-y-auto`}>
+        <div className="text-center p-8 neu-card flex flex-col items-center justify-center rounded-2xl w-[calc(100%-3rem)] max-w-[400px] my-8">
+          <h1 className="text-h2 uppercase mb-4 text-accent-red">Resource not found</h1>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back to previous page"
+            className="inline-block p-2 font-bold neu-raised rounded-md hover:neu-raised-hover no-underline text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const variant = resource?.resource_type === 'pyq' ? 'pyq' : 'notes';
+  const classLabel = formatClassLabel(resource?.student_class);
+  const subjectLabel = resource?.subject || '';
+  const year = resource?.year ? String(resource.year) : undefined;
+
   return (
     <div className={styles.pageContainer} onClick={handleInteraction} onTouchStart={handleInteraction}>
-      {showToast && (
-        <div className={styles.toast}>
-          Link copied to clipboard.
-        </div>
+      {!isRenderingFinished && (
+        <RenderingScreen
+          variant={variant}
+          classLabel={classLabel}
+          subjectLabel={subjectLabel}
+          year={year}
+          stage={stage}
+          loadedBytes={loadedBytes}
+          totalBytes={totalBytes}
+          onFinished={() => setIsRenderingFinished(true)}
+        />
       )}
+
+      {showToast && <div className={styles.toast}>Link copied to clipboard.</div>}
 
       <PdfTopControls
         showControls={showControls}

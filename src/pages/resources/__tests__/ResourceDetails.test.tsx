@@ -655,6 +655,12 @@ describe('ResourceDetails Public Educational Landing Page', () => {
     let downloadBtn = container?.querySelector('button[aria-label^="Download"]');
     expect(downloadBtn).toBeNull();
 
+    act(() => {
+      root?.unmount();
+    });
+    if (container) container.innerHTML = '';
+    root = createRoot(container!);
+
     // 2. PYQ Resource
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
       data: mockPyqResource,

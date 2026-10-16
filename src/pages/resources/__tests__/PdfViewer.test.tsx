@@ -49,6 +49,12 @@ describe('PdfViewer Fallback Screens', () => {
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
+
+    globalThis.ResizeObserver = class ResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
   });
 
   afterEach(() => {
@@ -72,6 +78,10 @@ describe('PdfViewer Fallback Screens', () => {
       pdfData: null,
       pdfError: null,
       loading: false,
+      stage: 'preparing',
+      loadedBytes: 0,
+      totalBytes: null,
+      setReady: vi.fn(),
       fetchSignedUrl: vi.fn()
     });
 
@@ -102,6 +112,10 @@ describe('PdfViewer Fallback Screens', () => {
       pdfData: null,
       pdfError: '401_UNAUTHORIZED',
       loading: false,
+      stage: 'connecting',
+      loadedBytes: 0,
+      totalBytes: null,
+      setReady: vi.fn(),
       fetchSignedUrl: vi.fn()
     });
 
@@ -132,6 +146,10 @@ describe('PdfViewer Fallback Screens', () => {
       pdfData: null,
       pdfError: '403_FORBIDDEN',
       loading: false,
+      stage: 'connecting',
+      loadedBytes: 0,
+      totalBytes: null,
+      setReady: vi.fn(),
       fetchSignedUrl: vi.fn()
     });
 
@@ -156,12 +174,18 @@ describe('PdfViewer Fallback Screens', () => {
   });
 
   it('renders read-only PDF viewer without download, print, or open-in-new-tab controls', async () => {
+    vi.useFakeTimers();
+
     vi.spyOn(usePdfDataModule, 'usePdfData').mockReturnValue({
       resource: mockResource,
       signedUrl: 'https://example.com/signed-note.pdf',
       pdfData: new ArrayBuffer(8),
       pdfError: null,
       loading: false,
+      stage: 'ready',
+      loadedBytes: 100,
+      totalBytes: 100,
+      setReady: vi.fn(),
       fetchSignedUrl: vi.fn()
     });
 
@@ -173,6 +197,11 @@ describe('PdfViewer Fallback Screens', () => {
           </Routes>
         </MemoryRouter>
       );
+    });
+
+    // Advance fake timers so RenderingScreen finishes ready hold (350ms) + fade (250ms)
+    act(() => {
+      vi.advanceTimersByTime(600);
     });
 
     // Check that top and bottom floating controls exist
@@ -191,5 +220,7 @@ describe('PdfViewer Fallback Screens', () => {
 
     const newTabLinks = container?.querySelectorAll('a[target="_blank"]');
     expect(newTabLinks?.length).toBe(0);
+
+    vi.useRealTimers();
   });
 });

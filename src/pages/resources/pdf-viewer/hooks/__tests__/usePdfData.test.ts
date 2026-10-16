@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { usePdfData } from '../usePdfData';
+import type { DownloadStage } from '../usePdfDownload';
 import * as learningAPI from '../../../../../services/learningResourcesAPI';
 import { supabase } from '../../../../../services/supabase';
 import type { Resource, LearningResourceRow } from '../../../../../types';
@@ -69,6 +70,10 @@ interface PdfDataState {
   pdfData: ArrayBuffer | null;
   pdfError: string | null;
   loading: boolean;
+  stage: DownloadStage;
+  loadedBytes: number;
+  totalBytes: number | null;
+  setReady: () => void;
   fetchSignedUrl: (resourceId: string) => Promise<string | null>;
 }
 
@@ -142,7 +147,7 @@ describe('usePdfData hook', () => {
   it('handles public non-protected resource correctly without requiring signed URL', async () => {
     const fakeBuffer = new ArrayBuffer(8);
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+      new Response(fakeBuffer, { status: 200, statusText: 'OK', headers: new Headers({ 'Content-Length': '8' }) })
     );
 
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
@@ -171,7 +176,7 @@ describe('usePdfData hook', () => {
       );
     });
 
-    expect(stateRef.current?.loading).toBe(false);
+    expect(stateRef.current?.loading).toBe(true); // loading is true until setReady() is called
     expect(stateRef.current?.resource).toEqual(mockPublicResource);
     expect(stateRef.current?.signedUrl).toBe('https://cdn.example.com/pdfs/2023-science.pdf');
     expect(stateRef.current?.pdfError).toBeNull();
@@ -180,7 +185,7 @@ describe('usePdfData hook', () => {
   it('pre-fetches PDF bytes when signedUrl or public pdfUrl is available', async () => {
     const fakeBuffer = new ArrayBuffer(8);
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+      new Response(fakeBuffer, { status: 200, statusText: 'OK', headers: new Headers({ 'Content-Length': '8' }) })
     );
 
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
@@ -240,13 +245,13 @@ describe('usePdfData hook', () => {
       );
     });
 
-    expect(stateRef.current?.pdfError).toContain('Failed to load PDF (404 Not Found)');
+    expect(stateRef.current?.pdfError).toContain('PDF request failed: 404');
   });
 
   it('fetches signed URL and related resources for authenticated user on protected resource', async () => {
     const fakeBuffer = new ArrayBuffer(8);
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(fakeBuffer, { status: 200, statusText: 'OK' })
+      new Response(fakeBuffer, { status: 200, statusText: 'OK', headers: new Headers({ 'Content-Length': '8' }) })
     );
 
     vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
@@ -290,7 +295,6 @@ describe('usePdfData hook', () => {
     });
     expect(stateRef.current?.resource).toEqual(mockProtectedResource);
     expect(stateRef.current?.signedUrl).toBe('https://supabase.co/storage/signed/ch1.pdf');
-    expect(stateRef.current?.loading).toBe(false);
     expect(stateRef.current?.pdfError).toBeNull();
   });
 
@@ -303,13 +307,11 @@ describe('usePdfData hook', () => {
 
     const delayMs = 50;
 
-    // Simulate sequential execution baseline delay (50ms + 50ms = 100ms)
     const sequentialStartTime = performance.now();
     await new Promise((res) => setTimeout(res, delayMs)); // fetchSignedUrl
     await new Promise((res) => setTimeout(res, delayMs)); // fetchRelatedResources
     const sequentialDuration = performance.now() - sequentialStartTime;
 
-    // Simulate concurrent execution (Promise.all -> max(50ms, 50ms) = 50ms)
     const concurrentStartTime = performance.now();
     await Promise.all([
       new Promise((res) => setTimeout(res, delayMs)),
