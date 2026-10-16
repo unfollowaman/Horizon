@@ -4,6 +4,7 @@ import { fetchLearningResourceById, fetchLearningResources } from '../../../../s
 import type { Resource } from '../../../../types';
 import { isResourceProtected } from '../../../../utils/resourceHelper';
 import type { User } from '@supabase/supabase-js';
+import { usePdfDownload, type DownloadStage } from './usePdfDownload';
 
 interface UsePdfDataProps {
   id?: string;
@@ -14,9 +15,10 @@ interface UsePdfDataProps {
 export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
   const [resource, setResource] = useState<Resource | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
-  const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [metaLoading, setMetaLoading] = useState(true);
+
+  const download = usePdfDownload(signedUrl);
 
   const fetchSignedUrl = useCallback(async (resourceId: string) => {
     try {
@@ -60,15 +62,15 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
       if (!id || authLoading) return;
-      setLoading(true);
-      setPdfData(null);
+      setMetaLoading(true);
+      setSignedUrl(null);
       setPdfError(null);
 
       const { data: mappedResource, rawData: data, error } = await fetchLearningResourceById(id, true);
 
       if (error) {
         console.error("Error fetching resource:", error);
-        setLoading(false);
+        setMetaLoading(false);
         return;
       }
 
@@ -79,13 +81,15 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         if (isProtected) {
           if (!user) {
             setPdfError('401_UNAUTHORIZED');
-            setLoading(false);
+            setMetaLoading(false);
             return;
           }
           await fetchSignedUrl(mappedResource.id);
         } else {
           setSignedUrl(mappedResource.pdfUrl);
         }
+
+        setMetaLoading(false);
 
         const { error: relatedError } = await fetchLearningResources({
           resource_type: mappedResource.resource_type,
@@ -101,61 +105,37 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
           console.error("Error fetching related resources:", relatedError);
         }
       } else {
-        setLoading(false);
+        setMetaLoading(false);
       }
     };
 
     fetchResourceAndRelated();
   }, [id, user, authLoading, fetchSignedUrl]);
 
-  useEffect(() => {
-    if (!signedUrl) {
-      setPdfData(null);
-      return;
-    }
+  const effectiveError = pdfError || download.error;
 
-    const controller = new AbortController();
-    let isSubscribed = true;
+  const pdfData: ArrayBuffer | null = download.data
+    ? (download.data.buffer.slice(
+        download.data.byteOffset,
+        download.data.byteOffset + download.data.byteLength
+      ) as ArrayBuffer)
+    : null;
 
-    const fetchPdfBytes = async () => {
-      try {
-        const response = await fetch(signedUrl, { signal: controller.signal });
-        if (!response.ok) {
-          if (isSubscribed) {
-            setPdfError(`Failed to load PDF (${response.status} ${response.statusText})`);
-            setLoading(false);
-          }
-          return;
-        }
-        const buffer = await response.arrayBuffer();
-        if (isSubscribed) {
-          setPdfData(buffer);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
-        if (isSubscribed) {
-          console.error("Error pre-fetching PDF bytes:", err);
-          setPdfError('Failed to load PDF file.');
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchPdfBytes();
-
-    return () => {
-      isSubscribed = false;
-      controller.abort();
-    };
-  }, [signedUrl]);
+  let currentStage: DownloadStage = download.stage;
+  if (metaLoading || (!signedUrl && !effectiveError)) {
+    currentStage = 'connecting';
+  }
 
   return {
     resource,
     signedUrl,
     pdfData,
-    pdfError,
-    loading,
+    pdfError: effectiveError,
+    loading: metaLoading || (!effectiveError && download.stage !== 'ready'),
+    stage: currentStage,
+    loadedBytes: download.loadedBytes,
+    totalBytes: download.totalBytes,
+    setReady: download.setReady,
     fetchSignedUrl
   };
 };
