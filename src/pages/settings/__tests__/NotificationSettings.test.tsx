@@ -290,7 +290,7 @@ describe('NotificationSettings Component', () => {
     expect(statusBanner?.textContent).not.toContain('Failed to fetch');
   });
 
-  it('prevents duplicate submissions when registration is in progress', async () => {
+  it('suppresses rapid duplicate clicks across switch button and action button using inFlightRef guard', async () => {
     let resolveSubscribe: (val: unknown) => void = () => {};
     const pendingPromise = new Promise((resolve) => {
       resolveSubscribe = resolve;
@@ -308,18 +308,134 @@ describe('NotificationSettings Component', () => {
       );
     });
 
+    const switchBtn = container?.querySelector('#push-notifications-toggle') as HTMLButtonElement;
+    const actionBtn = Array.from(container?.querySelectorAll('button') || []).find((b) =>
+      b.textContent?.includes('Enable Push Notifications')
+    );
+
+    // Rapid concurrent clicks across both controls
+    await act(async () => {
+      switchBtn?.click();
+      actionBtn?.click();
+      switchBtn?.click();
+    });
+
+    expect(subscribeSpy).toHaveBeenCalledTimes(1);
+
+    // Resolve pending promise
+    await act(async () => {
+      resolveSubscribe({
+        success: true,
+        data: { endpoint: 'https://push.example.com' },
+      });
+    });
+  });
+
+  it('recovers processing state safely when subscribeToPushNotifications throws an unexpected error', async () => {
+    vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockRejectedValueOnce(
+      new Error('Unexpected system error')
+    );
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
     const actionBtn = Array.from(container?.querySelectorAll('button') || []).find((b) =>
       b.textContent?.includes('Enable Push Notifications')
     );
 
     await act(async () => {
       actionBtn?.click();
-      actionBtn?.click(); // Duplicate click during processing
     });
 
-    expect(subscribeSpy).toHaveBeenCalledTimes(1);
+    const statusBanner = container?.querySelector('[role="status"]');
+    expect(statusBanner?.textContent).toContain('An unexpected error occurred while updating push notification settings.');
 
-    // Resolve pending promise
+    // Button should be re-enabled and restored after error
+    const switchBtn = container?.querySelector('#push-notifications-toggle') as HTMLButtonElement;
+    expect(switchBtn.disabled).toBe(false);
+  });
+
+  it('recovers processing state safely when unsubscribeFromPushNotifications throws an unexpected error', async () => {
+    Object.defineProperty(window, 'Notification', {
+      value: { permission: 'granted' },
+      writable: true,
+      configurable: true,
+    });
+
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: {
+        getRegistration: vi.fn().mockResolvedValue({
+          pushManager: {
+            getSubscription: vi.fn().mockResolvedValue({ endpoint: 'https://push.example.com' }),
+          },
+        }),
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    vi.spyOn(notificationsService, 'unsubscribeFromPushNotifications').mockRejectedValueOnce(
+      new Error('Unexpected unsubscribe error')
+    );
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    const disableBtn = Array.from(container?.querySelectorAll('button') || []).find((b) =>
+      b.textContent?.includes('Disable Notifications')
+    );
+
+    await act(async () => {
+      disableBtn?.click();
+    });
+
+    const statusBanner = container?.querySelector('[role="status"]');
+    expect(statusBanner?.textContent).toContain('An unexpected error occurred while updating push notification settings.');
+  });
+
+  it('handles component unmount cleanly during pending asynchronous subscription', async () => {
+    let resolveSubscribe: (val: unknown) => void = () => {};
+    const pendingPromise = new Promise((resolve) => {
+      resolveSubscribe = resolve;
+    });
+
+    vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockImplementationOnce(
+      () => pendingPromise as ReturnType<typeof notificationsService.subscribeToPushNotifications>
+    );
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    const actionBtn = Array.from(container?.querySelectorAll('button') || []).find((b) =>
+      b.textContent?.includes('Enable Push Notifications')
+    );
+
+    await act(async () => {
+      actionBtn?.click();
+    });
+
+    // Unmount before promise resolves
+    await act(async () => {
+      root?.unmount();
+      root = null;
+    });
+
+    // Resolve after unmount - should not throw or cause state update errors
     await act(async () => {
       resolveSubscribe({
         success: true,

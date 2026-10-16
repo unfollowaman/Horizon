@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -15,6 +15,16 @@ interface StatusFeedback {
 const NotificationSettings: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  const isMountedRef = useRef<boolean>(true);
+  const inFlightRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const [isSupported] = useState<boolean>(() => isPushSupported());
   const [isVapidConfigured] = useState<boolean>(() =>
@@ -36,27 +46,27 @@ const NotificationSettings: React.FC = () => {
   // Sync current service worker push subscription state on mount / user change
   const refreshSubscriptionStatus = useCallback(async () => {
     if (!isSupported) {
-      setIsLoadingStatus(false);
+      if (isMountedRef.current) setIsLoadingStatus(false);
       return;
     }
 
     if (typeof window !== 'undefined' && 'Notification' in window) {
       const currentPerm = Notification.permission;
-      setPermission(currentPerm);
+      if (isMountedRef.current) setPermission(currentPerm);
 
       if (currentPerm === 'granted' && user) {
         try {
           const registration = await navigator.serviceWorker?.getRegistration();
           const sub = await registration?.pushManager?.getSubscription();
-          setIsSubscribed(Boolean(sub));
+          if (isMountedRef.current) setIsSubscribed(Boolean(sub));
         } catch {
-          setIsSubscribed(false);
+          if (isMountedRef.current) setIsSubscribed(false);
         }
       } else {
-        setIsSubscribed(false);
+        if (isMountedRef.current) setIsSubscribed(false);
       }
     }
-    setIsLoadingStatus(false);
+    if (isMountedRef.current) setIsLoadingStatus(false);
   }, [isSupported, user]);
 
   useEffect(() => {
@@ -72,99 +82,125 @@ const NotificationSettings: React.FC = () => {
   };
 
   const handleTogglePush = async () => {
-    if (isProcessing || isLoadingStatus) return;
+    // Synchronous in-flight guard against rapid duplicate clicks before React re-render
+    if (inFlightRef.current || isProcessing || isLoadingStatus) return;
 
-    setStatusFeedback(null);
+    if (isMountedRef.current) setStatusFeedback(null);
 
     if (!user) {
-      setStatusFeedback({
-        type: 'error',
-        text: 'Please sign in to manage push notification preferences.',
-      });
+      if (isMountedRef.current) {
+        setStatusFeedback({
+          type: 'error',
+          text: 'Please sign in to manage push notification preferences.',
+        });
+      }
       return;
     }
 
     if (!isSupported) {
-      setStatusFeedback({
-        type: 'error',
-        text: 'Push notifications are not supported in your browser.',
-      });
+      if (isMountedRef.current) {
+        setStatusFeedback({
+          type: 'error',
+          text: 'Push notifications are not supported in your browser.',
+        });
+      }
       return;
     }
 
     if (!isVapidConfigured) {
-      setStatusFeedback({
-        type: 'error',
-        text: 'Push notification service is currently unavailable.',
-      });
+      if (isMountedRef.current) {
+        setStatusFeedback({
+          type: 'error',
+          text: 'Push notification service is currently unavailable.',
+        });
+      }
       return;
     }
 
     if (permission === 'denied') {
-      setStatusFeedback({
-        type: 'info',
-        text: 'Notification permission is blocked in your browser settings. To enable alerts, please update your browser site settings.',
-      });
+      if (isMountedRef.current) {
+        setStatusFeedback({
+          type: 'info',
+          text: 'Notification permission is blocked in your browser settings. To enable alerts, please update your browser site settings.',
+        });
+      }
       return;
     }
 
-    setIsProcessing(true);
+    inFlightRef.current = true;
+    if (isMountedRef.current) setIsProcessing(true);
 
-    if (!isSubscribed) {
-      // Subscribe user to push notifications
-      const result = await subscribeToPushNotifications();
+    try {
+      if (!isSubscribed) {
+        // Subscribe user to push notifications
+        const result = await subscribeToPushNotifications();
 
-      if (typeof window !== 'undefined' && 'Notification' in window) {
-        setPermission(Notification.permission);
-      }
-
-      if (result.success) {
-        setIsSubscribed(true);
-        setStatusFeedback({
-          type: 'success',
-          text: 'Push notifications enabled successfully! You will now receive real-time alerts for new resources and announcements.',
-        });
-      } else {
-        setIsSubscribed(false);
-        const code = result.error?.code;
-        let msg = 'Unable to enable push notifications. Please try again.';
-
-        if (code === 'PERMISSION_DENIED') {
-          msg = 'Notification permission was dismissed or denied.';
-        } else if (code === 'UNAUTHENTICATED') {
-          msg = 'Please sign in to manage push notification preferences.';
-        } else if (code === 'MISSING_VAPID_KEY') {
-          msg = 'Push notification service is currently unavailable.';
-        } else if (code === 'NETWORK_ERROR') {
-          msg = 'Network error during push notification registration. Please check your connection and try again.';
-        } else if (code === 'BACKEND_REJECTION') {
-          msg = 'Server rejection during registration. Please try again later.';
+        if (typeof window !== 'undefined' && 'Notification' in window && isMountedRef.current) {
+          setPermission(Notification.permission);
         }
 
+        if (!isMountedRef.current) return;
+
+        if (result.success) {
+          setIsSubscribed(true);
+          setStatusFeedback({
+            type: 'success',
+            text: 'Push notifications enabled successfully! You will now receive real-time alerts for new resources and announcements.',
+          });
+        } else {
+          setIsSubscribed(false);
+          const code = result.error?.code;
+          let msg = 'Unable to enable push notifications. Please try again.';
+
+          if (code === 'PERMISSION_DENIED') {
+            msg = 'Notification permission was dismissed or denied.';
+          } else if (code === 'UNAUTHENTICATED') {
+            msg = 'Please sign in to manage push notification preferences.';
+          } else if (code === 'MISSING_VAPID_KEY') {
+            msg = 'Push notification service is currently unavailable.';
+          } else if (code === 'NETWORK_ERROR') {
+            msg = 'Network error during push notification registration. Please check your connection and try again.';
+          } else if (code === 'BACKEND_REJECTION') {
+            msg = 'Server rejection during registration. Please try again later.';
+          }
+
+          setStatusFeedback({
+            type: 'error',
+            text: msg,
+          });
+        }
+      } else {
+        // Unsubscribe user from push notifications
+        const result = await unsubscribeFromPushNotifications();
+
+        if (!isMountedRef.current) return;
+
+        if (result.success) {
+          setIsSubscribed(false);
+          setStatusFeedback({
+            type: 'info',
+            text: 'Push notifications disabled.',
+          });
+        } else {
+          setStatusFeedback({
+            type: 'error',
+            text: 'Unable to disable push notifications. Please try again.',
+          });
+        }
+      }
+    } catch (_err) {
+      if (isMountedRef.current) {
         setStatusFeedback({
           type: 'error',
-          text: msg,
+          text: 'An unexpected error occurred while updating push notification settings. Please try again.',
         });
       }
-    } else {
-      // Unsubscribe user from push notifications
-      const result = await unsubscribeFromPushNotifications();
-
-      if (result.success) {
-        setIsSubscribed(false);
-        setStatusFeedback({
-          type: 'info',
-          text: 'Push notifications disabled.',
-        });
-      } else {
-        setStatusFeedback({
-          type: 'error',
-          text: 'Unable to disable push notifications. Please try again.',
-        });
+    } finally {
+      inFlightRef.current = false;
+      if (isMountedRef.current) {
+        setIsProcessing(false);
       }
     }
-
-    setIsProcessing(false);
   };
 
   // Determine label & subtitle for push section
