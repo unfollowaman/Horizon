@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Horizon",
+  "short_name": "Horizon",
   "icons": [
     {
       "src": "/assets/favicon/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#f4f4f4",
-  "background_color": "#f4f4f4",
+  "theme_color": "#FEFEFE",
+  "background_color": "#FEFEFE",
   "display": "standalone"
 }
