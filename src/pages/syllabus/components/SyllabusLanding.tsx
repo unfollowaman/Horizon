@@ -86,7 +86,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </div>
 
       {/* Hero Section Card Container */}
-      <header className="neu-raised rounded-2xl p-5 sm:p-6 text-center space-y-3.5 sm:space-y-4 mb-8 sm:mb-10">
+      <header className="neu-raised rounded-2xl p-2 sm:p-3 text-center space-y-3.5 mb-8 sm:mb-10">
         {/* Primary Heading */}
         <h1 className="font-serif font-normal text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight m-0">
           Choose Your <span className="italic bg-gradient-to-br from-[#E91E8C] via-[#C2185B] to-[#8B0A50] bg-clip-text text-transparent">Class</span>
@@ -173,7 +173,7 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </div>
 
       {/* Secondary Bottom Motivational Placeholder Section */}
-      <section className="neu-card rounded-2xl p-5 sm:p-6 text-center space-y-3.5 sm:space-y-4 bg-gradient-to-r from-transparent via-[#E91E8C]/5 to-transparent">
+      <section className="neu-card rounded-2xl p-2 sm:p-3 text-center space-y-3.5 bg-gradient-to-r from-transparent via-[#E91E8C]/5 to-transparent">
         <h3 className="text-lg sm:text-xl font-bold text-ink m-0">
           Master Your NCERT & Board Curriculum
         </h3>
