@@ -17,17 +17,13 @@ export interface RenderingScreenProps {
 
 export default function RenderingScreen({
   variant = 'notes',
-  classLabel = '',
-  subjectLabel = '',
-  year = '',
   stage = 'connecting',
   loadedBytes = 0,
   totalBytes = null,
   onFinished,
 }: RenderingScreenProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
-  const titleRef = useRef<SVGTextElement | null>(null);
-  const subtitleRef = useRef<SVGTextElement | null>(null);
+  const h2Ref = useRef<SVGTextElement | null>(null);
 
   const [fontSizes, setFontSizes] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
@@ -37,8 +33,7 @@ export default function RenderingScreen({
     return initial;
   });
 
-  const [titleScale, setTitleScale] = useState(1);
-  const [subtitleScale, setSubtitleScale] = useState(1);
+  const [h2Scale, setH2Scale] = useState(1);
   const [rootOpacity, setRootOpacity] = useState(1);
 
   // Compute text font sizes matching approved design target widths
@@ -163,17 +158,7 @@ export default function RenderingScreen({
 
   // Construct copy
   const isPYQ = variant === 'pyq';
-  const titleText = isPYQ ? 'Getting your paper ready' : 'Getting your notes ready';
-
-  const classSubj = [classLabel, subjectLabel].filter(Boolean).join(' · ');
-  let subtitleText = '';
-  if (isPYQ) {
-    const base = classSubj ? `${classSubj} PYQ` : 'PYQ';
-    subtitleText = year ? `${base} ${year}` : base;
-  } else {
-    subtitleText = classSubj ? `${classSubj} Notes` : 'Notes';
-  }
-
+  const h2Text = isPYQ ? 'Preparing your Pyq Paper' : 'Preparing your Notes';
   const subheading2 = isPYQ ? 'Your paper is on the way' : 'Your notes are on the way';
 
   let stageLabel = 'Connecting...';
@@ -197,31 +182,19 @@ export default function RenderingScreen({
 
   // Safety clamp text scale
   useLayoutEffect(() => {
-    if (titleRef.current) {
+    if (h2Ref.current) {
       try {
-        const bbox = titleRef.current.getBBox();
+        const bbox = h2Ref.current.getBBox();
         if (bbox.width > 820) {
-          setTitleScale(820 / bbox.width);
+          setH2Scale(820 / bbox.width);
         } else {
-          setTitleScale(1);
+          setH2Scale(1);
         }
       } catch {
         // SVG bounding box fallback
       }
     }
-    if (subtitleRef.current) {
-      try {
-        const bbox = subtitleRef.current.getBBox();
-        if (bbox.width > 820) {
-          setSubtitleScale(820 / bbox.width);
-        } else {
-          setSubtitleScale(1);
-        }
-      } catch {
-        // SVG bounding box fallback
-      }
-    }
-  }, [titleText, subtitleText, fontSizes]);
+  }, [h2Text, fontSizes]);
 
   return (
     <div
@@ -252,10 +225,6 @@ export default function RenderingScreen({
               <stop offset="0" stopColor="#e83f90" />
               <stop offset="1" stopColor="#f45ea5" />
             </linearGradient>
-            <linearGradient id="rs-mini" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#fff" />
-              <stop offset="1" stopColor="#f7ecf3" />
-            </linearGradient>
             <filter id="rs-sh" x="-30%" y="-30%" width="160%" height="170%">
               <feDropShadow dx="0" dy="8" stdDeviation="12" floodColor="#f0509a" floodOpacity=".22" />
             </filter>
@@ -271,155 +240,52 @@ export default function RenderingScreen({
             viewBox="0 0 941 1672"
             preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label={`${titleText}, ${subtitleText}, ${stageLabel}, ${percentText}`}
+            aria-label={`${h2Text}, ${subheading2}, ${stageLabel}, ${percentText}`}
           >
             <defs>
-              <linearGradient id="rs-arc" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#c4136e" />
-                <stop offset=".5" stopColor="#ea3a92" />
-                <stop offset="1" stopColor="#f96faa" />
-              </linearGradient>
               <linearGradient id="rs-fill" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0" stopColor="#d0126f" />
                 <stop offset=".55" stopColor="#ec3f93" />
                 <stop offset="1" stopColor="#f96aa8" />
               </linearGradient>
-              <radialGradient id="rs-disc">
-                <stop offset=".7" stopColor="#fff5fa" />
-                <stop offset="1" stopColor="#feeaf3" />
-              </radialGradient>
               <filter id="rs-b12" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="9" />
               </filter>
             </defs>
 
-            {/* Headings */}
-            <text
-              id="title"
-              ref={titleRef}
-              x="472"
-              y="697"
-              textAnchor="middle"
-              fill="#85023a"
-              style={{
-                fontSize: (fontSizes.title || 80) * titleScale,
-                fontWeight: FIT.title[1],
-              }}
-            >
-              {titleText}
-            </text>
-            <text
-              id="subtitle"
-              ref={subtitleRef}
-              x="472"
-              y="751"
-              textAnchor="middle"
-              fill="#40354f"
-              style={{
-                fontSize: (fontSizes.subtitle || 32) * subtitleScale,
-                fontWeight: FIT.subtitle[1],
-              }}
-            >
-              {subtitleText}
-            </text>
-
-            {/* Ring Group */}
-            <circle cx="470" cy="984" r="190" fill="none" stroke="#fdeef6" strokeWidth="26" />
-            <circle cx="470" cy="984" r="163" fill="none" stroke="#fde2ef" strokeWidth="30" />
-            <circle cx="470" cy="984" r="136" fill="url(#rs-disc)" />
-
-            <circle
-              cx="470"
-              cy="984"
-              r="163"
-              fill="none"
-              stroke="#ff3d96"
-              strokeOpacity={p <= 0 ? 0 : 0.35}
-              strokeWidth="30"
-              strokeLinecap="round"
-              pathLength="100"
-              strokeDasharray={p <= 0 ? '0 100' : `${p} 100`}
-              transform="rotate(-90 470 984)"
-              filter="url(#rs-b12)"
-            />
-            <circle
-              cx="470"
-              cy="984"
-              r="163"
-              fill="none"
-              stroke="url(#rs-arc)"
-              strokeWidth="28"
-              strokeLinecap="round"
-              pathLength="100"
-              strokeDasharray={p <= 0 ? '0 100' : `${p} 100`}
-              transform="rotate(-90 470 984)"
-            />
-
-            <g filter="url(#rs-sh)">
-              <path
-                d="M439 902H491L521 932V996Q521 1014 503 1014H439Q421 1014 421 996V920Q421 902 439 902Z"
-                fill="url(#rs-mini)"
-              />
-            </g>
-            <path d="M491 902L521 932H509Q491 932 491 914Z" fill="#dfb9d3" />
-            <use
-              href="#rs-acro"
-              transform="translate(441,927) scale(1.02)"
-              stroke="#b0135f"
-              strokeWidth="4.4"
-            />
-
-            <text
-              id="ringPct"
-              x="471"
-              y="1076"
-              textAnchor="middle"
-              fill="#86033c"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={displayProgress}
-              aria-label="PDF loading progress"
-              style={{
-                fontSize: fontSizes.ringPct || 64,
-                fontWeight: FIT.ringPct[1],
-              }}
-            >
-              {percentText}
-            </text>
-
-            {/* Heading 2 */}
+            {/* Heading */}
             <text
               id="h2"
+              ref={h2Ref}
               x="472"
-              y="1247"
+              y="720"
               textAnchor="middle"
               fill="#85023a"
               style={{
-                fontSize: fontSizes.h2 || 40,
+                fontSize: (fontSizes.h2 || 48) * h2Scale,
                 fontWeight: FIT.h2[1],
               }}
             >
-              Preparing your PDF
+              {h2Text}
             </text>
             <text
               id="sub2"
               x="471"
-              y="1293"
+              y="770"
               textAnchor="middle"
               fill="#4a3f5e"
               style={{
-                fontSize: fontSizes.sub2 || 28,
+                fontSize: fontSizes.sub2 || 30,
                 fontWeight: FIT.sub2[1],
               }}
             >
               {subheading2}
             </text>
 
-            {/* Card */}
+            {/* Horizontal Progress Bar Card */}
             <rect
               x="118"
-              y="1329"
+              y="824"
               width="706"
               height="168"
               rx="30"
@@ -429,7 +295,7 @@ export default function RenderingScreen({
             />
             <rect
               x="118"
-              y="1325"
+              y="820"
               width="706"
               height="172"
               rx="30"
@@ -439,10 +305,10 @@ export default function RenderingScreen({
               strokeOpacity=".9"
               strokeWidth="1.5"
             />
-            <rect x="152" y="1357" width="638" height="29" rx="14.5" fill="#efdce8" />
+            <rect x="152" y="852" width="638" height="29" rx="14.5" fill="#efdce8" />
             <rect
               x="152"
-              y="1357"
+              y="852"
               width={Math.max(29, (638 * p) / 100)}
               height="29"
               rx="14.5"
@@ -454,7 +320,7 @@ export default function RenderingScreen({
               <text
                 id="label"
                 x="152"
-                y="1431"
+                y="926"
                 fill="#0d0a10"
                 style={{
                   fontSize: fontSizes.label || 32,
@@ -468,7 +334,7 @@ export default function RenderingScreen({
             <text
               id="sizeLine"
               x="152"
-              y="1468"
+              y="963"
               fill="#736a80"
               style={{
                 fontSize: fontSizes.sizeLine || 24,
@@ -480,9 +346,14 @@ export default function RenderingScreen({
             <text
               id="cardPct"
               x="791"
-              y="1448"
+              y="943"
               textAnchor="end"
               fill="#a8044f"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={displayProgress}
+              aria-label="PDF loading progress"
               style={{
                 fontSize: fontSizes.cardPct || 48,
                 fontWeight: FIT.cardPct[1],
@@ -493,13 +364,13 @@ export default function RenderingScreen({
 
             {/* Info Line */}
             <g style={{ visibility: isPYQ ? 'hidden' : 'visible' }}>
-              <circle cx="277" cy="1537" r="15.5" fill="none" stroke="#4a3f5e" strokeWidth="2.6" />
-              <circle cx="277" cy="1529.5" r="1.9" fill="#4a3f5e" />
-              <path d="M277 1535.5V1546" stroke="#4a3f5e" strokeWidth="2.8" strokeLinecap="round" />
+              <circle cx="277" cy="1032" r="15.5" fill="none" stroke="#4a3f5e" strokeWidth="2.6" />
+              <circle cx="277" cy="1024.5" r="1.9" fill="#4a3f5e" />
+              <path d="M277 1030.5V1041" stroke="#4a3f5e" strokeWidth="2.8" strokeLinecap="round" />
               <text
                 id="info"
                 x="311"
-                y="1546"
+                y="1041"
                 fill="#4a3f5e"
                 style={{
                   fontSize: fontSizes.info || 24,
