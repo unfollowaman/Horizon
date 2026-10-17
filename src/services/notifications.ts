@@ -314,15 +314,8 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
 
       const responseData = await response.json().catch(() => ({}));
 
-      // Always perform local unsubscribe from browser PushManager
-      await subscription.unsubscribe();
-
-      if (!response.ok) {
-        // Auto-recovery for 403 Forbidden: endpoint owned by another account; local device unsubscription succeeded
-        if (response.status === 403) {
-          return { success: true };
-        }
-
+      // If backend fails with non-200 and non-403 (e.g. 500 server error, 401, 415), do NOT unsubscribe locally
+      if (!response.ok && response.status !== 403) {
         return {
           success: false,
           error: {
@@ -330,6 +323,29 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
             message: responseData.error || `Server responded with HTTP ${response.status}`,
             status: response.status,
             details: responseData,
+          },
+        };
+      }
+
+      // Perform local browser unsubscribe after backend confirms deactivation (200) or ownership mismatch (403)
+      try {
+        const unsubscribed = await subscription.unsubscribe();
+        if (unsubscribed === false) {
+          return {
+            success: false,
+            error: {
+              code: 'REGISTRATION_FAILED',
+              message: 'Local browser subscription could not be removed.',
+            },
+          };
+        }
+      } catch (localErr: unknown) {
+        return {
+          success: false,
+          error: {
+            code: 'REGISTRATION_FAILED',
+            message: localErr instanceof Error ? localErr.message : 'Failed to remove local push subscription.',
+            details: localErr,
           },
         };
       }
