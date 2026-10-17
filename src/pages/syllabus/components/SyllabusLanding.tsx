@@ -173,11 +173,11 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </div>
 
       {/* Secondary Bottom Motivational Placeholder Section */}
-      <section className="neu-card rounded-2xl p-6 sm:p-8 text-center space-y-2.5 bg-gradient-to-r from-transparent via-[#E91E8C]/5 to-transparent">
+      <section className="neu-card rounded-2xl p-2 sm:p-3 text-center space-y-3.5 bg-gradient-to-r from-transparent via-[#E91E8C]/5 to-transparent">
         <h3 className="text-lg sm:text-xl font-bold text-ink m-0">
           Master Your NCERT & Board Curriculum
         </h3>
-        <p className="text-xs sm:text-sm text-ink/70 max-w-xl mx-auto m-0 leading-relaxed">
+        <p className="text-xs sm:text-sm text-ink/70 max-w-xl mx-auto m-0 leading-relaxed px-2">
           Structured chapter breakdowns, topic maps, and textbook-linked resources tailored for RBSE, NCERT, and CBSE students.
         </p>
       </section>
