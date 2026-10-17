@@ -460,4 +460,23 @@ describe('NotificationSettings Component', () => {
 
     expect(mockNavigate).toHaveBeenCalled();
   });
+
+  it('refreshes permission state when window receives focus event', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    // Change Notification.permission dynamically
+    Object.defineProperty(window.Notification, 'permission', { value: 'granted', configurable: true });
+
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+
+    expect(container?.textContent).not.toContain('Blocked in browser');
+  });
 });

@@ -71,6 +71,18 @@ const NotificationSettings: React.FC = () => {
 
   useEffect(() => {
     refreshSubscriptionStatus();
+
+    const handleWindowFocus = () => {
+      refreshSubscriptionStatus();
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleWindowFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleWindowFocus);
+    };
   }, [refreshSubscriptionStatus]);
 
   const handleBack = () => {

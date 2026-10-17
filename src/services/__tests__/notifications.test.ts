@@ -273,19 +273,26 @@ describe('notifications service', () => {
       );
     });
 
-    it('handles backend rejection status codes', async () => {
-      const mockPushSubscription = {
-        toJSON: () => ({ endpoint: 'https://fcm.googleapis.com/fcm/send/test-token', keys: { p256dh: 'a', auth: 'b' } }),
+    it('handles 409 Conflict auto-recovery by unsubscribing orphaned local subscription and resubscribing', async () => {
+      const oldSubJson = { endpoint: 'https://fcm.googleapis.com/fcm/send/old-token', keys: { p256dh: 'old-p256', auth: 'old-auth' } };
+      const newSubJson = { endpoint: 'https://fcm.googleapis.com/fcm/send/new-token', keys: { p256dh: 'new-p256', auth: 'new-auth' } };
+
+      const mockUnsubscribe = vi.fn().mockResolvedValue(true);
+      const oldSubscription = {
+        toJSON: () => oldSubJson,
+        unsubscribe: mockUnsubscribe,
+      };
+      const newSubscription = {
+        toJSON: () => newSubJson,
       };
 
-      const mockRegistration = {
-        pushManager: {
-          getSubscription: vi.fn().mockResolvedValue(mockPushSubscription),
-        },
+      const mockPushManager = {
+        getSubscription: vi.fn().mockResolvedValue(oldSubscription),
+        subscribe: vi.fn().mockResolvedValue(newSubscription),
       };
 
       Object.defineProperty(navigator, 'serviceWorker', {
-        value: { getRegistration: vi.fn().mockResolvedValue(mockRegistration) },
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: mockPushManager }) },
         configurable: true,
       });
 
@@ -296,27 +303,84 @@ describe('notifications service', () => {
         configurable: true,
       });
 
-      vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
         // @ts-expect-error simplified session mock
         data: { session: { access_token: 'mock-jwt-token' } },
         error: null,
       });
 
-      window.fetch = vi.fn().mockResolvedValue({
-        ok: false,
-        status: 409,
-        json: async () => ({ success: false, error: 'Push subscription endpoint already registered to another account' }),
-      });
+      const mockFetch = vi.fn()
+        // First POST returns 409 Conflict
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 409,
+          json: async () => ({ success: false, error: 'Push subscription endpoint already registered to another account' }),
+        })
+        // Second POST after auto-recovery succeeds with 200 OK
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          json: async () => ({ success: true, message: 'Push subscription updated successfully' }),
+        });
+      window.fetch = mockFetch;
 
       const result = await subscribeToPushNotifications();
 
-      expect(result.success).toBe(false);
-      expect(result.error).toEqual({
-        code: 'BACKEND_REJECTION',
-        message: 'Push subscription endpoint already registered to another account',
-        status: 409,
-        details: { success: false, error: 'Push subscription endpoint already registered to another account' },
+      expect(result).toEqual({
+        success: true,
+        data: newSubJson,
       });
+      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+      expect(mockPushManager.subscribe).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('deduplicates concurrent subscribeToPushNotifications calls using subscribeInFlightPromise', async () => {
+      let resolveFetch: (val: unknown) => void = () => {};
+      const pendingFetch = new Promise((resolve) => {
+        resolveFetch = resolve;
+      });
+
+      const mockPushSubscription = {
+        toJSON: () => ({ endpoint: 'https://fcm.googleapis.com/fcm/send/test-token', keys: { p256dh: 'a', auth: 'b' } }),
+      };
+
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: { getSubscription: vi.fn().mockResolvedValue(mockPushSubscription) } }) },
+        configurable: true,
+      });
+
+      window.PushManager = vi.fn() as unknown as typeof PushManager;
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        writable: true,
+        configurable: true,
+      });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        // @ts-expect-error simplified session mock
+        data: { session: { access_token: 'mock-jwt-token' } },
+        error: null,
+      });
+
+      const mockFetch = vi.fn().mockImplementation(() => pendingFetch);
+      window.fetch = mockFetch;
+
+      // Trigger two concurrent subscriptions
+      const promise1 = subscribeToPushNotifications();
+      const promise2 = subscribeToPushNotifications();
+
+      resolveFetch({
+        ok: true,
+        status: 200,
+        json: async () => ({ success: true }),
+      });
+
+      const [res1, res2] = await Promise.all([promise1, promise2]);
+
+      expect(res1.success).toBe(true);
+      expect(res2.success).toBe(true);
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
     it('handles network failures during subscribe fetch', async () => {
@@ -411,6 +475,43 @@ describe('notifications service', () => {
           body: JSON.stringify({ endpoint: 'https://fcm.googleapis.com/fcm/send/test-token' }),
         }
       );
+    });
+
+    it('handles 403 Forbidden on unsubscribe gracefully when deactivating orphaned subscription owned by another user', async () => {
+      const mockUnsubscribe = vi.fn().mockResolvedValue(true);
+      const mockPushSubscription = {
+        endpoint: 'https://fcm.googleapis.com/fcm/send/orphaned-token',
+        unsubscribe: mockUnsubscribe,
+      };
+
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: { getSubscription: vi.fn().mockResolvedValue(mockPushSubscription) } }) },
+        configurable: true,
+      });
+
+      window.PushManager = vi.fn() as unknown as typeof PushManager;
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        writable: true,
+        configurable: true,
+      });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+        // @ts-expect-error simplified session mock
+        data: { session: { access_token: 'mock-jwt-token' } },
+        error: null,
+      });
+
+      window.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ success: false, error: 'Forbidden: Cannot deactivate a subscription owned by another user' }),
+      });
+
+      const result = await unsubscribeFromPushNotifications();
+
+      expect(result).toEqual({ success: true });
+      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
     });
   });
 
