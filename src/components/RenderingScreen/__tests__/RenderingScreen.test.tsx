@@ -49,7 +49,7 @@ describe('RenderingScreen', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders Notes variant copy correctly', () => {
+  it('renders Notes variant copy correctly without top title or circular wheel', () => {
     act(() => {
       root?.render(
         <RenderingScreen
@@ -63,14 +63,20 @@ describe('RenderingScreen', () => {
       );
     });
 
+    // Top title & subtitle should be removed
     const titleEl = container?.querySelector('#title');
-    expect(titleEl?.textContent).toBe('Getting your notes ready');
+    expect(titleEl).toBeNull();
 
     const subtitleEl = container?.querySelector('#subtitle');
-    expect(subtitleEl?.textContent).toBe('Class 10 · Science Notes');
+    expect(subtitleEl).toBeNull();
 
+    // Circular loading wheel elements should be removed
+    const ringPctEl = container?.querySelector('#ringPct');
+    expect(ringPctEl).toBeNull();
+
+    // Main heading & subheading under page stack
     const h2El = container?.querySelector('#h2');
-    expect(h2El?.textContent).toBe('Preparing your PDF');
+    expect(h2El?.textContent).toBe('Preparing your Notes');
 
     const sub2El = container?.querySelector('#sub2');
     expect(sub2El?.textContent).toBe('Your notes are on the way');
@@ -100,11 +106,8 @@ describe('RenderingScreen', () => {
       );
     });
 
-    const titleEl = container?.querySelector('#title');
-    expect(titleEl?.textContent).toBe('Getting your paper ready');
-
-    const subtitleEl = container?.querySelector('#subtitle');
-    expect(subtitleEl?.textContent).toBe('Class 10 · Science PYQ 2023');
+    const h2El = container?.querySelector('#h2');
+    expect(h2El?.textContent).toBe('Preparing your Pyq Paper');
 
     const sub2El = container?.querySelector('#sub2');
     expect(sub2El?.textContent).toBe('Your paper is on the way');
@@ -135,7 +138,7 @@ describe('RenderingScreen', () => {
     expect(sizeLineEl?.textContent).toBe('10.0 MB downloaded');
   });
 
-  it('renders progressbar WAI-ARIA attributes correctly', () => {
+  it('renders progressbar WAI-ARIA attributes correctly on cardPct', () => {
     act(() => {
       root?.render(
         <RenderingScreen
@@ -148,6 +151,7 @@ describe('RenderingScreen', () => {
 
     const progressbar = container?.querySelector('[role="progressbar"]');
     expect(progressbar).not.toBeNull();
+    expect(progressbar?.id).toBe('cardPct');
     expect(progressbar?.getAttribute('aria-label')).toBe('PDF loading progress');
     expect(progressbar?.getAttribute('aria-valuemin')).toBe('0');
     expect(progressbar?.getAttribute('aria-valuemax')).toBe('100');
