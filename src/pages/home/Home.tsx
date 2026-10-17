@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import HomeAd from '../../components/HomeAd';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { navLinks } from '../../data/navigation';
 import { HeroPhoneAnimation } from './HeroPhoneAnimation';
@@ -291,42 +290,11 @@ const getFeatureIllustration = (id: string) => {
 };
 
 const FeaturesSection = React.memo(() => {
-  const [hasReachedFeatures, setHasReachedFeatures] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
   const features = getAllFeatures();
   const { visibleIndices, registerRef } = useRevealOnScroll(features.length, 0.2);
 
-  useEffect(() => {
-    if (hasReachedFeatures) return;
-
-    const node = sectionRef.current;
-    if (!node) return;
-
-    if (typeof IntersectionObserver === 'undefined') {
-      setHasReachedFeatures(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry && entry.isIntersecting) {
-          setHasReachedFeatures(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [hasReachedFeatures]);
-
   return (
-    <section ref={sectionRef} className={styles.featuresSection}>
+    <section className={styles.featuresSection}>
       <div className={styles.featuresContainer}>
         <div className={styles.featuresHeader}>
           <h2 className={styles.featuresTitle}>Everything in <span className={styles.textGradient}>one</span> place</h2>
@@ -382,8 +350,6 @@ const FeaturesSection = React.memo(() => {
             </div>
           ))}
         </div>
-
-        {hasReachedFeatures && <HomeAd />}
       </div>
     </section>
   );
