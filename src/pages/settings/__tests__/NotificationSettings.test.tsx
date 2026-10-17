@@ -460,4 +460,67 @@ describe('NotificationSettings Component', () => {
 
     expect(mockNavigate).toHaveBeenCalled();
   });
+
+  it('refreshes permission state when window receives focus event', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    // Change Notification.permission dynamically
+    Object.defineProperty(window.Notification, 'permission', { value: 'granted', configurable: true });
+
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+
+    expect(container?.textContent).not.toContain('Blocked in browser');
+  });
+
+  it('displays device-specific status feedback when unsubscribe returns localOnly=true', async () => {
+    Object.defineProperty(window, 'Notification', {
+      value: { permission: 'granted' },
+      writable: true,
+      configurable: true,
+    });
+
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: {
+        getRegistration: vi.fn().mockResolvedValue({
+          pushManager: {
+            getSubscription: vi.fn().mockResolvedValue({ endpoint: 'https://push.example.com' }),
+          },
+        }),
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    vi.spyOn(notificationsService, 'unsubscribeFromPushNotifications').mockResolvedValueOnce({
+      success: true,
+      localOnly: true,
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    const disableBtn = Array.from(container?.querySelectorAll('button') || []).find((b) =>
+      b.textContent?.includes('Disable Notifications')
+    );
+
+    await act(async () => {
+      disableBtn?.click();
+    });
+
+    const statusBanner = container?.querySelector('[role="status"]');
+    expect(statusBanner?.textContent).toContain('Push notifications disabled on this device.');
+  });
 });

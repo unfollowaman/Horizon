@@ -71,6 +71,18 @@ const NotificationSettings: React.FC = () => {
 
   useEffect(() => {
     refreshSubscriptionStatus();
+
+    const handleWindowFocus = () => {
+      refreshSubscriptionStatus();
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleWindowFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleWindowFocus);
+    };
   }, [refreshSubscriptionStatus]);
 
   const handleBack = () => {
@@ -179,7 +191,9 @@ const NotificationSettings: React.FC = () => {
           setIsSubscribed(false);
           setStatusFeedback({
             type: 'info',
-            text: 'Push notifications disabled.',
+            text: result.localOnly
+              ? 'Push notifications disabled on this device.'
+              : 'Push notifications disabled.',
           });
         } else {
           setStatusFeedback({
