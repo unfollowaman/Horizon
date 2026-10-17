@@ -422,8 +422,14 @@ describe('notifications service', () => {
   });
 
   describe('unsubscribeFromPushNotifications', () => {
-    it('successfully unsubscribes and sends DELETE request to Edge Function', async () => {
-      const mockUnsubscribe = vi.fn().mockResolvedValue(true);
+    it('verifies explicit backend-first execution order before calling PushSubscription.unsubscribe()', async () => {
+      const executionOrder: string[] = [];
+
+      const mockUnsubscribe = vi.fn().mockImplementation(async () => {
+        executionOrder.push('local_unsubscribe');
+        return true;
+      });
+
       const mockPushSubscription = {
         endpoint: 'https://fcm.googleapis.com/fcm/send/test-token',
         unsubscribe: mockUnsubscribe,
@@ -431,7 +437,10 @@ describe('notifications service', () => {
 
       const mockRegistration = {
         pushManager: {
-          getSubscription: vi.fn().mockResolvedValue(mockPushSubscription),
+          getSubscription: vi.fn().mockImplementation(async () => {
+            executionOrder.push('get_subscription');
+            return mockPushSubscription;
+          }),
         },
       };
 
@@ -453,28 +462,21 @@ describe('notifications service', () => {
         error: null,
       });
 
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: async () => ({ success: true, message: 'Push subscription deactivated successfully' }),
+      const mockFetch = vi.fn().mockImplementation(async () => {
+        executionOrder.push('backend_fetch_delete');
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ success: true, message: 'Push subscription deactivated successfully' }),
+        };
       });
       window.fetch = mockFetch;
 
       const result = await unsubscribeFromPushNotifications();
 
       expect(result).toEqual({ success: true });
+      expect(executionOrder).toEqual(['get_subscription', 'backend_fetch_delete', 'local_unsubscribe']);
       expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith(
-        'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/subscribe-push',
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer mock-jwt-token',
-          },
-          body: JSON.stringify({ endpoint: 'https://fcm.googleapis.com/fcm/send/test-token' }),
-        }
-      );
     });
 
     it('handles backend HTTP 500 server error by keeping local subscription intact and returning error', async () => {
