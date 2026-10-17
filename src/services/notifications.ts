@@ -20,6 +20,7 @@ export interface PushResult<T = unknown> {
   success: boolean;
   data?: T;
   error?: PushError;
+  localOnly?: boolean;
 }
 
 const EDGE_FUNCTION_URL =
@@ -314,8 +315,10 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
 
       const responseData = await response.json().catch(() => ({}));
 
+      const isForbidden = response.status === 403;
+
       // If backend fails with non-200 and non-403 (e.g. 500 server error, 401, 415), do NOT unsubscribe locally
-      if (!response.ok && response.status !== 403) {
+      if (!response.ok && !isForbidden) {
         return {
           success: false,
           error: {
@@ -334,8 +337,11 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
           return {
             success: false,
             error: {
-              code: 'REGISTRATION_FAILED',
-              message: 'Local browser subscription could not be removed.',
+              code: isForbidden ? 'BACKEND_REJECTION' : 'REGISTRATION_FAILED',
+              status: isForbidden ? 403 : undefined,
+              message: isForbidden
+                ? 'Server rejected request and local subscription could not be removed.'
+                : 'Local browser subscription could not be removed.',
             },
           };
         }
@@ -343,11 +349,16 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
         return {
           success: false,
           error: {
-            code: 'REGISTRATION_FAILED',
+            code: isForbidden ? 'BACKEND_REJECTION' : 'REGISTRATION_FAILED',
+            status: isForbidden ? 403 : undefined,
             message: localErr instanceof Error ? localErr.message : 'Failed to remove local push subscription.',
             details: localErr,
           },
         };
+      }
+
+      if (isForbidden) {
+        return { success: true, localOnly: true };
       }
 
       return { success: true };

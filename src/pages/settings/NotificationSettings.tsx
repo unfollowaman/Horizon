@@ -191,7 +191,9 @@ const NotificationSettings: React.FC = () => {
           setIsSubscribed(false);
           setStatusFeedback({
             type: 'info',
-            text: 'Push notifications disabled.',
+            text: result.localOnly
+              ? 'Push notifications disabled on this device.'
+              : 'Push notifications disabled.',
           });
         } else {
           setStatusFeedback({

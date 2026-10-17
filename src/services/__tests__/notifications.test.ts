@@ -551,7 +551,7 @@ describe('notifications service', () => {
       expect(mockUnsubscribe).not.toHaveBeenCalled();
     });
 
-    it('handles 403 Forbidden on unsubscribe gracefully when deactivating orphaned subscription owned by another user', async () => {
+    it('handles 403 Forbidden on unsubscribe by cleaning up local subscription and returning localOnly=true', async () => {
       const mockUnsubscribe = vi.fn().mockResolvedValue(true);
       const mockPushSubscription = {
         endpoint: 'https://fcm.googleapis.com/fcm/send/orphaned-token',
@@ -584,8 +584,45 @@ describe('notifications service', () => {
 
       const result = await unsubscribeFromPushNotifications();
 
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual({ success: true, localOnly: true });
       expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns error when 403 Forbidden is returned and local subscription removal fails', async () => {
+      const mockPushSubscription = {
+        endpoint: 'https://fcm.googleapis.com/fcm/send/orphaned-token',
+        unsubscribe: vi.fn().mockResolvedValue(false),
+      };
+
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: { getSubscription: vi.fn().mockResolvedValue(mockPushSubscription) } }) },
+        configurable: true,
+      });
+
+      window.PushManager = vi.fn() as unknown as typeof PushManager;
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        writable: true,
+        configurable: true,
+      });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+        // @ts-expect-error simplified session mock
+        data: { session: { access_token: 'mock-jwt-token' } },
+        error: null,
+      });
+
+      window.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ success: false, error: 'Forbidden' }),
+      });
+
+      const result = await unsubscribeFromPushNotifications();
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe('BACKEND_REJECTION');
+      expect(result.error?.status).toBe(403);
     });
 
     it('handles local unsubscribe() promise rejection cleanly', async () => {
