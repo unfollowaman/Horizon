@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styles from './RenderingScreen.module.css';
 import { FIT } from './renderingScreenData';
-import { BackgroundLayer } from './BackgroundLayer';
+import { AnimatedDotField } from './AnimatedDotField';
 import { PageStack } from './PageStack';
 
 export interface RenderingScreenProps {
@@ -230,12 +230,8 @@ export default function RenderingScreen({
       role="region"
       aria-label="Loading document"
     >
+      <AnimatedDotField />
       <div className={styles.stage} ref={stageRef}>
-        {/* Layer 1: Static Background */}
-        <div className={styles.layer}>
-          <BackgroundLayer />
-        </div>
-
         {/* Shared Defs SVG */}
         <svg
           width="0"

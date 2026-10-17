@@ -32,6 +32,7 @@ export const isPushSupported = (): boolean => {
   return (
     typeof window !== 'undefined' &&
     'serviceWorker' in navigator &&
+    Boolean(navigator.serviceWorker) &&
     'PushManager' in window &&
     'Notification' in window
   );
