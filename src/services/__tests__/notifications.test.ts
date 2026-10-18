@@ -383,6 +383,81 @@ describe('notifications service', () => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
+    it('handles 409 Conflict auto-recovery failure when retry re-subscription fails', async () => {
+      const oldSubJson = { endpoint: 'https://fcm.googleapis.com/fcm/send/old-token', keys: { p256dh: 'old-p256', auth: 'old-auth' } };
+
+      const mockUnsubscribe = vi.fn().mockResolvedValue(true);
+      const oldSubscription = {
+        toJSON: () => oldSubJson,
+        unsubscribe: mockUnsubscribe,
+      };
+
+      const mockPushManager = {
+        getSubscription: vi.fn().mockResolvedValue(oldSubscription),
+        subscribe: vi.fn().mockRejectedValue(new Error('Browser PushManager subscribe failed')),
+      };
+
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: mockPushManager }) },
+        configurable: true,
+      });
+
+      window.PushManager = vi.fn() as unknown as typeof PushManager;
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        writable: true,
+        configurable: true,
+      });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        // @ts-expect-error simplified session mock
+        data: { session: { access_token: 'mock-jwt-token' } },
+        error: null,
+      });
+
+      const mockFetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 409,
+        json: async () => ({ success: false, error: 'Push subscription endpoint already registered to another account' }),
+      });
+      window.fetch = mockFetch;
+
+      const result = await subscribeToPushNotifications();
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe('BACKEND_REJECTION');
+      expect(result.error?.status).toBe(409);
+      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles service worker registration promise rejection in getServiceWorkerRegistration', async () => {
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: {
+          getRegistration: vi.fn().mockRejectedValue(new Error('Service worker registration failed')),
+        },
+        configurable: true,
+      });
+
+      window.PushManager = vi.fn() as unknown as typeof PushManager;
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        writable: true,
+        configurable: true,
+      });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+        // @ts-expect-error simplified session mock
+        data: { session: { access_token: 'mock-jwt-token' } },
+        error: null,
+      });
+
+      const result = await subscribeToPushNotifications();
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe('REGISTRATION_FAILED');
+      expect(result.error?.message).toBe('Service worker registration failed');
+    });
+
     it('handles network failures during subscribe fetch', async () => {
       const mockPushSubscription = {
         toJSON: () => ({ endpoint: 'https://fcm.googleapis.com/fcm/send/test-token', keys: { p256dh: 'a', auth: 'b' } }),
