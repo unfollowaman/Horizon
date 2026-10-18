@@ -523,4 +523,52 @@ describe('NotificationSettings Component', () => {
     const statusBanner = container?.querySelector('[role="status"]');
     expect(statusBanner?.textContent).toContain('Push notifications disabled on this device.');
   });
+
+  it('resynchronizes push subscription status when user account changes in AuthContext', async () => {
+    Object.defineProperty(window, 'Notification', {
+      value: { permission: 'granted' },
+      writable: true,
+      configurable: true,
+    });
+
+    const mockGetSubscription = vi.fn().mockResolvedValue({ endpoint: 'https://push.example.com' });
+
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: {
+        getRegistration: vi.fn().mockResolvedValue({
+          pushManager: {
+            getSubscription: mockGetSubscription,
+          },
+        }),
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    expect(mockGetSubscription).toHaveBeenCalledTimes(1);
+
+    // Simulate user logging out or switching account
+    mockAuthValue.user = null as unknown as typeof mockAuthValue.user;
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <NotificationSettings />
+        </MemoryRouter>
+      );
+    });
+
+    expect(container?.textContent).toContain('Sign in required');
+
+    // Restore mock user
+    mockAuthValue.user = { id: 'test-user-123', email: 'student@example.com' };
+  });
 });
