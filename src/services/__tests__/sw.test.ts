@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import fs from 'node:fs';
-import path from 'node:path';
+import swCode from '../../../public/sw.js?raw';
 
 describe('public/sw.js Service Worker', () => {
   const listeners: Record<string, ((event: any) => any)[]> = {};
@@ -18,8 +17,12 @@ describe('public/sw.js Service Worker', () => {
       delete listeners[key];
     }
 
-    // Setup global self test double
+    // Setup global self test double with location mock
     const mockSelf = {
+      location: {
+        origin: 'http://localhost',
+        href: 'http://localhost/sw.js',
+      },
       addEventListener: (type: string, listener: (event: any) => any) => {
         if (!listeners[type]) listeners[type] = [];
         listeners[type].push(listener);
@@ -36,7 +39,6 @@ describe('public/sw.js Service Worker', () => {
     };
 
     // Evaluate sw.js in mock scope
-    const swCode = fs.readFileSync(path.resolve(process.cwd(), 'public/sw.js'), 'utf-8');
     const executeSw = new Function('self', swCode);
     executeSw(mockSelf);
   });
@@ -136,7 +138,7 @@ describe('public/sw.js Service Worker', () => {
       const mockClose = vi.fn();
 
       const matchingClient = {
-        url: '/notes/456',
+        url: 'http://localhost/notes/456',
         focus: mockFocus,
       };
       mockMatchAll.mockResolvedValueOnce([matchingClient]);
@@ -164,7 +166,7 @@ describe('public/sw.js Service Worker', () => {
       const mockClose = vi.fn();
 
       const otherClient = {
-        url: '/dashboard',
+        url: 'http://localhost/dashboard',
         focus: mockFocus,
       };
       mockMatchAll.mockResolvedValueOnce([otherClient]);
