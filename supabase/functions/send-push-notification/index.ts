@@ -231,15 +231,24 @@ export interface HandlerDeps {
   };
 }
 
+export interface FetchActiveSubscriptionsResult {
+  subscriptions: RecipientSubscription[];
+  exceededCap?: boolean;
+  totalCount?: number;
+  error?: string;
+}
+
 /**
- * Fetches all active recipient subscriptions matching Option A targeting rules using page-based range queries.
+ * Fetches active recipient subscriptions matching Option A targeting rules using page-based range queries.
+ * Detects if the total eligible audience exceeds MAX_RECIPIENT_CAP (10,000) and returns exceededCap: true
+ * to allow calling code to abort before dispatch or announcement insertion.
  */
 // deno-lint-ignore no-explicit-any
 export async function fetchAllActiveSubscriptions(
   supabaseAdmin: any,
   targetClass: string,
   targetMedium: string
-): Promise<{ subscriptions: RecipientSubscription[]; error?: string }> {
+): Promise<FetchActiveSubscriptionsResult> {
   const subscriptions: RecipientSubscription[] = [];
   let page = 0;
   let hasMore = true;
@@ -275,7 +284,27 @@ export async function fetchAllActiveSubscriptions(
       hasMore = false;
     } else {
       page++;
+      // If we have accumulated MAX_RECIPIENT_CAP rows, check if a 10,001st row exists
       if (subscriptions.length >= MAX_RECIPIENT_CAP) {
+        let checkOverflowQuery = supabaseAdmin
+          .from("push_subscriptions")
+          .select("id")
+          .eq("is_active", true);
+
+        if (targetClass !== "all" || targetMedium !== "all") {
+          checkOverflowQuery = checkOverflowQuery
+            .eq("student_class", targetClass)
+            .eq("study_medium", targetMedium);
+        }
+
+        const { data: overflowData } = await checkOverflowQuery
+          .order("created_at", { ascending: true })
+          .range(MAX_RECIPIENT_CAP, MAX_RECIPIENT_CAP);
+
+        if (overflowData && overflowData.length > 0) {
+          return { subscriptions: [], exceededCap: true };
+        }
+
         hasMore = false;
       }
     }
@@ -438,6 +467,19 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
       status: 500,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
+  }
+
+  if (fetchResult.exceededCap) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: `Target recipient count exceeds maximum supported cap of ${MAX_RECIPIENT_CAP}. Notification dispatch aborted.`,
+      }),
+      {
+        status: 400,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 
   const subscriptions = fetchResult.subscriptions;

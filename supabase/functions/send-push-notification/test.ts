@@ -11,6 +11,7 @@ import {
   fetchAllActiveSubscriptions,
   MAX_BODY_BYTES,
   PAGE_SIZE,
+  MAX_RECIPIENT_CAP,
 } from "./index.ts";
 import {
   dispatchSinglePushNotification,
@@ -1060,4 +1061,170 @@ Deno.test("Option A Targeting - General vs Restricted targeting queries across p
   await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
   assertEquals(capturedTargetClass, "");
   assertEquals(capturedTargetMedium, "");
+});
+
+// ===================================================================
+// RECIPIENT-CAP SAFETY UNIT TESTS (Final Safety Fix)
+// ===================================================================
+
+Deno.test("Recipient-Cap Safety - Audience below cap (< 10000) processed normally", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+  const subs: RecipientSubscription[] = [];
+  for (let i = 0; i < 500; i++) {
+    subs.push({
+      id: `s-${i}`,
+      user_id: `u-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: () => Promise.resolve({ data: subs, error: null }),
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.exceededCap, undefined);
+  assertEquals(res.subscriptions.length, 500);
+});
+
+Deno.test("Recipient-Cap Safety - Audience exactly at cap (10000) handled successfully without overflow", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+  const subs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    subs.push({
+      id: `s-${i}`,
+      user_id: `u-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  let pageCount = 0;
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: (from: number, _to: number) => {
+          if (from === MAX_RECIPIENT_CAP) {
+            // Check overflow query: returns empty array indicating exactly 10,000 exist
+            return Promise.resolve({ data: [], error: null });
+          }
+          pageCount++;
+          // Simulate 10 pages of 1,000 = 10,000 total
+          if (pageCount <= 10) {
+            return Promise.resolve({ data: subs, error: null });
+          }
+          return Promise.resolve({ data: [], error: null });
+        },
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.exceededCap, undefined);
+  assertEquals(res.subscriptions.length, 10000);
+});
+
+Deno.test("Recipient-Cap Safety - Audience above cap (10001+) aborted before announcement insertion or dispatch", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let announcementInsertCalled = false;
+  let fetchCalled = false;
+
+  const pageSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    pageSubs.push({ id: `s-${i}`, user_id: `u-${i}`, endpoint: `https://fcm.googleapis.com/fcm/send/${i}`, p256dh: subKeys.p256dh, auth: subKeys.auth });
+  }
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        const chain = {
+          select: () => chain,
+          eq: () => chain,
+          order: () => chain,
+          range: (from: number, _to: number) => {
+            if (from === MAX_RECIPIENT_CAP) {
+              // 10,001st row exists!
+              return Promise.resolve({ data: [{ id: "s-10001" }], error: null });
+            }
+            return Promise.resolve({ data: pageSubs, error: null });
+          },
+        };
+        return chain;
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => {
+            announcementInsertCalled = true;
+            return {
+              select: () => ({ maybeSingle: async () => ({ data: { id: "ann-should-not-exist" }, error: null }) }),
+            };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Over Cap Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 400);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Target recipient count exceeds maximum supported cap of 10000. Notification dispatch aborted.");
+  assertEquals(announcementInsertCalled, false); // Proves announcement was NOT inserted
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
+Deno.test("Pagination Error - fetchAllActiveSubscriptions handles DB error safely", async () => {
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: () => Promise.resolve({ data: null, error: new Error("DB Connection Interrupted") }),
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.subscriptions.length, 0);
+  assertEquals(res.error, "Database query error fetching active push subscriptions");
 });
