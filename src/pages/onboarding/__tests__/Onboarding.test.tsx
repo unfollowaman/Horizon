@@ -234,7 +234,75 @@ describe('Onboarding Component', () => {
     expect(mediumHeader?.textContent).toBe('Study Medium');
   });
 
-  it('stays on Step 2 and displays error message when class selection update fails', async () => {
+  it('stays on Step 2, displays error message, and leaves studentClass unchanged when class update throws exception', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpdate = vi.fn().mockReturnValue({
+      eq: vi.fn().mockRejectedValue(new Error('Network disconnected')),
+    });
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: null,
+              study_medium: null,
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+          update: mockUpdate,
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 2
+    const continueBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Continue'
+    );
+    await act(async () => {
+      continueBtn?.click();
+    });
+
+    const class10Btn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Class 10'
+    );
+
+    await act(async () => {
+      class10Btn?.click();
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith({ student_class: 'Class 10' });
+
+    // Should stay on Step 2, display alert banner, and class selection button should remain unpressed
+    expect(container?.querySelector('h2')?.textContent).toBe('Select your Class');
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Failed to save your class selection. Please try again.');
+    expect(class10Btn?.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('stays on Step 2 and displays error message when class selection update returns error', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -972,7 +1040,7 @@ describe('Onboarding Component', () => {
     });
   });
 
-  it('displays role="alert" message when handleFinish fails to update profile', async () => {
+  it('displays role="alert" message and permits successful retry when handleFinish fails then succeeds', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -982,9 +1050,14 @@ describe('Onboarding Component', () => {
       error: null,
     } as never);
 
-    const mockUpdate = vi.fn().mockReturnValue({
-      eq: vi.fn().mockResolvedValue({ error: new Error('Database update failed') }),
-    });
+    const mockUpdate = vi
+      .fn()
+      .mockReturnValueOnce({
+        eq: vi.fn().mockResolvedValue({ error: new Error('Database update failed') }),
+      })
+      .mockReturnValueOnce({
+        eq: vi.fn().mockResolvedValue({ error: null }),
+      });
 
     vi.mocked(supabase.from).mockImplementation((table: string) => {
       if (table === 'profiles') {
@@ -1030,7 +1103,7 @@ describe('Onboarding Component', () => {
       skipNotifBtn?.click();
     });
 
-    // On Step 6 (Review Profile), click Finish Setup
+    // First attempt on Step 6 (Review Profile) - fails
     const finishBtn = Array.from(container?.querySelectorAll('button') || []).find(
       (btn) => btn.textContent === 'Finish Setup'
     );
@@ -1042,9 +1115,303 @@ describe('Onboarding Component', () => {
 
     expect(mockUpdate).toHaveBeenCalledWith({ onboarding_completed: true });
 
-    // Verify alert element is rendered and navigation was stopped
+    // Verify alert banner
     const alertBanner = container?.querySelector('[role="alert"]');
     expect(alertBanner?.textContent).toBe('Unable to save profile setup. Please try again.');
     expect(mockNavigate).not.toHaveBeenCalledWith('/');
+
+    // Retry attempt - succeeds
+    await act(async () => {
+      finishBtn?.click();
+    });
+
+    expect(mockRefreshProfile).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('handles avatar storage upload error and profile URL update error without marking avatar saved', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpload = vi.fn().mockResolvedValueOnce({ error: new Error('Storage bucket full') });
+
+    vi.mocked(supabase.storage.from).mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/avatar.png' } }),
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // On Step 4 (Profile Photo)
+    expect(container?.querySelector('h2')?.textContent).toBe('Profile Photo');
+
+    const fileInput = container?.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['dummy content'], 'avatar.png', { type: 'image/png' });
+
+    await act(async () => {
+      Object.defineProperty(fileInput, 'files', {
+        value: [file],
+        writable: true,
+      });
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(mockUpload).toHaveBeenCalled();
+
+    // Verify storage upload error alert
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Failed to upload profile photo. Please try again.');
+
+    // Verify avatarUrl remains null (renders SVG placeholder, not <img>)
+    const avatarImg = container?.querySelector('img[alt="Profile"]');
+    expect(avatarImg).toBeNull();
+  });
+
+  it('resets file input value after upload attempt allowing user to retry selecting the same file', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpload = vi
+      .fn()
+      .mockResolvedValueOnce({ error: new Error('First attempt failed') })
+      .mockResolvedValueOnce({ error: null });
+
+    vi.mocked(supabase.storage.from).mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/avatar.png' } }),
+    } as never);
+
+    const mockUpdate = vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: null }),
+    });
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+          update: mockUpdate,
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    const fileInput = container?.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['dummy content'], 'avatar.png', { type: 'image/png' });
+
+    // Attempt 1 - fails
+    await act(async () => {
+      Object.defineProperty(fileInput, 'files', {
+        value: [file],
+        writable: true,
+      });
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(mockUpload).toHaveBeenCalledTimes(1);
+    expect(fileInput.value).toBe(''); // Verify file input value reset in finally block
+
+    // Attempt 2 - retry same file
+    await act(async () => {
+      Object.defineProperty(fileInput, 'files', {
+        value: [file],
+        writable: true,
+      });
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(mockUpload).toHaveBeenCalledTimes(2);
+    expect(fileInput.value).toBe('');
+    expect(container?.querySelector('img[alt="Profile"]')).not.toBeNull();
+  });
+
+  it('renders initialization error screen when fetchUserAndProfile fails and permits successful retry', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValueOnce({
+            data: null,
+            error: new Error('Failed to fetch profile'),
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Verify initialization error screen renders
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Failed to load your profile. Please refresh or try again.');
+
+    const retryBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Retry Loading Profile'
+    );
+    expect(retryBtn).not.toBeUndefined();
+
+    // Setup successful response for retry
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValueOnce({
+            data: {
+              id: 'test-user-id',
+              student_class: null,
+              study_medium: null,
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      retryBtn?.click();
+    });
+
+    // Verify onboarding loads step 1 on successful retry
+    expect(container?.querySelector('h1')?.textContent).toBe('Welcome to Horizon');
+  });
+
+  it('redirects unauthenticated user to /login and user with completed onboarding to /', async () => {
+    // Unauthenticated test
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: { session: null },
+      error: null,
+    } as never);
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/login');
+
+    mockNavigate.mockClear();
+
+    // Already completed onboarding test
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: { user: { id: 'test-user-id' } },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValueOnce({
+            data: {
+              id: 'test-user-id',
+              onboarding_completed: true,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });
