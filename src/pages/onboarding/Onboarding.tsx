@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import type { Profile } from '../../types';
@@ -20,22 +20,40 @@ const Onboarding: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [finishError, setFinishError] = useState<string | null>(null);
+
+  const isMountedRef = useRef(true);
+  const subscribingRef = useRef(false);
+  const notifTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (notifTimerRef.current) {
+        clearTimeout(notifTimerRef.current);
+        notifTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        navigate('/login');
+        if (isMountedRef.current) navigate('/login');
         return;
       }
 
-      setUserId(session.user.id);
+      if (isMountedRef.current) setUserId(session.user.id);
 
       const { data: profile } = await supabase
         .from('profiles')
         .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
         .eq('id', session.user.id)
         .single();
+
+      if (!isMountedRef.current) return;
 
       if (profile) {
         if (profile.onboarding_completed) {
@@ -57,25 +75,40 @@ const Onboarding: React.FC = () => {
     fetchUserAndProfile();
   }, [navigate]);
 
-  const updateProfile = async (updates: Partial<Profile>) => {
-    if (!userId) return;
+  const updateProfile = async (updates: Partial<Profile>): Promise<{ success: boolean; error?: unknown }> => {
+    if (!userId) return { success: false, error: 'User ID missing' };
     setSaving(true);
-    await supabase.from('profiles').update(updates).eq('id', userId);
-    setSaving(false);
+    setFinishError(null);
+    const { error } = await supabase.from('profiles').update(updates).eq('id', userId);
+    if (error) {
+      console.error('Error updating profile choice:', error);
+      if (isMountedRef.current) setSaving(false);
+      return { success: false, error };
+    }
+    if (isMountedRef.current) setSaving(false);
+    return { success: true };
   };
 
   const handleSelectClass = async (cls: string) => {
     if (saving) return;
     setStudentClass(cls);
-    await updateProfile({ student_class: cls });
-    setStep(3);
+    const res = await updateProfile({ student_class: cls });
+    if (res.success) {
+      setStep(3);
+    } else if (isMountedRef.current) {
+      setFinishError('Failed to save your class selection. Please try again.');
+    }
   };
 
   const handleSelectMedium = async (medium: string) => {
     if (saving) return;
     setStudyMedium(medium);
-    await updateProfile({ study_medium: medium });
-    setStep(4);
+    const res = await updateProfile({ study_medium: medium });
+    if (res.success) {
+      setStep(4);
+    } else if (isMountedRef.current) {
+      setFinishError('Failed to save your study medium. Please try again.');
+    }
   };
 
   const [subscribing, setSubscribing] = useState(false);
@@ -93,21 +126,33 @@ const Onboarding: React.FC = () => {
   };
 
   const handleEnableNotifications = async () => {
+    if (subscribingRef.current) return;
+    subscribingRef.current = true;
     setSubscribing(true);
     setNotifFeedback(null);
     try {
       const res = await subscribeToPushNotifications();
+      if (!isMountedRef.current) return;
+
       if (res.success) {
         setNotifFeedback({
           type: 'success',
           text: 'Push notifications enabled successfully! You will receive real-time alerts for your class.',
         });
-        setTimeout(() => {
-          setSubscribing(false);
-          setStep(6);
+        if (notifTimerRef.current) clearTimeout(notifTimerRef.current);
+        notifTimerRef.current = setTimeout(() => {
+          notifTimerRef.current = null;
+          if (isMountedRef.current) {
+            subscribingRef.current = false;
+            setSubscribing(false);
+            setStep(6);
+          }
         }, 1200);
         return;
       }
+
+      subscribingRef.current = false;
+      if (isMountedRef.current) setSubscribing(false);
 
       // Handle specific error codes returned by the service without throwing
       if (res.error?.code === 'PERMISSION_DENIED') {
@@ -127,12 +172,14 @@ const Onboarding: React.FC = () => {
         });
       }
     } catch (_err) {
-      setNotifFeedback({
-        type: 'error',
-        text: 'Unable to enable notifications right now. You can manage alerts anytime in Settings.',
-      });
-    } finally {
-      setSubscribing(false);
+      subscribingRef.current = false;
+      if (isMountedRef.current) {
+        setSubscribing(false);
+        setNotifFeedback({
+          type: 'error',
+          text: 'Unable to enable notifications right now. You can manage alerts anytime in Settings.',
+        });
+      }
     }
   };
 
@@ -143,10 +190,20 @@ const Onboarding: React.FC = () => {
   const handleFinish = async () => {
     if (!userId) return;
     setSaving(true);
-    await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', userId);
+    setFinishError(null);
+    const { error } = await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', userId);
+    if (error) {
+      if (isMountedRef.current) {
+        setFinishError('Unable to save profile setup. Please try again.');
+        setSaving(false);
+      }
+      return;
+    }
     await refreshProfile();
-    setSaving(false);
-    navigate('/');
+    if (isMountedRef.current) {
+      setSaving(false);
+      navigate('/');
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,10 +226,14 @@ const Onboarding: React.FC = () => {
 
     const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
 
-    setAvatarUrl(data.publicUrl);
-    await updateProfile({ avatar_url: data.publicUrl });
+    const updateRes = await updateProfile({ avatar_url: data.publicUrl });
+    if (updateRes.success) {
+      setAvatarUrl(data.publicUrl);
+    } else if (isMountedRef.current) {
+      setFinishError('Photo uploaded but failed to update profile. Please try again.');
+    }
 
-    setUploading(false);
+    if (isMountedRef.current) setUploading(false);
   };
 
   if (loading) {
@@ -254,6 +315,14 @@ const Onboarding: React.FC = () => {
             {step === 2 && (
               <div className="space-y-3 sm:space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Select your Class</h2>
+                {finishError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                  >
+                    {finishError}
+                  </div>
+                )}
                 <div className="grid gap-2">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
                     <button
@@ -278,6 +347,14 @@ const Onboarding: React.FC = () => {
             {step === 3 && (
               <div className="space-y-3 sm:space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Study Medium</h2>
+                {finishError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                  >
+                    {finishError}
+                  </div>
+                )}
                 <div className="grid gap-2">
                   {['English', 'Hindi'].map((medium) => (
                     <button
@@ -303,6 +380,15 @@ const Onboarding: React.FC = () => {
               <div className="space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Profile Photo</h2>
                 <p className="text-center text-gray-500 text-sm mb-4">Optional - customize your profile</p>
+
+                {finishError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                  >
+                    {finishError}
+                  </div>
+                )}
 
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
@@ -397,6 +483,15 @@ const Onboarding: React.FC = () => {
             {step === 6 && (
               <div className="space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Review Profile</h2>
+
+                {finishError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                  >
+                    {finishError}
+                  </div>
+                )}
 
                 <div className="bg-[var(--bg-raised)] p-4 sm:p-5 rounded-2xl flex flex-col items-center gap-3 neu-recessed">
                   {avatarUrl ? (

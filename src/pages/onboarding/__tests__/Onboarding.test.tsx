@@ -234,6 +234,135 @@ describe('Onboarding Component', () => {
     expect(mediumHeader?.textContent).toBe('Study Medium');
   });
 
+  it('stays on Step 2 and displays error message when class selection update fails', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpdate = vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: new Error('Class update error') }),
+    });
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: null,
+              study_medium: null,
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+          update: mockUpdate,
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 2
+    const continueBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Continue'
+    );
+    await act(async () => {
+      continueBtn?.click();
+    });
+
+    const class10Btn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Class 10'
+    );
+
+    await act(async () => {
+      class10Btn?.click();
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith({ student_class: 'Class 10' });
+
+    // Should stay on Step 2 and render alert banner
+    expect(container?.querySelector('h2')?.textContent).toBe('Select your Class');
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Failed to save your class selection. Please try again.');
+  });
+
+  it('stays on Step 3 and displays error message when medium selection update fails', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpdate = vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: new Error('Medium update error') }),
+    });
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: null,
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+          update: mockUpdate,
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Starts on Step 3 (Medium Selection)
+    expect(container?.querySelector('h2')?.textContent).toBe('Study Medium');
+
+    const englishBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'English'
+    );
+
+    await act(async () => {
+      englishBtn?.click();
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith({ study_medium: 'English' });
+
+    // Should stay on Step 3 and render alert banner
+    expect(container?.querySelector('h2')?.textContent).toBe('Study Medium');
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Failed to save your study medium. Please try again.');
+  });
+
   it('advances immediately on medium selection and handles back button navigation', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
@@ -394,6 +523,83 @@ describe('Onboarding Component', () => {
     expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
   });
 
+  it('handles successful subscription with success feedback and progression to Step 6', async () => {
+    vi.useFakeTimers();
+
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    const subscribeSpy = vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockResolvedValueOnce({
+      success: true,
+      data: { endpoint: 'https://fcm.googleapis.com/fcm/send/test-endpoint' },
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Click Enable Notifications
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    await act(async () => {
+      enableBtn?.click();
+    });
+
+    expect(subscribeSpy).toHaveBeenCalledTimes(1);
+
+    // Verify success status banner
+    const feedbackBanner = container?.querySelector('[role="status"]');
+    expect(feedbackBanner?.textContent).toContain('Push notifications enabled successfully!');
+
+    // Fast forward timer to complete auto-advancement to Step 6
+    await act(async () => {
+      vi.advanceTimersByTime(1300);
+    });
+
+    expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
+
+    vi.useRealTimers();
+  });
+
   it('handles permission denied returned by subscribeToPushNotifications without blocking onboarding', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
@@ -475,6 +681,148 @@ describe('Onboarding Component', () => {
     expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
   });
 
+  it('handles UNSUPPORTED_BROWSER returned by subscribeToPushNotifications gracefully', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockResolvedValueOnce({
+      success: false,
+      error: {
+        code: 'UNSUPPORTED_BROWSER',
+        message: 'Push notifications are not supported in this browser.',
+      },
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Click Enable Notifications
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    await act(async () => {
+      enableBtn?.click();
+    });
+
+    const feedbackBanner = container?.querySelector('[role="status"]');
+    expect(feedbackBanner?.textContent).toContain('Push notifications are not supported in this browser.');
+
+    const continueBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Continue to Review'
+    );
+    await act(async () => {
+      continueBtn?.click();
+    });
+
+    expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
+  });
+
+  it('handles generic returned failure without displaying success banner', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockResolvedValueOnce({
+      success: false,
+      error: {
+        code: 'BACKEND_REJECTION',
+        message: 'Server responded with HTTP 500',
+      },
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Click Enable Notifications
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    await act(async () => {
+      enableBtn?.click();
+    });
+
+    const feedbackBanner = container?.querySelector('[role="status"]');
+    expect(feedbackBanner?.textContent).not.toContain('Push notifications enabled successfully!');
+    expect(feedbackBanner?.textContent).toContain('Unable to enable notifications right now. You can manage alerts anytime in Settings.');
+  });
+
   it('handles thrown error during subscribeToPushNotifications gracefully without blocking onboarding', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
@@ -546,5 +894,157 @@ describe('Onboarding Component', () => {
     });
 
     expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
+  });
+
+  it('suppresses duplicate click while subscription is pending using in-flight guard', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    let resolveSubscribe: (val: unknown) => void = () => {};
+    const pendingPromise = new Promise((resolve) => {
+      resolveSubscribe = resolve;
+    });
+
+    const subscribeSpy = vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockImplementation(
+      () => pendingPromise as ReturnType<typeof notificationsService.subscribeToPushNotifications>
+    );
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // First click
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    act(() => {
+      enableBtn?.click();
+    });
+
+    // Second rapid click while request is pending
+    act(() => {
+      enableBtn?.click();
+    });
+
+    expect(subscribeSpy).toHaveBeenCalledTimes(1);
+
+    // Resolve the pending promise safely
+    await act(async () => {
+      resolveSubscribe({ success: false, error: { code: 'NETWORK_ERROR', message: 'Failed' } });
+    });
+  });
+
+  it('displays role="alert" message when handleFinish fails to update profile', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    const mockUpdate = vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: new Error('Database update failed') }),
+    });
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+          update: mockUpdate,
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Skip Step 4 -> Step 5 -> Step 6
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    const skipNotifBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip for Now'
+    );
+    await act(async () => {
+      skipNotifBtn?.click();
+    });
+
+    // On Step 6 (Review Profile), click Finish Setup
+    const finishBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Finish Setup'
+    );
+    expect(finishBtn).not.toBeUndefined();
+
+    await act(async () => {
+      finishBtn?.click();
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith({ onboarding_completed: true });
+
+    // Verify alert element is rendered and navigation was stopped
+    const alertBanner = container?.querySelector('[role="alert"]');
+    expect(alertBanner?.textContent).toBe('Unable to save profile setup. Please try again.');
+    expect(mockNavigate).not.toHaveBeenCalledWith('/');
   });
 });
