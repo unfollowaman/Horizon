@@ -601,4 +601,6 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
   );
 }
 
-Deno.serve((req) => handleRequest(req));
+if (import.meta.main) {
+  Deno.serve((req) => handleRequest(req));
+}

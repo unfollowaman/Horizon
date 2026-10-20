@@ -18,6 +18,8 @@ import {
   batchDispatchPushNotifications,
   RecipientSubscription,
 } from "./dispatcher.ts";
+import { decryptWebPushPayload } from "./vapid.ts";
+import { handleRequest as handleSubscribeRequest } from "../subscribe-push/index.ts";
 
 // Helper to generate a valid test P-256 key pair
 async function generateTestVapidKeyPair(): Promise<{ publicKey: string; privateKey: string }> {
@@ -1298,4 +1300,269 @@ Deno.test("Pagination Error - fetchAllActiveSubscriptions handles DB error safel
   const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
   assertEquals(res.subscriptions.length, 0);
   assertEquals(res.error, "Database query error fetching active push subscriptions");
+});
+
+// ===================================================================
+// PHASE 4 UNIT 4 INTEGRATION TESTS (P1 & P2)
+// ===================================================================
+
+Deno.test("Phase 4 Unit 4 (P1) - Mocked End-to-End Subscription Registration, Dispatch, & Payload Decryption Verification", async () => {
+  // 1. Generate browser-style ECDH client keys and auth secret
+  const clientEcdhPair = await crypto.subtle.generateKey(
+    { name: "ECDH", namedCurve: "P-256" },
+    true,
+    ["deriveBits"]
+  );
+  const clientPubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", clientEcdhPair.publicKey));
+  const clientAuthSecret = crypto.getRandomValues(new Uint8Array(16));
+
+  function b64url(buf: Uint8Array): string {
+    let binary = "";
+    for (let i = 0; i < buf.byteLength; i++) {
+      binary += String.fromCharCode(buf[i]);
+    }
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  }
+
+  const p256dhBase64 = b64url(clientPubRaw);
+  const authBase64 = b64url(clientAuthSecret);
+  const endpointUrl = "https://fcm.googleapis.com/fcm/send/e2e-student-endpoint-101";
+
+  // 2. Register subscription using subscribe-push handler
+  const mockStudentUser = { id: "student-user-101" };
+  const mockStudentProfile = {
+    id: "student-user-101",
+    student_class: "10",
+    study_medium: "english",
+    onboarding_completed: true,
+  };
+
+  // deno-lint-ignore no-explicit-any
+  let mockSubscriptionRow: any = null;
+
+  const mockSubscribeUserClient = {
+    auth: {
+      getUser: async () => ({ data: { user: mockStudentUser }, error: null }),
+    },
+  };
+
+  const mockSubscribeAdminClient = {
+    from: (table: string) => {
+      if (table === "profiles") {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data: mockStudentProfile, error: null }),
+            }),
+          }),
+        };
+      }
+      if (table === "push_subscriptions") {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data: null, error: null }),
+            }),
+          }),
+          insert: (data: Record<string, unknown>) => {
+            mockSubscriptionRow = { ...data, id: "sub-row-101" };
+            return { error: null };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const subReq = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer student-bearer-token",
+    },
+    body: JSON.stringify({
+      subscription: {
+        endpoint: endpointUrl,
+        keys: { p256dh: p256dhBase64, auth: authBase64 },
+      },
+    }),
+  });
+
+  const subRes = await handleSubscribeRequest(subReq, {
+    supabaseUserClient: mockSubscribeUserClient,
+    supabaseAdminClient: mockSubscribeAdminClient,
+  });
+
+  assertEquals(subRes.status, 201);
+  const subResJson = await subRes.json();
+  assertEquals(subResJson.success, true);
+
+  // 3. Verify resulting subscription row matches recipient selection criteria
+  assertEquals(mockSubscriptionRow !== null, true);
+  assertEquals(mockSubscriptionRow?.user_id, "student-user-101");
+  assertEquals(mockSubscriptionRow?.endpoint, endpointUrl);
+  assertEquals(mockSubscriptionRow?.p256dh, p256dhBase64);
+  assertEquals(mockSubscriptionRow?.auth, authBase64);
+  assertEquals(mockSubscriptionRow?.student_class, "10");
+  assertEquals(mockSubscriptionRow?.study_medium, "english");
+  assertEquals(mockSubscriptionRow?.is_active, true);
+
+  // 4. Invoke send-push-notification handler with server VAPID keys and admin auth
+  const serverVapid = await generateTestVapidKeyPair();
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+
+  let capturedEncryptedBody: Uint8Array | null = null;
+  let capturedQueryFilters: Record<string, string> = {};
+
+  const mockSendUserClient = {
+    auth: {
+      getUser: async () => ({ data: { user: mockAdminUser }, error: null }),
+    },
+  };
+
+  const mockSendAdminClient = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        const chain = {
+          select: () => chain,
+          eq: (col: string, val: unknown) => {
+            capturedQueryFilters[col] = String(val);
+            return chain;
+          },
+          order: () => chain,
+          range: () =>
+            Promise.resolve({
+              data: [
+                {
+                  id: mockSubscriptionRow?.id,
+                  user_id: mockSubscriptionRow?.user_id,
+                  endpoint: mockSubscriptionRow?.endpoint,
+                  p256dh: mockSubscriptionRow?.p256dh,
+                  auth: mockSubscriptionRow?.auth,
+                },
+              ],
+              error: null,
+            }),
+        };
+        return chain;
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: { id: "ann-e2e-101" }, error: null }),
+            }),
+          }),
+          update: () => ({
+            eq: () => ({ error: null }),
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockGatewayFetch = async (_url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    if (init?.body instanceof Uint8Array) {
+      capturedEncryptedBody = init.body;
+    } else if (typeof init?.body === "string") {
+      capturedEncryptedBody = new TextEncoder().encode(init.body);
+    }
+    return new Response(null, { status: 201 });
+  };
+
+  const sendReq = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer admin-bearer-token",
+    },
+    body: JSON.stringify({
+      title: "Class 10 Science Alert",
+      message: "New chapter notes available now",
+      target_class: "10",
+      target_medium: "english",
+    }),
+  });
+
+  const sendRes = await handleRequest(sendReq, {
+    supabaseUserClient: mockSendUserClient,
+    supabaseAdminClient: mockSendAdminClient,
+    fetchFn: mockGatewayFetch as unknown as typeof fetch,
+    vapidKeys: serverVapid,
+  });
+
+  assertEquals(sendRes.status, 200);
+  const sendResJson = await sendRes.json();
+  assertEquals(sendResJson.success, true);
+  assertEquals(sendResJson.recipient_count, 1);
+  assertEquals(sendResJson.total_successful, 1);
+
+  // 5. Capture & Decrypt payload using test helper
+  assertEquals(capturedEncryptedBody !== null, true);
+
+  const decryptedBytes = await decryptWebPushPayload({
+    encryptedBody: capturedEncryptedBody!,
+    clientPrivateKey: clientEcdhPair.privateKey,
+    clientAuth: clientAuthSecret,
+  });
+
+  const payloadText = new TextDecoder().decode(decryptedBytes);
+  const payloadJson = JSON.parse(payloadText);
+
+  // 6. Validate exact payload contract expected by public/sw.js
+  assertEquals(payloadJson.title, "Class 10 Science Alert");
+  assertEquals(payloadJson.body, "New chapter notes available now");
+  assertEquals(payloadJson.icon, "/assets/favicon/web-app-manifest-192x192.png");
+  assertEquals(payloadJson.badge, "/assets/favicon/web-app-manifest-192x192.png");
+  assertEquals(payloadJson.data?.url, "/");
+
+  // 7. Assert expected subscription and audience-targeting query filters were applied
+  assertEquals(capturedQueryFilters["is_active"], "true");
+  assertEquals(capturedQueryFilters["student_class"], "10");
+  assertEquals(capturedQueryFilters["study_medium"], "english");
+});
+
+Deno.test("Phase 4 Unit 4 (P2) - Recipient Endpoint De-duplication Verification", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  // Provide 3 recipient subscriptions where 2 share the exact same endpoint
+  const duplicateEndpoint = "https://fcm.googleapis.com/fcm/send/shared-device-endpoint-99";
+  const uniqueEndpoint = "https://updates.push.services.mozilla.com/wpush/v2/unique-device-endpoint-88";
+
+  const mockSubs: RecipientSubscription[] = [
+    { id: "sub-dup-1", user_id: "user-1", endpoint: duplicateEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-dup-2", user_id: "user-2", endpoint: duplicateEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-uniq-3", user_id: "user-3", endpoint: uniqueEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  let dispatchCallCount = 0;
+  const dispatchedUrls: string[] = [];
+
+  const mockFetch = async (url: string | URL | Request): Promise<Response> => {
+    dispatchCallCount++;
+    const urlStr = typeof url === "string" ? url : url.toString();
+    dispatchedUrls.push(urlStr);
+    return new Response(null, { status: 201 });
+  };
+
+  const batchRes = await batchDispatchPushNotifications(
+    mockSubs,
+    { title: "Deduplication Test", message: "Single delivery per endpoint" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch as unknown as typeof fetch,
+    }
+  );
+
+  // Assert exactly 2 gateway dispatches occurred (1 per unique endpoint)
+  assertEquals(dispatchCallCount, 2);
+  assertEquals(dispatchedUrls.length, 2);
+  assertEquals(new Set(dispatchedUrls), new Set([duplicateEndpoint, uniqueEndpoint]));
+  assertEquals(batchRes.total, 2);
+  assertEquals(batchRes.successful, 2);
+  assertEquals(batchRes.failed, 0);
+  assertEquals(batchRes.deactivatedSubscriptionIds.length, 0);
 });
