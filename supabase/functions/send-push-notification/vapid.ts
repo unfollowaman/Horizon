@@ -4,8 +4,16 @@
  * using native Web Crypto APIs in Deno.
  */
 
-// Maximum recommended Web Push payload size is 4096 bytes (RFC 8188 default record size)
-export const MAX_PAYLOAD_BYTES = 4096;
+// Exact Protocol and HTTP Body Framing Constants
+export const HEADER_SIZE = 86; // RFC 8188 header: 16B salt + 4B rs + 1B idlen + 65B sender pubkey
+export const GCM_TAG_SIZE = 16; // AES-GCM 128-bit authentication tag
+export const DELIMITER_SIZE = 1; // RFC 8188 end-of-record delimiter (0x02)
+export const DEFAULT_RECORD_SIZE = 4096; // RFC 8188 default record size
+export const MAX_PAYLOAD_BODY_BYTES = 4096; // Maximum encrypted HTTP body size
+
+// Maximum plaintext payload size for a single record fitting within MAX_PAYLOAD_BODY_BYTES (3,993 bytes)
+export const MAX_PLAINTEXT_BYTES =
+  MAX_PAYLOAD_BODY_BYTES - HEADER_SIZE - GCM_TAG_SIZE - DELIMITER_SIZE;
 
 /**
  * Encodes a Uint8Array into a Base64URL string (RFC 4648 §5).
@@ -67,11 +75,13 @@ const P256_SPKI_PREFIX = new Uint8Array([
 ]);
 
 /**
- * Imports a 32-byte uncompressed Base64URL VAPID private key into a CryptoKey for signing.
+ * Imports a Base64URL VAPID private key into a CryptoKey for signing or derivation.
+ * Supports both 32-byte raw uncompressed private scalars and full PKCS#8 DER bytes.
  */
 export async function importVapidPrivateKey(
   privateKeyBase64Url: string,
-  keyUsage: KeyUsage = "sign"
+  keyUsage: KeyUsage = "sign",
+  algorithmName: "ECDSA" | "ECDH" = "ECDSA"
 ): Promise<CryptoKey> {
   let privateKeyBytes: Uint8Array;
   try {
@@ -80,19 +90,27 @@ export async function importVapidPrivateKey(
     throw new Error("Invalid VAPID private key: Malformed Base64URL string");
   }
 
-  if (privateKeyBytes.length !== 32) {
-    throw new Error(`Invalid VAPID private key length: Expected 32 bytes, got ${privateKeyBytes.length}`);
-  }
+  let pkcs8Der: Uint8Array;
 
-  const pkcs8Der = new Uint8Array(P256_PKCS8_PREFIX.length + 32);
-  pkcs8Der.set(P256_PKCS8_PREFIX, 0);
-  pkcs8Der.set(privateKeyBytes, P256_PKCS8_PREFIX.length);
+  if (privateKeyBytes.length === 32) {
+    // 32-byte raw scalar: wrap with standard P-256 PKCS#8 header
+    pkcs8Der = new Uint8Array(P256_PKCS8_PREFIX.length + 32);
+    pkcs8Der.set(P256_PKCS8_PREFIX, 0);
+    pkcs8Der.set(privateKeyBytes, P256_PKCS8_PREFIX.length);
+  } else if (privateKeyBytes.length >= 64 && privateKeyBytes.length <= 256) {
+    // Full PKCS#8 DER structure
+    pkcs8Der = privateKeyBytes;
+  } else {
+    throw new Error(
+      `Invalid VAPID private key length: Expected 32 raw bytes or PKCS#8 DER bytes, got ${privateKeyBytes.length}`
+    );
+  }
 
   try {
     return await crypto.subtle.importKey(
       "pkcs8",
       pkcs8Der as unknown as BufferSource,
-      { name: "ECDSA", namedCurve: "P-256" },
+      { name: algorithmName, namedCurve: "P-256" },
       false,
       [keyUsage]
     );
@@ -167,7 +185,7 @@ export async function validateVapidKeys(
   let publicKey: CryptoKey;
 
   try {
-    privateKey = await importVapidPrivateKey(privateKeyBase64Url, "sign");
+    privateKey = await importVapidPrivateKey(privateKeyBase64Url, "sign", "ECDSA");
   } catch (e) {
     return { valid: false, error: e instanceof Error ? e.message : "Invalid VAPID private key" };
   }
@@ -203,11 +221,16 @@ export async function validateVapidKeys(
 }
 
 /**
- * Validates a Web Push endpoint URL and extracts its HTTPS origin as the VAPID audience.
+ * Validates a Web Push endpoint URL against Horizon's push provider allowlist
+ * and extracts its HTTPS origin as the VAPID audience.
  */
 export function extractVapidAudience(endpoint: string): { valid: boolean; audience?: string; error?: string } {
   if (typeof endpoint !== "string" || !endpoint.trim()) {
     return { valid: false, error: "Endpoint must be a non-empty string" };
+  }
+
+  if (endpoint.length > 2048) {
+    return { valid: false, error: "Push endpoint URL exceeds maximum length" };
   }
 
   let url: URL;
@@ -219,6 +242,50 @@ export function extractVapidAudience(endpoint: string): { valid: boolean; audien
 
   if (url.protocol !== "https:") {
     return { valid: false, error: "Endpoint URL protocol must be HTTPS" };
+  }
+
+  if (url.username || url.password) {
+    return { valid: false, error: "Push endpoint must not contain user credentials" };
+  }
+
+  if (url.hash) {
+    return { valid: false, error: "Push endpoint must not contain URL fragments" };
+  }
+
+  if (url.port && url.port !== "443") {
+    return { valid: false, error: "Push endpoint must use standard HTTPS port (443)" };
+  }
+
+  const hostname = url.hostname.toLowerCase();
+
+  // Reject IP addresses and localhost
+  const isIpOrLocal =
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) ||
+    /^\[?[a-fA-F0-9:]+\]?$/.test(hostname);
+
+  if (isIpOrLocal) {
+    return { valid: false, error: "Push endpoint host is not allowed" };
+  }
+
+  // Approved hostnames and domain suffix rules
+  const isExactMatch =
+    hostname === "fcm.googleapis.com" ||
+    hostname === "updates.push.services.mozilla.com";
+
+  const isApplePush =
+    hostname === "push.apple.com" ||
+    hostname.endsWith(".push.apple.com") ||
+    /^([a-z0-9-]+-)?push\.apple\.com$/.test(hostname);
+
+  const isAllowedSuffix =
+    isApplePush ||
+    hostname === "notify.windows.com" || hostname.endsWith(".notify.windows.com") ||
+    hostname === "push.opera.com" || hostname.endsWith(".push.opera.com");
+
+  if (!isExactMatch && !isAllowedSuffix) {
+    return { valid: false, error: "Push endpoint host is not in the approved allowlist" };
   }
 
   return { valid: true, audience: url.origin };
@@ -249,15 +316,15 @@ export async function createVapidJwt(options: CreateVapidJwtOptions): Promise<st
     throw new Error("VAPID subscriber claim (sub) must begin with 'mailto:' or 'https://'");
   }
 
-  const privateKey = await importVapidPrivateKey(options.privateKeyBase64Url, "sign");
+  const privateKey = await importVapidPrivateKey(options.privateKeyBase64Url, "sign", "ECDSA");
 
   const expSec = options.expirationSeconds ?? 43200; // 12 hours default
-  if (expSec <= 0 || expSec > 86400) {
-    throw new Error("VAPID JWT expirationSeconds must be between 1 and 86400 seconds (max 24 hours)");
+  if (!Number.isFinite(expSec) || expSec <= 0 || expSec > 86400) {
+    throw new Error("VAPID JWT expirationSeconds must be a finite number between 1 and 86400 seconds (max 24 hours)");
   }
 
   const now = Math.floor(Date.now() / 1000);
-  const exp = now + expSec;
+  const exp = now + Math.floor(expSec);
 
   const header = {
     typ: "JWT",
@@ -319,6 +386,19 @@ export async function verifyVapidJwt(
     return { valid: false, error: `Unsupported JWT algorithm: Expected 'ES256', got '${headerObj.alg}'` };
   }
 
+  // Validate presence and types of required VAPID JWT claims
+  if (typeof payloadObj.aud !== "string" || !payloadObj.aud.trim()) {
+    return { valid: false, error: "Missing or invalid 'aud' claim in VAPID JWT" };
+  }
+
+  if (typeof payloadObj.sub !== "string" || !payloadObj.sub.trim()) {
+    return { valid: false, error: "Missing or invalid 'sub' claim in VAPID JWT" };
+  }
+
+  if (typeof payloadObj.exp !== "number" || !Number.isFinite(payloadObj.exp)) {
+    return { valid: false, error: "Missing or invalid 'exp' claim in VAPID JWT" };
+  }
+
   let publicKey: CryptoKey;
   try {
     publicKey = await importVapidPublicKey(publicKeyBase64Url, "ECDSA", ["verify"]);
@@ -339,7 +419,7 @@ export async function verifyVapidJwt(
   }
 
   const now = Math.floor(Date.now() / 1000);
-  if (typeof payloadObj.exp === "number" && payloadObj.exp < now) {
+  if (payloadObj.exp < now) {
     return { valid: false, error: "VAPID JWT has expired" };
   }
 
@@ -403,8 +483,23 @@ export async function encryptWebPushPayload(
     throw new Error("Invalid payload: Must be a string or Uint8Array");
   }
 
-  if (plaintextBytes.length > MAX_PAYLOAD_BYTES) {
-    throw new Error(`Payload exceeds maximum permitted size of ${MAX_PAYLOAD_BYTES} bytes`);
+  const rs = options.recordSize ?? DEFAULT_RECORD_SIZE;
+  if (!Number.isFinite(rs) || rs < 18 || rs > 65536) {
+    throw new Error("Invalid recordSize: Must be an integer between 18 and 65536 bytes");
+  }
+
+  // Calculate maximum plaintext size for a single record given record size rs
+  // Record overhead per record = 1 byte delimiter (0x02) + 16 bytes GCM auth tag
+  const maxPlaintextForRecord = rs - GCM_TAG_SIZE - DELIMITER_SIZE;
+
+  // Enforce both record size boundary and global HTTP body size limit
+  if (plaintextBytes.length > maxPlaintextForRecord || plaintextBytes.length > MAX_PLAINTEXT_BYTES) {
+    throw new Error(
+      `Payload plaintext length (${plaintextBytes.length} bytes) exceeds maximum permitted size of ${Math.min(
+        maxPlaintextForRecord,
+        MAX_PLAINTEXT_BYTES
+      )} bytes`
+    );
   }
 
   // 1. Decode client subscription encryption keys
@@ -471,7 +566,13 @@ export async function encryptWebPushPayload(
   ikmInfo.set(clientPubRaw, infoPrefix.length);
   ikmInfo.set(senderPubRaw, infoPrefix.length + clientPubRaw.length);
 
-  const ecdhHkdfKey = await crypto.subtle.importKey("raw", ecdhSecret as unknown as BufferSource, { name: "HKDF" }, false, ["deriveBits"]);
+  const ecdhHkdfKey = await crypto.subtle.importKey(
+    "raw",
+    ecdhSecret as unknown as BufferSource,
+    { name: "HKDF" },
+    false,
+    ["deriveBits"]
+  );
   const ikm = new Uint8Array(
     await crypto.subtle.deriveBits(
       { name: "HKDF", hash: "SHA-256", salt: clientAuth as unknown as BufferSource, info: ikmInfo as unknown as BufferSource },
@@ -481,7 +582,13 @@ export async function encryptWebPushPayload(
   );
 
   // 6. RFC 8188 §2 Derive CEK (Content-Encryption Key) and Nonce
-  const prkKey = await crypto.subtle.importKey("raw", ikm as unknown as BufferSource, { name: "HKDF" }, false, ["deriveBits", "deriveKey"]);
+  const prkKey = await crypto.subtle.importKey(
+    "raw",
+    ikm as unknown as BufferSource,
+    { name: "HKDF" },
+    false,
+    ["deriveBits", "deriveKey"]
+  );
   const cekInfo = new TextEncoder().encode("Content-Encoding: aes128gcm\0");
   const nonceInfo = new TextEncoder().encode("Content-Encoding: nonce\0");
 
@@ -514,9 +621,8 @@ export async function encryptWebPushPayload(
 
   // 8. Construct RFC 8188 Header
   // [16B salt] [4B rs] [1B idlen] [65B sender public key] [ciphertext]
-  const rs = options.recordSize ?? 4096;
   const keyidLen = senderPubRaw.length; // 65
-  const header = new Uint8Array(16 + 4 + 1 + keyidLen);
+  const header = new Uint8Array(HEADER_SIZE);
 
   header.set(salt, 0);
   const view = new DataView(header.buffer, header.byteOffset, header.byteLength);
@@ -543,7 +649,7 @@ export async function decryptWebPushPayload(options: {
   clientAuth: Uint8Array;
 }): Promise<Uint8Array> {
   const body = options.encryptedBody;
-  if (body.length < 86) { // 16 + 4 + 1 + 65 = 86 minimum header size + ciphertext
+  if (body.length < HEADER_SIZE) {
     throw new Error("Invalid encrypted message length: Header too short");
   }
 
@@ -557,7 +663,7 @@ export async function decryptWebPushPayload(options: {
   }
 
   const senderPubRaw = body.subarray(21, 21 + 65);
-  const ciphertext = body.subarray(21 + 65);
+  const ciphertext = body.subarray(HEADER_SIZE);
 
   // Client public key
   const clientKeyPairJwk = await crypto.subtle.exportKey("jwk", options.clientPrivateKey);
@@ -597,7 +703,13 @@ export async function decryptWebPushPayload(options: {
   ikmInfo.set(clientPubRaw, infoPrefix.length);
   ikmInfo.set(senderPubRaw, infoPrefix.length + clientPubRaw.length);
 
-  const ecdhHkdfKey = await crypto.subtle.importKey("raw", ecdhSecret as unknown as BufferSource, { name: "HKDF" }, false, ["deriveBits"]);
+  const ecdhHkdfKey = await crypto.subtle.importKey(
+    "raw",
+    ecdhSecret as unknown as BufferSource,
+    { name: "HKDF" },
+    false,
+    ["deriveBits"]
+  );
   const ikm = new Uint8Array(
     await crypto.subtle.deriveBits(
       { name: "HKDF", hash: "SHA-256", salt: options.clientAuth as unknown as BufferSource, info: ikmInfo as unknown as BufferSource },
@@ -607,7 +719,13 @@ export async function decryptWebPushPayload(options: {
   );
 
   // Derive CEK and Nonce
-  const prkKey = await crypto.subtle.importKey("raw", ikm as unknown as BufferSource, { name: "HKDF" }, false, ["deriveBits"]);
+  const prkKey = await crypto.subtle.importKey(
+    "raw",
+    ikm as unknown as BufferSource,
+    { name: "HKDF" },
+    false,
+    ["deriveBits"]
+  );
   const cekInfo = new TextEncoder().encode("Content-Encoding: aes128gcm\0");
   const nonceInfo = new TextEncoder().encode("Content-Encoding: nonce\0");
 
