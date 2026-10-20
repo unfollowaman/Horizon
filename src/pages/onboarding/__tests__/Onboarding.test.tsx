@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import Onboarding from '../Onboarding';
 import { supabase } from '../../../services/supabase';
+import * as notificationsService from '../../../services/notifications';
 
 // @ts-expect-error - IS_REACT_ACT_ENVIRONMENT flag suppresses React 19 test warning
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -390,6 +391,160 @@ describe('Onboarding Component', () => {
     });
 
     // Step 6 (Review Profile)
+    expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
+  });
+
+  it('handles permission denied returned by subscribeToPushNotifications without blocking onboarding', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    const subscribeSpy = vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockResolvedValueOnce({
+      success: false,
+      error: {
+        code: 'PERMISSION_DENIED',
+        message: 'Notification permission was denied or dismissed by the user.',
+      },
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance from Step 4 to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Click Enable Notifications on Step 5
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    await act(async () => {
+      enableBtn?.click();
+    });
+
+    expect(subscribeSpy).toHaveBeenCalledTimes(1);
+
+    // Verify feedback message explaining permission denial and browser settings
+    const feedbackBanner = container?.querySelector('[role="status"]');
+    expect(feedbackBanner?.textContent).toContain('Notification permission was denied. You can enable alerts later in browser settings.');
+
+    // Verify student can continue to review (Step 6) via 'Continue to Review' button
+    const continueBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Continue to Review'
+    );
+    expect(continueBtn).not.toBeUndefined();
+
+    await act(async () => {
+      continueBtn?.click();
+    });
+
+    expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
+  });
+
+  it('handles thrown error during subscribeToPushNotifications gracefully without blocking onboarding', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    vi.spyOn(notificationsService, 'subscribeToPushNotifications').mockRejectedValueOnce(
+      new Error('Unexpected network failure')
+    );
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // Advance to Step 5
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Click Enable Notifications
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    await act(async () => {
+      enableBtn?.click();
+    });
+
+    // Verify error feedback
+    const feedbackBanner = container?.querySelector('[role="status"]');
+    expect(feedbackBanner?.textContent).toContain('Unable to enable notifications right now. You can manage alerts anytime in Settings.');
+
+    // Ensure student is not stuck and can continue to Step 6
+    const continueBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Continue to Review'
+    );
+    await act(async () => {
+      continueBtn?.click();
+    });
+
     expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
   });
 });

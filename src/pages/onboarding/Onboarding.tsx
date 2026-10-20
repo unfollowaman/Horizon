@@ -79,11 +79,13 @@ const Onboarding: React.FC = () => {
   };
 
   const [subscribing, setSubscribing] = useState(false);
+  const [notifFeedback, setNotifFeedback] = useState<{ type: 'success' | 'info' | 'error'; text: string } | null>(null);
 
   const handleNext = async () => {
     if (step === 4) {
       setStep(5);
     } else if (step === 5) {
+      setNotifFeedback(null);
       setStep(6);
     } else if (step === 1) {
       setStep(2);
@@ -92,13 +94,45 @@ const Onboarding: React.FC = () => {
 
   const handleEnableNotifications = async () => {
     setSubscribing(true);
+    setNotifFeedback(null);
     try {
-      await subscribeToPushNotifications();
+      const res = await subscribeToPushNotifications();
+      if (res.success) {
+        setNotifFeedback({
+          type: 'success',
+          text: 'Push notifications enabled successfully! You will receive real-time alerts for your class.',
+        });
+        setTimeout(() => {
+          setSubscribing(false);
+          setStep(6);
+        }, 1200);
+        return;
+      }
+
+      // Handle specific error codes returned by the service without throwing
+      if (res.error?.code === 'PERMISSION_DENIED') {
+        setNotifFeedback({
+          type: 'info',
+          text: 'Notification permission was denied. You can enable alerts later in browser settings.',
+        });
+      } else if (res.error?.code === 'UNSUPPORTED_BROWSER') {
+        setNotifFeedback({
+          type: 'info',
+          text: 'Push notifications are not supported in this browser.',
+        });
+      } else {
+        setNotifFeedback({
+          type: 'error',
+          text: 'Unable to enable notifications right now. You can manage alerts anytime in Settings.',
+        });
+      }
     } catch (_err) {
-      // Ignore errors so onboarding is never blocked
+      setNotifFeedback({
+        type: 'error',
+        text: 'Unable to enable notifications right now. You can manage alerts anytime in Settings.',
+      });
     } finally {
       setSubscribing(false);
-      setStep(6);
     }
   };
 
@@ -319,23 +353,43 @@ const Onboarding: React.FC = () => {
                   Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
                 </p>
 
+                {notifFeedback && (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`p-3 rounded-xl text-sm text-center font-medium ${
+                      notifFeedback.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : notifFeedback.type === 'info'
+                        ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                        : 'bg-amber-50 text-amber-800 border border-amber-200'
+                    }`}
+                  >
+                    {notifFeedback.text}
+                  </div>
+                )}
+
                 <div className="w-full flex flex-col gap-2.5">
-                  <button
-                    type="button"
-                    onClick={handleEnableNotifications}
-                    disabled={subscribing}
-                    className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                  >
-                    {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    disabled={subscribing}
-                    className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                  >
-                    Skip for Now
-                  </button>
+                  {!notifFeedback || notifFeedback.type !== 'success' ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleEnableNotifications}
+                        disabled={subscribing}
+                        className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                      >
+                        {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        disabled={subscribing}
+                        className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                      >
+                        {notifFeedback ? 'Continue to Review' : 'Skip for Now'}
+                      </button>
+                    </>
+                  ) : null}
                 </div>
               </div>
             )}
