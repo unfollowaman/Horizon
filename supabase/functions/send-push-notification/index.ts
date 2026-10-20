@@ -242,6 +242,7 @@ export interface FetchActiveSubscriptionsResult {
  * Fetches active recipient subscriptions matching Option A targeting rules using page-based range queries.
  * Detects if the total eligible audience exceeds MAX_RECIPIENT_CAP (10,000) and returns exceededCap: true
  * to allow calling code to abort before dispatch or announcement insertion.
+ * Fails closed on database query errors during the overflow check.
  */
 // deno-lint-ignore no-explicit-any
 export async function fetchAllActiveSubscriptions(
@@ -297,9 +298,14 @@ export async function fetchAllActiveSubscriptions(
             .eq("study_medium", targetMedium);
         }
 
-        const { data: overflowData } = await checkOverflowQuery
+        const { data: overflowData, error: overflowError } = await checkOverflowQuery
           .order("created_at", { ascending: true })
           .range(MAX_RECIPIENT_CAP, MAX_RECIPIENT_CAP);
+
+        if (overflowError) {
+          console.error("Database query error on recipient cap overflow check:", overflowError);
+          return { subscriptions: [], error: "Database query error checking recipient cap limit" };
+        }
 
         if (overflowData && overflowData.length > 0) {
           return { subscriptions: [], exceededCap: true };

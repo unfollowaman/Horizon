@@ -5,9 +5,9 @@
 1. **Created:** `supabase/functions/send-push-notification/dispatcher.ts`
    - Modular Web Push dispatcher with pre-flight endpoint validation, Web Push AES-128-GCM encryption, RFC 8292 VAPID header generation, per-request 10s fetch timeouts, response code classification, and bounded concurrency batch processing (max 25 active concurrent workers).
 2. **Modified:** `supabase/functions/send-push-notification/index.ts`
-   - Integrated VAPID key validation (`validateVapidKeys`), paginated active subscriber queries (`PAGE_SIZE = 1000`, `MAX_RECIPIENT_CAP = 10000`) based on Option A paired targeting rules, overflow detection (>10,000 aborting with HTTP 400 prior to insertion or dispatch), announcement tracking in `'sending'` state prior to dispatch (returning HTTP 500 pre-dispatch if insertion fails), subscription deactivations for 404/410 status responses, corrected announcement status updates (`'sent'` if `total_successful > 0` with `sent_at`, `'failed'` if `total_successful === 0` with `sent_at: null`), operational persistence warning reporting (`persistence_warning: true`), and sanitized summary responses.
+   - Integrated VAPID key validation (`validateVapidKeys`), paginated active subscriber queries (`PAGE_SIZE = 1000`, `MAX_RECIPIENT_CAP = 10000`) based on Option A paired targeting rules, fail-closed overflow detection (>10,000 or overflow check DB error aborting prior to insertion or dispatch), announcement tracking in `'sending'` state prior to dispatch (returning HTTP 500 pre-dispatch if insertion fails), subscription deactivations for 404/410 status responses, corrected announcement status updates (`'sent'` if `total_successful > 0` with `sent_at`, `'failed'` if `total_successful === 0` with `sent_at: null`), operational persistence warning reporting (`persistence_warning: true`), and sanitized summary responses.
 3. **Modified:** `supabase/functions/send-push-notification/test.ts`
-   - Expanded unit test suite with 22 comprehensive mocked tests for gateway status codes (201, 404, 410, 429, 500, 503), timeout handling, redirect rejection, bounded concurrency limit (50 items <= 25 concurrent requests), partial batch failures, deactivation handling, pagination across pages, zero recipients handling, insertion failures halting dispatch, recipient-cap safety overflow aborts, and persistence warnings.
+   - Expanded unit test suite with 23 comprehensive mocked tests for gateway status codes (201, 404, 410, 429, 500, 503), timeout handling, redirect rejection, bounded concurrency limit (50 items <= 25 concurrent requests), partial batch failures, deactivation handling, pagination across pages, zero recipients handling, insertion failures halting dispatch, recipient-cap safety overflow aborts, overflow query DB error fail-closed handling, and persistence warnings.
 4. **Created:** `docs/reports/PHASE_4_UNIT_2_DISPATCHER_INTEGRATION_REPORT.md`
    - Operational completion report for Phase 4, Unit 2 implementation.
 
@@ -19,7 +19,7 @@
 - **Request Framing & Headers:** Constructs standard Web Push notification payloads (`title`, `body`, `icon`, `badge`, `data.url`), encrypts via `encryptWebPushPayload()` (RFC 8291 / RFC 8188 `aes128gcm`), generates `Authorization: vapid t=<JWT>, k=<Key>` via `createVapidHeaders()`, sets `TTL: 86400`, `Urgency: normal`, `Content-Type: application/octet-stream`, and enforces `redirect: "error"` on fetch.
 - **Timeout & Cancellation:** Each push dispatch executes with an `AbortController` set to 10 seconds (`DEFAULT_REQUEST_TIMEOUT_MS = 10000`). If a gateway hangs, the request is safely aborted, releasing worker slots without failing unrelated dispatches.
 - **Bounded Concurrency:** `batchDispatchPushNotifications()` de-duplicates recipient subscriptions and processes them using a queue of at most 25 concurrent worker loops (`concurrencyLimit = 25`), avoiding unbounded promise allocation and excessive socket usage.
-- **Paginated Recipient Query & Cap Safety:** `fetchAllActiveSubscriptions()` executes range-based paginated queries (`range(from, to)` with `PAGE_SIZE = 1000`) sorted deterministically by `created_at ASC`. If the target audience exceeds `MAX_RECIPIENT_CAP` (10,000), `exceededCap: true` is returned, causing `handleRequest()` to abort with an HTTP 400 error before creating an announcement or dispatching any HTTP push requests.
+- **Paginated Recipient Query & Cap Safety:** `fetchAllActiveSubscriptions()` executes range-based paginated queries (`range(from, to)` with `PAGE_SIZE = 1000`) sorted deterministically by `created_at ASC`. If the target audience exceeds `MAX_RECIPIENT_CAP` (10,000), `exceededCap: true` is returned, causing `handleRequest()` to abort with an HTTP 400 error before creating an announcement or dispatching any HTTP push requests. If the overflow query itself encounters a database error, it fails closed returning an error, causing `handleRequest()` to respond with HTTP 500 without dispatching.
 - **Strict Persistence Boundary:** If `announcements` row insertion fails initially, function execution terminates immediately with HTTP 500 before sending any push requests.
 - **Correct Status Semantics & Persistence Warnings:** Status is set to `'sent'` (with `sent_at` timestamp) if `total_successful > 0`. If `total_successful === 0` (including zero recipients), status is set to `'failed'` (with `sent_at: null`). Post-dispatch database update errors flag `persistence_warning: true` without claiming notifications were not sent.
 
@@ -36,6 +36,7 @@
 | **Timeout (10s) / Network** | Transport Failure | Record failure; keep subscription active | `failed++` |
 | **Zero Recipients** | No Active Subscriptions | No dispatch executed | `status: 'failed'`, `sent_at: null` |
 | **Audience > 10,000 Cap** | Recipient Cap Overflow | No dispatch executed | HTTP 400 Abort pre-insertion |
+| **Overflow Query DB Error**| DB Fail-Closed Execution | No dispatch executed | HTTP 500 Abort pre-insertion |
 | **Unapproved Endpoint** | Pre-flight Validation Failure | Record failure; keep subscription active | `failed++` |
 
 ---
@@ -53,7 +54,7 @@ running 18 tests from ./supabase/functions/send-push-notification/vapid_test.ts
 ...
 ok | 18 passed | 0 failed
 
-running 52 tests from ./supabase/functions/send-push-notification/test.ts
+running 53 tests from ./supabase/functions/send-push-notification/test.ts
 ...
 Dispatcher - HTTP 201 Gateway Acceptance ... ok
 Dispatcher - HTTP 404 / 410 Expired Subscription Deactivation ... ok
@@ -72,9 +73,10 @@ Option A Targeting - General vs Restricted targeting queries across pages ... ok
 Recipient-Cap Safety - Audience below cap (< 10000) processed normally ... ok
 Recipient-Cap Safety - Audience exactly at cap (10000) handled successfully without overflow ... ok
 Recipient-Cap Safety - Audience above cap (10001+) aborted before announcement insertion or dispatch ... ok
+Recipient-Cap Safety - Overflow query database failure fails closed with HTTP 500 ... ok
 Pagination Error - fetchAllActiveSubscriptions handles DB error safely ... ok
 
-ok | 70 passed | 0 failed (732ms)
+ok | 71 passed | 0 failed (740ms)
 ```
 
 ---
@@ -98,4 +100,4 @@ ok | 70 passed | 0 failed (732ms)
 
 **READY FOR REVIEW**
 
-All 70 tests pass cleanly. Implementation, security checks, bounded concurrency, pagination, recipient-cap safety overflow aborts, strict persistence boundaries, correct status semantics, and database updates are complete and verified. Stopping for explicit user review and approval before any merge or deployment.
+All 71 tests pass cleanly. Implementation, security checks, bounded concurrency, pagination, recipient-cap safety overflow aborts, overflow query fail-closed error handling, strict persistence boundaries, correct status semantics, and database updates are complete and verified. Stopping for explicit user review and approval before any merge or deployment.

@@ -1211,6 +1211,77 @@ Deno.test("Recipient-Cap Safety - Audience above cap (10001+) aborted before ann
   assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
 });
 
+Deno.test("Recipient-Cap Safety - Overflow query database failure fails closed with HTTP 500", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let announcementInsertCalled = false;
+  let fetchCalled = false;
+
+  const pageSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    pageSubs.push({ id: `s-${i}`, user_id: `u-${i}`, endpoint: `https://fcm.googleapis.com/fcm/send/${i}`, p256dh: subKeys.p256dh, auth: subKeys.auth });
+  }
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        const chain = {
+          select: () => chain,
+          eq: () => chain,
+          order: () => chain,
+          range: (from: number, _to: number) => {
+            if (from === MAX_RECIPIENT_CAP) {
+              // Overflow check query returns DB error!
+              return Promise.resolve({ data: null, error: new Error("DB Query Error on Overflow Check") });
+            }
+            return Promise.resolve({ data: pageSubs, error: null });
+          },
+        };
+        return chain;
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => {
+            announcementInsertCalled = true;
+            return {
+              select: () => ({ maybeSingle: async () => ({ data: { id: "ann-should-not-exist" }, error: null }) }),
+            };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "DB Fail Overflow Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 500);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Internal server error querying active subscriptions");
+  assertEquals(announcementInsertCalled, false); // Proves announcement was NOT inserted
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
 Deno.test("Pagination Error - fetchAllActiveSubscriptions handles DB error safely", async () => {
   const mockSupabaseAdmin = {
     from: (_table: string) => {
