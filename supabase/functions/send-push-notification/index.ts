@@ -1,5 +1,10 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { validateVapidKeys } from "./vapid.ts";
+import {
+  batchDispatchPushNotifications,
+  RecipientSubscription,
+} from "./dispatcher.ts";
 
 export const ALLOWED_ORIGINS = [
   "https://unfollowaman.tech",
@@ -10,6 +15,8 @@ export const ALLOWED_ORIGINS = [
 ];
 
 export const MAX_BODY_BYTES = 16384; // 16 KB maximum payload size
+export const PAGE_SIZE = 1000; // PostgREST standard page size limit
+export const MAX_RECIPIENT_CAP = 10000; // Hard cap on maximum recipients in a single push dispatch call
 
 export function getCorsHeaders(requestOrigin?: string | null): Record<string, string> {
   const envOrigins = Deno.env.get("ALLOWED_ORIGINS")
@@ -211,7 +218,108 @@ export function validateSendNotificationRequest(body: Record<string, unknown>): 
   };
 }
 
-Deno.serve(async (req) => {
+export interface HandlerDeps {
+  // deno-lint-ignore no-explicit-any
+  supabaseUserClient?: any;
+  // deno-lint-ignore no-explicit-any
+  supabaseAdminClient?: any;
+  fetchFn?: typeof fetch;
+  vapidKeys?: {
+    publicKey: string;
+    privateKey: string;
+    subject?: string;
+  };
+}
+
+export interface FetchActiveSubscriptionsResult {
+  subscriptions: RecipientSubscription[];
+  exceededCap?: boolean;
+  totalCount?: number;
+  error?: string;
+}
+
+/**
+ * Fetches active recipient subscriptions matching Option A targeting rules using page-based range queries.
+ * Detects if the total eligible audience exceeds MAX_RECIPIENT_CAP (10,000) and returns exceededCap: true
+ * to allow calling code to abort before dispatch or announcement insertion.
+ * Fails closed on database query errors during the overflow check.
+ */
+// deno-lint-ignore no-explicit-any
+export async function fetchAllActiveSubscriptions(
+  supabaseAdmin: any,
+  targetClass: string,
+  targetMedium: string
+): Promise<FetchActiveSubscriptionsResult> {
+  const subscriptions: RecipientSubscription[] = [];
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const from = page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    let query = supabaseAdmin
+      .from("push_subscriptions")
+      .select("id, user_id, endpoint, p256dh, auth")
+      .eq("is_active", true);
+
+    if (targetClass !== "all" || targetMedium !== "all") {
+      query = query
+        .eq("student_class", targetClass)
+        .eq("study_medium", targetMedium);
+    }
+
+    const { data: pageData, error } = await query
+      .order("created_at", { ascending: true })
+      .range(from, to);
+
+    if (error) {
+      console.error("Database query error on page", page, error);
+      return { subscriptions: [], error: "Database query error fetching active push subscriptions" };
+    }
+
+    const pageRows = (pageData ?? []) as RecipientSubscription[];
+    subscriptions.push(...pageRows);
+
+    if (pageRows.length < PAGE_SIZE) {
+      hasMore = false;
+    } else {
+      page++;
+      // If we have accumulated MAX_RECIPIENT_CAP rows, check if a 10,001st row exists
+      if (subscriptions.length >= MAX_RECIPIENT_CAP) {
+        let checkOverflowQuery = supabaseAdmin
+          .from("push_subscriptions")
+          .select("id")
+          .eq("is_active", true);
+
+        if (targetClass !== "all" || targetMedium !== "all") {
+          checkOverflowQuery = checkOverflowQuery
+            .eq("student_class", targetClass)
+            .eq("study_medium", targetMedium);
+        }
+
+        const { data: overflowData, error: overflowError } = await checkOverflowQuery
+          .order("created_at", { ascending: true })
+          .range(MAX_RECIPIENT_CAP, MAX_RECIPIENT_CAP);
+
+        if (overflowError) {
+          console.error("Database query error on recipient cap overflow check:", overflowError);
+          return { subscriptions: [], error: "Database query error checking recipient cap limit" };
+        }
+
+        if (overflowData && overflowData.length > 0) {
+          return { subscriptions: [], exceededCap: true };
+        }
+
+        hasMore = false;
+      }
+    }
+  }
+
+  return { subscriptions };
+}
+
+export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<Response> {
   const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
   const requestCorsHeaders = getCorsHeaders(requestOrigin);
 
@@ -254,7 +362,7 @@ Deno.serve(async (req) => {
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+  const supabaseUser = deps?.supabaseUserClient ?? createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 
@@ -336,51 +444,151 @@ Deno.serve(async (req) => {
 
   const payload = validationResult.payload;
 
-  // 8. Query active subscribers count using service-role client according to Option A targeting rules
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+  // 8. Validate VAPID server secrets
+  const vapidPublicKey = deps?.vapidKeys?.publicKey ?? Deno.env.get("VAPID_PUBLIC_KEY") ?? "";
+  const vapidPrivateKey = deps?.vapidKeys?.privateKey ?? Deno.env.get("VAPID_PRIVATE_KEY") ?? "";
+  const vapidSubject = deps?.vapidKeys?.subject ?? Deno.env.get("VAPID_SUBJECT") ?? "mailto:admin@unfollowaman.tech";
 
-  let recipientCount = 0;
-
-  if (payload.target_class === "all" && payload.target_medium === "all") {
-    // General announcement: matches all active subscriptions (including general_only)
-    const { count, error: countError } = await supabaseAdmin
-      .from("push_subscriptions")
-      .select("id", { count: "exact", head: true })
-      .eq("is_active", true);
-
-    if (countError) {
-      console.error("Database query error:", countError);
-      return new Response(JSON.stringify({ success: false, error: "Internal server error" }), {
-        status: 500,
-        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    recipientCount = count ?? 0;
-  } else {
-    // Restricted announcement: matches active subscriptions where student_class and study_medium match exactly
-    // Note: general_only subscriptions are automatically excluded since student_class and study_medium differ
-    const { count, error: countError } = await supabaseAdmin
-      .from("push_subscriptions")
-      .select("id", { count: "exact", head: true })
-      .eq("is_active", true)
-      .eq("student_class", payload.target_class)
-      .eq("study_medium", payload.target_medium);
-
-    if (countError) {
-      console.error("Database query error:", countError);
-      return new Response(JSON.stringify({ success: false, error: "Internal server error" }), {
-        status: 500,
-        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    recipientCount = count ?? 0;
+  if (!vapidPublicKey || !vapidPrivateKey) {
+    return new Response(JSON.stringify({ success: false, error: "Server VAPID keys are missing or unconfigured" }), {
+      status: 500,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
   }
 
+  const vapidValidation = await validateVapidKeys(vapidPublicKey, vapidPrivateKey);
+  if (!vapidValidation.valid) {
+    return new Response(JSON.stringify({ success: false, error: `Invalid server VAPID configuration: ${vapidValidation.error}` }), {
+      status: 500,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // 9. Query active subscribers using bounded deterministic pagination under Option A rules
+  const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  const fetchResult = await fetchAllActiveSubscriptions(supabaseAdmin, payload.target_class, payload.target_medium);
+  if (fetchResult.error) {
+    return new Response(JSON.stringify({ success: false, error: "Internal server error querying active subscriptions" }), {
+      status: 500,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  if (fetchResult.exceededCap) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: `Target recipient count exceeds maximum supported cap of ${MAX_RECIPIENT_CAP}. Notification dispatch aborted.`,
+      }),
+      {
+        status: 400,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  const subscriptions = fetchResult.subscriptions;
+
+  // 10. Persist Announcement in 'sending' state (STRICT persistence boundary)
+  let announcementId: string;
+  const { data: annData, error: annInsertError } = await supabaseAdmin
+    .from("announcements")
+    .insert({
+      title: payload.title,
+      body: payload.message,
+      target_class: payload.target_class,
+      target_medium: payload.target_medium,
+      created_by: user.id,
+      status: "sending",
+    })
+    .select("id")
+    .maybeSingle();
+
+  if (annInsertError || !annData?.id) {
+    console.error("Failed to insert announcement record:", annInsertError);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: "Failed to persist announcement record. Notification dispatch aborted.",
+      }),
+      {
+        status: 500,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  announcementId = annData.id;
+
+  // 11. Execute Batch Push Notification Dispatch
+  const dispatchResult = await batchDispatchPushNotifications(
+    subscriptions,
+    { title: payload.title, message: payload.message },
+    {
+      vapidPublicKey,
+      vapidPrivateKey,
+      vapidSubject,
+      fetchFn: deps?.fetchFn,
+    }
+  );
+
+  let persistenceWarning = false;
+
+  // 12. Process Expired/Unregistered Subscription Deactivations (HTTP 404/410)
+  if (dispatchResult.deactivatedSubscriptionIds.length > 0) {
+    const { error: deactivationError } = await supabaseAdmin
+      .from("push_subscriptions")
+      .update({
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
+      .in("id", dispatchResult.deactivatedSubscriptionIds)
+      .eq("is_active", true);
+
+    if (deactivationError) {
+      console.error("Failed to deactivate expired push subscriptions:", deactivationError);
+      persistenceWarning = true;
+    }
+  }
+
+  // 13. Update Announcement status and final counters according to agreed status semantics:
+  // "sent" if total_successful > 0; "failed" if total_successful === 0 (including zero recipients)
+  const isSent = dispatchResult.successful > 0;
+  const finalStatus = isSent ? "sent" : "failed";
+  const sentAtTimestamp = isSent ? new Date().toISOString() : null;
+
+  const { error: annUpdateError } = await supabaseAdmin
+    .from("announcements")
+    .update({
+      status: finalStatus,
+      total_sent: dispatchResult.total,
+      total_successful: dispatchResult.successful,
+      total_failed: dispatchResult.failed,
+      sent_at: sentAtTimestamp,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", announcementId);
+
+  if (annUpdateError) {
+    console.error("Failed to update final announcement status:", annUpdateError);
+    persistenceWarning = true;
+  }
+
+  // 14. Return Sanitized Response
   return new Response(
     JSON.stringify({
       success: true,
-      message: "Push notification request accepted (skeleton mode)",
-      recipient_count: recipientCount,
+      message: persistenceWarning
+        ? "Push notification dispatch complete with persistence warnings"
+        : "Push notification dispatch complete",
+      recipient_count: dispatchResult.total,
+      total_successful: dispatchResult.successful,
+      total_failed: dispatchResult.failed,
+      deactivated_subscriptions: dispatchResult.deactivatedSubscriptionIds.length,
+      announcement_id: announcementId,
+      status: finalStatus,
+      persistence_warning: persistenceWarning ? true : undefined,
       target: {
         target_class: payload.target_class,
         target_medium: payload.target_medium,
@@ -391,4 +599,6 @@ Deno.serve(async (req) => {
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     }
   );
-});
+}
+
+Deno.serve((req) => handleRequest(req));

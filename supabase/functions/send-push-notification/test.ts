@@ -1,4 +1,4 @@
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals, assertMatch } from "jsr:@std/assert";
 import {
   extractBearerToken,
   validateContentType,
@@ -7,8 +7,66 @@ import {
   validateSendNotificationRequest,
   getCorsHeaders,
   readBoundedBodyStream,
+  handleRequest,
+  fetchAllActiveSubscriptions,
   MAX_BODY_BYTES,
+  PAGE_SIZE,
+  MAX_RECIPIENT_CAP,
 } from "./index.ts";
+import {
+  dispatchSinglePushNotification,
+  batchDispatchPushNotifications,
+  RecipientSubscription,
+} from "./dispatcher.ts";
+
+// Helper to generate a valid test P-256 key pair
+async function generateTestVapidKeyPair(): Promise<{ publicKey: string; privateKey: string }> {
+  const keyPair = await crypto.subtle.generateKey(
+    { name: "ECDSA", namedCurve: "P-256" },
+    true,
+    ["sign", "verify"]
+  );
+
+  const pubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", keyPair.publicKey));
+  const privPkcs8 = new Uint8Array(await crypto.subtle.exportKey("pkcs8", keyPair.privateKey));
+
+  function b64url(buf: Uint8Array): string {
+    let binary = "";
+    for (let i = 0; i < buf.byteLength; i++) {
+      binary += String.fromCharCode(buf[i]);
+    }
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  }
+
+  return {
+    publicKey: b64url(pubRaw),
+    privateKey: b64url(privPkcs8),
+  };
+}
+
+// Helper to generate a valid test subscriber key pair
+async function generateTestSubscriberKeys(): Promise<{ p256dh: string; auth: string }> {
+  const ecdhPair = await crypto.subtle.generateKey(
+    { name: "ECDH", namedCurve: "P-256" },
+    true,
+    ["deriveBits"]
+  );
+  const pubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", ecdhPair.publicKey));
+  const auth = crypto.getRandomValues(new Uint8Array(16));
+
+  function b64url(buf: Uint8Array): string {
+    let binary = "";
+    for (let i = 0; i < buf.byteLength; i++) {
+      binary += String.fromCharCode(buf[i]);
+    }
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  }
+
+  return {
+    p256dh: b64url(pubRaw),
+    auth: b64url(auth),
+  };
+}
 
 Deno.test("extractBearerToken - valid Bearer token", () => {
   const res = extractBearerToken("Bearer sample-token-xyz-123");
@@ -303,4 +361,941 @@ Deno.test("getCorsHeaders - matches allowed origin", () => {
 Deno.test("getCorsHeaders - falls back for untrusted origin", () => {
   const headers = getCorsHeaders("https://untrusted-domain.com");
   assertEquals(headers["Access-Control-Allow-Origin"], "https://unfollowaman.tech");
+});
+
+// ===================================================================
+// UNIT TESTS FOR DISPATCHER & GATEWAY CLASSIFICATION (Unit 2)
+// ===================================================================
+
+Deno.test("Dispatcher - HTTP 201 Gateway Acceptance", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-123",
+    user_id: "user-456",
+    endpoint: "https://fcm.googleapis.com/fcm/send/test-endpoint-123",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const mockFetch = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    // Assert Web Push headers
+    const reqHeaders = new Headers(init?.headers);
+    assertMatch(reqHeaders.get("Authorization") || "", /^vapid t=.+, k=.+$/);
+    assertEquals(reqHeaders.get("Content-Encoding"), "aes128gcm");
+    assertEquals(reqHeaders.get("Content-Type"), "application/octet-stream");
+    assertEquals(reqHeaders.get("TTL"), "86400");
+
+    return new Response(null, { status: 201 });
+  };
+
+  const res = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Hello World" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res.success, true);
+  assertEquals(res.statusCode, 201);
+  assertEquals(res.deactivate, false);
+});
+
+Deno.test("Dispatcher - HTTP 404 / 410 Expired Subscription Deactivation", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-404",
+    user_id: "user-456",
+    endpoint: "https://updates.push.services.mozilla.com/wpush/v2/expired-endpoint",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const mockFetch404 = async (): Promise<Response> => new Response(null, { status: 404 });
+  const mockFetch410 = async (): Promise<Response> => new Response(null, { status: 410 });
+
+  const res404 = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch404 as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res404.success, false);
+  assertEquals(res404.statusCode, 404);
+  assertEquals(res404.deactivate, true);
+
+  const res410 = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch410 as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res410.success, false);
+  assertEquals(res410.statusCode, 410);
+  assertEquals(res410.deactivate, true);
+});
+
+Deno.test("Dispatcher - HTTP 429 Rate Limited (keep subscription active)", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-429",
+    user_id: "user-456",
+    endpoint: "https://p01-push.apple.com/send/test-429",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const mockFetch = async (): Promise<Response> => new Response(null, { status: 429 });
+
+  const res = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res.success, false);
+  assertEquals(res.statusCode, 429);
+  assertEquals(res.deactivate, false);
+});
+
+Deno.test("Dispatcher - HTTP 500 / 503 Server Error (keep subscription active)", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-500",
+    user_id: "user-456",
+    endpoint: "https://fcm.googleapis.com/fcm/send/test-500",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const mockFetch = async (): Promise<Response> => new Response(null, { status: 503 });
+
+  const res = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetch as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res.success, false);
+  assertEquals(res.statusCode, 503);
+  assertEquals(res.deactivate, false);
+});
+
+Deno.test("Dispatcher - Reject HTTP Redirects and Unapproved Hosts", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-unapproved",
+    user_id: "user-456",
+    endpoint: "https://malicious-domain.com/push",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const res = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+    }
+  );
+
+  assertEquals(res.success, false);
+  assertEquals(res.deactivate, false);
+  assertEquals(res.error, "Push endpoint host is not in the approved allowlist");
+});
+
+Deno.test("Dispatcher - Timeout handling triggers failed result without deactivation", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSub: RecipientSubscription = {
+    id: "sub-timeout",
+    user_id: "user-456",
+    endpoint: "https://fcm.googleapis.com/fcm/send/test-timeout",
+    p256dh: subKeys.p256dh,
+    auth: subKeys.auth,
+  };
+
+  const mockFetchHanging = (_url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    return new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => {
+        reject(new Error("The operation was aborted"));
+      });
+    });
+  };
+
+  const res = await dispatchSinglePushNotification(
+    mockSub,
+    { title: "Test", message: "Message" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      requestTimeoutMs: 10, // 10ms test timeout
+      fetchFn: mockFetchHanging as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(res.success, false);
+  assertEquals(res.deactivate, false);
+  assertEquals(res.error, "Push request timed out after 10ms");
+});
+
+Deno.test("Dispatcher - Bounded Concurrency Limit Execution (50 items <= 25 concurrent)", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const count = 50;
+  const mockSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < count; i++) {
+    mockSubs.push({
+      id: `sub-${i}`,
+      user_id: `user-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/endpoint-${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  let activeRequests = 0;
+  let maxActiveRequests = 0;
+
+  const mockFetchSlow = async (_url: string | URL | Request): Promise<Response> => {
+    activeRequests++;
+    if (activeRequests > maxActiveRequests) {
+      maxActiveRequests = activeRequests;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 15));
+
+    activeRequests--;
+    return new Response(null, { status: 200 });
+  };
+
+  const batchRes = await batchDispatchPushNotifications(
+    mockSubs,
+    { title: "Batch Test", message: "Hello Batch" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      concurrencyLimit: 25,
+      fetchFn: mockFetchSlow as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(batchRes.total, 50);
+  assertEquals(batchRes.successful, 50);
+  assertEquals(batchRes.failed, 0);
+  assertEquals(batchRes.deactivatedSubscriptionIds.length, 0);
+
+  // Assert max concurrency never exceeded 25
+  assertEquals(maxActiveRequests <= 25, true);
+});
+
+Deno.test("Dispatcher - Partial Batch Failure & Deactivation Handling", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockSubs: RecipientSubscription[] = [
+    { id: "sub-ok-1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/ok1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-gone-2", user_id: "u2", endpoint: "https://updates.push.services.mozilla.com/wpush/v2/gone2", p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-500-3", user_id: "u3", endpoint: "https://p01-push.apple.com/send/err3", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  const mockFetchMix = async (url: string | URL | Request): Promise<Response> => {
+    const urlStr = typeof url === "string" ? url : url.toString();
+    if (urlStr.includes("ok1")) return new Response(null, { status: 200 });
+    if (urlStr.includes("gone2")) return new Response(null, { status: 410 });
+    return new Response(null, { status: 500 });
+  };
+
+  const batchRes = await batchDispatchPushNotifications(
+    mockSubs,
+    { title: "Mix", message: "Test" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetchMix as unknown as typeof fetch,
+    }
+  );
+
+  assertEquals(batchRes.total, 3);
+  assertEquals(batchRes.successful, 1);
+  assertEquals(batchRes.failed, 2);
+  assertEquals(batchRes.deactivatedSubscriptionIds, ["sub-gone-2"]);
+});
+
+Deno.test("handleRequest - End-to-End Integration with VAPID secrets and Dispatcher", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = {
+    id: "admin-user-001",
+    app_metadata: { role: "admin" },
+  };
+
+  const mockSubscriptions = [
+    { id: "s1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/s1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "s2", user_id: "u2", endpoint: "https://updates.push.services.mozilla.com/wpush/v2/s2", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  let deactivatedIds: string[] = [];
+  let announcementInserted = false;
+  let announcementUpdated = false;
+
+  const mockSupabaseUser = {
+    auth: {
+      getUser: async () => ({ data: { user: mockAdminUser }, error: null }),
+    },
+  };
+
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain(mockSubscriptions),
+          update: (_data: Record<string, unknown>) => ({
+            in: (_col: string, ids: string[]) => ({
+              eq: () => {
+                deactivatedIds = ids;
+                return { error: null };
+              },
+            }),
+          }),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: (_data: Record<string, unknown>) => ({
+            select: () => ({
+              maybeSingle: async () => {
+                announcementInserted = true;
+                return { data: { id: "ann-999" }, error: null };
+              },
+            }),
+          }),
+          update: (_data: Record<string, unknown>) => ({
+            eq: (_col: string, _val: string) => {
+              announcementUpdated = true;
+              return { error: null };
+            },
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (url: string | URL | Request): Promise<Response> => {
+    const urlStr = typeof url === "string" ? url : url.toString();
+    if (urlStr.includes("s1")) return new Response(null, { status: 200 });
+    return new Response(null, { status: 404 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer admin-token-123",
+    },
+    body: JSON.stringify({
+      title: "Class 10 Update",
+      message: "New study materials added",
+      target_class: "10",
+      target_medium: "english",
+    }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 200);
+
+  const resJson = await res.json();
+  assertEquals(resJson.success, true);
+  assertEquals(resJson.recipient_count, 2);
+  assertEquals(resJson.total_successful, 1);
+  assertEquals(resJson.total_failed, 1);
+  assertEquals(resJson.deactivated_subscriptions, 1);
+  assertEquals(resJson.announcement_id, "ann-999");
+  assertEquals(resJson.status, "sent");
+  assertEquals(deactivatedIds, ["s2"]);
+  assertEquals(announcementInserted, true);
+  assertEquals(announcementUpdated, true);
+});
+
+// ===================================================================
+// ADDITIONAL FAILURE PATH & PAGINATION UNIT TESTS (Pass Correction)
+// ===================================================================
+
+Deno.test("Failure Path - Announcement insertion failure halts execution before dispatch", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  const mockSubscriptions = [
+    { id: "s1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/s1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  let fetchCalled = false;
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain(mockSubscriptions),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: null, error: new Error("DB Error inserting announcement") }),
+            }),
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 500);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Failed to persist announcement record. Notification dispatch aborted.");
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
+Deno.test("Failure Path - Zero recipients produce 'failed' status and zero counters", async () => {
+  const vapid = await generateTestVapidKeyPair();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let updatedStatus = "";
+  let updatedSentAt: string | null = "not-null";
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain([]),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: { id: "ann-zero" }, error: null }),
+            }),
+          }),
+          update: (data: Record<string, unknown>) => ({
+            eq: () => {
+              updatedStatus = data.status as string;
+              updatedSentAt = data.sent_at as string | null;
+              return { error: null };
+            },
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "General", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 200);
+  const resJson = await res.json();
+  assertEquals(resJson.success, true);
+  assertEquals(resJson.recipient_count, 0);
+  assertEquals(resJson.total_successful, 0);
+  assertEquals(resJson.total_failed, 0);
+  assertEquals(resJson.status, "failed");
+  assertEquals(updatedStatus, "failed");
+  assertEquals(updatedSentAt, null);
+});
+
+Deno.test("Failure Path - Final announcement status update failure returns persistence_warning", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  const mockSubscriptions = [
+    { id: "s1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/s1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain(mockSubscriptions),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: { id: "ann-warn" }, error: null }),
+            }),
+          }),
+          update: () => ({
+            eq: () => ({ error: new Error("DB Connection Error during update") }),
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => new Response(null, { status: 200 });
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 200);
+  const resJson = await res.json();
+  assertEquals(resJson.success, true);
+  assertEquals(resJson.recipient_count, 1);
+  assertEquals(resJson.total_successful, 1);
+  assertEquals(resJson.persistence_warning, true);
+  assertEquals(resJson.message, "Push notification dispatch complete with persistence warnings");
+});
+
+Deno.test("Pagination - fetchAllActiveSubscriptions paginates multiple pages without duplicates or omissions", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+
+  // Create 2500 mock subscriptions across 3 pages (Page 0: 1000, Page 1: 1000, Page 2: 500)
+  const allSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 2500; i++) {
+    allSubs.push({
+      id: `sub-page-${i}`,
+      user_id: `user-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/ep-${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      let pageFrom = 0;
+      let pageTo = 0;
+
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: (from: number, to: number) => {
+          pageFrom = from;
+          pageTo = to;
+          const sliced = allSubs.slice(pageFrom, pageTo + 1);
+          return Promise.resolve({ data: sliced, error: null });
+        },
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+
+  assertEquals(res.subscriptions.length, 2500);
+  assertEquals(res.subscriptions[0].id, "sub-page-0");
+  assertEquals(res.subscriptions[999].id, "sub-page-999");
+  assertEquals(res.subscriptions[1000].id, "sub-page-1000");
+  assertEquals(res.subscriptions[2499].id, "sub-page-2499");
+});
+
+Deno.test("Option A Targeting - General vs Restricted targeting queries across pages", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+
+  let capturedTargetClass = "";
+  let capturedTargetMedium = "";
+
+  const createQueryChain = () => {
+    const chain = {
+      data: [{ id: "sub-1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/1", p256dh: subKeys.p256dh, auth: subKeys.auth }],
+      error: null,
+      select: () => chain,
+      eq: (col: string, val: string) => {
+        if (col === "student_class") capturedTargetClass = val;
+        if (col === "study_medium") capturedTargetMedium = val;
+        return chain;
+      },
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => createQueryChain(),
+  };
+
+  // Restricted targeting call
+  await fetchAllActiveSubscriptions(mockSupabaseAdmin, "10", "english");
+  assertEquals(capturedTargetClass, "10");
+  assertEquals(capturedTargetMedium, "english");
+
+  // General targeting call
+  capturedTargetClass = "";
+  capturedTargetMedium = "";
+  await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(capturedTargetClass, "");
+  assertEquals(capturedTargetMedium, "");
+});
+
+// ===================================================================
+// RECIPIENT-CAP SAFETY UNIT TESTS (Final Safety Fix)
+// ===================================================================
+
+Deno.test("Recipient-Cap Safety - Audience below cap (< 10000) processed normally", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+  const subs: RecipientSubscription[] = [];
+  for (let i = 0; i < 500; i++) {
+    subs.push({
+      id: `s-${i}`,
+      user_id: `u-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: () => Promise.resolve({ data: subs, error: null }),
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.exceededCap, undefined);
+  assertEquals(res.subscriptions.length, 500);
+});
+
+Deno.test("Recipient-Cap Safety - Audience exactly at cap (10000) handled successfully without overflow", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+  const subs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    subs.push({
+      id: `s-${i}`,
+      user_id: `u-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  let pageCount = 0;
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: (from: number, _to: number) => {
+          if (from === MAX_RECIPIENT_CAP) {
+            // Check overflow query: returns empty array indicating exactly 10,000 exist
+            return Promise.resolve({ data: [], error: null });
+          }
+          pageCount++;
+          // Simulate 10 pages of 1,000 = 10,000 total
+          if (pageCount <= 10) {
+            return Promise.resolve({ data: subs, error: null });
+          }
+          return Promise.resolve({ data: [], error: null });
+        },
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.exceededCap, undefined);
+  assertEquals(res.subscriptions.length, 10000);
+});
+
+Deno.test("Recipient-Cap Safety - Audience above cap (10001+) aborted before announcement insertion or dispatch", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let announcementInsertCalled = false;
+  let fetchCalled = false;
+
+  const pageSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    pageSubs.push({ id: `s-${i}`, user_id: `u-${i}`, endpoint: `https://fcm.googleapis.com/fcm/send/${i}`, p256dh: subKeys.p256dh, auth: subKeys.auth });
+  }
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        const chain = {
+          select: () => chain,
+          eq: () => chain,
+          order: () => chain,
+          range: (from: number, _to: number) => {
+            if (from === MAX_RECIPIENT_CAP) {
+              // 10,001st row exists!
+              return Promise.resolve({ data: [{ id: "s-10001" }], error: null });
+            }
+            return Promise.resolve({ data: pageSubs, error: null });
+          },
+        };
+        return chain;
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => {
+            announcementInsertCalled = true;
+            return {
+              select: () => ({ maybeSingle: async () => ({ data: { id: "ann-should-not-exist" }, error: null }) }),
+            };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Over Cap Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 400);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Target recipient count exceeds maximum supported cap of 10000. Notification dispatch aborted.");
+  assertEquals(announcementInsertCalled, false); // Proves announcement was NOT inserted
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
+Deno.test("Recipient-Cap Safety - Overflow query database failure fails closed with HTTP 500", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let announcementInsertCalled = false;
+  let fetchCalled = false;
+
+  const pageSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 1000; i++) {
+    pageSubs.push({ id: `s-${i}`, user_id: `u-${i}`, endpoint: `https://fcm.googleapis.com/fcm/send/${i}`, p256dh: subKeys.p256dh, auth: subKeys.auth });
+  }
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        const chain = {
+          select: () => chain,
+          eq: () => chain,
+          order: () => chain,
+          range: (from: number, _to: number) => {
+            if (from === MAX_RECIPIENT_CAP) {
+              // Overflow check query returns DB error!
+              return Promise.resolve({ data: null, error: new Error("DB Query Error on Overflow Check") });
+            }
+            return Promise.resolve({ data: pageSubs, error: null });
+          },
+        };
+        return chain;
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => {
+            announcementInsertCalled = true;
+            return {
+              select: () => ({ maybeSingle: async () => ({ data: { id: "ann-should-not-exist" }, error: null }) }),
+            };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "DB Fail Overflow Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 500);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Internal server error querying active subscriptions");
+  assertEquals(announcementInsertCalled, false); // Proves announcement was NOT inserted
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
+Deno.test("Pagination Error - fetchAllActiveSubscriptions handles DB error safely", async () => {
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: () => Promise.resolve({ data: null, error: new Error("DB Connection Interrupted") }),
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(res.subscriptions.length, 0);
+  assertEquals(res.error, "Database query error fetching active push subscriptions");
 });
