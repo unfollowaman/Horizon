@@ -15,6 +15,8 @@ export const ALLOWED_ORIGINS = [
 ];
 
 export const MAX_BODY_BYTES = 16384; // 16 KB maximum payload size
+export const PAGE_SIZE = 1000; // PostgREST standard page size limit
+export const MAX_RECIPIENT_CAP = 10000; // Hard cap on maximum recipients in a single push dispatch call
 
 export function getCorsHeaders(requestOrigin?: string | null): Record<string, string> {
   const envOrigins = Deno.env.get("ALLOWED_ORIGINS")
@@ -229,6 +231,59 @@ export interface HandlerDeps {
   };
 }
 
+/**
+ * Fetches all active recipient subscriptions matching Option A targeting rules using page-based range queries.
+ */
+// deno-lint-ignore no-explicit-any
+export async function fetchAllActiveSubscriptions(
+  supabaseAdmin: any,
+  targetClass: string,
+  targetMedium: string
+): Promise<{ subscriptions: RecipientSubscription[]; error?: string }> {
+  const subscriptions: RecipientSubscription[] = [];
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const from = page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    let query = supabaseAdmin
+      .from("push_subscriptions")
+      .select("id, user_id, endpoint, p256dh, auth")
+      .eq("is_active", true);
+
+    if (targetClass !== "all" || targetMedium !== "all") {
+      query = query
+        .eq("student_class", targetClass)
+        .eq("study_medium", targetMedium);
+    }
+
+    const { data: pageData, error } = await query
+      .order("created_at", { ascending: true })
+      .range(from, to);
+
+    if (error) {
+      console.error("Database query error on page", page, error);
+      return { subscriptions: [], error: "Database query error fetching active push subscriptions" };
+    }
+
+    const pageRows = (pageData ?? []) as RecipientSubscription[];
+    subscriptions.push(...pageRows);
+
+    if (pageRows.length < PAGE_SIZE) {
+      hasMore = false;
+    } else {
+      page++;
+      if (subscriptions.length >= MAX_RECIPIENT_CAP) {
+        hasMore = false;
+      }
+    }
+  }
+
+  return { subscriptions };
+}
+
 export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<Response> {
   const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
   const requestCorsHeaders = getCorsHeaders(requestOrigin);
@@ -374,34 +429,21 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
     });
   }
 
-  // 9. Query active subscribers according to Option A targeting rules
+  // 9. Query active subscribers using bounded deterministic pagination under Option A rules
   const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
 
-  let query = supabaseAdmin
-    .from("push_subscriptions")
-    .select("id, user_id, endpoint, p256dh, auth")
-    .eq("is_active", true);
-
-  if (payload.target_class !== "all" || payload.target_medium !== "all") {
-    query = query
-      .eq("student_class", payload.target_class)
-      .eq("study_medium", payload.target_medium);
-  }
-
-  const { data: rawSubscriptions, error: subQueryError } = await query;
-
-  if (subQueryError) {
-    console.error("Database query error:", subQueryError);
-    return new Response(JSON.stringify({ success: false, error: "Internal server error" }), {
+  const fetchResult = await fetchAllActiveSubscriptions(supabaseAdmin, payload.target_class, payload.target_medium);
+  if (fetchResult.error) {
+    return new Response(JSON.stringify({ success: false, error: "Internal server error querying active subscriptions" }), {
       status: 500,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
 
-  const subscriptions = (rawSubscriptions ?? []) as RecipientSubscription[];
+  const subscriptions = fetchResult.subscriptions;
 
-  // 10. Persist Announcement in 'sending' state
-  let announcementId: string | null = null;
+  // 10. Persist Announcement in 'sending' state (STRICT persistence boundary)
+  let announcementId: string;
   const { data: annData, error: annInsertError } = await supabaseAdmin
     .from("announcements")
     .insert({
@@ -415,11 +457,21 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
     .select("id")
     .maybeSingle();
 
-  if (!annInsertError && annData?.id) {
-    announcementId = annData.id;
-  } else if (annInsertError) {
+  if (annInsertError || !annData?.id) {
     console.error("Failed to insert announcement record:", annInsertError);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: "Failed to persist announcement record. Notification dispatch aborted.",
+      }),
+      {
+        status: 500,
+        headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
+
+  announcementId = annData.id;
 
   // 11. Execute Batch Push Notification Dispatch
   const dispatchResult = await batchDispatchPushNotifications(
@@ -432,6 +484,8 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
       fetchFn: deps?.fetchFn,
     }
   );
+
+  let persistenceWarning = false;
 
   // 12. Process Expired/Unregistered Subscription Deactivations (HTTP 404/410)
   if (dispatchResult.deactivatedSubscriptionIds.length > 0) {
@@ -446,41 +500,47 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
 
     if (deactivationError) {
       console.error("Failed to deactivate expired push subscriptions:", deactivationError);
+      persistenceWarning = true;
     }
   }
 
-  // 13. Update Announcement status and final counts
-  if (announcementId) {
-    const finalStatus =
-      dispatchResult.successful > 0 || dispatchResult.total === 0 ? "sent" : "failed";
+  // 13. Update Announcement status and final counters according to agreed status semantics:
+  // "sent" if total_successful > 0; "failed" if total_successful === 0 (including zero recipients)
+  const isSent = dispatchResult.successful > 0;
+  const finalStatus = isSent ? "sent" : "failed";
+  const sentAtTimestamp = isSent ? new Date().toISOString() : null;
 
-    const { error: annUpdateError } = await supabaseAdmin
-      .from("announcements")
-      .update({
-        status: finalStatus,
-        total_sent: dispatchResult.total,
-        total_successful: dispatchResult.successful,
-        total_failed: dispatchResult.failed,
-        sent_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", announcementId);
+  const { error: annUpdateError } = await supabaseAdmin
+    .from("announcements")
+    .update({
+      status: finalStatus,
+      total_sent: dispatchResult.total,
+      total_successful: dispatchResult.successful,
+      total_failed: dispatchResult.failed,
+      sent_at: sentAtTimestamp,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", announcementId);
 
-    if (annUpdateError) {
-      console.error("Failed to update announcement status:", annUpdateError);
-    }
+  if (annUpdateError) {
+    console.error("Failed to update final announcement status:", annUpdateError);
+    persistenceWarning = true;
   }
 
   // 14. Return Sanitized Response
   return new Response(
     JSON.stringify({
       success: true,
-      message: "Push notification dispatch complete",
+      message: persistenceWarning
+        ? "Push notification dispatch complete with persistence warnings"
+        : "Push notification dispatch complete",
       recipient_count: dispatchResult.total,
       total_successful: dispatchResult.successful,
       total_failed: dispatchResult.failed,
       deactivated_subscriptions: dispatchResult.deactivatedSubscriptionIds.length,
       announcement_id: announcementId,
+      status: finalStatus,
+      persistence_warning: persistenceWarning ? true : undefined,
       target: {
         target_class: payload.target_class,
         target_medium: payload.target_medium,

@@ -8,7 +8,9 @@ import {
   getCorsHeaders,
   readBoundedBodyStream,
   handleRequest,
+  fetchAllActiveSubscriptions,
   MAX_BODY_BYTES,
+  PAGE_SIZE,
 } from "./index.ts";
 import {
   dispatchSinglePushNotification,
@@ -674,13 +676,14 @@ Deno.test("handleRequest - End-to-End Integration with VAPID secrets and Dispatc
     },
   };
 
-  // Mock Supabase admin client query chain supporting .eq() chaining
   const createQueryChain = (dataToReturn: unknown) => {
     const chain = {
       // deno-lint-ignore no-explicit-any
       data: dataToReturn as any,
       error: null,
       eq: () => chain,
+      order: () => chain,
+      range: () => chain,
     };
     return chain;
   };
@@ -758,7 +761,303 @@ Deno.test("handleRequest - End-to-End Integration with VAPID secrets and Dispatc
   assertEquals(resJson.total_failed, 1);
   assertEquals(resJson.deactivated_subscriptions, 1);
   assertEquals(resJson.announcement_id, "ann-999");
+  assertEquals(resJson.status, "sent");
   assertEquals(deactivatedIds, ["s2"]);
   assertEquals(announcementInserted, true);
   assertEquals(announcementUpdated, true);
+});
+
+// ===================================================================
+// ADDITIONAL FAILURE PATH & PAGINATION UNIT TESTS (Pass Correction)
+// ===================================================================
+
+Deno.test("Failure Path - Announcement insertion failure halts execution before dispatch", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  const mockSubscriptions = [
+    { id: "s1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/s1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  let fetchCalled = false;
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain(mockSubscriptions),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: null, error: new Error("DB Error inserting announcement") }),
+            }),
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 500);
+  const resJson = await res.json();
+  assertEquals(resJson.success, false);
+  assertEquals(resJson.error, "Failed to persist announcement record. Notification dispatch aborted.");
+  assertEquals(fetchCalled, false); // Proves dispatch was NOT executed
+});
+
+Deno.test("Failure Path - Zero recipients produce 'failed' status and zero counters", async () => {
+  const vapid = await generateTestVapidKeyPair();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let updatedStatus = "";
+  let updatedSentAt: string | null = "not-null";
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain([]),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: { id: "ann-zero" }, error: null }),
+            }),
+          }),
+          update: (data: Record<string, unknown>) => ({
+            eq: () => {
+              updatedStatus = data.status as string;
+              updatedSentAt = data.sent_at as string | null;
+              return { error: null };
+            },
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "General", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 200);
+  const resJson = await res.json();
+  assertEquals(resJson.success, true);
+  assertEquals(resJson.recipient_count, 0);
+  assertEquals(resJson.total_successful, 0);
+  assertEquals(resJson.total_failed, 0);
+  assertEquals(resJson.status, "failed");
+  assertEquals(updatedStatus, "failed");
+  assertEquals(updatedSentAt, null);
+});
+
+Deno.test("Failure Path - Final announcement status update failure returns persistence_warning", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const mockAdminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  const mockSubscriptions = [
+    { id: "s1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/s1", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  const mockSupabaseUser = { auth: { getUser: async () => ({ data: { user: mockAdminUser }, error: null }) } };
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain(mockSubscriptions),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({
+              maybeSingle: async () => ({ data: { id: "ann-warn" }, error: null }),
+            }),
+          }),
+          update: () => ({
+            eq: () => ({ error: new Error("DB Connection Error during update") }),
+          }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (): Promise<Response> => new Response(null, { status: 200 });
+
+  const req = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    body: JSON.stringify({ title: "Test", message: "Msg", target_class: "all", target_medium: "all" }),
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockSupabaseUser,
+    supabaseAdminClient: mockSupabaseAdmin,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(res.status, 200);
+  const resJson = await res.json();
+  assertEquals(resJson.success, true);
+  assertEquals(resJson.recipient_count, 1);
+  assertEquals(resJson.total_successful, 1);
+  assertEquals(resJson.persistence_warning, true);
+  assertEquals(resJson.message, "Push notification dispatch complete with persistence warnings");
+});
+
+Deno.test("Pagination - fetchAllActiveSubscriptions paginates multiple pages without duplicates or omissions", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+
+  // Create 2500 mock subscriptions across 3 pages (Page 0: 1000, Page 1: 1000, Page 2: 500)
+  const allSubs: RecipientSubscription[] = [];
+  for (let i = 0; i < 2500; i++) {
+    allSubs.push({
+      id: `sub-page-${i}`,
+      user_id: `user-${i}`,
+      endpoint: `https://fcm.googleapis.com/fcm/send/ep-${i}`,
+      p256dh: subKeys.p256dh,
+      auth: subKeys.auth,
+    });
+  }
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => {
+      let pageFrom = 0;
+      let pageTo = 0;
+
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        order: () => chain,
+        range: (from: number, to: number) => {
+          pageFrom = from;
+          pageTo = to;
+          const sliced = allSubs.slice(pageFrom, pageTo + 1);
+          return Promise.resolve({ data: sliced, error: null });
+        },
+      };
+      return chain;
+    },
+  };
+
+  const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+
+  assertEquals(res.subscriptions.length, 2500);
+  assertEquals(res.subscriptions[0].id, "sub-page-0");
+  assertEquals(res.subscriptions[999].id, "sub-page-999");
+  assertEquals(res.subscriptions[1000].id, "sub-page-1000");
+  assertEquals(res.subscriptions[2499].id, "sub-page-2499");
+});
+
+Deno.test("Option A Targeting - General vs Restricted targeting queries across pages", async () => {
+  const subKeys = await generateTestSubscriberKeys();
+
+  let capturedTargetClass = "";
+  let capturedTargetMedium = "";
+
+  const createQueryChain = () => {
+    const chain = {
+      data: [{ id: "sub-1", user_id: "u1", endpoint: "https://fcm.googleapis.com/fcm/send/1", p256dh: subKeys.p256dh, auth: subKeys.auth }],
+      error: null,
+      select: () => chain,
+      eq: (col: string, val: string) => {
+        if (col === "student_class") capturedTargetClass = val;
+        if (col === "study_medium") capturedTargetMedium = val;
+        return chain;
+      },
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSupabaseAdmin = {
+    from: (_table: string) => createQueryChain(),
+  };
+
+  // Restricted targeting call
+  await fetchAllActiveSubscriptions(mockSupabaseAdmin, "10", "english");
+  assertEquals(capturedTargetClass, "10");
+  assertEquals(capturedTargetMedium, "english");
+
+  // General targeting call
+  capturedTargetClass = "";
+  capturedTargetMedium = "";
+  await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
+  assertEquals(capturedTargetClass, "");
+  assertEquals(capturedTargetMedium, "");
 });
