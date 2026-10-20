@@ -18,6 +18,11 @@ import {
   batchDispatchPushNotifications,
   RecipientSubscription,
 } from "./dispatcher.ts";
+import {
+  decryptWebPushPayload,
+  base64UrlEncode,
+} from "./vapid.ts";
+import { handleRequest as handleSubscribeRequest } from "../subscribe-push/index.ts";
 
 // Helper to generate a valid test P-256 key pair
 async function generateTestVapidKeyPair(): Promise<{ publicKey: string; privateKey: string }> {
@@ -1298,4 +1303,215 @@ Deno.test("Pagination Error - fetchAllActiveSubscriptions handles DB error safel
   const res = await fetchAllActiveSubscriptions(mockSupabaseAdmin, "all", "all");
   assertEquals(res.subscriptions.length, 0);
   assertEquals(res.error, "Database query error fetching active push subscriptions");
+});
+
+// ===================================================================
+// UNIT 4 END-TO-END INTEGRATION & DE-DUPLICATION TESTS
+// ===================================================================
+
+Deno.test("P1 End-to-End Integration - Full Subscription Registration through Push Dispatch, VAPID Decryption, and Service Worker Payload Validation", async () => {
+  const vapid = await generateTestVapidKeyPair();
+
+  // 1. Browser generates ECDH keypair and auth secret for push subscription
+  const ecdhPair = await crypto.subtle.generateKey(
+    { name: "ECDH", namedCurve: "P-256" },
+    true,
+    ["deriveBits"]
+  );
+  const clientPubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", ecdhPair.publicKey));
+  const clientAuthRaw = crypto.getRandomValues(new Uint8Array(16));
+
+  const clientP256dhBase64Url = base64UrlEncode(clientPubRaw);
+  const clientAuthBase64Url = base64UrlEncode(clientAuthRaw);
+
+  const testEndpoint = "https://fcm.googleapis.com/fcm/send/e2e-sw-client-001";
+  const studentUser = { id: "student-user-123", app_metadata: { role: "student" } };
+
+  let storedDbSubscription: RecipientSubscription | null = null;
+
+  // 2. Client registers subscription via subscribe-push Edge Function
+  const mockSubscribeUserClient = {
+    auth: { getUser: async () => ({ data: { user: studentUser }, error: null }) },
+  };
+
+  const mockSubscribeAdminClient = {
+    from: (table: string) => {
+      if (table === "profiles") {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({
+                data: { student_class: "10", study_medium: "english", onboarding_completed: true },
+                error: null,
+              }),
+            }),
+          }),
+        };
+      }
+      if (table === "push_subscriptions") {
+        return {
+          select: () => ({
+            eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }),
+          }),
+          insert: async (subData: Record<string, unknown>) => {
+            storedDbSubscription = {
+              id: "sub-registered-uuid",
+              user_id: studentUser.id,
+              endpoint: subData.endpoint as string,
+              p256dh: subData.p256dh as string,
+              auth: subData.auth as string,
+            };
+            return { error: null };
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const subReq = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer student-token" },
+    body: JSON.stringify({
+      subscription: {
+        endpoint: testEndpoint,
+        keys: {
+          p256dh: clientP256dhBase64Url,
+          auth: clientAuthBase64Url,
+        },
+      },
+    }),
+  });
+
+  const subRes = await handleSubscribeRequest(subReq, {
+    supabaseUserClient: mockSubscribeUserClient,
+    supabaseAdminClient: mockSubscribeAdminClient,
+  });
+
+  assertEquals(subRes.status, 201);
+  assertEquals(storedDbSubscription !== null, true);
+  assertEquals((storedDbSubscription as unknown as RecipientSubscription).p256dh, clientP256dhBase64Url);
+
+  // 3. Admin dispatches push notification targeting Class 10 English
+  const adminUser = { id: "admin-user-001", app_metadata: { role: "admin" } };
+  let capturedEncryptedBody: Uint8Array | null = null;
+  let gatewayFetchCalled = false;
+
+  const mockSendUserClient = {
+    auth: { getUser: async () => ({ data: { user: adminUser }, error: null }) },
+  };
+
+  const createQueryChain = (dataToReturn: unknown) => {
+    const chain = {
+      // deno-lint-ignore no-explicit-any
+      data: dataToReturn as any,
+      error: null,
+      eq: () => chain,
+      order: () => chain,
+      range: () => chain,
+    };
+    return chain;
+  };
+
+  const mockSendAdminClient = {
+    from: (table: string) => {
+      if (table === "push_subscriptions") {
+        return {
+          select: () => createQueryChain([storedDbSubscription]),
+        };
+      }
+      if (table === "announcements") {
+        return {
+          insert: () => ({
+            select: () => ({ maybeSingle: async () => ({ data: { id: "ann-e2e" }, error: null }) }),
+          }),
+          update: () => ({ eq: () => ({ error: null }) }),
+        };
+      }
+      return {};
+    },
+  };
+
+  const mockFetch = async (_url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    gatewayFetchCalled = true;
+    capturedEncryptedBody = init?.body as Uint8Array;
+    return new Response(null, { status: 201 });
+  };
+
+  const sendReq = new Request("https://unfollowaman.tech/send-push-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer admin-token" },
+    body: JSON.stringify({
+      title: "Science Chapter 5 Published",
+      message: "Check out the new study notes for Class 10 Science.",
+      target_class: "10",
+      target_medium: "english",
+    }),
+  });
+
+  const sendRes = await handleRequest(sendReq, {
+    supabaseUserClient: mockSendUserClient,
+    supabaseAdminClient: mockSendAdminClient,
+    fetchFn: mockFetch as unknown as typeof fetch,
+    vapidKeys: vapid,
+  });
+
+  assertEquals(sendRes.status, 200);
+  assertEquals(gatewayFetchCalled, true);
+  assertEquals(capturedEncryptedBody !== null, true);
+
+  // 4. Browser receives encrypted push payload & decrypts using client private key & auth secret
+  const decryptedBytes = await decryptWebPushPayload({
+    encryptedBody: capturedEncryptedBody!,
+    clientPrivateKey: ecdhPair.privateKey,
+    clientAuth: clientAuthRaw,
+  });
+
+  const decryptedJsonText = new TextDecoder().decode(decryptedBytes);
+  const parsedPayload = JSON.parse(decryptedJsonText);
+
+  // 5. Assert exact JSON payload structure expected by public/sw.js
+  assertEquals(parsedPayload.title, "Science Chapter 5 Published");
+  assertEquals(parsedPayload.body, "Check out the new study notes for Class 10 Science.");
+  assertEquals(parsedPayload.icon, "/assets/favicon/web-app-manifest-192x192.png");
+  assertEquals(parsedPayload.badge, "/assets/favicon/web-app-manifest-192x192.png");
+  assertEquals(parsedPayload.data?.url, "/");
+});
+
+Deno.test("P2 Dispatcher - Recipient endpoint de-duplication prevents duplicate gateway dispatches", async () => {
+  const vapid = await generateTestVapidKeyPair();
+  const subKeys = await generateTestSubscriberKeys();
+
+  const sharedEndpoint = "https://fcm.googleapis.com/fcm/send/shared-endpoint-dup";
+
+  // Provide duplicate subscription endpoints and duplicate subscription IDs
+  const duplicateSubs: RecipientSubscription[] = [
+    { id: "sub-dup-1", user_id: "user-1", endpoint: sharedEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-dup-1", user_id: "user-1", endpoint: sharedEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-dup-2", user_id: "user-2", endpoint: sharedEndpoint, p256dh: subKeys.p256dh, auth: subKeys.auth },
+    { id: "sub-unique-3", user_id: "user-3", endpoint: "https://p01-push.apple.com/send/unique-3", p256dh: subKeys.p256dh, auth: subKeys.auth },
+  ];
+
+  let gatewayCallCount = 0;
+
+  const mockFetchCounter = async (): Promise<Response> => {
+    gatewayCallCount++;
+    return new Response(null, { status: 200 });
+  };
+
+  const batchRes = await batchDispatchPushNotifications(
+    duplicateSubs,
+    { title: "Deduplication Test", message: "Hello" },
+    {
+      vapidPublicKey: vapid.publicKey,
+      vapidPrivateKey: vapid.privateKey,
+      fetchFn: mockFetchCounter as unknown as typeof fetch,
+    }
+  );
+
+  // Total de-duplicated unique recipients should be 2 (sharedEndpoint and unique-3)
+  assertEquals(batchRes.total, 2);
+  assertEquals(batchRes.successful, 2);
+  assertEquals(batchRes.failed, 0);
+  assertEquals(gatewayCallCount, 2); // Asserts exact gateway call count matches unique recipients
 });
