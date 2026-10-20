@@ -90,8 +90,9 @@ const ProfilePopover: React.FC = () => {
               to="/settings/notifications"
               className={`${styles.popoverLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
               onClick={closePopover}
+              aria-label="Notification Settings"
             >
-              Settings
+              Notification Settings
             </Link>
             <button
               type="button"

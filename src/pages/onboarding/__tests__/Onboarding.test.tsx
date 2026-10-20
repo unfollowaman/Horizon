@@ -137,8 +137,8 @@ describe('Onboarding Component', () => {
     expect(progressBar?.getAttribute('aria-label')).toBe('Onboarding progress');
     expect(progressBar?.getAttribute('aria-valuenow')).toBe('1');
     expect(progressBar?.getAttribute('aria-valuemin')).toBe('1');
-    expect(progressBar?.getAttribute('aria-valuemax')).toBe('5');
-    expect(progressBar?.getAttribute('aria-valuetext')).toBe('Step 1 of 5');
+    expect(progressBar?.getAttribute('aria-valuemax')).toBe('6');
+    expect(progressBar?.getAttribute('aria-valuetext')).toBe('Step 1 of 6');
   });
 
   it('renders circular back button on step 2 and advances immediately on class selection without continue button', async () => {
@@ -321,5 +321,75 @@ describe('Onboarding Component', () => {
 
     // Advances to Step 4 (Profile Photo)
     expect(container?.querySelector('h2')?.textContent).toBe('Profile Photo');
+  });
+
+  it('renders Step 5 optional notification opt-in step and advances on Skip for Now without blocking onboarding', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          user: { id: 'test-user-id' },
+        },
+      },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({
+            data: {
+              id: 'test-user-id',
+              student_class: 'Class 10',
+              study_medium: 'English',
+              avatar_url: null,
+              onboarding_completed: false,
+            },
+            error: null,
+          }),
+        } as never;
+      }
+      return {} as never;
+    });
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <Onboarding />
+        </MemoryRouter>
+      );
+    });
+
+    // On Step 4 (Profile Photo), click Skip to advance to Step 5 (Stay Updated)
+    const skipBtnStep4 = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip'
+    );
+    expect(skipBtnStep4).not.toBeUndefined();
+
+    await act(async () => {
+      skipBtnStep4?.click();
+    });
+
+    // Step 5 (Stay Updated)
+    expect(container?.querySelector('h2')?.textContent).toBe('Stay Updated');
+
+    const enableBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Enable Notifications'
+    );
+    const skipNotifBtn = Array.from(container?.querySelectorAll('button') || []).find(
+      (btn) => btn.textContent === 'Skip for Now'
+    );
+
+    expect(enableBtn).not.toBeUndefined();
+    expect(skipNotifBtn).not.toBeUndefined();
+
+    // Click Skip for Now on Step 5
+    await act(async () => {
+      skipNotifBtn?.click();
+    });
+
+    // Step 6 (Review Profile)
+    expect(container?.querySelector('h2')?.textContent).toBe('Review Profile');
   });
 });

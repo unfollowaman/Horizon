@@ -269,7 +269,25 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 4: Account Section / Sign Out */}
+          {/* Card 4: Notification Preferences Entry Point */}
+          <div className="neu-card rounded-2xl p-8 flex flex-col items-start">
+            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-3 font-semibold">
+              Notification Alerts
+            </span>
+            <h4 className="text-h3 font-bold text-ink mb-2">Browser Updates</h4>
+            <p className="text-muted-foreground text-body-base mb-6">
+              Get instant alerts for new chapter notes, PYQ releases, and syllabus updates.
+            </p>
+            <Link
+              to="/settings/notifications"
+              aria-label="Manage notification settings"
+              className="w-full inline-flex items-center justify-center px-6 h-11 text-accent font-bold rounded-xl neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+            >
+              Manage Notifications
+            </Link>
+          </div>
+
+          {/* Card 5: Account Section / Sign Out */}
           <div className="neu-card rounded-2xl p-8 flex flex-col items-center">
             <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-4 font-semibold self-start">
               Account Section

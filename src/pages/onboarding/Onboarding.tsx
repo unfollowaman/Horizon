@@ -4,6 +4,7 @@ import { supabase } from '../../services/supabase';
 import type { Profile } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import PageLoader from '../../components/loading/PageLoader';
+import { subscribeToPushNotifications } from '../../services/notifications';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -77,11 +78,27 @@ const Onboarding: React.FC = () => {
     setStep(4);
   };
 
+  const [subscribing, setSubscribing] = useState(false);
+
   const handleNext = async () => {
     if (step === 4) {
       setStep(5);
+    } else if (step === 5) {
+      setStep(6);
     } else if (step === 1) {
       setStep(2);
+    }
+  };
+
+  const handleEnableNotifications = async () => {
+    setSubscribing(true);
+    try {
+      await subscribeToPushNotifications();
+    } catch (_err) {
+      // Ignore errors so onboarding is never blocked
+    } finally {
+      setSubscribing(false);
+      setStep(6);
     }
   };
 
@@ -139,13 +156,13 @@ const Onboarding: React.FC = () => {
         aria-label="Onboarding progress"
         aria-valuenow={step}
         aria-valuemin={1}
-        aria-valuemax={5}
-        aria-valuetext={`Step ${step} of 5`}
+        aria-valuemax={6}
+        aria-valuetext={`Step ${step} of 6`}
         className="w-full h-2 bg-[var(--bg-raised)]"
       >
         <div
           className="h-full bg-accent transition-all duration-300"
-          style={{ width: `${(step / 5) * 100}%` }}
+          style={{ width: `${(step / 6) * 100}%` }}
         />
       </div>
 
@@ -179,7 +196,7 @@ const Onboarding: React.FC = () => {
             ) : (
               <div />
             )}
-            <span className="text-sm font-medium text-gray-500">Step {step} of 5</span>
+            <span className="text-sm font-medium text-gray-500">Step {step} of 6</span>
           </div>
 
           <div className="p-4 sm:p-6">
@@ -296,6 +313,34 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 5 && (
+              <div className="space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Stay Updated</h2>
+                <p className="text-center text-gray-500 text-sm mb-4">
+                  Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
+                </p>
+
+                <div className="w-full flex flex-col gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleEnableNotifications}
+                    disabled={subscribing}
+                    className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  >
+                    {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={subscribing}
+                    className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  >
+                    Skip for Now
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 6 && (
               <div className="space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Review Profile</h2>
 
