@@ -45,7 +45,7 @@
 
 Ran full Edge Function test suite via Deno test runner:
 ```bash
-npx deno test --allow-net --allow-env --config supabase/functions/resource-access/deno.json supabase/functions/send-push-notification/vapid_test.ts supabase/functions/send-push-notification/test.ts
+npx deno test --allow-net --allow-env --config supabase/functions/resource-access/deno.json supabase/functions/send-push-notification/vapid_test.ts supabase/functions/send-push-notification/test.ts supabase/functions/subscribe-push/test.ts
 ```
 
 ### Actual Outcome:
@@ -54,7 +54,7 @@ running 18 tests from ./supabase/functions/send-push-notification/vapid_test.ts
 ...
 ok | 18 passed | 0 failed
 
-running 53 tests from ./supabase/functions/send-push-notification/test.ts
+running 55 tests from ./supabase/functions/send-push-notification/test.ts
 ...
 Dispatcher - HTTP 201 Gateway Acceptance ... ok
 Dispatcher - HTTP 404 / 410 Expired Subscription Deactivation ... ok
@@ -75,8 +75,16 @@ Recipient-Cap Safety - Audience exactly at cap (10000) handled successfully with
 Recipient-Cap Safety - Audience above cap (10001+) aborted before announcement insertion or dispatch ... ok
 Recipient-Cap Safety - Overflow query database failure fails closed with HTTP 500 ... ok
 Pagination Error - fetchAllActiveSubscriptions handles DB error safely ... ok
+Phase 4 Unit 4 (P1) - Mocked End-to-End Subscription Registration, Dispatch, & Payload Decryption Verification ... ok
+Phase 4 Unit 4 (P2) - Recipient Endpoint De-duplication Verification ... ok
 
-ok | 71 passed | 0 failed (740ms)
+ok | 73 passed | 0 failed
+
+running 43 tests from ./supabase/functions/subscribe-push/test.ts
+...
+ok | 43 passed | 0 failed
+
+ok | 116 passed | 0 failed (853ms)
 ```
 
 ---
@@ -100,4 +108,12 @@ ok | 71 passed | 0 failed (740ms)
 
 **READY FOR REVIEW**
 
-All 71 tests pass cleanly. Implementation, security checks, bounded concurrency, pagination, recipient-cap safety overflow aborts, overflow query fail-closed error handling, strict persistence boundaries, correct status semantics, and database updates are complete and verified. Stopping for explicit user review and approval before any merge or deployment.
+All 116 tests pass cleanly. Implementation, security checks, bounded concurrency, pagination, recipient-cap safety overflow aborts, overflow query fail-closed error handling, strict persistence boundaries, correct status semantics, database updates, end-to-end integration tests, and endpoint de-duplication are complete and verified. Stopping for explicit user review and approval before any merge or deployment.
+
+---
+
+## 8. Phase 4 Unit 4 Additions
+
+- **P1 — Mocked End-to-End Integration Test (`Phase 4 Unit 4 (P1)`):** Validated integrated flow from browser ECDH key generation, registration via `subscribe-push`, subscription compatibility check (`is_active = true`, `student_class = "10"`, `study_medium = "english"`), dispatch via `send-push-notification`, encrypted payload capture, decryption using `decryptWebPushPayload`, and validation of `public/sw.js` payload contract (`title`, `body`, `icon`, `badge`, `data.url`).
+- **P2 — Recipient Endpoint De-duplication Test (`Phase 4 Unit 4 (P2)`):** Verified that duplicate subscription endpoints in recipient lists result in exactly one push gateway dispatch per unique endpoint within an announcement batch.
+- **Import Guard:** Added `if (import.meta.main)` guard around `Deno.serve` in `send-push-notification/index.ts` to allow safe test imports without starting HTTP servers.
