@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import type { AnnouncementRow } from '../types';
 
 export type PushErrorCode =
   | 'UNSUPPORTED_BROWSER'
@@ -26,8 +27,35 @@ export interface PushResult<T = unknown> {
 const EDGE_FUNCTION_URL =
   'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/subscribe-push';
 
+const SEND_PUSH_EDGE_FUNCTION_URL =
+  'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/send-push-notification';
+
 let subscribeInFlightPromise: Promise<PushResult<PushSubscriptionJSON>> | null = null;
 let unsubscribeInFlightPromise: Promise<PushResult<void>> | null = null;
+
+export interface SendPushPayload {
+  title: string;
+  message: string;
+  target_class: 'all' | '8' | '9' | '10' | '11' | '12';
+  target_medium: 'all' | 'english' | 'hindi';
+}
+
+export interface SendPushResponseData {
+  success: boolean;
+  message?: string;
+  error?: string;
+  recipient_count?: number;
+  total_successful?: number;
+  total_failed?: number;
+  deactivated_subscriptions?: number;
+  announcement_id?: string;
+  status?: 'sent' | 'failed';
+  persistence_warning?: boolean;
+  target?: {
+    target_class: string;
+    target_medium: string;
+  };
+}
 
 /**
  * Checks if the browser supports Service Worker, Push API, and Notification API.
@@ -378,6 +406,103 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
     return await unsubscribeInFlightPromise;
   } finally {
     unsubscribeInFlightPromise = null;
+  }
+};
+
+/**
+ * Dispatches a push notification to students via the existing send-push-notification Edge Function.
+ * Executed strictly by authenticated administrators.
+ */
+export const sendPushNotification = async (
+  payload: SendPushPayload
+): Promise<PushResult<SendPushResponseData>> => {
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError || !sessionData?.session?.access_token) {
+    return {
+      success: false,
+      error: {
+        code: 'UNAUTHENTICATED',
+        message: 'User must be authenticated to send push notifications.',
+      },
+    };
+  }
+
+  const accessToken = sessionData.session.access_token;
+
+  try {
+    const response = await fetch(SEND_PUSH_EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const responseData: SendPushResponseData = await response.json().catch(() => ({ success: false }));
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: {
+          code: 'BACKEND_REJECTION',
+          message: responseData.error || `Server responded with HTTP ${response.status}`,
+          status: response.status,
+          details: responseData,
+        },
+      };
+    }
+
+    return {
+      success: true,
+      data: responseData,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: {
+        code: err instanceof TypeError ? 'NETWORK_ERROR' : 'BACKEND_REJECTION',
+        message: err instanceof Error ? err.message : 'Failed to dispatch push notification.',
+        details: err,
+      },
+    };
+  }
+};
+
+/**
+ * Retrieves sent announcement history from public.announcements.
+ */
+export const fetchAnnouncementHistory = async (): Promise<PushResult<AnnouncementRow[]>> => {
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return {
+        success: false,
+        error: {
+          code: 'BACKEND_REJECTION',
+          message: error.message || 'Failed to fetch announcement history.',
+          details: error,
+        },
+      };
+    }
+
+    return {
+      success: true,
+      data: (data ?? []) as AnnouncementRow[],
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: {
+        code: 'NETWORK_ERROR',
+        message: err instanceof Error ? err.message : 'Network error fetching announcement history.',
+        details: err,
+      },
+    };
   }
 };
 

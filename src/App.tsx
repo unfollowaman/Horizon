@@ -9,8 +9,12 @@ import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
 import { lazyWithRetry } from './utils/lazyWithRetry';
 
+// Core components for route protection
+import AdminRoute from './components/AdminRoute';
+
 // Lazy loaded layout & pages with dynamic import retry mechanism
 const MainLayout = lazyWithRetry(() => import('./layouts/MainLayout'));
+const AdminNotifications = lazyWithRetry(() => import('./pages/admin/AdminNotifications'));
 const Library = lazyWithRetry(() => import('./pages/resources/LibraryRoute'));
 const ResourceDetails = lazyWithRetry(() => import('./pages/resources/ResourceDetails'));
 const Dashboard = lazyWithRetry(() => import('./pages/user/Dashboard'));
@@ -66,6 +70,11 @@ function App() {
             <Route path="/resource/:id" element={<ResourceDetails />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings/notifications" element={<NotificationSettings />} />
+
+            {/* Protected Admin Routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin/notifications" element={<AdminNotifications />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/coming-soon" element={<ComingSoon />} />
