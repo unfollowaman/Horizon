@@ -29,7 +29,7 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
     const hasTopics = topics.length > 0;
 
     return (
-      <div className="neu-card rounded-2xl p-2 sm:p-3 transition-all space-y-3.5 relative z-10 flex flex-col justify-between h-full min-w-0">
+      <div className="neu-card rounded-2xl p-2 sm:p-3 transition-all space-y-3.5 relative z-10 flex flex-col justify-between h-auto min-w-0">
         {/* Header & Main Tile Section */}
         {hasTopics ? (
           <button
