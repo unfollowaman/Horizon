@@ -42,8 +42,10 @@ describe('ProfilePopover Component', () => {
       profile: null,
       session: null,
       loading: false,
+      isAdmin: false,
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
     } as never);
 
     act(() => {
@@ -55,6 +57,167 @@ describe('ProfilePopover Component', () => {
     });
 
     expect(container?.firstElementChild).toBeNull();
+  });
+
+  it('renders Admin Panel entry visible when user is a verified administrator', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'admin-1', email: 'admin@horizon.edu', app_metadata: { role: 'admin' } },
+      profile: { id: 'admin-1', name: 'Admin User', avatar_url: null },
+      session: { access_token: 'tok' },
+      loading: false,
+      isAdmin: true,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <ProfilePopover />
+        </MemoryRouter>
+      );
+    });
+
+    const triggerBtn = container?.querySelector('button') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    const adminLink = container?.querySelector('a[href="/admin/notifications"]');
+    expect(adminLink).not.toBeNull();
+    expect(adminLink?.textContent).toBe('Admin Panel');
+    expect(adminLink?.getAttribute('aria-label')).toBe('Admin Panel');
+    expect(adminLink?.className).toContain('focus-visible:ring-2');
+  });
+
+  it('hides Admin Panel entry for a regular student (isAdmin === false)', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'student-1', email: 'student@horizon.edu', app_metadata: { role: 'student' } },
+      profile: { id: 'student-1', name: 'Student User', avatar_url: null },
+      session: { access_token: 'tok' },
+      loading: false,
+      isAdmin: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <ProfilePopover />
+        </MemoryRouter>
+      );
+    });
+
+    const triggerBtn = container?.querySelector('button') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    const adminLink = container?.querySelector('a[href="/admin/notifications"]');
+    expect(adminLink).toBeNull();
+  });
+
+  it('hides Admin Panel entry when user_metadata.role === "admin" alone without app_metadata.role === "admin"', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: {
+        id: 'attacker-1',
+        email: 'attacker@horizon.edu',
+        user_metadata: { role: 'admin' },
+        app_metadata: { role: 'student' },
+      },
+      profile: { id: 'attacker-1', name: 'Attacker User', avatar_url: null },
+      session: { access_token: 'tok' },
+      loading: false,
+      isAdmin: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <ProfilePopover />
+        </MemoryRouter>
+      );
+    });
+
+    const triggerBtn = container?.querySelector('button') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    const adminLink = container?.querySelector('a[href="/admin/notifications"]');
+    expect(adminLink).toBeNull();
+  });
+
+  it('hides Admin Panel entry when profiles.role === "admin" alone without app_metadata.role === "admin"', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'student-2', email: 'student2@horizon.edu', app_metadata: {} },
+      profile: { id: 'student-2', name: 'Student User', avatar_url: null, role: 'admin' },
+      session: { access_token: 'tok' },
+      loading: false,
+      isAdmin: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <ProfilePopover />
+        </MemoryRouter>
+      );
+    });
+
+    const triggerBtn = container?.querySelector('button') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    const adminLink = container?.querySelector('a[href="/admin/notifications"]');
+    expect(adminLink).toBeNull();
+  });
+
+  it('closes menu when Admin Panel entry is selected', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'admin-1', email: 'admin@horizon.edu', app_metadata: { role: 'admin' } },
+      profile: { id: 'admin-1', name: 'Admin User', avatar_url: null },
+      session: { access_token: 'tok' },
+      loading: false,
+      isAdmin: true,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter initialEntries={['/dashboard']}>
+          <ProfilePopover />
+        </MemoryRouter>
+      );
+    });
+
+    const triggerBtn = container?.querySelector('button') as HTMLButtonElement;
+    act(() => {
+      triggerBtn.click();
+    });
+
+    expect(triggerBtn.getAttribute('aria-expanded')).toBe('true');
+
+    const adminLink = container?.querySelector('a[href="/admin/notifications"]') as HTMLAnchorElement;
+    expect(adminLink).not.toBeNull();
+
+    act(() => {
+      adminLink.click();
+    });
+
+    expect(triggerBtn.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('renders avatar trigger button with proper ARIA attributes, type="button", and focus ring', () => {

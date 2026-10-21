@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import styles from './ProfilePopover.module.css';
 
 const ProfilePopover: React.FC = () => {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isAdmin, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -86,6 +86,16 @@ const ProfilePopover: React.FC = () => {
             >
               View Profile
             </Link>
+            {isAdmin && (
+              <Link
+                to="/admin/notifications"
+                className={`${styles.popoverLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
+                onClick={closePopover}
+                aria-label="Admin Panel"
+              >
+                Admin Panel
+              </Link>
+            )}
             <Link
               to="/settings/notifications"
               className={`${styles.popoverLink} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]`}
