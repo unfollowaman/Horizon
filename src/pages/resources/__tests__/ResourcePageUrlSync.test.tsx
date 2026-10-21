@@ -80,8 +80,10 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
       user: null,
       profile: null,
       loading: false,
+      isAdmin: false,
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
     });
   });
 
@@ -189,8 +191,10 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
         onboarding_completed: true,
       },
       loading: false,
+      isAdmin: false,
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
     });
 
     await act(async () => {
@@ -222,8 +226,10 @@ describe('ResourcePage URL Hierarchy Synchronization', () => {
         onboarding_completed: true,
       },
       loading: false,
+      isAdmin: false,
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
     });
 
     await act(async () => {

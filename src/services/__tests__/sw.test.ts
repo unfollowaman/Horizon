@@ -123,7 +123,7 @@ describe('public/sw.js Service Worker', () => {
 
       await waitUntilPromise;
 
-      expect(mockShowNotification).toHaveBeenCalledWith('Horizon Notification', {
+      expect(mockShowNotification).toHaveBeenCalledWith('Horizon', {
         body: 'Plain text announcement message',
         icon: '/assets/favicon/favicon-96x96.png',
         badge: '/assets/favicon/favicon-96x96.png',

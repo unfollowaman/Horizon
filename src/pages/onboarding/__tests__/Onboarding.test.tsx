@@ -1360,8 +1360,7 @@ describe('Onboarding Component', () => {
     expect(container?.querySelector('h1')?.textContent).toBe('Welcome to Horizon');
   });
 
-  it('redirects unauthenticated user to /login and user with completed onboarding to /', async () => {
-    // Unauthenticated test
+  it('redirects unauthenticated user to /login', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: { session: null },
       error: null,
@@ -1376,10 +1375,9 @@ describe('Onboarding Component', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('/login');
+  });
 
-    mockNavigate.mockClear();
-
-    // Already completed onboarding test
+  it('redirects user with completed onboarding to /', async () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: { user: { id: 'test-user-id' } },
@@ -1387,12 +1385,12 @@ describe('Onboarding Component', () => {
       error: null,
     } as never);
 
-    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
       if (table === 'profiles') {
         return {
           select: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValueOnce({
+          single: vi.fn().mockResolvedValue({
             data: {
               id: 'test-user-id',
               onboarding_completed: true,
