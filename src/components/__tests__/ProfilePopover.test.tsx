@@ -123,7 +123,8 @@ describe('ProfilePopover Component', () => {
 
     const settingsLink = container?.querySelector('a[href="/settings/notifications"]');
     expect(settingsLink).not.toBeNull();
-    expect(settingsLink?.textContent).toBe('Settings');
+    expect(settingsLink?.textContent).toBe('Notification Settings');
+    expect(settingsLink?.getAttribute('aria-label')).toBe('Notification Settings');
     expect(settingsLink?.className).toContain('focus-visible:ring-2');
 
     const signOutBtn = Array.from(container?.querySelectorAll('button') || []).find(

@@ -155,6 +155,45 @@ describe('Dashboard Component Accessibility & UX', () => {
     expect(avatarImg).not.toBeNull();
   });
 
+  it('renders Notification Alerts preference card with navigation link to /settings/notifications', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'usr-1', email: 'student@example.com' },
+      profile: {
+        id: 'usr-1',
+        name: 'Aman Sharma',
+        student_class: 'Class 10',
+        study_medium: 'English',
+      },
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+    } as never);
+
+    vi.mocked(useDashboardProgress).mockReturnValue({
+      isLoadingProgress: false,
+      progressData: null,
+    });
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <Dashboard />
+        </MemoryRouter>
+      );
+    });
+
+    const notifCard = Array.from(container?.querySelectorAll('div') || []).find(
+      (el) => el.textContent?.includes('Notification Alerts')
+    );
+    expect(notifCard).not.toBeUndefined();
+
+    const manageLink = container?.querySelector('a[href="/settings/notifications"]');
+    expect(manageLink).not.toBeNull();
+    expect(manageLink?.getAttribute('aria-label')).toBe('Manage notification settings');
+    expect(manageLink?.textContent?.trim()).toBe('Manage Notifications');
+    expect(manageLink?.className).toContain('focus-visible:ring-2');
+  });
+
   describe('formatMemberSince date formatting', () => {
     const renderWithProfileCreatedAt = (createdAtValue: string | undefined | null) => {
       vi.mocked(useAuth).mockReturnValue({
