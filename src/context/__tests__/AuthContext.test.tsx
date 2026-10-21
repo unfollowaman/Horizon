@@ -104,6 +104,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.user).toBeNull();
     expect(currentContextValue?.isAdmin).toBe(false);
   });
@@ -126,6 +127,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.user?.email).toBe('student@example.com');
     expect(currentContextValue?.isAdmin).toBe(false);
   });
@@ -149,6 +151,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(false);
   });
 
@@ -171,6 +174,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.user?.email).toBe('admin@example.com');
     expect(currentContextValue?.isAdmin).toBe(true);
   });
@@ -199,6 +203,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(false);
   });
 
@@ -211,6 +216,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(false);
 
     // Simulate sign-in as admin
@@ -227,6 +233,7 @@ describe('AuthContext', () => {
       authStateCallback?.('SIGNED_IN', mockAdminSession);
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(true);
 
     // Simulate sign-out
@@ -253,6 +260,7 @@ describe('AuthContext', () => {
       );
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(false);
 
     // Mock refreshSession returning updated admin claims
@@ -269,6 +277,7 @@ describe('AuthContext', () => {
       await currentContextValue?.refreshSession();
     });
 
+    expect(currentContextValue?.loading).toBe(false);
     expect(currentContextValue?.isAdmin).toBe(true);
   });
 
