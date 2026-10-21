@@ -102,8 +102,10 @@ describe('ResourcePage Educational HTML Content & SEO Metadata', () => {
       user: null,
       profile: null,
       loading: false,
+      isAdmin: false,
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
+      refreshSession: vi.fn(),
     });
   });
 
