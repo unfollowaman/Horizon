@@ -933,7 +933,7 @@ const ResourceDetails: React.FC = () => {
             </p>
             <Link
               to={`/view/${resource.id}`}
-              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 max-w-full font-bold text-xs text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 mx-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
             >
               <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
               <span className="transition-transform group-hover:translate-x-1 shrink-0" aria-hidden="true">&rarr;</span>
