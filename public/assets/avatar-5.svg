@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <!-- Circular clip path to ensure clean geometry constrained precisely to the avatar boundary -->
+  <defs>
+    <clipPath id="circle-clip-5">
+      <circle cx="64" cy="64" r="56" />
+    </clipPath>
+    <!-- 5-pointed star definition with slightly softened corners -->
+    <polygon 
+      id="star-eye" 
+      points="0,-6.2 1.9,-2.1 6.2,-1.5 3.0,1.6 3.8,5.9 0,3.8 -3.8,5.9 -3.0,1.6 -6.2,-1.5 -1.9,-2.1" 
+      fill="#0A0A0A" 
+      stroke="#0A0A0A" 
+      stroke-width="1.2" 
+      stroke-linejoin="round" 
+    />
+  </defs>
+
+  <g clip-path="url(#circle-clip-5)">
+    <!-- White circular base -->
+    <circle cx="64" cy="64" r="56" fill="#FFFFFF" />
+
+    <!-- Vivid coral-red tilted asymmetrical oval covering center and lower-right -->
+    <ellipse cx="75" cy="82" rx="52" ry="60" transform="rotate(35 75 82)" fill="#E5533D" />
+
+    <!-- Facial features tilted slightly along the contour of the shape -->
+    <g transform="rotate(-14 64 70)">
+      <!-- Left Star Eye -->
+      <use href="#star-eye" x="54" y="65" />
+      <!-- Right Star Eye -->
+      <use href="#star-eye" x="72" y="65" />
+      <!-- Open D-shaped smiling mouth -->
+      <path 
+        d="M 56.5 76 H 70.5 C 72 76 72.5 77 72 78.5 C 70.5 82 67.5 83.5 63.5 83.5 C 59.5 83.5 56.5 82 55 78.5 C 54.5 77 55 76 56.5 76 Z" 
+        fill="#0A0A0A" 
+      />
+    </g>
+  </g>
+</svg>

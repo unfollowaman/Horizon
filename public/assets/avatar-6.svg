@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <!-- Circular clip path to ensure clean geometry constrained precisely to the avatar boundary -->
+  <defs>
+    <clipPath id="circle-clip-6">
+      <circle cx="64" cy="64" r="56" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#circle-clip-6)">
+    <!-- White circular base -->
+    <circle cx="64" cy="64" r="56" fill="#FFFFFF" />
+
+    <!-- Soft pink trapezoid shape blending into the rounded bottom boundary -->
+    <path 
+      d="M 40 31 H 88 L 116 125 H 12 Z" 
+      fill="#F4B0BA" 
+      stroke="#F4B0BA" 
+      stroke-width="3" 
+      stroke-linejoin="round" 
+    />
+
+    <!-- Facial features: Two horizontal line eyes and a neutral horizontal mouth -->
+    <g fill="none" stroke="#0A0A0A" stroke-width="4.2" stroke-linecap="round">
+      <!-- Left Eye -->
+      <line x1="50.5" y1="67" x2="58.5" y2="67" />
+      <!-- Right Eye -->
+      <line x1="69.5" y1="67" x2="77.5" y2="67" />
+      <!-- Deadpan Mouth -->
+      <line x1="57.5" y1="81" x2="70.5" y2="81" />
+    </g>
+  </g>
+</svg>

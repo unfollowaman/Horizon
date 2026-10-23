@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <!-- Circular clip path to ensure clean geometry constrained precisely to the avatar boundary -->
+  <defs>
+    <clipPath id="circle-clip-4">
+      <circle cx="64" cy="64" r="56" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#circle-clip-4)">
+    <!-- White circular base -->
+    <circle cx="64" cy="64" r="56" fill="#FFFFFF" />
+
+    <!-- Rich green rounded dome shape rising from the bottom -->
+    <circle cx="64" cy="83" r="49" fill="#41A362" />
+
+    <!-- Facial features: Two small circular eyes and a "3"-shaped puckered mouth -->
+    <g fill="#0A0A0A">
+      <circle cx="53.5" cy="68" r="3.2" />
+      <circle cx="74.5" cy="68" r="3.2" />
+    </g>
+    <path 
+      d="M 64 76.5 C 69.5 76.5 69.5 83.5 64.5 83.5 C 69.5 83.5 69.5 90.5 64 90.5" 
+      fill="none" 
+      stroke="#0A0A0A" 
+      stroke-width="4" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+    />
+  </g>
+</svg>
