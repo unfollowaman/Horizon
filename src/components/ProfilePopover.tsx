@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './ProfilePopover.module.css';
+import { getDefaultAvatar } from '../utils/avatar';
 
 const ProfilePopover: React.FC = () => {
   const { user, profile, isAdmin, signOut } = useAuth();
@@ -43,7 +44,7 @@ const ProfilePopover: React.FC = () => {
 
   if (!user || !profile) return null;
 
-  const initials = profile.name ? profile.name.substring(0, 2).toUpperCase() : 'U';
+  const defaultAvatarPath = getDefaultAvatar(user.id || profile.id);
   const ariaLabel = profile.name ? `${profile.name}'s profile menu` : 'User profile menu';
 
   return (
@@ -57,21 +58,21 @@ const ProfilePopover: React.FC = () => {
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt="" className={styles.avatarImg} />
-        ) : (
-          <span className={styles.avatarInitials}>{initials}</span>
-        )}
+        <img
+          src={profile.avatar_url || defaultAvatarPath}
+          alt=""
+          className={styles.avatarImg}
+        />
       </button>
 
       {isOpen && (
         <div className={`${styles.popoverMenu} neu-raised`} role="dialog" aria-label="User account options">
           <div className={styles.popoverHeader}>
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile Avatar" className={styles.popoverAvatar} />
-            ) : (
-              <div className={styles.popoverAvatarPlaceholder}>{initials}</div>
-            )}
+            <img
+              src={profile.avatar_url || defaultAvatarPath}
+              alt="Profile Avatar"
+              className={styles.popoverAvatar}
+            />
             <div className={styles.popoverUserInfo}>
               <div className={styles.popoverName}>{profile.name || 'User'}</div>
               <div className={styles.popoverEmail}>{user.email}</div>

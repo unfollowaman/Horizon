@@ -5,6 +5,7 @@ import type { Profile } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import PageLoader from '../../components/loading/PageLoader';
 import { subscribeToPushNotifications } from '../../services/notifications';
+import { getDefaultAvatar } from '../../utils/avatar';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -459,19 +460,11 @@ const Onboarding: React.FC = () => {
 
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
-                    {avatarUrl ? (
-                      <img
-                        src={avatarUrl}
-                        alt="Profile"
-                        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-100 shadow-md"
-                      />
-                    ) : (
-                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow-md">
-                        <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
+                    <img
+                      src={avatarUrl || getDefaultAvatar(userId)}
+                      alt="Profile"
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                    />
                   </div>
 
                   <div className="w-full flex flex-col gap-2.5">
@@ -561,19 +554,11 @@ const Onboarding: React.FC = () => {
                 )}
 
                 <div className="bg-[var(--bg-raised)] p-4 sm:p-5 rounded-2xl flex flex-col items-center gap-3 neu-recessed">
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt="Profile"
-                      className="w-20 h-20 rounded-full object-cover shadow-sm"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center shadow-sm">
-                      <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  <img
+                    src={avatarUrl || getDefaultAvatar(userId)}
+                    alt="Profile"
+                    className="w-20 h-20 rounded-full object-cover shadow-sm"
+                  />
 
                   <div className="w-full space-y-2 mt-2">
                     <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
