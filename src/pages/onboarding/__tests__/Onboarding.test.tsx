@@ -1194,9 +1194,10 @@ describe('Onboarding Component', () => {
     const alertBanner = container?.querySelector('[role="alert"]');
     expect(alertBanner?.textContent).toBe('Failed to upload profile photo. Please try again.');
 
-    // Verify avatarUrl remains null (renders SVG placeholder, not <img>)
-    const avatarImg = container?.querySelector('img[alt="Profile"]');
-    expect(avatarImg).toBeNull();
+    // Verify default avatar SVG is rendered when avatarUrl remains null
+    const avatarImg = container?.querySelector('img[alt="Profile"]') as HTMLImageElement;
+    expect(avatarImg).not.toBeNull();
+    expect(avatarImg.getAttribute('src')).toMatch(/\/assets\/Avatars\/avatar-\d\.svg/);
   });
 
   it('resets file input value after upload attempt allowing user to retry selecting the same file', async () => {

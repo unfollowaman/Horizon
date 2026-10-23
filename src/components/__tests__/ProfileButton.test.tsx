@@ -65,7 +65,7 @@ describe('ProfileButton Component', () => {
     expect(svg?.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('renders user-specific aria-label and links to /dashboard when authenticated with profile name', () => {
+  it('renders user-specific aria-label, default avatar SVG image, and links to /dashboard when authenticated with profile name', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: { id: 'usr-1' },
       profile: { id: 'usr-1', name: 'Aman Sharma', avatar_url: null },
@@ -88,10 +88,12 @@ describe('ProfileButton Component', () => {
     expect(link?.getAttribute('aria-label')).toBe("Aman Sharma's Profile");
     expect(link?.getAttribute('title')).toBe("Aman Sharma's Profile");
     expect(link?.getAttribute('href')).toBe('/dashboard');
-    expect(link?.textContent).toBe('AM');
+    const img = link?.querySelector('img');
+    expect(img).not.toBeNull();
+    expect(img?.getAttribute('src')).toMatch(/\/assets\/Avatars\/avatar-\d\.svg/);
   });
 
-  it('renders "Go to Dashboard" aria-label when authenticated without profile name', () => {
+  it('renders "Go to Dashboard" aria-label with default avatar SVG image when authenticated without profile name', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: { id: 'usr-2' },
       profile: { id: 'usr-2', name: '', avatar_url: null },
@@ -114,6 +116,8 @@ describe('ProfileButton Component', () => {
     expect(link?.getAttribute('aria-label')).toBe('Go to Dashboard');
     expect(link?.getAttribute('title')).toBe('Go to Dashboard');
     expect(link?.getAttribute('href')).toBe('/dashboard');
-    expect(link?.textContent).toBe('U');
+    const img = link?.querySelector('img');
+    expect(img).not.toBeNull();
+    expect(img?.getAttribute('src')).toMatch(/\/assets\/Avatars\/avatar-\d\.svg/);
   });
 });

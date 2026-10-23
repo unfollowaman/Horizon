@@ -5,6 +5,7 @@ import styles from './Dashboard.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { useDashboardProgress } from './hooks/useDashboardProgress';
 import DashboardSkeleton from '../../components/DashboardSkeleton';
+import { getDefaultAvatar } from '../../utils/avatar';
 
 const Dashboard: React.FC = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -21,10 +22,10 @@ const Dashboard: React.FC = () => {
     return <DashboardSkeleton />;
   }
 
-  // Fallback for names/initials
+  // Fallback for names/email
   const displayName = profile?.name || 'Student';
   const displayEmail = user?.email || 'Not set';
-  const initials = profile?.name ? profile.name.substring(0, 2).toUpperCase() : 'U';
+  const defaultAvatarPath = getDefaultAvatar(user?.id || profile?.id);
 
   // Helper to format created_at date to "October 2023" style
   const formatMemberSince = (createdAtString: string | undefined | null) => {
@@ -186,11 +187,11 @@ const Dashboard: React.FC = () => {
           {/* Card 1: Profile Header */}
           <div className="neu-card rounded-2xl p-8">
             <div className={styles.profileHeaderCard}>
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={`${displayName}'s profile photo`} className={styles.avatar} />
-              ) : (
-                <div className={styles.avatar}>{initials}</div>
-              )}
+              <img
+                src={profile?.avatar_url || defaultAvatarPath}
+                alt={`${displayName}'s profile photo`}
+                className={styles.avatar}
+              />
               <div className={styles.userInfo}>
                 <h4 className="text-heading-card font-bold text-ink truncate max-w-[240px]" title={displayName}>
                   {displayName}
