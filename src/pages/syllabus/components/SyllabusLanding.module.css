@@ -1,0 +1,24 @@
+.tilesWrapper {
+  perspective: 1400px;
+}
+
+.classTile {
+  opacity: 0;
+  transform-origin: 50% 0%;
+  transform: rotateX(-22deg) translateY(-48px) scale(0.97);
+  transition: opacity 0.7s ease-out, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.isVisible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classTile {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
