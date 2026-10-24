@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { SyllabusChapterHierarchy } from '../../../types';
 import SyllabusTopicNode from './SyllabusTopicNode';
+import { useUnfoldReveal } from '../../../hooks/useUnfoldReveal';
+import styles from './SyllabusFlowchart.module.css';
 
 interface FlowchartChapterCardProps {
   chapter: SyllabusChapterHierarchy;
@@ -9,6 +11,10 @@ interface FlowchartChapterCardProps {
   onToggle: (id: string) => void;
   notesPath: string;
   pyqPath: string;
+  isVisible: boolean;
+  isTileCompleted: boolean;
+  staggerDelayMs: number;
+  onTransitionEnd: (e: React.TransitionEvent<HTMLElement>) => void;
 }
 
 /**
@@ -17,7 +23,17 @@ interface FlowchartChapterCardProps {
  * toggling other chapters in the flowchart or when parent state updates.
  */
 const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
-  ({ chapter, isOpen, onToggle, notesPath, pyqPath }) => {
+  ({
+    chapter,
+    isOpen,
+    onToggle,
+    notesPath,
+    pyqPath,
+    isVisible,
+    isTileCompleted,
+    staggerDelayMs,
+    onTransitionEnd,
+  }) => {
     // Memoize sorted topics with a non-mutating copy to prevent render-time array mutation and repeated sorts
     const topics = useMemo(() => {
       if (!chapter.syllabus_topics || chapter.syllabus_topics.length === 0) return [];
@@ -29,7 +45,14 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
     const hasTopics = topics.length > 0;
 
     return (
-      <div className="neu-card rounded-2xl p-2 sm:p-3 transition-all space-y-3.5 relative z-10 flex flex-col justify-between h-auto min-w-0">
+      <div
+        onTransitionEnd={onTransitionEnd}
+        style={{
+          transitionDelay: isTileCompleted ? '0ms' : `${staggerDelayMs}ms`,
+          willChange: isTileCompleted ? 'auto' : 'transform, opacity',
+        }}
+        className={`neu-card rounded-2xl p-2 sm:p-3 space-y-3.5 relative z-10 flex flex-col justify-between h-auto min-w-0 ${styles.chapterCard} ${isVisible ? styles.isVisible : ''}`}
+      >
         {/* Header & Main Tile Section */}
         {hasTopics ? (
           <button
@@ -185,6 +208,8 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
   classSlug,
   subjectSlug,
 }) => {
+  const { isVisible, completedTiles, handleTransitionEnd } = useUnfoldReveal();
+
   // Track open/collapsed state for chapters with sub-topics (defaults to all closed initially)
   const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({});
 
@@ -266,17 +291,30 @@ export const SyllabusFlowchart: React.FC<SyllabusFlowchartProps> = ({
       </header>
 
       {/* Main Chapter Cards Container - 2 Column Grid on Desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start w-full min-w-0">
-        {sortedChapters.map((chapter) => (
-          <FlowchartChapterCard
-            key={chapter.id}
-            chapter={chapter}
-            isOpen={Boolean(openChapters[chapter.id])}
-            onToggle={toggleChapter}
-            notesPath={notesPath}
-            pyqPath={pyqPath}
-          />
-        ))}
+      <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start w-full min-w-0 ${styles.cardsWrapper}`}>
+        {sortedChapters.map((chapter, index) => {
+          const isTileCompleted = Boolean(completedTiles[chapter.id]);
+          const staggerDelayMs = Math.min(index * 120, 360);
+
+          return (
+            <FlowchartChapterCard
+              key={chapter.id}
+              chapter={chapter}
+              isOpen={Boolean(openChapters[chapter.id])}
+              onToggle={toggleChapter}
+              notesPath={notesPath}
+              pyqPath={pyqPath}
+              isVisible={isVisible}
+              isTileCompleted={isTileCompleted}
+              staggerDelayMs={staggerDelayMs}
+              onTransitionEnd={(e) => {
+                if (e.target === e.currentTarget) {
+                  handleTransitionEnd(e, chapter.id);
+                }
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
