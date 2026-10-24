@@ -57,9 +57,9 @@ const DashboardSkeleton: React.FC = () => {
             </div>
 
             {/* Card 2: Profile Summary */}
-            <div className="neu-card rounded-2xl p-8 space-y-4 animate-pulse">
+            <div className="neu-card rounded-2xl p-6 space-y-3.5 animate-pulse">
               <div className="w-36 h-4 bg-ink/10 rounded" />
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <div className="w-full h-5 bg-ink/5 rounded" />
                 <div className="w-full h-5 bg-ink/5 rounded" />
                 <div className="w-full h-5 bg-ink/5 rounded" />

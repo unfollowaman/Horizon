@@ -215,18 +215,18 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Card 2: Profile Summary */}
-          <div className="neu-card rounded-2xl p-8">
-            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-6 font-semibold">
+          <div className="neu-card rounded-2xl p-6">
+            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-3.5 font-semibold">
               Profile Summary
             </span>
-            <div className="flex flex-col gap-5">
-              <div className="flex justify-between items-center pb-3 border-b border-black/[0.04]">
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center pb-2.5 border-b border-black/[0.04]">
                 <span className="text-body-base text-muted-foreground font-medium">Class</span>
                 <span className="text-body-base text-ink font-bold">
                   {profile?.student_class || 'Not set'}
                 </span>
               </div>
-              <div className="flex justify-between items-center pb-3 border-b border-black/[0.04]">
+              <div className="flex justify-between items-center pb-2.5 border-b border-black/[0.04]">
                 <span className="text-body-base text-muted-foreground font-medium">Study Medium</span>
                 <span className="text-body-base text-ink font-bold">
                   {profile?.study_medium || 'Not set'}
