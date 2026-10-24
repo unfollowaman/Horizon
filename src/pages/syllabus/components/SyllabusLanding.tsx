@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProfileButton from '../../../components/ProfileButton';
 import { type ClassOption } from '../../../services/syllabusService';
+import styles from './SyllabusLanding.module.css';
 
 interface SyllabusLandingProps {
   classes: ClassOption[];
@@ -54,6 +55,33 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
   onSelectClass,
 }) => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [completedTiles, setCompletedTiles] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    let rafId1: number;
+    let rafId2: number;
+
+    rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
+  }, []);
+
+  const handleTransitionEnd = (
+    e: React.TransitionEvent<HTMLDivElement>,
+    classId: string
+  ) => {
+    if (e.propertyName === 'transform') {
+      setCompletedTiles((prev) => (prev[classId] ? prev : { ...prev, [classId]: true }));
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto min-w-0">
@@ -116,9 +144,10 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
       </header>
 
       {/* Single-Column Horizontal Class Cards Stack */}
-      <div className="flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10">
-        {classes.map((cls) => {
+      <div className={`flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10 ${styles.tilesWrapper}`}>
+        {classes.map((cls, index) => {
           const classNameFormatted = cls.name.endsWith('th') ? cls.name : `${cls.name}th`;
+          const isTileCompleted = completedTiles[cls.id];
 
           return (
             <div
@@ -130,10 +159,15 @@ export const SyllabusLanding: React.FC<SyllabusLandingProps> = ({
                   onSelectClass(cls.slug);
                 }
               }}
+              onTransitionEnd={(e) => handleTransitionEnd(e, cls.id)}
               tabIndex={0}
               role="button"
               aria-label={`View ${classNameFormatted} syllabus`}
-              className="neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0"
+              style={{
+                transitionDelay: `${index * 120}ms`,
+                willChange: isTileCompleted ? 'auto' : 'transform, opacity',
+              }}
+              className={`neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0 ${styles.classTile} ${isVisible ? styles.isVisible : ''}`}
             >
               {/* LEFT: Compact Icon Container */}
               <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-0 shrink-0 overflow-hidden">

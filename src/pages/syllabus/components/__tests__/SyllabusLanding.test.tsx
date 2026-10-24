@@ -130,4 +130,67 @@ describe('SyllabusLanding', () => {
     });
     expect(handleSelectClass).toHaveBeenCalledWith('class-8');
   });
+
+  it('applies 3D reveal animation classes, staggered delays, double rAF trigger, and resets will-change on transition end', () => {
+    let rafCallbacks: FrameRequestCallback[] = [];
+    const origRequestAnimationFrame = window.requestAnimationFrame;
+    const origCancelAnimationFrame = window.cancelAnimationFrame;
+
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafCallbacks.push(cb);
+      return rafCallbacks.length;
+    });
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {
+      rafCallbacks = [];
+    });
+
+    try {
+      act(() => {
+        root?.render(
+          <MemoryRouter>
+            <SyllabusLanding classes={SUPPORTED_CLASSES} onSelectClass={() => {}} />
+          </MemoryRouter>
+        );
+      });
+
+      const cards = container?.querySelectorAll('[role="button"]') as NodeListOf<HTMLDivElement>;
+      expect(cards.length).toBe(3);
+
+      // Initially on first frame, represents hidden state (isVisible is false)
+      expect(cards[0].className).not.toContain('isVisible');
+
+      // Stagger delays
+      expect(cards[0].style.transitionDelay).toBe('0ms');
+      expect(cards[1].style.transitionDelay).toBe('120ms');
+      expect(cards[2].style.transitionDelay).toBe('240ms');
+
+      // Initial willChange style
+      expect(cards[0].style.willChange).toBe('transform, opacity');
+
+      // Flush double rAF
+      act(() => {
+        while (rafCallbacks.length > 0) {
+          const cb = rafCallbacks.shift();
+          cb?.(performance.now());
+        }
+      });
+
+      // Now isVisible is true
+      expect(cards[0].className).toContain('isVisible');
+
+      // Dispatch transitionend with propertyName 'transform' on first tile
+      act(() => {
+        const event = new Event('transitionend', { bubbles: true }) as TransitionEvent;
+        Object.defineProperty(event, 'propertyName', { value: 'transform' });
+        cards[0].dispatchEvent(event);
+      });
+
+      // Confirms willChange reset to auto for completed tile
+      expect(cards[0].style.willChange).toBe('auto');
+      expect(cards[1].style.willChange).toBe('transform, opacity');
+    } finally {
+      window.requestAnimationFrame = origRequestAnimationFrame;
+      window.cancelAnimationFrame = origCancelAnimationFrame;
+    }
+  });
 });
