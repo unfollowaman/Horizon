@@ -844,18 +844,6 @@ const ResourceDetails: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
-                <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 11h10M7 15h10M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
-                  </svg>
-                  Type:
-                </dt>
-                <dd className="m-0 font-bold text-ink capitalize text-right break-words text-caption min-w-0">
-                  {isPYQ ? 'Previous Year Paper' : resource.resource_type.replace('_', ' ')}
-                </dd>
-              </div>
-
               {resource.year && (
                 <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
