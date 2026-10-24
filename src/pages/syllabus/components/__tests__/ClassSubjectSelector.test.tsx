@@ -19,8 +19,8 @@ const mockSubjects: SubjectOption[] = [
   { id: 'mathematics', name: 'Mathematics', slug: 'mathematics', description: 'Explore math concepts.' },
   { id: 'science', name: 'Science', slug: 'science', description: 'Explore science concepts.' },
   { id: 'social-science', name: 'Social Science', slug: 'social-science', description: 'Explore social science.' },
-  { id: 'hindi', name: 'Hindi', slug: 'hindi', description: 'Explore Hindi.' },
   { id: 'english', name: 'English', slug: 'english', description: 'Explore English.' },
+  { id: 'hindi', name: 'Hindi', slug: 'hindi', description: 'Explore Hindi.' },
   { id: 'sanskrit', name: 'Sanskrit', slug: 'sanskrit', description: 'Explore Sanskrit.' },
 ];
 
@@ -120,20 +120,20 @@ describe('ClassSubjectSelector Component Tests', () => {
     expect(socialScienceImg).not.toBeNull();
     expect(socialScienceImg?.src).toContain('/assets/SVG%20Illustrations/social-science.svg');
 
-    const hindiImg = container?.querySelector('img[alt="Hindi illustration"]') as HTMLImageElement | null;
-    expect(hindiImg).not.toBeNull();
-    expect(hindiImg?.src).toContain('/assets/SVG%20Illustrations/Hindi.svg');
-
     const englishImg = container?.querySelector('img[alt="English illustration"]') as HTMLImageElement | null;
     expect(englishImg).not.toBeNull();
     expect(englishImg?.src).toContain('/assets/SVG%20Illustrations/english.svg');
+
+    const hindiImg = container?.querySelector('img[alt="Hindi illustration"]') as HTMLImageElement | null;
+    expect(hindiImg).not.toBeNull();
+    expect(hindiImg?.src).toContain('/assets/SVG%20Illustrations/Hindi.svg');
 
     const sanskritImg = container?.querySelector('img[alt="Sanskrit illustration"]') as HTMLImageElement | null;
     expect(sanskritImg).not.toBeNull();
     expect(sanskritImg?.src).toContain('/assets/SVG%20Illustrations/sanskrit.svg');
   });
 
-  it('3. Renders subject cards with subject names and descriptions', async () => {
+  it('3. Renders subject cards with 3D unfold reveal animation styling, perspective wrapper, capped stagger delay, and completion handler', async () => {
     const handleSelectSubject = vi.fn();
     const handleBack = vi.fn();
 
@@ -150,17 +150,34 @@ describe('ClassSubjectSelector Component Tests', () => {
       );
     });
 
-    const mathCard = container?.querySelector('[aria-label="View syllabus for Class 8 Mathematics"]');
-    expect(mathCard).not.toBeNull();
-    expect(mathCard?.textContent).toContain('Mathematics');
-    expect(mathCard?.textContent).toContain('Explore math concepts.');
+    // Check tiles wrapper container class exists
+    const tilesWrapper = container?.querySelector('div[class*="tilesWrapper"]');
+    expect(tilesWrapper).not.toBeNull();
 
-    const scienceCard = container?.querySelector('[aria-label="View syllabus for Class 8 Science"]');
-    expect(scienceCard).not.toBeNull();
-    expect(scienceCard?.textContent).toContain('Science');
+    const subjectCards = container?.querySelectorAll('div[role="button"][aria-label^="View syllabus for"]');
+    expect(subjectCards?.length).toBe(6);
+
+    // Verify staggered transition delays (0ms, 120ms, 240ms, 360ms, 360ms cap for index 4 & 5)
+    expect((subjectCards?.[0] as HTMLElement).style.transitionDelay).toBe('0ms');
+    expect((subjectCards?.[1] as HTMLElement).style.transitionDelay).toBe('120ms');
+    expect((subjectCards?.[2] as HTMLElement).style.transitionDelay).toBe('240ms');
+    expect((subjectCards?.[3] as HTMLElement).style.transitionDelay).toBe('360ms');
+    expect((subjectCards?.[4] as HTMLElement).style.transitionDelay).toBe('360ms'); // capped
+    expect((subjectCards?.[5] as HTMLElement).style.transitionDelay).toBe('360ms'); // capped
+
+    // Verify initial willChange state is transform, opacity
+    expect((subjectCards?.[0] as HTMLElement).style.willChange).toBe('transform, opacity');
+
+    // Simulate transitionEnd event for transform property
+    await act(async () => {
+      subjectCards?.[0].dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'transform', bubbles: true }));
+    });
+
+    // Verify willChange resets to 'auto' after transition completion
+    expect((subjectCards?.[0] as HTMLElement).style.willChange).toBe('auto');
   });
 
-  it('3. Triggers onSelectSubject on card click/Enter key and onBackToClasses on back button click', async () => {
+  it('4. Triggers onSelectSubject on card click/Enter key and onBackToClasses on back button click', async () => {
     const handleSelectSubject = vi.fn();
     const handleBack = vi.fn();
 
@@ -199,18 +216,18 @@ describe('ClassSubjectSelector Component Tests', () => {
     expect(handleSelectSubject).toHaveBeenCalledWith('science');
   });
 
-  it('4. Has React.memo and displayName set on ClassSubjectSelector', () => {
+  it('5. Has React.memo and displayName set on ClassSubjectSelector', () => {
     expect(ClassSubjectSelector.displayName).toBe('ClassSubjectSelector');
   });
 
-  it('5. getSubjectsForClass returns cached array reference on repeated calls', () => {
+  it('6. getSubjectsForClass returns cached array reference on repeated calls', () => {
     const firstCall = getSubjectsForClass('10');
     const secondCall = getSubjectsForClass('10');
     expect(firstCall).toBe(secondCall);
     expect(firstCall.length).toBeGreaterThan(0);
   });
 
-  it('6. Demonstrates measurable performance improvement for cached getSubjectsForClass over unmemoized baseline', () => {
+  it('7. Demonstrates measurable performance improvement for cached getSubjectsForClass over unmemoized baseline', () => {
     const iterations = 100000;
 
     // Baseline: Unmemoized allocation loop
