@@ -1,6 +1,8 @@
 import React from 'react';
 import ProfileButton from '../../../components/ProfileButton';
 import type { SubjectOption, ClassOption } from '../../../services/syllabusService';
+import { useUnfoldReveal } from '../../../hooks/useUnfoldReveal';
+import styles from './ClassSubjectSelector.module.css';
 
 interface ClassSubjectSelectorProps {
   currentClass: ClassOption;
@@ -88,6 +90,8 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = React.m
   onSelectSubject,
   onBackToClasses,
 }) => {
+  const { isVisible, completedTiles, handleTransitionEnd } = useUnfoldReveal();
+
   return (
     <div className="max-w-5xl mx-auto min-w-0">
       {/* Top Header Navigation */}
@@ -150,56 +154,66 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = React.m
       </header>
 
       {/* Single-Column Horizontal Subject Cards Stack */}
-      <div className="flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10">
-        {subjects.map((subj) => (
-          <div
-            key={subj.slug}
-            onClick={() => onSelectSubject(subj.slug)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onSelectSubject(subj.slug);
-              }
-            }}
-            tabIndex={0}
-            role="button"
-            aria-label={`View syllabus for ${currentClass.name} ${subj.name}`}
-            className="neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0"
-          >
-            {/* LEFT: Compact Icon Container */}
-            <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-0 shrink-0 overflow-hidden">
-              {getSubjectIllustration(subj.slug, subj.name)}
-            </div>
+      <div className={`flex flex-col gap-3.5 sm:gap-4 mb-8 sm:mb-10 ${styles.tilesWrapper}`}>
+        {subjects.map((subj, index) => {
+          const isTileCompleted = completedTiles[subj.slug];
+          const staggerDelayMs = Math.min(index * 120, 360);
 
-            {/* CENTER: Subject Title & Left-Aligned Description */}
-            <div className="flex-1 min-w-0 space-y-1 text-left">
-              <h2 className="text-base sm:text-lg font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 truncate">
-                {subj.name}
-              </h2>
-              <p className="text-xs sm:text-sm text-ink/70 leading-snug sm:leading-relaxed m-0">
-                {subj.description || 'Explore chapter hierarchy, subtopics, and practice exercises.'}
-              </p>
-            </div>
+          return (
+            <div
+              key={subj.slug}
+              onClick={() => onSelectSubject(subj.slug)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectSubject(subj.slug);
+                }
+              }}
+              onTransitionEnd={(e) => handleTransitionEnd(e, subj.slug)}
+              tabIndex={0}
+              role="button"
+              aria-label={`View syllabus for ${currentClass.name} ${subj.name}`}
+              style={{
+                transitionDelay: `${staggerDelayMs}ms`,
+                willChange: isTileCompleted ? 'auto' : 'transform, opacity',
+              }}
+              className={`neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0 ${styles.subjectTile} ${isVisible ? styles.isVisible : ''}`}
+            >
+              {/* LEFT: Compact Icon Container */}
+              <div className="w-14 h-14 sm:w-16 sm:h-16 neu-recessed rounded-md flex items-center justify-center p-0 shrink-0 overflow-hidden">
+                {getSubjectIllustration(subj.slug, subj.name)}
+              </div>
 
-            {/* RIGHT: Circular Neumorphic Arrow Action Button */}
-            <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
-              <svg
-                aria-hidden="true"
-                className="w-2 h-2 text-[#E91E8C] shrink-0"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+              {/* CENTER: Subject Title & Left-Aligned Description */}
+              <div className="flex-1 min-w-0 space-y-1 text-left">
+                <h2 className="text-base sm:text-lg font-extrabold text-ink group-hover:text-[#E91E8C] transition-colors m-0 truncate">
+                  {subj.name}
+                </h2>
+                <p className="text-xs sm:text-sm text-ink/70 leading-snug sm:leading-relaxed m-0">
+                  {subj.description || 'Explore chapter hierarchy, subtopics, and practice exercises.'}
+                </p>
+              </div>
+
+              {/* RIGHT: Circular Neumorphic Arrow Action Button */}
+              <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm group-hover:neu-raised-sm-hover rounded-full flex items-center justify-center shrink-0 transition-all">
+                <svg
+                  aria-hidden="true"
+                  className="w-2 h-2 text-[#E91E8C] shrink-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
