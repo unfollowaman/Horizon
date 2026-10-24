@@ -319,4 +319,83 @@ describe('S6 SyllabusFlowchart Component Tests', () => {
     expect(duration).toBeLessThan(1000); // Expect smooth render within target budget
     expect(container?.textContent).toContain('CHAPTER 50');
   });
+
+  it('8. renders chapter cards with 3D unfold reveal animation wrapper, capped stagger transition delays, and transition completion handler', async () => {
+    const multiChapters: SyllabusChapterHierarchy[] = Array.from({ length: 6 }, (_, i) => ({
+      id: `ch-test-${i + 1}`,
+      chapter_number: i + 1,
+      chapter_name: `Chapter ${i + 1}`,
+      display_order: i + 1,
+      is_active: true,
+      syllabus_topics: [],
+    }));
+
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={multiChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    // Verify grid container has 3D perspective cardsWrapper class
+    const gridWrapper = container?.querySelector('div[class*="cardsWrapper"]');
+    expect(gridWrapper).not.toBeNull();
+
+    // Query chapter card elements (outer div of each FlowchartChapterCard)
+    const cards = container?.querySelectorAll('div[class*="chapterCard"]');
+    expect(cards?.length).toBe(6);
+
+    // Verify staggered transition delays (0ms, 120ms, 240ms, 360ms, 360ms capped for index 4 & 5)
+    expect((cards?.[0] as HTMLElement).style.transitionDelay).toBe('0ms');
+    expect((cards?.[1] as HTMLElement).style.transitionDelay).toBe('120ms');
+    expect((cards?.[2] as HTMLElement).style.transitionDelay).toBe('240ms');
+    expect((cards?.[3] as HTMLElement).style.transitionDelay).toBe('360ms');
+    expect((cards?.[4] as HTMLElement).style.transitionDelay).toBe('360ms'); // capped
+    expect((cards?.[5] as HTMLElement).style.transitionDelay).toBe('360ms'); // capped
+
+    // Verify initial willChange state is transform, opacity
+    expect((cards?.[0] as HTMLElement).style.willChange).toBe('transform, opacity');
+
+    // Simulate transitionEnd event on card[0] for propertyName "transform"
+    await act(async () => {
+      cards?.[0].dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'transform', bubbles: true }));
+    });
+
+    // Verify willChange resets to 'auto' after transition completion
+    expect((cards?.[0] as HTMLElement).style.willChange).toBe('auto');
+  });
+
+  it('9. expanding and collapsing a chapter card does not retrigger unfold reveal animation', async () => {
+    await act(async () => {
+      root?.render(
+        <MemoryRouter>
+          <SyllabusFlowchart chapters={sampleChapters} subjectName="Mathematics" classNameTitle="Class 10" />
+        </MemoryRouter>
+      );
+    });
+
+    const card = container?.querySelector('div[class*="chapterCard"]') as HTMLElement;
+    expect(card).not.toBeNull();
+
+    // Mark transition complete
+    await act(async () => {
+      card.dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'transform', bubbles: true }));
+    });
+
+    expect(card.style.willChange).toBe('auto');
+
+    // Toggle expand
+    const toggleButton = container?.querySelector(
+      '[aria-label="Toggle topics for Chapter 1: Real Numbers"]'
+    ) as HTMLElement;
+
+    await act(async () => {
+      toggleButton.click();
+    });
+
+    // willChange should remain 'auto' and transitionDelay should remain '0ms'
+    expect(card.style.willChange).toBe('auto');
+    expect(card.style.transitionDelay).toBe('0ms');
+  });
 });
