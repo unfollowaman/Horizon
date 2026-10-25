@@ -1,0 +1,28 @@
+.unfoldHidden {
+  opacity: 0;
+  transform-origin: 50% 0%;
+  transform: perspective(1400px) rotateX(-22deg) translateY(-48px) scale(0.97);
+  transition: opacity 0.7s ease-out, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.unfoldVisible {
+  opacity: 1;
+  transform: perspective(1400px) rotateX(0deg) translateY(0px) scale(1);
+}
+
+.unfoldSettled {
+  opacity: 1;
+  transform: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unfoldHidden {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}
