@@ -20,6 +20,7 @@ import ProfileButton from '../../components/ProfileButton';
 import LibraryEducationalGuide from './components/LibraryEducationalGuide';
 import NotesEducationalGuide from './components/NotesEducationalGuide';
 import { serializeJsonLd } from '../../utils/jsonLd';
+import { useResourceUnfoldObserver } from '../../hooks/useResourceUnfoldObserver';
 
 export interface ResourcePageConfig {
   resourceType: ResourceType;
@@ -47,6 +48,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const location = useLocation();
   const params = useParams<{ classSlug?: string; mediumSlug?: string; subjectSlug?: string }>();
   const { profile, loading: authLoading } = useAuth();
+  const { getElementProps } = useResourceUnfoldObserver();
 
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -413,8 +415,8 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       )}
 
       {/* Filter Controls */}
-      <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-1 sm:grid-cols-3 w-full gap-[12px]">
-        <div className="w-full min-w-0 flex flex-col gap-2">
+      <div className="mb-[clamp(24px,4vw,40px)] grid grid-cols-1 sm:grid-cols-3 w-full gap-[12px] relative z-20">
+        <div {...getElementProps('dropdown-class', 'w-full min-w-0 flex flex-col gap-2')}>
           <Dropdown
             ariaLabel="Filter by class"
             value={selectedClass || classAllLabel}
@@ -433,7 +435,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           />
         </div>
 
-        <div className="w-full min-w-0 flex flex-col gap-2">
+        <div {...getElementProps('dropdown-subject', 'w-full min-w-0 flex flex-col gap-2')}>
           <Dropdown
             ariaLabel="Filter by subject"
             value={selectedSubject || subjectAllLabel}
@@ -452,7 +454,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
           />
         </div>
 
-        <div className="w-full min-w-0 flex flex-col gap-2">
+        <div {...getElementProps('dropdown-third', 'w-full min-w-0 flex flex-col gap-2')}>
           <Dropdown
             ariaLabel={config.thirdFilterType === 'medium' ? 'Filter by medium' : 'Filter by year'}
             value={selectedThirdFilter || thirdFilterAllLabel}
@@ -508,7 +510,9 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
           {filteredResources.map((resource) => (
-            <MaterialCard key={resource.id} resource={resource} />
+            <div key={resource.id} {...getElementProps(`card-${resource.id}`, 'h-full')}>
+              <MaterialCard resource={resource} />
+            </div>
           ))}
         </div>
       )}
