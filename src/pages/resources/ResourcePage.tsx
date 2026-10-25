@@ -21,6 +21,7 @@ import LibraryEducationalGuide from './components/LibraryEducationalGuide';
 import NotesEducationalGuide from './components/NotesEducationalGuide';
 import { serializeJsonLd } from '../../utils/jsonLd';
 import { useResourceUnfoldObserver } from '../../hooks/useResourceUnfoldObserver';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 
 export interface ResourcePageConfig {
   resourceType: ResourceType;
@@ -52,6 +53,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const showSkeleton = useDelayedLoading(loading, 180);
 
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true
@@ -474,11 +476,15 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
-          {Array.from({ length: 8 }).map((_, idx) => (
-            <MaterialCardSkeleton key={idx} />
-          ))}
-        </div>
+        showSkeleton ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[18px]">
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <MaterialCardSkeleton key={idx} />
+            ))}
+          </div>
+        ) : (
+          <div className="min-h-[300px]" aria-hidden="true" />
+        )
       ) : filteredResources.length === 0 ? (
         <div className="neu-raised rounded-2xl p-8 text-center flex flex-col items-center justify-center">
           <img
