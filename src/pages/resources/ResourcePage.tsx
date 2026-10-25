@@ -47,7 +47,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams<{ classSlug?: string; mediumSlug?: string; subjectSlug?: string }>();
-  const { profile, loading: authLoading } = useAuth();
+  const { profile } = useAuth();
   const { getElementProps } = useResourceUnfoldObserver();
 
   const [allResources, setAllResources] = useState<Resource[]>([]);
@@ -173,8 +173,6 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
   };
 
   useEffect(() => {
-    if (authLoading) return;
-
     let isMounted = true;
 
     const fetchResources = async () => {
@@ -209,7 +207,7 @@ const ResourcePage: React.FC<ResourcePageProps> = ({ config }) => {
     return () => {
       isMounted = false;
     };
-  }, [config.resourceType, config.includeChapters, config.thirdFilterType, selectedThirdFilter, authLoading]);
+  }, [config.resourceType, config.includeChapters, config.thirdFilterType, selectedThirdFilter]);
 
   const uniqueClasses = useMemo(() => {
     const classes = allResources.reduce((acc, r) => {

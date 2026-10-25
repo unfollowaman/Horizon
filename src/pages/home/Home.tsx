@@ -230,6 +230,9 @@ const preloadLibrary = () => {
 const preloadStudyNotes = () => {
   import('../resources/StudyNotesRoute').catch(() => {});
 };
+const preloadSyllabus = () => {
+  import('../syllabus/SyllabusPage').catch(() => {});
+};
 
 const HeroSection = React.memo(() => (
   <section className={styles.heroSection}>
@@ -311,6 +314,12 @@ const FeaturesSection = React.memo(() => {
               onMouseEnter={() => {
                 if (f.path === '/library') preloadLibrary();
                 if (f.path === '/notes') preloadStudyNotes();
+                if (f.path === '/syllabus' || f.id === 'syllabus') preloadSyllabus();
+              }}
+              onTouchStart={() => {
+                if (f.path === '/library') preloadLibrary();
+                if (f.path === '/notes') preloadStudyNotes();
+                if (f.path === '/syllabus' || f.id === 'syllabus') preloadSyllabus();
               }}
             >
               {f.path ? (

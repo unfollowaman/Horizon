@@ -83,6 +83,10 @@ const getSubjectIllustration = (slug: string, name: string) => {
   );
 };
 
+const preloadFlowchart = () => {
+  import('./SyllabusFlowchart').catch(() => {});
+};
+
 // Memoized to prevent unnecessary virtual DOM reconciliations during parent re-renders
 export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = React.memo(({
   currentClass,
@@ -177,6 +181,8 @@ export const ClassSubjectSelector: React.FC<ClassSubjectSelectorProps> = React.m
                 transitionDelay: `${staggerDelayMs}ms`,
                 willChange: isTileCompleted ? 'auto' : 'transform, opacity',
               }}
+              onMouseEnter={preloadFlowchart}
+              onTouchStart={preloadFlowchart}
               className={`neu-raised p-3.5 sm:p-4 rounded-2xl flex items-center gap-3.5 sm:gap-4 cursor-pointer group hover:neu-raised-hover transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 w-full min-w-0 ${styles.subjectTile} ${isVisible ? styles.isVisible : ''}`}
             >
               {/* LEFT: Compact Icon Container */}

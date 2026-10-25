@@ -6,8 +6,6 @@ import { RESOURCE_CATEGORIES } from '../../config/resources';
 import { handleDownload } from '../../utils/download';
 import { canDownload } from '../../utils/permissions';
 import ProfileButton from '../../components/ProfileButton';
-import Spinner from '../../components/loading/Spinner';
-import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { buildCategoryUrl } from '../../utils/urlHelper';
 import { serializeJsonLd } from '../../utils/jsonLd';
 
@@ -19,7 +17,6 @@ const ResourceDetails: React.FC = () => {
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
-  const showLoading = useDelayedLoading(loading, 200);
 
   useEffect(() => {
     const fetchResourceAndRelated = async () => {
@@ -108,20 +105,6 @@ const ResourceDetails: React.FC = () => {
     };
   }, [resource]);
 
-  if (loading) {
-    if (!showLoading) {
-      return null;
-    }
-    return (
-      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)]">
-        <div className="text-center p-6 sm:p-12 neu-card rounded-2xl min-w-0 flex flex-col items-center justify-center">
-          <Spinner size="lg" className="mb-4" />
-          <h1 className="text-xl sm:text-h2 uppercase text-ink break-words">Loading Educational Landing Page...</h1>
-        </div>
-      </div>
-    );
-  }
-
   const categoryBasePath = resource && resource.resource_type ? RESOURCE_CATEGORIES[resource.resource_type]?.path || '/' : '/';
   const backPath = resource
     ? buildCategoryUrl({
@@ -140,6 +123,79 @@ const ResourceDetails: React.FC = () => {
       navigate(backPath, { replace: true });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0" role="status" aria-label="Loading resource details">
+        <span className="sr-only">Loading resource details...</span>
+        {/* Top Header Navigation */}
+        <div className="flex justify-between items-center mb-[clamp(12px,3vw,20px)] w-full min-w-0">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+            aria-label="Go Back"
+            title="Go Back"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <ProfileButton />
+        </div>
+
+        {/* Editorial Main Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-8 items-start w-full min-w-0">
+          {/* Main Column */}
+          <main className="lg:col-span-2 space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
+            {/* Header Card Skeleton */}
+            <div className="neu-card rounded-2xl p-4 sm:p-8 space-y-4 animate-pulse">
+              <div className="flex gap-2">
+                <div className="h-6 w-20 bg-black/10 rounded-full" />
+                <div className="h-6 w-24 bg-black/10 rounded-full" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-black/10 rounded" />
+                <div className="h-8 w-3/4 bg-black/10 rounded" />
+              </div>
+              <div className="h-12 w-full bg-black/10 rounded-xl" />
+            </div>
+
+            {/* CTA Banner Skeleton */}
+            <div className="neu-card rounded-2xl p-4 sm:p-8 space-y-4 animate-pulse">
+              <div className="h-8 w-1/2 bg-black/10 rounded" />
+              <div className="h-4 w-full bg-black/10 rounded" />
+              <div className="h-10 w-40 bg-black/10 rounded-xl" />
+            </div>
+
+            {/* Overview Skeleton */}
+            <div className="neu-card rounded-2xl p-4 sm:p-8 space-y-4 animate-pulse">
+              <div className="h-7 w-1/3 bg-black/10 rounded" />
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-black/10 rounded" />
+                <div className="h-4 w-5/6 bg-black/10 rounded" />
+                <div className="h-4 w-4/6 bg-black/10 rounded" />
+              </div>
+            </div>
+          </main>
+
+          {/* Sidebar Column */}
+          <aside className="space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
+            <div className="neu-card rounded-2xl p-4 sm:p-6 space-y-4 animate-pulse">
+              <div className="h-6 w-1/2 bg-black/10 rounded" />
+              <div className="space-y-3">
+                <div className="h-5 w-full bg-black/10 rounded" />
+                <div className="h-5 w-full bg-black/10 rounded" />
+                <div className="h-5 w-full bg-black/10 rounded" />
+                <div className="h-5 w-full bg-black/10 rounded" />
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    );
+  }
 
   if (!resource) {
     return (
