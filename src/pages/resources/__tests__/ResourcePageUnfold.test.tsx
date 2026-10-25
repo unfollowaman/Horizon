@@ -24,9 +24,10 @@ const mockResources: Resource[] = [
     resource_type: 'notes',
     student_class: 'Class 10',
     subject: 'Science',
-    medium: 'English',
+    medium: 'english',
     pdfUrl: 'https://example.com/notes1.pdf',
-    created_at: '2026-01-01T00:00:00Z',
+    uploadDate: '2026-01-01',
+    thumbnailUrl: '',
   },
   {
     id: 'res-2',
@@ -34,9 +35,10 @@ const mockResources: Resource[] = [
     resource_type: 'notes',
     student_class: 'Class 10',
     subject: 'Science',
-    medium: 'English',
+    medium: 'english',
     pdfUrl: 'https://example.com/notes2.pdf',
-    created_at: '2026-01-02T00:00:00Z',
+    uploadDate: '2026-01-02',
+    thumbnailUrl: '',
   },
   {
     id: 'res-3',
@@ -44,9 +46,10 @@ const mockResources: Resource[] = [
     resource_type: 'notes',
     student_class: 'Class 10',
     subject: 'Mathematics',
-    medium: 'English',
+    medium: 'english',
     pdfUrl: 'https://example.com/notes3.pdf',
-    created_at: '2026-01-03T00:00:00Z',
+    uploadDate: '2026-01-03',
+    thumbnailUrl: '',
   },
 ];
 
