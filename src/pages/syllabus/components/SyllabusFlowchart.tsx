@@ -18,7 +18,7 @@ interface FlowchartChapterCardProps {
 }
 
 /**
- * FlowchartChapterCard renders a single chapter card with optional accordion sub-topics.
+ * FlowchartChapterCard renders a single chapter card with 3D unrolling sub-topics.
  * Wrapped in React.memo to prevent unnecessary virtual DOM reconciliations and re-renders when
  * toggling other chapters in the flowchart or when parent state updates.
  */
@@ -34,6 +34,9 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
     staggerDelayMs,
     onTransitionEnd,
   }) => {
+    // Local state for overflow clipping management after grid-template-rows expansion settles
+    const [isSettled, setIsSettled] = useState<boolean>(false);
+
     // Memoize sorted topics with a non-mutating copy to prevent render-time array mutation and repeated sorts
     const topics = useMemo(() => {
       if (!chapter.syllabus_topics || chapter.syllabus_topics.length === 0) return [];
@@ -43,6 +46,21 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
     }, [chapter.syllabus_topics]);
 
     const hasTopics = topics.length > 0;
+
+    // Handle transition end for panel grid-template-rows settling
+    const handlePanelTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget && e.propertyName === 'grid-template-rows' && isOpen) {
+        setIsSettled(true);
+      }
+    };
+
+    // Synchronously handle toggle click to clear settled overflow before closing
+    const handleToggleClick = () => {
+      if (isOpen) {
+        setIsSettled(false);
+      }
+      onToggle(chapter.id);
+    };
 
     return (
       <div
@@ -57,7 +75,7 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
         {hasTopics ? (
           <button
             type="button"
-            onClick={() => onToggle(chapter.id)}
+            onClick={handleToggleClick}
             aria-expanded={isOpen}
             aria-controls={`chapter-topics-${chapter.id}`}
             aria-label={`Toggle topics for Chapter ${chapter.chapter_number}: ${chapter.chapter_name}`}
@@ -83,7 +101,7 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
               {/* Right side arrow toggle icon */}
               <div className="w-8 h-8 sm:w-9 sm:h-9 neu-raised-sm rounded-full flex items-center justify-center text-[#E91E8C] shrink-0">
                 <svg
-                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -175,15 +193,32 @@ const FlowchartChapterCard = React.memo<FlowchartChapterCardProps>(
           </Link>
         </div>
 
-        {/* Subordinate Topic Branches (Structure B) - Shown when open */}
-        {hasTopics && isOpen && (
+        {/* Subordinate Topic Unroll Section */}
+        {hasTopics && (
           <div
-            id={`chapter-topics-${chapter.id}`}
-            className="space-y-3 sm:space-y-4 mt-3 pt-2 border-t border-ink/5"
+            onTransitionEnd={handlePanelTransitionEnd}
+            className={`${styles.panel} ${isOpen ? styles.panelOpen : ''}`}
           >
-            {topics.map((topic) => (
-              <SyllabusTopicNode key={topic.id} topic={topic} />
-            ))}
+            <div
+              className={`${styles.pin} ${isSettled && isOpen ? styles.pinSettled : ''}`}
+              inert={!isOpen ? true : undefined}
+            >
+              <div className={`${styles.sheet} ${isOpen ? styles.sheetOpen : ''}`}>
+                <div className={styles.subs} id={`chapter-topics-${chapter.id}`}>
+                  <div className="space-y-3 sm:space-y-4 mt-3 pt-2 border-t border-ink/5">
+                    {topics.map((topic, i) => (
+                      <div
+                        key={topic.id}
+                        className={`${styles.tile} ${isOpen ? styles.tileIn : ''}`}
+                        style={{ '--i': i } as React.CSSProperties}
+                      >
+                        <SyllabusTopicNode topic={topic} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
