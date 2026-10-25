@@ -1,5 +1,9 @@
 .cardsWrapper {
   perspective: 1400px;
+  --unroll-dur: 0.8s;
+  --unroll-tilt: 70deg;
+  --unroll-stagger: 70ms;
+  --unroll-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .chapterCard {
@@ -15,10 +19,93 @@
   transform: none;
 }
 
+/* 3D Unroll Animation Stack */
+
+.chevron {
+  transition: transform var(--unroll-dur) var(--unroll-ease);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows calc(var(--unroll-dur) * 0.55) var(--unroll-ease);
+}
+
+.panelOpen {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--unroll-dur) var(--unroll-ease);
+}
+
+.pin {
+  min-height: 0;
+  overflow: hidden;
+  perspective: 900px;
+}
+
+.pinSettled {
+  overflow: visible;
+}
+
+.sheet {
+  transform-origin: 50% 0;
+  opacity: 0;
+  transform: rotateX(calc(var(--unroll-tilt) * -1)) translateY(-26px);
+  transition: opacity 0.3s ease-out, transform calc(var(--unroll-dur) * 0.5) var(--unroll-ease);
+}
+
+.sheetOpen {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s ease-out, transform var(--unroll-dur) var(--unroll-ease);
+}
+
+.subs {
+  perspective: 1400px;
+}
+
+.tile {
+  transform-origin: 50% 0;
+  opacity: 0;
+  transform: rotateX(-22deg) translateY(-48px) scale(0.97);
+  transition: opacity 0.25s ease-out, transform 0.3s ease-out 0ms;
+}
+
+.tileIn {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s ease-out, transform 1.1s var(--unroll-ease);
+  transition-delay: calc(var(--unroll-dur) * 0.22 + min(calc(var(--i) * var(--unroll-stagger)), calc(var(--unroll-stagger) * 4)));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chapterCard {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+
+  .chevron {
+    transition: none !important;
+  }
+
+  .panel {
+    transition: none !important;
+  }
+
+  .sheet {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .tile {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
   }
 }
