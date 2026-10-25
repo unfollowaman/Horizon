@@ -2,7 +2,7 @@
   perspective: 1400px;
   --unroll-dur: 0.8s;
   --unroll-tilt: 70deg;
-  --unroll-stagger: 90ms;
+  --unroll-stagger: 70ms;
   --unroll-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
