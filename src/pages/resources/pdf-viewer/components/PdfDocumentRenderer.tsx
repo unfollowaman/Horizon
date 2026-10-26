@@ -170,6 +170,13 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
     return Array.from({ length: count }, (_, index) => index + 1);
   }, [numPages]);
 
+  // OPTIMIZATION: Memoize `documentFile` prop passed to `<Document>`.
+  // Prevents react-pdf from tearing down and re-parsing the document
+  // on unrelated component re-renders.
+  const documentFile = React.useMemo(() => {
+    return pdfData || signedUrl;
+  }, [pdfData, signedUrl]);
+
   return (
     <div
       ref={containerRef}
@@ -228,7 +235,7 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                          <div className="p-4 font-bold flex justify-center w-full text-accent-red">{pdfError}</div>
                       ) : (
                       <Document
-                        file={pdfData || signedUrl}
+                        file={documentFile}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={onDocumentLoadError}
                         onSourceError={onDocumentSourceError}

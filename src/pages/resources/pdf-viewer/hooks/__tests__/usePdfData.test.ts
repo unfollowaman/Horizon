@@ -219,6 +219,59 @@ describe('usePdfData hook', () => {
     expect(stateRef.current?.pdfError).toBeNull();
   });
 
+  it('preserves pdfData reference identity across re-renders when underlying download data is unchanged', async () => {
+    const fakeBuffer = new ArrayBuffer(16);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(fakeBuffer, { status: 200, statusText: 'OK', headers: new Headers({ 'Content-Length': '16' }) })
+    );
+
+    vi.spyOn(learningAPI, 'fetchLearningResourceById').mockResolvedValue({
+      data: mockPublicResource,
+      rawData: mockPublicResource as unknown as LearningResourceRow,
+      error: null
+    });
+
+    vi.spyOn(learningAPI, 'fetchLearningResources').mockResolvedValue({
+      data: mockRelatedResources,
+      error: null
+    });
+
+    const stateHistory: (PdfDataState | null)[] = [];
+
+    await act(async () => {
+      root?.render(
+        React.createElement(TestComponent, {
+          id: 'public-1',
+          user: null,
+          authLoading: false,
+          onUpdate: (val: PdfDataState) => {
+            stateHistory.push(val);
+          }
+        })
+      );
+    });
+
+    const firstDataRef = stateHistory[stateHistory.length - 1]?.pdfData;
+    expect(firstDataRef).not.toBeNull();
+
+    // Trigger parent re-render with identical props
+    await act(async () => {
+      root?.render(
+        React.createElement(TestComponent, {
+          id: 'public-1',
+          user: null,
+          authLoading: false,
+          onUpdate: (val: PdfDataState) => {
+            stateHistory.push(val);
+          }
+        })
+      );
+    });
+
+    const secondDataRef = stateHistory[stateHistory.length - 1]?.pdfData;
+    expect(secondDataRef).toBe(firstDataRef); // Strict equality holds!
+  });
+
   it('handles non-2xx pre-fetch response gracefully by setting pdfError', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(null, { status: 404, statusText: 'Not Found' })

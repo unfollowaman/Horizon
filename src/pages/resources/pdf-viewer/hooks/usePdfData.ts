@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../../../../services/supabase';
 import { fetchLearningResourceById, fetchLearningResources } from '../../../../services/learningResourcesAPI';
 import type { Resource } from '../../../../types';
@@ -114,12 +114,13 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
 
   const effectiveError = pdfError || download.error;
 
-  const pdfData: ArrayBuffer | null = download.data
-    ? (download.data.buffer.slice(
-        download.data.byteOffset,
-        download.data.byteOffset + download.data.byteLength
-      ) as ArrayBuffer)
-    : null;
+  const pdfData = useMemo<ArrayBuffer | null>(() => {
+    if (!download.data) return null;
+    return download.data.buffer.slice(
+      download.data.byteOffset,
+      download.data.byteOffset + download.data.byteLength
+    ) as ArrayBuffer;
+  }, [download.data]);
 
   let currentStage: DownloadStage = download.stage;
   if (metaLoading || (!signedUrl && !effectiveError)) {
