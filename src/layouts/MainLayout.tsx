@@ -1,16 +1,17 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import PageLoader from '../components/loading/PageLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouteErrorFallback from '../components/RouteErrorFallback';
-import { useDelayedLoading } from '../hooks/useDelayedLoading';
 import { CHUNK_RELOAD_GUARD_KEY } from '../utils/lazyWithRetry';
 
-const DelayedPageLoader: React.FC = () => {
-  const showLoading = useDelayedLoading(true, 400);
-  if (!showLoading) return null;
-  return <PageLoader />;
-};
+const SlimRouteLoader: React.FC = () => (
+  <div className="w-full flex flex-col items-center justify-start min-h-[40vh] pt-8 px-4" role="status" aria-label="Loading page route">
+    <span className="sr-only">Loading page content...</span>
+    <div className="w-full max-w-xl neu-recessed h-2 rounded-full overflow-hidden relative">
+      <div className="h-full bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] animate-pulse rounded-full w-2/3 mx-auto" />
+    </div>
+  </div>
+);
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
@@ -45,7 +46,7 @@ const MainLayout: React.FC = () => {
           key={`${location.pathname}-${resetKey}`}
           fallback={<RouteErrorFallback onRetry={handleRetry} />}
         >
-          <Suspense fallback={<DelayedPageLoader />}>
+          <Suspense fallback={<SlimRouteLoader />}>
             <Outlet />
           </Suspense>
         </ErrorBoundary>

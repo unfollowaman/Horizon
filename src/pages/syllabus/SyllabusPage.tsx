@@ -14,6 +14,7 @@ import SyllabusLanding from './components/SyllabusLanding';
 import ClassSubjectSelector from './components/ClassSubjectSelector';
 import SyllabusSkeleton from './components/SyllabusSkeleton';
 import { lazyWithRetry } from '../../utils/lazyWithRetry';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 
 const SyllabusFlowchart = lazyWithRetry(() => import('./components/SyllabusFlowchart'));
 
@@ -26,6 +27,7 @@ export const SyllabusPage: React.FC = () => {
   const [chapters, setChapters] = useState<SyllabusChapterHierarchy[]>([]);
   const [chapterCounts, setChapterCounts] = useState<Record<string, number> | null>(null);
   const [countsLoading, setCountsLoading] = useState<boolean>(false);
+  const showSkeleton = useDelayedLoading(loading, 180);
 
   const currentClass = getClassBySlug(classSlug);
   const currentClassId = normalizeClassId(classSlug);
@@ -257,7 +259,7 @@ export const SyllabusPage: React.FC = () => {
         <ProfileButton />
       </div>
 
-      {loading && <SyllabusSkeleton />}
+      {loading && showSkeleton && <SyllabusSkeleton />}
 
       {!loading && error && (
         <div className="neu-card rounded-2xl p-8 text-center space-y-4 max-w-xl mx-auto">
