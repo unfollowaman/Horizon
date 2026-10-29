@@ -567,7 +567,7 @@
 
 .featuresSection {
   width: 100%;
-  background-color: #f4f4f4;
+  background-color: var(--bg-base);
   padding: 10px 18px 32px;
 }
 @media (min-width: 768px) {
@@ -607,6 +607,10 @@
   font-family: 'Instrument Serif', serif;
   margin: 0;
 }
+
+:global(.theme-royal-dark) .featuresTitle {
+  color: #f8f8f8;
+}
 @media (min-width: 768px) {
   .featuresTitle {
     font-size: 3rem;
@@ -639,7 +643,7 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: var(--bg-raised);
   box-shadow:
     0 0 0 1px rgba(0,0,0,0.15),
     8px 10px 20px rgba(0,0,0,0.10),
@@ -679,7 +683,7 @@
 .featureCardInner {
   position: absolute;
   inset: 8px;
-  background-color: #fdfdfd;
+  background-color: var(--bg-recessed);
   --tw-radius: calc(var(--radius-2xl) - 8px);
   border-radius: calc(var(--radius-2xl) - 8px);
   box-shadow:
@@ -767,6 +771,10 @@
   font-weight: 400; /* font-normal */
   font-family: 'Instrument Serif', serif;
   margin-bottom: var(--spacing-4); /* mb-8 */
+}
+
+:global(.theme-royal-dark) .highlightsTitle {
+  color: #f8f8f8;
 }
 
 @media (min-width: 768px) {
@@ -982,4 +990,56 @@
   height: 32px;
   object-fit: contain;
   filter: brightness(0) invert(1);
+}
+/* Theme Royal Dark overrides specific to Home Module */
+
+:global(.theme-royal-dark) .featureCard {
+  box-shadow: var(--shadow-raised-outer);
+}
+
+:global(.theme-royal-dark) .featureCard.isVisible:hover {
+  box-shadow: var(--shadow-raised-outer-hover);
+}
+
+:global(.theme-royal-dark) .featureCardInner {
+  box-shadow: var(--shadow-raised-inner);
+}
+
+:global(.theme-royal-dark) .featureCardDesc {
+  color: var(--muted-foreground);
+}
+
+/* Footer Inverse in Dark Mode */
+:global(.theme-royal-dark) .footer {
+  background-color: #ffffff; /* Inverse to light */
+  color: #111111;
+}
+
+:global(.theme-royal-dark) .footerBrandTitle {
+  color: #111111;
+}
+
+:global(.theme-royal-dark) .footerLinksTitle {
+  color: #111111;
+}
+
+:global(.theme-royal-dark) .footerNavLink {
+  color: #333333;
+}
+
+:global(.theme-royal-dark) .footerSocialIcon {
+  filter: none; /* Keep original black icons */
+}
+
+/* Force Phone Animation Container to retain light theme variables */
+:global(.theme-royal-dark) .preserveLight {
+  --color-ink: #111111;
+  --bg-raised: #fafafa;
+  --bg-recessed: #fdfdfd;
+  --bg-base: #f4f4f4;
+  --color-paper: var(--bg-raised);
+  --color-surface: var(--bg-recessed);
+  --foreground: #111111;
+
+  color: var(--color-ink);
 }

@@ -362,3 +362,66 @@
 @media (prefers-reduced-motion: reduce) {
   .fire-flame { animation: none !important; }
 }
+
+/* Theme Royal Dark Overrides for Homepage */
+.theme-royal-dark {
+  --bg-base: #111111;
+  --bg-raised: #1a1a1a;
+  --bg-recessed: #151515;
+  --border-subtle: rgba(255,255,255,0.08);
+
+  --background: var(--bg-base);
+  --foreground: #f8f8f8;
+  --muted-foreground: #a3a3a3;
+  --border: rgba(255,255,255,0.06);
+  --surface: var(--bg-raised);
+
+  --color-ink: #f8f8f8;
+  --color-paper: var(--bg-raised);
+  --color-surface: var(--bg-recessed);
+
+  background-color: var(--bg-base);
+
+  /* Customize Neu Shadows for dark mode */
+  --shadow-raised-outer: 0 0 0 1px rgba(0,0,0,0.5), 8px 10px 20px rgba(0,0,0,0.6), 2px 3px 6px rgba(0,0,0,0.4), -4px -4px 10px rgba(255,255,255,0.03);
+  --shadow-raised-inner: inset 0 0 0 1px rgba(0,0,0,0.5), inset 3px 3px 8px rgba(0,0,0,0.6), inset -3px -3px 8px rgba(255,255,255,0.03);
+
+  --shadow-raised-outer-hover: 0 0 0 1px rgba(233,30,140,0.3), 12px 14px 28px rgba(233,30,140,0.25), 4px 6px 10px rgba(233,30,140,0.2), -6px -6px 14px rgba(255,255,255,0.04);
+
+  --shadow-recessed-inner: inset 0 0 0 1px rgba(0,0,0,0.5), inset 3px 3px 8px rgba(0,0,0,0.6), inset -3px -3px 8px rgba(255,255,255,0.03);
+  --shadow-recessed-outer: 0 0 0 1px rgba(0,0,0,0.5), 8px 10px 20px rgba(0,0,0,0.6), 2px 3px 6px rgba(0,0,0,0.4), -4px -4px 10px rgba(255,255,255,0.03);
+}
+
+.theme-royal-dark .neu-raised {
+  box-shadow: var(--shadow-raised-outer);
+}
+.theme-royal-dark .neu-raised::before {
+  box-shadow: var(--shadow-raised-inner);
+}
+.theme-royal-dark .neu-raised-hover:hover {
+  box-shadow: var(--shadow-raised-outer-hover);
+}
+
+.theme-royal-dark .neu-raised-sm {
+  box-shadow: var(--shadow-raised-outer);
+}
+.theme-royal-dark .neu-raised-sm::before {
+  box-shadow: var(--shadow-raised-inner);
+}
+.theme-royal-dark .neu-raised-sm-hover:hover {
+  box-shadow: var(--shadow-raised-outer-hover);
+}
+
+.theme-royal-dark .neu-card {
+  box-shadow: var(--shadow-raised-outer);
+}
+.theme-royal-dark .neu-card::before {
+  box-shadow: var(--shadow-raised-inner);
+}
+
+.theme-royal-dark .neu-recessed {
+  box-shadow: var(--shadow-recessed-inner);
+}
+.theme-royal-dark .neu-recessed::before {
+  box-shadow: var(--shadow-recessed-outer);
+}
