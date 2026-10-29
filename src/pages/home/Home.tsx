@@ -7,7 +7,7 @@ import ProfileButton from '../../components/ProfileButton';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Home.module.css';
 
-const Header = React.memo(() => {
+const Header = React.memo(({ isDarkMode, onToggle }: { isDarkMode: boolean, onToggle: () => void }) => {
   const { session, loading, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
@@ -124,8 +124,18 @@ const Header = React.memo(() => {
               >
                 {/* Menu Header */}
                 <div className={styles.menuHeader}>
-                  {/* Logo */}
-                  {session ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
+                  {/* Theme Toggle */}
+                  <div className="flex items-center">
+                    <button type="button" aria-label="Toggle Royal Dark Mode" onClick={onToggle} className="neu-raised rounded-full p-2 mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]">
+                      {isDarkMode ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                      )}
+                    </button>
+                    {/* Logo */}
+                    {session ? <div className={styles.menuProfileContainer}><ProfileButton onClick={closeMenu} /></div> : <div style={{ width: '40px', height: '40px' }} />}
+                  </div>
                   {/* Close Button */}
                   <button
                     type="button"
@@ -255,7 +265,9 @@ const HeroSection = React.memo(() => (
         Study notes, past papers, and practice materials — everything for class 8th to 12th, in one place.
       </p>
 
-      <HeroPhoneAnimation />
+      <div className={styles.preserveLight}>
+        <HeroPhoneAnimation />
+      </div>
     </div>
   </section>
 ));
@@ -543,11 +555,48 @@ const Footer = React.memo(() => {
 Footer.displayName = 'Footer';
 
 const Home: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("horizon-homepage-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      localStorage.setItem("horizon-homepage-theme", "dark");
+    } else {
+      localStorage.setItem("horizon-homepage-theme", "light");
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      if (isDarkMode) {
+        document.documentElement.classList.add("theme-royal-dark");
+      } else {
+        document.documentElement.classList.remove("theme-royal-dark");
+      }
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof document !== "undefined") {
+        document.documentElement.classList.remove("theme-royal-dark");
+      }
+    };
+  }, []);
+
+  const handleToggle = () => {
+    setIsDarkMode(prev => !prev);
+  };
+
   const { session, loading } = useAuth();
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-base)]">
-      <Header />
+    <div id="home-root" className={`min-h-screen w-full flex flex-col bg-[var(--bg-base)] ${isDarkMode ? "theme-royal-dark" : ""}`}>
+      <Header isDarkMode={isDarkMode} onToggle={handleToggle} />
       <main className="flex-1 w-full flex flex-col">
         <HeroSection />
         <FeaturesSection />
