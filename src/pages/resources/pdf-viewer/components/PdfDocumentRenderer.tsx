@@ -28,6 +28,8 @@ interface PdfDocumentRendererProps {
   setCurrentPage: (page: number) => void;
   rotation?: number;
   toggleRotation?: () => void;
+  isFullscreen?: boolean;
+  toggleFullscreen?: () => void;
 }
 
 export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
@@ -51,7 +53,9 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
   handleShare,
   setCurrentPage,
   rotation = 0,
-  toggleRotation
+  toggleRotation,
+  isFullscreen = false,
+  toggleFullscreen
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [currentScale, setCurrentScale] = useState<number>(1);
@@ -218,6 +222,8 @@ export const PdfDocumentRenderer: React.FC<PdfDocumentRendererProps> = ({
                   zoomIn={zoomIn}
                   zoomOut={zoomOut}
                   toggleRotation={toggleRotation}
+                  isFullscreen={isFullscreen}
+                  toggleFullscreen={toggleFullscreen}
                   handleShare={handleShare}
                 />
 

@@ -46,11 +46,37 @@ const PdfViewer: React.FC = () => {
   } = usePdfData({ id, user, authLoading });
 
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [rotation, setRotation] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-  const toggleRotation = () => {
-    setRotation((prev) => (prev === 0 ? 90 : 0));
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
     setIsThreeDotsMenuOpen(false);
+    if (!document.fullscreenElement) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
   };
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -305,8 +331,8 @@ const PdfViewer: React.FC = () => {
           toggleThreeDotsMenu={() => setIsThreeDotsMenuOpen(!isThreeDotsMenuOpen)}
           handleShare={handleShare}
           setCurrentPage={setCurrentPage}
-          rotation={rotation}
-          toggleRotation={toggleRotation}
+          isFullscreen={isFullscreen}
+          toggleFullscreen={toggleFullscreen}
         />
       </ErrorBoundary>
     </div>
