@@ -7,6 +7,8 @@ import ScrollToTop from './components/ScrollToTop';
 import AuthListener from './components/AuthListener';
 import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/loading/PageLoader';
+import SlimRouteLoader from './components/loading/SlimRouteLoader';
+
 import { lazyWithRetry } from './utils/lazyWithRetry';
 
 // Core components for route protection
@@ -40,7 +42,7 @@ function App() {
         <AuthListener />
         <ScrollToTop />
         <Routes>
-          <Route path="/onboarding" element={<Suspense fallback={<PageLoader />}><Onboarding /></Suspense>} />
+          <Route path="/onboarding" element={<Suspense fallback={<SlimRouteLoader />}><Onboarding /></Suspense>} />
           <Route path="/" element={<Home />} />
 
           <Route element={<Suspense fallback={<PageLoader />}><MainLayout /></Suspense>}>
