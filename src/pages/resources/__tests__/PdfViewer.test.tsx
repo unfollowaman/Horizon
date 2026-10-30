@@ -208,7 +208,7 @@ describe('PdfViewer Fallback Screens', () => {
     expect(container?.querySelector('button[aria-label="Go Back"]')).not.toBeNull();
     expect(container?.querySelector('button[aria-label="Zoom In"]')).not.toBeNull();
     expect(container?.querySelector('button[aria-label="Zoom Out"]')).not.toBeNull();
-    expect(container?.querySelector('button[aria-label="Rotate Screen"]')).not.toBeNull();
+    expect(container?.querySelector('button[aria-label="Full Screen"]')).not.toBeNull();
     expect(container?.querySelector('button[aria-label="Share"]')).not.toBeNull();
 
     // Verify absence of any download, print, or open-in-new-tab controls or anchors

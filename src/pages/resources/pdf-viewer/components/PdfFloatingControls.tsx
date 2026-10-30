@@ -44,6 +44,8 @@ interface PdfBottomControlsProps {
   zoomIn: () => void;
   zoomOut: () => void;
   toggleRotation?: () => void;
+  isFullscreen?: boolean;
+  toggleFullscreen?: () => void;
   handleShare: () => void;
 }
 
@@ -54,8 +56,11 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
   zoomIn,
   zoomOut,
   toggleRotation,
+  isFullscreen = false,
+  toggleFullscreen,
   handleShare
 }) => {
+  const handleFullscreenToggle = toggleFullscreen || toggleRotation;
   return (
     <div className={`${styles.floatingBottomRight} ${styles.threeDotsWrapper} ${isThreeDotsMenuOpen ? styles.menuOpen : styles.menuClosed} neu-raised neu-raised-hover ${showControls ? styles.controlsVisible : styles.controlsHidden}`}>
       <div className={styles.menuItemsContainer}>
@@ -84,20 +89,37 @@ export const PdfBottomControls: React.FC<PdfBottomControlsProps> = ({
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
         </button>
-        {toggleRotation && (
+        {handleFullscreenToggle && (
           <button
-            onClick={toggleRotation}
+            onClick={handleFullscreenToggle}
             className={`${styles.iconBtn} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2`}
-            aria-label="Rotate Screen"
-            title="Rotate Screen"
+            aria-label={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+            title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M20 9V4a1 1 0 0 0-1-1h-5" />
-              <path d="M21 3l-6 6" />
-              <path d="M4 15v5a1 1 0 0 0 1 1h5" />
-              <path d="M3 21l6-6" />
-              <path d="M21 13a9 9 0 0 1-15.5 6.36" />
-              <path d="M3 11a9 9 0 0 1 15.5-6.36" />
+              {isFullscreen ? (
+                <>
+                  <path d="M4 9h5V4" />
+                  <path d="M9 9L3 3" />
+                  <path d="M20 9h-5V4" />
+                  <path d="M15 9l6-6" />
+                  <path d="M4 15h5v5" />
+                  <path d="M9 15L3 21" />
+                  <path d="M20 15h-5v5" />
+                  <path d="M15 15l6 6" />
+                </>
+              ) : (
+                <>
+                  <path d="M8 3H3v5" />
+                  <path d="M3 3l6 6" />
+                  <path d="M16 3h5v5" />
+                  <path d="M21 3l-6 6" />
+                  <path d="M3 16v5h5" />
+                  <path d="M3 21l6-6" />
+                  <path d="M16 21h5v-5" />
+                  <path d="M21 21l-6-6" />
+                </>
+              )}
             </svg>
           </button>
         )}
