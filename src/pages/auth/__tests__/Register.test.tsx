@@ -60,11 +60,11 @@ describe('Register Component', () => {
 
     const card = outerContainer?.querySelector('.neu-card') as HTMLDivElement;
     expect(card).not.toBeNull();
-    expect(card?.className).toContain('max-w-[400px]');
+    expect(card?.className).toContain('max-w-[440px]');
     expect(card?.className).toContain('w-full');
 
     const heading = container?.querySelector('h1');
-    expect(heading?.textContent).toBe('Register');
+    expect(heading?.textContent).toContain('Your learning journey');
 
     const nameInput = container?.querySelector('#register-name') as HTMLInputElement;
     const emailInput = container?.querySelector('#register-email') as HTMLInputElement;
@@ -75,7 +75,7 @@ describe('Register Component', () => {
     expect(nameInput).not.toBeNull();
     expect(emailInput).not.toBeNull();
     expect(passwordInput).not.toBeNull();
-    expect(submitButton?.textContent).toBe('Register');
+    expect(submitButton?.textContent).toBe('Create Account');
     expect(loginLink).not.toBeNull();
     expect(loginLink?.textContent).toBe('Login here');
   });
@@ -226,7 +226,7 @@ describe('Register Component', () => {
 
     const card = outerContainer?.querySelector('.neu-card') as HTMLDivElement;
     expect(card).not.toBeNull();
-    expect(card?.className).toContain('max-w-[400px]');
+    expect(card?.className).toContain('max-w-[440px]');
     expect(card?.className).toContain('w-full');
 
     const successHeading = container?.querySelector('h1');
