@@ -7,6 +7,15 @@ import PageLoader from '../../components/loading/PageLoader';
 import { subscribeToPushNotifications } from '../../services/notifications';
 import { getDefaultAvatar } from '../../utils/avatar';
 
+const AVATAR_OPTIONS = [
+  '/assets/Avatars/avatar-1.svg',
+  '/assets/Avatars/avatar-2.svg',
+  '/assets/Avatars/avatar-3.svg',
+  '/assets/Avatars/avatar-4.svg',
+  '/assets/Avatars/avatar-5.svg',
+  '/assets/Avatars/avatar-6.svg',
+];
+
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const { refreshProfile } = useAuth();
@@ -141,6 +150,18 @@ const Onboarding: React.FC = () => {
     }
   };
 
+  const handleSelectAvatar = async (url: string) => {
+    if (saving) return;
+    const res = await updateProfile({ avatar_url: url });
+    if (res.success) {
+      if (isMountedRef.current) {
+        setAvatarUrl(url);
+      }
+    } else if (isMountedRef.current) {
+      setFinishError('Failed to select avatar. Please try again.');
+    }
+  };
+
   const [subscribing, setSubscribing] = useState(false);
   const [notifFeedback, setNotifFeedback] = useState<{ type: 'success' | 'info' | 'error'; text: string } | null>(null);
 
@@ -184,7 +205,6 @@ const Onboarding: React.FC = () => {
       subscribingRef.current = false;
       if (isMountedRef.current) setSubscribing(false);
 
-      // Handle specific error codes returned by the service without throwing
       if (res.error?.code === 'PERMISSION_DENIED') {
         setNotifFeedback({
           type: 'info',
@@ -286,7 +306,7 @@ const Onboarding: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-base)]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA]">
         <PageLoader />
       </div>
     );
@@ -294,16 +314,16 @@ const Onboarding: React.FC = () => {
 
   if (initError) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-base)] p-4 text-center">
-        <div className="max-w-md neu-card rounded-2xl p-6 space-y-4">
-          <h2 className="text-xl font-bold text-ink">Initialization Error</h2>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F9FA] p-4 text-center">
+        <div className="max-w-md bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] rounded-2xl p-6 sm:p-8 space-y-4">
+          <h2 className="text-xl font-bold text-gray-900 font-serif">Initialization Error</h2>
           <div role="alert" className="p-3 rounded-xl text-sm font-medium bg-amber-50 text-amber-800 border border-amber-200">
             {initError}
           </div>
           <button
             type="button"
             onClick={fetchUserAndProfile}
-            className="w-full py-2.5 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+            className="w-full py-2.5 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             Retry Loading Profile
           </button>
@@ -313,7 +333,8 @@ const Onboarding: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-ink">
+    <div className="min-h-screen flex flex-col bg-[#F8F9FA] text-[#111111]">
+      {/* Top thin progress bar */}
       <div
         role="progressbar"
         aria-label="Onboarding progress"
@@ -321,33 +342,34 @@ const Onboarding: React.FC = () => {
         aria-valuemin={1}
         aria-valuemax={6}
         aria-valuetext={`Step ${step} of 6`}
-        className="w-full h-2 bg-[var(--bg-raised)]"
+        className="w-full h-1.5 bg-gray-200"
       >
         <div
-          className="h-full bg-accent transition-all duration-300"
+          className="h-full bg-[#E91E8C] transition-all duration-300 ease-out"
           style={{ width: `${(step / 6) * 100}%` }}
         />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4">
-        <div className="w-full max-w-md neu-card rounded-2xl overflow-hidden animate-fade-rise">
-          <div className="px-5 py-3 flex justify-between items-center border-b border-[var(--bg-raised)]">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-[480px] bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] rounded-2xl overflow-hidden animate-fade-rise">
+          {/* Card Header with Back Button and Step Counter */}
+          <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
+                className="w-11 h-11 border border-gray-200 rounded-full hover:bg-gray-50 flex items-center justify-center cursor-pointer text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
                 aria-label="Go Back"
                 title="Go Back"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   aria-hidden="true"
@@ -357,153 +379,253 @@ const Onboarding: React.FC = () => {
                 </svg>
               </button>
             ) : (
-              <div />
+              <div className="w-11 h-11" />
             )}
-            <span className="text-sm font-medium text-gray-500">Step {step} of 6</span>
+
+            {/* Logo in header */}
+            <img
+              src="/assets/favicon/logo.avif"
+              alt="Horizon"
+              width="28"
+              height="28"
+              className="w-7 h-7 object-contain opacity-80"
+            />
+
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              Step {step} of 6
+            </span>
           </div>
 
-          <div className="p-4 sm:p-6">
+          <div className="p-6 sm:p-8">
+            {/* Step 1: Welcome */}
             {step === 1 && (
-              <div className="text-center space-y-4 sm:space-y-6">
-                <h1 className="text-2xl sm:text-3xl font-bold">Welcome to Horizon</h1>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Horizon will personalize your experience based on your choices.
-                  Don't worry, you can always change this information later.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                >
-                  Continue
-                </button>
+              <div className="text-center space-y-5">
+                <div className="w-16 h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                    Welcome to Horizon
+                  </h1>
+                  <p className="text-gray-600 text-sm leading-relaxed max-w-sm mx-auto">
+                    Horizon will personalize your study notes, PYQ papers, and syllabus based on your choices. You can adjust this anytime in Settings.
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group"
+                  >
+                    <span>Continue</span>
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             )}
 
+            {/* Step 2: Class Selection */}
             {step === 2 && (
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Select your Class</h2>
+              <div className="space-y-5">
+                <div className="text-center mb-4">
+                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Select your Class</h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    Choose your current academic grade to tailor your study materials.
+                  </p>
+                </div>
+
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
-                <div className="grid gap-2">
-                  {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
-                    <button
-                      type="button"
-                      key={cls}
-                      onClick={() => handleSelectClass(cls)}
-                      disabled={saving}
-                      aria-pressed={studentClass === cls}
-                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
-                        studentClass === cls
-                          ? 'neu-recessed text-accent font-bold'
-                          : 'neu-raised neu-raised-hover'
-                      }`}
-                    >
-                      {cls}
-                    </button>
-                  ))}
+
+                {/* Horizontal multi-column grid of compact rectangular buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => {
+                    const isSelected = studentClass === cls;
+                    return (
+                      <button
+                        type="button"
+                        key={cls}
+                        onClick={() => handleSelectClass(cls)}
+                        disabled={saving}
+                        aria-pressed={isSelected}
+                        className={`py-3.5 px-4 rounded-xl border font-medium text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                          isSelected
+                            ? 'border-[#E91E8C] bg-[#FDF2F8] text-[#E91E8C] font-semibold shadow-sm'
+                            : 'border-gray-200 bg-white hover:border-gray-300 text-gray-800 hover:bg-gray-50/60'
+                        }`}
+                      >
+                        <span>{cls}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
+            {/* Step 3: Study Medium */}
             {step === 3 && (
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Study Medium</h2>
+              <div className="space-y-5">
+                <div className="text-center mb-4">
+                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Study Medium</h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    Select your preferred language for textbook notes and question papers.
+                  </p>
+                </div>
+
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
-                <div className="grid gap-2">
-                  {['English', 'Hindi'].map((medium) => (
-                    <button
-                      type="button"
-                      key={medium}
-                      onClick={() => handleSelectMedium(medium)}
-                      disabled={saving}
-                      aria-pressed={studyMedium === medium}
-                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
-                        studyMedium === medium
-                          ? 'neu-recessed text-accent font-bold'
-                          : 'neu-raised neu-raised-hover'
-                      }`}
-                    >
-                      {medium}
-                    </button>
-                  ))}
+
+                {/* Horizontal single row of compact rectangular buttons on desktop */}
+                <div className="grid grid-cols-2 gap-3.5">
+                  {['English', 'Hindi'].map((medium) => {
+                    const isSelected = studyMedium === medium;
+                    return (
+                      <button
+                        type="button"
+                        key={medium}
+                        onClick={() => handleSelectMedium(medium)}
+                        disabled={saving}
+                        aria-pressed={isSelected}
+                        className={`py-3.5 px-4 rounded-xl border font-medium text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                          isSelected
+                            ? 'border-[#E91E8C] bg-[#FDF2F8] text-[#E91E8C] font-semibold shadow-sm'
+                            : 'border-gray-200 bg-white hover:border-gray-300 text-gray-800 hover:bg-gray-50/60'
+                        }`}
+                      >
+                        <span>{medium}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
+            {/* Step 4: Profile Photo */}
             {step === 4 && (
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Profile Photo</h2>
-                <p className="text-center text-gray-500 text-sm mb-4">Optional - customize your profile</p>
+              <div className="space-y-5">
+                <div className="text-center mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Profile Photo</h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    Select an avatar or upload your own photo (optional).
+                  </p>
+                </div>
 
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
-                <div className="flex flex-col items-center gap-4">
+                {/* Current Active Preview */}
+                <div className="flex flex-col items-center gap-2">
                   <div className="relative">
                     <img
                       src={avatarUrl || getDefaultAvatar(userId)}
                       alt="Profile"
-                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-100 shadow-sm"
                     />
                   </div>
+                  <span className="text-xs text-gray-500">Selected Avatar</span>
+                </div>
 
-                  <div className="w-full flex flex-col gap-2.5">
-                    <label className="w-full py-2.5 sm:py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
-                      {uploading ? 'Uploading...' : 'Upload Photo'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                        disabled={uploading}
-                        aria-label="Upload profile photo"
-                      />
-                    </label>
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      disabled={uploading}
-                      className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                    >
-                      {avatarUrl ? 'Continue' : 'Skip'}
-                    </button>
+                {/* Avatar Collection Grid */}
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 mb-2">Choose an Avatar</p>
+                  <div className="grid grid-cols-6 gap-2">
+                    {AVATAR_OPTIONS.map((optUrl, idx) => {
+                      const isCurrent = avatarUrl === optUrl || (!avatarUrl && getDefaultAvatar(userId) === optUrl);
+                      return (
+                        <button
+                          key={optUrl}
+                          type="button"
+                          onClick={() => handleSelectAvatar(optUrl)}
+                          className={`p-1 rounded-xl border transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] ${
+                            isCurrent
+                              ? 'border-[#E91E8C] bg-[#FDF2F8] shadow-sm'
+                              : 'border-gray-200 bg-white hover:border-gray-300'
+                          }`}
+                          title={`Avatar ${idx + 1}`}
+                        >
+                          <img
+                            src={optUrl}
+                            alt={`Avatar ${idx + 1}`}
+                            className="w-full h-auto aspect-square rounded-lg object-contain"
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
+                </div>
+
+                {/* Upload Custom Photo & Continue Controls */}
+                <div className="pt-2 flex flex-col gap-2.5">
+                  <label className="w-full py-2.5 px-4 text-center rounded-xl border border-gray-200 hover:bg-gray-50 font-medium text-xs sm:text-sm text-gray-700 cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C]">
+                    {uploading ? 'Uploading Photo...' : 'Upload Custom Photo'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      disabled={uploading}
+                      aria-label="Upload profile photo"
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={uploading}
+                    className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+                  >
+                    <span>{avatarUrl ? 'Continue' : 'Skip'}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             )}
 
+            {/* Step 5: Enable Notifications */}
             {step === 5 && (
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Stay Updated</h2>
-                <p className="text-center text-gray-500 text-sm mb-4">
-                  Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
-                </p>
+              <div className="space-y-5 text-center">
+                <div className="w-16 h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-2">Stay Updated</h2>
+                  <p className="text-gray-600 text-sm leading-relaxed max-w-sm mx-auto">
+                    Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
+                  </p>
+                </div>
 
                 {notifFeedback && (
                   <div
                     role="status"
                     aria-live="polite"
-                    className={`p-3 rounded-xl text-sm text-center font-medium ${
+                    className={`p-3 rounded-xl text-xs sm:text-sm text-center font-medium ${
                       notifFeedback.type === 'success'
                         ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         : notifFeedback.type === 'info'
@@ -515,14 +637,14 @@ const Onboarding: React.FC = () => {
                   </div>
                 )}
 
-                <div className="w-full flex flex-col gap-2.5">
+                <div className="pt-2 flex flex-col gap-2.5">
                   {!notifFeedback || notifFeedback.type !== 'success' ? (
                     <>
                       <button
                         type="button"
                         onClick={handleEnableNotifications}
                         disabled={subscribing}
-                        className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                        className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
                       >
                         {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
                       </button>
@@ -530,7 +652,7 @@ const Onboarding: React.FC = () => {
                         type="button"
                         onClick={handleNext}
                         disabled={subscribing}
-                        className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                        className="w-full py-2.5 px-4 text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl font-medium text-xs sm:text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
                       >
                         {notifFeedback ? 'Continue to Review' : 'Skip for Now'}
                       </button>
@@ -540,46 +662,100 @@ const Onboarding: React.FC = () => {
               </div>
             )}
 
+            {/* Step 6: Review Selections */}
             {step === 6 && (
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Review Profile</h2>
+              <div className="space-y-5">
+                <div className="text-center mb-2">
+                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Review Profile</h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    Everything looks good! Confirm your setup to enter your dashboard.
+                  </p>
+                </div>
 
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
-                <div className="bg-[var(--bg-raised)] p-4 sm:p-5 rounded-2xl flex flex-col items-center gap-3 neu-recessed">
+                {/* Summary Card */}
+                <div className="bg-gray-50 border border-gray-200/80 p-5 rounded-xl flex flex-col items-center gap-4">
                   <img
                     src={avatarUrl || getDefaultAvatar(userId)}
                     alt="Profile"
-                    className="w-20 h-20 rounded-full object-cover shadow-sm"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm"
                   />
 
-                  <div className="w-full space-y-2 mt-2">
-                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
-                      <span className="text-gray-500 font-medium">Class</span>
-                      <span className="font-bold">{studentClass}</span>
+                  <div className="w-full divide-y divide-gray-200/80 text-sm">
+                    <div className="flex justify-between items-center py-2.5">
+                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Class</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-900">{studentClass || 'Not Selected'}</span>
+                        <button
+                          type="button"
+                          onClick={() => setStep(2)}
+                          className="text-[#E91E8C] text-xs hover:underline"
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
-                      <span className="text-gray-500 font-medium">Medium</span>
-                      <span className="font-bold">{studyMedium}</span>
+
+                    <div className="flex justify-between items-center py-2.5">
+                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Medium</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-900">{studyMedium || 'Not Selected'}</span>
+                        <button
+                          type="button"
+                          onClick={() => setStep(3)}
+                          className="text-[#E91E8C] text-xs hover:underline"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2.5">
+                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Photo</span>
+                      <button
+                        type="button"
+                        onClick={() => setStep(4)}
+                        className="text-[#E91E8C] text-xs hover:underline"
+                      >
+                        Change Photo
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleFinish}
-                  disabled={saving}
-                  className="w-full mt-3 py-3 px-4 text-accent rounded-full font-bold text-base sm:text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
-                >
-                  {saving ? 'Finishing...' : 'Finish Setup'}
-                </button>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleFinish}
+                    disabled={saving}
+                    className="w-full py-3.5 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm sm:text-base transition-all shadow-sm hover:shadow disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+                  >
+                    {saving ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>Finishing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Finish Setup</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
           </div>
