@@ -184,7 +184,6 @@ const Onboarding: React.FC = () => {
       subscribingRef.current = false;
       if (isMountedRef.current) setSubscribing(false);
 
-      // Handle specific error codes returned by the service without throwing
       if (res.error?.code === 'PERMISSION_DENIED') {
         setNotifFeedback({
           type: 'info',
@@ -295,15 +294,15 @@ const Onboarding: React.FC = () => {
   if (initError) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-base)] p-4 text-center">
-        <div className="max-w-md neu-card rounded-2xl p-6 space-y-4">
-          <h2 className="text-xl font-bold text-ink">Initialization Error</h2>
-          <div role="alert" className="p-3 rounded-xl text-sm font-medium bg-amber-50 text-amber-800 border border-amber-200">
+        <div className="max-w-md w-full neu-card rounded-2xl p-6 sm:p-8 space-y-4 font-sans shadow-soft border border-gray-200/60">
+          <h2 className="font-serif text-2xl font-bold text-ink">Initialization Error</h2>
+          <div role="alert" className="p-3 rounded-lg text-sm font-medium bg-amber-50 text-amber-800 border border-amber-200 font-sans">
             {initError}
           </div>
           <button
             type="button"
             onClick={fetchUserAndProfile}
-            className="w-full py-2.5 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+            className="w-full py-2.5 px-4 bg-[#E91E8C] hover:bg-[#D81B60] text-white rounded-lg font-semibold text-sm transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
           >
             Retry Loading Profile
           </button>
@@ -321,33 +320,33 @@ const Onboarding: React.FC = () => {
         aria-valuemin={1}
         aria-valuemax={6}
         aria-valuetext={`Step ${step} of 6`}
-        className="w-full h-2 bg-[var(--bg-raised)]"
+        className="w-full h-1.5 bg-gray-200/70"
       >
         <div
-          className="h-full bg-accent transition-all duration-300"
+          className="h-full bg-[#E91E8C] transition-all duration-300 ease-out"
           style={{ width: `${(step / 6) * 100}%` }}
         />
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4">
-        <div className="w-full max-w-md neu-card rounded-2xl overflow-hidden animate-fade-rise">
-          <div className="px-5 py-3 flex justify-between items-center border-b border-[var(--bg-raised)]">
+        <div className="w-full max-w-md neu-card rounded-2xl overflow-hidden animate-fade-rise font-sans shadow-soft border border-gray-200/60">
+          <div className="px-5 py-3.5 flex justify-between items-center border-b border-gray-200/50">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-11 h-11 neu-raised rounded-full neu-raised-hover flex items-center justify-center cursor-pointer text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
+                className="w-11 h-11 rounded-full neu-raised hover:neu-raised-hover flex items-center justify-center cursor-pointer text-ink border border-gray-200/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
                 aria-label="Go Back"
                 title="Go Back"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   aria-hidden="true"
@@ -359,21 +358,25 @@ const Onboarding: React.FC = () => {
             ) : (
               <div />
             )}
-            <span className="text-sm font-medium text-gray-500">Step {step} of 6</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-sans">
+              Step {step} of 6
+            </span>
           </div>
 
-          <div className="p-4 sm:p-6">
+          <div className="p-6 sm:p-8 font-sans">
             {step === 1 && (
-              <div className="text-center space-y-4 sm:space-y-6">
-                <h1 className="text-2xl sm:text-3xl font-bold">Welcome to Horizon</h1>
-                <p className="text-gray-600 text-sm sm:text-base">
+              <div className="text-center space-y-4 sm:space-y-5">
+                <h1 className="font-serif text-3xl sm:text-4xl font-bold text-ink tracking-tight">
+                  Welcome to Horizon
+                </h1>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed font-sans">
                   Horizon will personalize your experience based on your choices.
                   Don't worry, you can always change this information later.
                 </p>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full py-2.5 sm:py-3 px-4 bg-[#E91E8C] hover:bg-[#D81B60] text-white rounded-lg font-semibold text-sm sm:text-base transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
                 >
                   Continue
                 </button>
@@ -381,17 +384,24 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 2 && (
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Select your Class</h2>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">
+                    Select your Class
+                  </h2>
+                  <p className="text-gray-500 text-sm font-sans">Choose your current grade level</p>
+                </div>
+
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-lg text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200 font-sans"
                   >
                     {finishError}
                   </div>
                 )}
-                <div className="grid gap-2">
+
+                <div className="grid gap-2.5">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => (
                     <button
                       type="button"
@@ -399,13 +409,16 @@ const Onboarding: React.FC = () => {
                       onClick={() => handleSelectClass(cls)}
                       disabled={saving}
                       aria-pressed={studentClass === cls}
-                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                      className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-all cursor-pointer border text-left flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studentClass === cls
-                          ? 'neu-recessed text-accent font-bold'
-                          : 'neu-raised neu-raised-hover'
+                          ? 'border-[#E91E8C] bg-[#E91E8C]/5 text-[#E91E8C] font-semibold shadow-xs'
+                          : 'border-gray-200 bg-white hover:bg-gray-50 text-ink shadow-xs'
                       }`}
                     >
-                      {cls}
+                      <span>{cls}</span>
+                      {studentClass === cls && (
+                        <span className="w-2 h-2 rounded-full bg-[#E91E8C]" aria-hidden="true" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -413,17 +426,24 @@ const Onboarding: React.FC = () => {
             )}
 
             {step === 3 && (
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Study Medium</h2>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">
+                    Study Medium
+                  </h2>
+                  <p className="text-gray-500 text-sm font-sans">Select your preferred learning language</p>
+                </div>
+
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-lg text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200 font-sans"
                   >
                     {finishError}
                   </div>
                 )}
-                <div className="grid gap-2">
+
+                <div className="grid gap-2.5">
                   {['English', 'Hindi'].map((medium) => (
                     <button
                       type="button"
@@ -431,13 +451,16 @@ const Onboarding: React.FC = () => {
                       onClick={() => handleSelectMedium(medium)}
                       disabled={saving}
                       aria-pressed={studyMedium === medium}
-                      className={`py-2 px-4 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                      className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-all cursor-pointer border text-left flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                         studyMedium === medium
-                          ? 'neu-recessed text-accent font-bold'
-                          : 'neu-raised neu-raised-hover'
+                          ? 'border-[#E91E8C] bg-[#E91E8C]/5 text-[#E91E8C] font-semibold shadow-xs'
+                          : 'border-gray-200 bg-white hover:bg-gray-50 text-ink shadow-xs'
                       }`}
                     >
-                      {medium}
+                      <span>{medium}</span>
+                      {studyMedium === medium && (
+                        <span className="w-2 h-2 rounded-full bg-[#E91E8C]" aria-hidden="true" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -446,29 +469,33 @@ const Onboarding: React.FC = () => {
 
             {step === 4 && (
               <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Profile Photo</h2>
-                <p className="text-center text-gray-500 text-sm mb-4">Optional - customize your profile</p>
+                <div className="text-center">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">
+                    Profile Photo
+                  </h2>
+                  <p className="text-gray-500 text-sm font-sans">Optional — customize your profile avatar</p>
+                </div>
 
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-lg text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200 font-sans"
                   >
                     {finishError}
                   </div>
                 )}
 
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-5 pt-2">
                   <div className="relative">
                     <img
                       src={avatarUrl || getDefaultAvatar(userId)}
                       alt="Profile"
-                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-gray-200 shadow-sm"
                     />
                   </div>
 
-                  <div className="w-full flex flex-col gap-2.5">
-                    <label className="w-full py-2.5 sm:py-3 px-4 text-center rounded-full font-bold cursor-pointer neu-raised neu-raised-hover transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
+                  <div className="w-full flex flex-col gap-2.5 font-sans">
+                    <label className="w-full py-2.5 sm:py-3 px-4 text-center rounded-lg font-semibold text-sm cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 text-ink transition-colors shadow-xs focus-within:ring-2 focus-within:ring-[#E91E8C] focus-within:ring-offset-2">
                       {uploading ? 'Uploading...' : 'Upload Photo'}
                       <input
                         type="file"
@@ -483,7 +510,7 @@ const Onboarding: React.FC = () => {
                       type="button"
                       onClick={handleNext}
                       disabled={uploading}
-                      className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                      className="w-full py-2.5 sm:py-3 px-4 bg-[#E91E8C] hover:bg-[#D81B60] text-white rounded-lg font-semibold text-sm transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
                     >
                       {avatarUrl ? 'Continue' : 'Skip'}
                     </button>
@@ -494,16 +521,20 @@ const Onboarding: React.FC = () => {
 
             {step === 5 && (
               <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-1">Stay Updated</h2>
-                <p className="text-center text-gray-500 text-sm mb-4">
-                  Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
-                </p>
+                <div className="text-center">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">
+                    Stay Updated
+                  </h2>
+                  <p className="text-gray-500 text-sm leading-relaxed font-sans">
+                    Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
+                  </p>
+                </div>
 
                 {notifFeedback && (
                   <div
                     role="status"
                     aria-live="polite"
-                    className={`p-3 rounded-xl text-sm text-center font-medium ${
+                    className={`p-3 rounded-lg text-sm text-center font-medium font-sans ${
                       notifFeedback.type === 'success'
                         ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         : notifFeedback.type === 'info'
@@ -515,14 +546,14 @@ const Onboarding: React.FC = () => {
                   </div>
                 )}
 
-                <div className="w-full flex flex-col gap-2.5">
+                <div className="w-full flex flex-col gap-2.5 font-sans pt-2">
                   {!notifFeedback || notifFeedback.type !== 'success' ? (
                     <>
                       <button
                         type="button"
                         onClick={handleEnableNotifications}
                         disabled={subscribing}
-                        className="w-full py-2.5 sm:py-3 px-4 text-accent rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                        className="w-full py-2.5 sm:py-3 px-4 bg-[#E91E8C] hover:bg-[#D81B60] text-white rounded-lg font-semibold text-sm transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
                       >
                         {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
                       </button>
@@ -530,7 +561,7 @@ const Onboarding: React.FC = () => {
                         type="button"
                         onClick={handleNext}
                         disabled={subscribing}
-                        className="w-full py-2.5 sm:py-3 px-4 text-ink rounded-full font-bold neu-raised neu-raised-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                        className="w-full py-2.5 sm:py-3 px-4 rounded-lg font-semibold text-sm border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
                       >
                         {notifFeedback ? 'Continue to Review' : 'Skip for Now'}
                       </button>
@@ -542,32 +573,37 @@ const Onboarding: React.FC = () => {
 
             {step === 6 && (
               <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center mb-3">Review Profile</h2>
+                <div className="text-center">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">
+                    Review Profile
+                  </h2>
+                  <p className="text-gray-500 text-sm font-sans">Confirm your study setup</p>
+                </div>
 
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-3 rounded-lg text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200 font-sans"
                   >
                     {finishError}
                   </div>
                 )}
 
-                <div className="bg-[var(--bg-raised)] p-4 sm:p-5 rounded-2xl flex flex-col items-center gap-3 neu-recessed">
+                <div className="bg-gray-50/80 p-4 sm:p-5 rounded-xl border border-gray-200/80 flex flex-col items-center gap-3">
                   <img
                     src={avatarUrl || getDefaultAvatar(userId)}
                     alt="Profile"
-                    className="w-20 h-20 rounded-full object-cover shadow-sm"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-gray-200 shadow-xs"
                   />
 
-                  <div className="w-full space-y-2 mt-2">
-                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
+                  <div className="w-full space-y-2 mt-2 font-sans">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-200/60 text-sm">
                       <span className="text-gray-500 font-medium">Class</span>
-                      <span className="font-bold">{studentClass}</span>
+                      <span className="font-semibold text-ink">{studentClass}</span>
                     </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-[var(--bg-base)] text-sm sm:text-base">
+                    <div className="flex justify-between items-center py-2 text-sm">
                       <span className="text-gray-500 font-medium">Medium</span>
-                      <span className="font-bold">{studyMedium}</span>
+                      <span className="font-semibold text-ink">{studyMedium}</span>
                     </div>
                   </div>
                 </div>
@@ -576,7 +612,7 @@ const Onboarding: React.FC = () => {
                   type="button"
                   onClick={handleFinish}
                   disabled={saving}
-                  className="w-full mt-3 py-3 px-4 text-accent rounded-full font-bold text-base sm:text-lg neu-raised neu-raised-hover transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="w-full mt-2 py-3 px-4 bg-[#E91E8C] hover:bg-[#D81B60] text-white rounded-lg font-semibold text-base transition-colors shadow-sm disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 cursor-pointer"
                 >
                   {saving ? 'Finishing...' : 'Finish Setup'}
                 </button>
