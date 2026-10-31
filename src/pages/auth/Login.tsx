@@ -27,7 +27,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
-      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[400px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
+      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
         {/* Logo */}
         <div className="flex justify-center mb-5">
           <Link to="/" className="inline-block transition-transform hover:scale-105">

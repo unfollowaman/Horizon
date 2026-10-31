@@ -60,7 +60,7 @@ describe('Register Component', () => {
 
     const card = outerContainer?.querySelector('.neu-card') as HTMLDivElement;
     expect(card).not.toBeNull();
-    expect(card?.className).toContain('max-w-[400px]');
+    expect(card?.className).toContain('max-w-[440px]');
     expect(card?.className).toContain('w-full');
 
     const heading = container?.querySelector('h1');
@@ -226,7 +226,7 @@ describe('Register Component', () => {
 
     const card = outerContainer?.querySelector('.neu-card') as HTMLDivElement;
     expect(card).not.toBeNull();
-    expect(card?.className).toContain('max-w-[400px]');
+    expect(card?.className).toContain('max-w-[440px]');
     expect(card?.className).toContain('w-full');
 
     const successHeading = container?.querySelector('h1');

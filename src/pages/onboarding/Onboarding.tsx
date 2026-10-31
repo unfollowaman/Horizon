@@ -351,7 +351,7 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-[480px] bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] rounded-2xl overflow-hidden animate-fade-rise">
+        <div className="w-full max-w-[440px] bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] rounded-2xl overflow-hidden animate-fade-rise">
           {/* Card Header with Back Button and Step Counter */}
           <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
             {step > 1 ? (
