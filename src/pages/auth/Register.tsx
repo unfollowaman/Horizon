@@ -347,7 +347,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
               <button
                 type="button"
                 onClick={handleEntrySubmit}
-                className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group font-sans"
+                className="w-full !py-[5px] sm:!py-[12px] px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group font-sans"
               >
                 <span>Continue with Email</span>
                 <svg
