@@ -71,12 +71,12 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
 
   if (isSuccess) {
     return (
-      <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh] font-sans">
-        <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 text-center flex flex-col items-center bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
+      <div className="w-[min(96vw,1600px)] mx-auto px-4 sm:px-[clamp(16px,2vw,32px)] pt-3 sm:pt-[10px] md:-mt-[20px] pb-6 sm:pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh] font-sans">
+        <div className="neu-card rounded-2xl p-5 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 text-center flex flex-col items-center bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
           {/* Email Verification Icon Badge */}
-          <div className="w-16 h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mb-4 text-[#E91E8C]">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mb-3 sm:mb-4 text-[#E91E8C]">
             <svg
-              className="w-8 h-8"
+              className="w-6 h-6 sm:w-8 sm:h-8"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -92,11 +92,11 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
             </svg>
           </div>
 
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="font-serif text-xl sm:text-3xl font-bold text-gray-900 mb-1.5 sm:mb-2">
             Check your email
           </h1>
 
-          <p className="text-gray-600 text-sm leading-relaxed mb-6 font-sans">
+          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 font-sans">
             {email
               ? `We sent a verification link to ${email}. Open your email and tap the verification link to activate your account.`
               : 'We sent you a verification link. Open your email and tap the verification link to activate your account.'}
@@ -105,16 +105,16 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
           {resendStatus && (
             <div
               role="status"
-              className="w-full p-2.5 mb-4 text-xs font-medium text-emerald-800 bg-emerald-50 rounded-lg border border-emerald-200 font-sans"
+              className="w-full p-2 sm:p-2.5 mb-3 sm:mb-4 text-xs font-medium text-emerald-800 bg-emerald-50 rounded-lg border border-emerald-200 font-sans"
             >
               {resendStatus}
             </div>
           )}
 
-          <div className="w-full flex flex-col gap-3 font-sans">
+          <div className="w-full flex flex-col gap-2.5 sm:gap-3 font-sans">
             <a
               href="mailto:"
-              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-sm transition-colors text-center shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-xs sm:text-sm transition-colors text-center shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
             >
               <span>Open Email App</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,14 +125,14 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
             <button
               type="button"
               onClick={handleResend}
-              className="w-full py-2.5 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              className="w-full py-2 sm:py-2.5 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
             >
               Didn't receive the email? Resend
             </button>
 
             <Link
               to="/onboarding"
-              className="text-xs text-gray-500 hover:text-gray-700 underline mt-1"
+              className="text-xs text-gray-500 hover:text-gray-700 underline mt-0.5 sm:mt-1"
             >
               Proceed to Onboarding (Demo / Local)
             </Link>
@@ -143,26 +143,26 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
   }
 
   return (
-    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
-      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
+    <div className="w-[min(96vw,1600px)] mx-auto px-4 sm:px-[clamp(16px,2vw,32px)] pt-3 sm:pt-[10px] md:-mt-[20px] pb-6 sm:pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
+      <div className="neu-card rounded-2xl p-5 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
         {/* Logo */}
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-3 sm:mb-5">
           <Link to="/" className="inline-block transition-transform hover:scale-105">
             <img
               src="/assets/favicon/logo.avif"
               alt="Horizon"
               width="36"
               height="36"
-              className="w-9 h-9 object-contain"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
             />
           </Link>
         </div>
 
         {/* Headings */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 sm:mb-6">
           {phase === 'entry' ? (
             <>
-              <h1 className="font-serif text-[28px] sm:text-[32px] font-bold text-gray-900 leading-tight mb-2">
+              <h1 className="font-serif text-2xl sm:text-[32px] font-bold text-gray-900 leading-tight mb-1.5 sm:mb-2">
                 Your learning journey{' '}
                 <span className="text-[#E91E8C] italic font-serif">starts</span>{' '}
                 here.
@@ -173,7 +173,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
             </>
           ) : (
             <>
-              <h1 className="font-serif text-[28px] sm:text-[32px] font-bold text-gray-900 leading-tight mb-2">
+              <h1 className="font-serif text-2xl sm:text-[32px] font-bold text-gray-900 leading-tight mb-1.5 sm:mb-2">
                 Create your account
               </h1>
               <p className="font-sans text-gray-500 text-xs sm:text-sm">
@@ -187,7 +187,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
         {error && (
           <div
             role="alert"
-            className="mb-4 p-3 rounded-xl text-xs font-medium bg-red-50 text-red-700 border border-red-200 flex items-start gap-2 font-sans"
+            className="mb-3 sm:mb-4 p-2.5 sm:p-3 rounded-xl text-xs font-medium bg-red-50 text-red-700 border border-red-200 flex items-start gap-2 font-sans"
           >
             <svg className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -197,10 +197,10 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
         )}
 
         {/* Registration Form (always mounted so inputs and form submit are always accessible) */}
-        <form onSubmit={handleRegister} className="space-y-4 font-sans">
+        <form onSubmit={handleRegister} className="space-y-3.5 sm:space-y-4 font-sans">
           {/* Full Name */}
           <div className={phase === 'entry' ? 'hidden' : 'block'}>
-            <label htmlFor="register-name" className="block text-xs font-medium text-gray-700 mb-1.5 font-sans">
+            <label htmlFor="register-name" className="block text-xs font-medium text-gray-700 mb-1 sm:mb-1.5 font-sans">
               Full Name
             </label>
             <div className="relative">
@@ -216,14 +216,14 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={phase === 'form'}
-                className="w-full !pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
+                className="w-full !pl-10 pr-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="register-email" className="block text-xs font-medium text-gray-700 mb-1.5 font-sans">
+            <label htmlFor="register-email" className="block text-xs font-medium text-gray-700 mb-1 sm:mb-1.5 font-sans">
               Email Address
             </label>
             <div className="relative">
@@ -242,19 +242,19 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
                   if (emailError) setEmailError('');
                 }}
                 required
-                className={`w-full !pl-10 pr-4 py-2.5 rounded-xl border text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C] ${
+                className={`w-full !pl-10 pr-4 py-2 sm:py-2.5 rounded-xl border text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C] ${
                   emailError ? 'border-red-400 bg-red-50/20' : 'border-gray-200 bg-white'
                 }`}
               />
             </div>
             {emailError && (
-              <p className="mt-1.5 text-xs text-red-600 font-medium font-sans">{emailError}</p>
+              <p className="mt-1 sm:mt-1.5 text-xs text-red-600 font-medium font-sans">{emailError}</p>
             )}
           </div>
 
           {/* Password */}
           <div className={phase === 'entry' ? 'hidden' : 'block'}>
-            <label htmlFor="register-password" className="block text-xs font-medium text-gray-700 mb-1.5 font-sans">
+            <label htmlFor="register-password" className="block text-xs font-medium text-gray-700 mb-1 sm:mb-1.5 font-sans">
               Password
             </label>
             <div className="relative">
@@ -270,7 +270,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required={phase === 'form'}
-                className="w-full !pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
+                className="w-full !pl-10 pr-10 py-2 sm:py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
               />
               <button
                 type="button"
@@ -293,9 +293,9 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
 
             {/* Password Requirements Checklist */}
             {password && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1.5 text-[11px] font-sans">
-                <p className="font-semibold text-gray-700 text-xs mb-1">Password requirements:</p>
-                <div className="grid grid-cols-2 gap-1.5">
+              <div className="mt-2.5 sm:mt-3 p-2.5 sm:p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1 sm:space-y-1.5 text-[11px] font-sans">
+                <p className="font-semibold text-gray-700 text-[11px] sm:text-xs mb-1">Password requirements:</p>
+                <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                   <div className={`flex items-center gap-1.5 ${hasMinLength ? 'text-emerald-700' : 'text-gray-400'}`}>
                     <svg className={`w-3.5 h-3.5 shrink-0 ${hasMinLength ? 'text-emerald-600' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
                       {hasMinLength ? (
@@ -343,11 +343,11 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
 
           {/* Primary Submit Action */}
           {phase === 'entry' ? (
-            <div className="pt-2">
+            <div className="pt-1.5 sm:pt-2">
               <button
                 type="button"
                 onClick={handleEntrySubmit}
-                className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group font-sans"
+                className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] text-white font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group font-sans"
               >
                 <span>Continue with Email</span>
                 <svg
@@ -363,12 +363,12 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
           ) : null}
 
           {/* Phase 2 Submit Button */}
-          <div className={`pt-2 ${phase === 'entry' ? 'hidden' : 'block'}`}>
+          <div className={`pt-1.5 sm:pt-2 ${phase === 'entry' ? 'hidden' : 'block'}`}>
             <button
               type="submit"
               disabled={loading}
               aria-busy={loading}
-              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] disabled:opacity-60 text-white font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 font-sans"
+              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] disabled:opacity-60 text-white font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 font-sans"
             >
               {loading ? (
                 <>
@@ -385,18 +385,18 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
           </div>
 
           {phase === 'form' && (
-            <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100 font-sans">
+            <div className="flex items-center justify-between gap-2 text-xs text-gray-500 pt-2.5 sm:pt-3 border-t border-gray-100 font-sans">
               <button
                 type="button"
                 onClick={() => setPhase('entry')}
-                className="text-gray-500 hover:text-gray-800 transition-colors flex items-center gap-1"
+                className="text-gray-500 hover:text-gray-800 transition-colors flex items-center gap-1 shrink-0"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 <span>Back</span>
               </button>
-              <div>
+              <div className="text-right truncate">
                 Already have an account?{' '}
                 <Link
                   to="/login"
@@ -410,7 +410,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
 
           {phase === 'entry' && (
             <>
-              <div className="relative my-4">
+              <div className="relative my-3 sm:my-4">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
@@ -429,7 +429,7 @@ const Register: React.FC<RegisterProps> = ({ initialPhase = 'entry' }) => {
                 </Link>
               </div>
 
-              <p className="text-[11px] text-gray-400 text-center leading-normal pt-2 font-sans">
+              <p className="text-[11px] text-gray-400 text-center leading-normal pt-1.5 sm:pt-2 font-sans">
                 By continuing, you agree to Horizon's{' '}
                 <Link to="/terms" className="underline hover:text-gray-600">Terms of Service</Link>{' '}
                 and{' '}

@@ -342,7 +342,7 @@ const Onboarding: React.FC = () => {
         aria-valuemin={1}
         aria-valuemax={6}
         aria-valuetext={`Step ${step} of 6`}
-        className="w-full h-1.5 bg-gray-200"
+        className="w-full h-1.5 bg-gray-200 shrink-0"
       >
         <div
           className="h-full bg-[#E91E8C] transition-all duration-300 ease-out"
@@ -350,22 +350,22 @@ const Onboarding: React.FC = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6">
+      <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 py-2 sm:py-6">
         <div className="w-full max-w-[440px] bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] rounded-2xl overflow-hidden animate-fade-rise">
           {/* Card Header with Back Button and Step Counter */}
-          <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
+          <div className="px-4 py-2.5 sm:px-6 sm:py-4 flex justify-between items-center border-b border-gray-100">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-11 h-11 border border-gray-200 rounded-full hover:bg-gray-50 flex items-center justify-center cursor-pointer text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
+                className="w-9 h-9 sm:w-11 sm:h-11 border border-gray-200 rounded-full hover:bg-gray-50 flex items-center justify-center cursor-pointer text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 shrink-0"
                 aria-label="Go Back"
                 title="Go Back"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -373,13 +373,14 @@ const Onboarding: React.FC = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   aria-hidden="true"
+                  className="sm:w-5 sm:h-5"
                 >
                   <line x1="19" y1="12" x2="5" y2="12"></line>
                   <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
               </button>
             ) : (
-              <div className="w-11 h-11" />
+              <div className="w-9 h-9 sm:w-11 sm:h-11" />
             )}
 
             {/* Logo in header */}
@@ -388,36 +389,36 @@ const Onboarding: React.FC = () => {
               alt="Horizon"
               width="28"
               height="28"
-              className="w-7 h-7 object-contain opacity-80"
+              className="w-6 h-6 sm:w-7 sm:h-7 object-contain opacity-80"
             />
 
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <span className="text-[11px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider">
               Step {step} of 6
             </span>
           </div>
 
-          <div className="p-6 sm:p-8">
+          <div className="p-4 sm:p-8">
             {/* Step 1: Welcome */}
             {step === 1 && (
-              <div className="text-center space-y-5">
-                <div className="w-16 h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center space-y-3.5 sm:space-y-5">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
                 <div>
-                  <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                  <h1 className="font-serif text-xl sm:text-3xl font-bold text-gray-900 mb-1.5 sm:mb-2">
                     Welcome to Horizon
                   </h1>
-                  <p className="text-gray-600 text-sm leading-relaxed max-w-sm mx-auto">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-w-sm mx-auto">
                     Horizon will personalize your study notes, PYQ papers, and syllabus based on your choices. You can adjust this anytime in Settings.
                   </p>
                 </div>
-                <div className="pt-2">
+                <div className="pt-1 sm:pt-2">
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group"
+                    className="w-full py-2.5 sm:py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2 group"
                   >
                     <span>Continue</span>
                     <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -430,9 +431,9 @@ const Onboarding: React.FC = () => {
 
             {/* Step 2: Class Selection */}
             {step === 2 && (
-              <div className="space-y-5">
-                <div className="text-center mb-4">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Select your Class</h2>
+              <div className="space-y-3.5 sm:space-y-5">
+                <div className="text-center mb-2.5 sm:mb-4">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1">Select your Class</h2>
                   <p className="text-gray-500 text-xs sm:text-sm">
                     Choose your current academic grade to tailor your study materials.
                   </p>
@@ -441,14 +442,14 @@ const Onboarding: React.FC = () => {
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
                 {/* Horizontal multi-column grid of compact rectangular buttons */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                   {['Class 12', 'Class 11', 'Class 10', 'Class 9', 'Class 8'].map((cls) => {
                     const isSelected = studentClass === cls;
                     return (
@@ -458,7 +459,7 @@ const Onboarding: React.FC = () => {
                         onClick={() => handleSelectClass(cls)}
                         disabled={saving}
                         aria-pressed={isSelected}
-                        className={`py-3.5 px-4 rounded-xl border font-medium text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                        className={`py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl border font-medium text-xs sm:text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                           isSelected
                             ? 'border-[#E91E8C] bg-[#FDF2F8] text-[#E91E8C] font-semibold shadow-sm'
                             : 'border-gray-200 bg-white hover:border-gray-300 text-gray-800 hover:bg-gray-50/60'
@@ -474,9 +475,9 @@ const Onboarding: React.FC = () => {
 
             {/* Step 3: Study Medium */}
             {step === 3 && (
-              <div className="space-y-5">
-                <div className="text-center mb-4">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Study Medium</h2>
+              <div className="space-y-3.5 sm:space-y-5">
+                <div className="text-center mb-2.5 sm:mb-4">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1">Study Medium</h2>
                   <p className="text-gray-500 text-xs sm:text-sm">
                     Select your preferred language for textbook notes and question papers.
                   </p>
@@ -485,14 +486,14 @@ const Onboarding: React.FC = () => {
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
-                {/* Horizontal single row of compact rectangular buttons on desktop */}
-                <div className="grid grid-cols-2 gap-3.5">
+                {/* Horizontal single row of compact rectangular buttons */}
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
                   {['English', 'Hindi'].map((medium) => {
                     const isSelected = studyMedium === medium;
                     return (
@@ -502,7 +503,7 @@ const Onboarding: React.FC = () => {
                         onClick={() => handleSelectMedium(medium)}
                         disabled={saving}
                         aria-pressed={isSelected}
-                        className={`py-3.5 px-4 rounded-xl border font-medium text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
+                        className={`py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl border font-medium text-xs sm:text-sm transition-all flex items-center justify-center text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 ${
                           isSelected
                             ? 'border-[#E91E8C] bg-[#FDF2F8] text-[#E91E8C] font-semibold shadow-sm'
                             : 'border-gray-200 bg-white hover:border-gray-300 text-gray-800 hover:bg-gray-50/60'
@@ -518,9 +519,9 @@ const Onboarding: React.FC = () => {
 
             {/* Step 4: Profile Photo */}
             {step === 4 && (
-              <div className="space-y-5">
-                <div className="text-center mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Profile Photo</h2>
+              <div className="space-y-3 sm:space-y-5">
+                <div className="text-center mb-1 sm:mb-2">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1">Profile Photo</h2>
                   <p className="text-gray-500 text-xs sm:text-sm">
                     Select an avatar or upload your own photo (optional).
                   </p>
@@ -529,28 +530,28 @@ const Onboarding: React.FC = () => {
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
                 {/* Current Active Preview */}
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-1.5 sm:gap-2">
                   <div className="relative">
                     <img
                       src={avatarUrl || getDefaultAvatar(userId)}
                       alt="Profile"
-                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-100 shadow-sm"
+                      className="w-14 h-14 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-100 shadow-sm"
                     />
                   </div>
-                  <span className="text-xs text-gray-500">Selected Avatar</span>
+                  <span className="text-[11px] sm:text-xs text-gray-500">Selected Avatar</span>
                 </div>
 
                 {/* Avatar Collection Grid */}
                 <div>
-                  <p className="text-xs font-semibold text-gray-700 mb-2">Choose an Avatar</p>
-                  <div className="grid grid-cols-6 gap-2">
+                  <p className="text-[11px] sm:text-xs font-semibold text-gray-700 mb-1.5 sm:mb-2">Choose an Avatar</p>
+                  <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
                     {AVATAR_OPTIONS.map((optUrl, idx) => {
                       const isCurrent = avatarUrl === optUrl || (!avatarUrl && getDefaultAvatar(userId) === optUrl);
                       return (
@@ -577,8 +578,8 @@ const Onboarding: React.FC = () => {
                 </div>
 
                 {/* Upload Custom Photo & Continue Controls */}
-                <div className="pt-2 flex flex-col gap-2.5">
-                  <label className="w-full py-2.5 px-4 text-center rounded-xl border border-gray-200 hover:bg-gray-50 font-medium text-xs sm:text-sm text-gray-700 cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C]">
+                <div className="pt-1 sm:pt-2 flex flex-col gap-2 sm:gap-2.5">
+                  <label className="w-full py-2 sm:py-2.5 px-3 sm:px-4 text-center rounded-xl border border-gray-200 hover:bg-gray-50 font-medium text-xs sm:text-sm text-gray-700 cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[#E91E8C]">
                     {uploading ? 'Uploading Photo...' : 'Upload Custom Photo'}
                     <input
                       type="file"
@@ -594,7 +595,7 @@ const Onboarding: React.FC = () => {
                     type="button"
                     onClick={handleNext}
                     disabled={uploading}
-                    className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 sm:py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
                   >
                     <span>{avatarUrl ? 'Continue' : 'Skip'}</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -607,16 +608,16 @@ const Onboarding: React.FC = () => {
 
             {/* Step 5: Enable Notifications */}
             {step === 5 && (
-              <div className="space-y-5 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="space-y-3 sm:space-y-5 text-center">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center mx-auto text-[#E91E8C]">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                 </div>
 
                 <div>
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-2">Stay Updated</h2>
-                  <p className="text-gray-600 text-sm leading-relaxed max-w-sm mx-auto">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">Stay Updated</h2>
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-w-sm mx-auto">
                     Get instant browser alerts when new chapter notes, PYQ papers, or syllabus updates are published for your class.
                   </p>
                 </div>
@@ -625,7 +626,7 @@ const Onboarding: React.FC = () => {
                   <div
                     role="status"
                     aria-live="polite"
-                    className={`p-3 rounded-xl text-xs sm:text-sm text-center font-medium ${
+                    className={`p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm text-center font-medium ${
                       notifFeedback.type === 'success'
                         ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         : notifFeedback.type === 'info'
@@ -637,14 +638,14 @@ const Onboarding: React.FC = () => {
                   </div>
                 )}
 
-                <div className="pt-2 flex flex-col gap-2.5">
+                <div className="pt-1 sm:pt-2 flex flex-col gap-2 sm:gap-2.5">
                   {!notifFeedback || notifFeedback.type !== 'success' ? (
                     <>
                       <button
                         type="button"
                         onClick={handleEnableNotifications}
                         disabled={subscribing}
-                        className="w-full py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+                        className="w-full py-2.5 sm:py-3 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
                       >
                         {subscribing ? 'Enabling Alerts...' : 'Enable Notifications'}
                       </button>
@@ -652,7 +653,7 @@ const Onboarding: React.FC = () => {
                         type="button"
                         onClick={handleNext}
                         disabled={subscribing}
-                        className="w-full py-2.5 px-4 text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl font-medium text-xs sm:text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+                        className="w-full py-2 sm:py-2.5 px-4 text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl font-medium text-xs sm:text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
                       >
                         {notifFeedback ? 'Continue to Review' : 'Skip for Now'}
                       </button>
@@ -664,9 +665,9 @@ const Onboarding: React.FC = () => {
 
             {/* Step 6: Review Selections */}
             {step === 6 && (
-              <div className="space-y-5">
-                <div className="text-center mb-2">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 mb-1">Review Profile</h2>
+              <div className="space-y-3 sm:space-y-5">
+                <div className="text-center mb-1 sm:mb-2">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1">Review Profile</h2>
                   <p className="text-gray-500 text-xs sm:text-sm">
                     Everything looks good! Confirm your setup to enter your dashboard.
                   </p>
@@ -675,23 +676,23 @@ const Onboarding: React.FC = () => {
                 {finishError && (
                   <div
                     role="alert"
-                    className="p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                    className="p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm text-center font-medium bg-amber-50 text-amber-800 border border-amber-200"
                   >
                     {finishError}
                   </div>
                 )}
 
                 {/* Summary Card */}
-                <div className="bg-gray-50 border border-gray-200/80 p-5 rounded-xl flex flex-col items-center gap-4">
+                <div className="bg-gray-50 border border-gray-200/80 p-3.5 sm:p-5 rounded-xl flex flex-col items-center gap-2.5 sm:gap-4">
                   <img
                     src={avatarUrl || getDefaultAvatar(userId)}
                     alt="Profile"
-                    className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm"
+                    className="w-14 h-14 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-white shadow-sm"
                   />
 
-                  <div className="w-full divide-y divide-gray-200/80 text-sm">
-                    <div className="flex justify-between items-center py-2.5">
-                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Class</span>
+                  <div className="w-full divide-y divide-gray-200/80 text-xs sm:text-sm">
+                    <div className="flex justify-between items-center py-2 sm:py-2.5">
+                      <span className="text-gray-500 text-[10px] sm:text-xs uppercase tracking-wider font-medium">Class</span>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-gray-900">{studentClass || 'Not Selected'}</span>
                         <button
@@ -704,8 +705,8 @@ const Onboarding: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center py-2.5">
-                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Medium</span>
+                    <div className="flex justify-between items-center py-2 sm:py-2.5">
+                      <span className="text-gray-500 text-[10px] sm:text-xs uppercase tracking-wider font-medium">Medium</span>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-gray-900">{studyMedium || 'Not Selected'}</span>
                         <button
@@ -718,8 +719,8 @@ const Onboarding: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center py-2.5">
-                      <span className="text-gray-500 text-xs uppercase tracking-wider font-medium">Photo</span>
+                    <div className="flex justify-between items-center py-2 sm:py-2.5">
+                      <span className="text-gray-500 text-[10px] sm:text-xs uppercase tracking-wider font-medium">Photo</span>
                       <button
                         type="button"
                         onClick={() => setStep(4)}
@@ -731,12 +732,12 @@ const Onboarding: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1 sm:pt-2">
                   <button
                     type="button"
                     onClick={handleFinish}
                     disabled={saving}
-                    className="w-full py-3.5 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-sm sm:text-base transition-all shadow-sm hover:shadow disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 sm:py-3.5 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium text-xs sm:text-base transition-all shadow-sm hover:shadow disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
                   >
                     {saving ? (
                       <>

@@ -26,24 +26,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="w-[min(96vw,1600px)] mx-auto px-[clamp(16px,2vw,32px)] max-md:pt-[10px] md:-mt-[20px] pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
-      <div className="neu-card rounded-2xl p-6 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
+    <div className="w-[min(96vw,1600px)] mx-auto px-4 sm:px-[clamp(16px,2vw,32px)] pt-3 sm:pt-[10px] md:-mt-[20px] pb-6 sm:pb-[clamp(24px,3vw,48px)] min-w-0 flex flex-col items-center justify-center min-h-[70vh]">
+      <div className="neu-card rounded-2xl p-5 sm:p-8 w-full max-w-[440px] mx-auto min-w-0 bg-white border border-gray-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.06)] animate-fade-rise">
         {/* Logo */}
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-3 sm:mb-5">
           <Link to="/" className="inline-block transition-transform hover:scale-105">
             <img
               src="/assets/favicon/logo.avif"
               alt="Horizon"
               width="36"
               height="36"
-              className="w-9 h-9 object-contain"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
             />
           </Link>
         </div>
 
         {/* Headings */}
-        <div className="text-center mb-6">
-          <h1 className="font-serif text-[26px] sm:text-[30px] font-bold text-gray-900 leading-tight mb-2">
+        <div className="text-center mb-4 sm:mb-6">
+          <h1 className="font-serif text-2xl sm:text-[30px] font-bold text-gray-900 leading-tight mb-1.5 sm:mb-2">
             Login
           </h1>
           <p className="text-gray-500 text-xs sm:text-sm">
@@ -54,7 +54,7 @@ const Login: React.FC = () => {
         {error && (
           <div
             role="alert"
-            className="mb-4 p-3 rounded-xl text-xs font-medium bg-red-50 text-red-700 border border-red-200 flex items-start gap-2"
+            className="mb-3 sm:mb-4 p-2.5 sm:p-3 rounded-xl text-xs font-medium bg-red-50 text-red-700 border border-red-200 flex items-start gap-2"
           >
             <svg className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -63,9 +63,9 @@ const Login: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-3.5 sm:space-y-4">
           <div>
-            <label htmlFor="login-email" className="block text-xs font-medium text-gray-700 mb-1.5">
+            <label htmlFor="login-email" className="block text-xs font-medium text-gray-700 mb-1 sm:mb-1.5">
               Email Address
             </label>
             <div className="relative">
@@ -81,13 +81,13 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full !pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
+                className="w-full !pl-10 pr-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1.5 font-sans">
+            <div className="flex items-center justify-between mb-1 sm:mb-1.5 font-sans">
               <label htmlFor="login-password" className="block text-xs font-medium text-gray-700 font-sans">
                 Password
               </label>
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full !pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
+                className="w-full !pl-10 pr-10 py-2 sm:py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-sans placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/20 focus:border-[#E91E8C]"
               />
               <button
                 type="button"
@@ -127,12 +127,12 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-1.5 sm:pt-2">
             <button
               type="submit"
               disabled={loading}
               aria-busy={loading}
-              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] disabled:opacity-60 text-white font-medium text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
+              className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#E91E8C] hover:bg-[#D81B7D] disabled:opacity-60 text-white font-medium text-xs sm:text-sm transition-all shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
           </div>
         </form>
 
-        <div className="text-center text-xs text-gray-600 mt-6 pt-5 border-t border-gray-100">
+        <div className="text-center text-xs text-gray-600 mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-gray-100">
           Don't have an account?{' '}
           <Link
             to="/register"
