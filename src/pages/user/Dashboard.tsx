@@ -241,36 +241,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 3: Study Statistics */}
-          <div className="neu-card rounded-2xl p-8">
-            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-6 font-semibold">
-              Study Statistics
-            </span>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="neu-recessed rounded-xl p-4 text-center">
-                <span className="block text-2xl font-bold text-ink mb-1">
-                  {isLoadingProgress ? '--' : progressData?.allTimeCompletedChapters ?? '--'}
-                </span>
-                <span className="block text-[11px] leading-tight text-muted-foreground font-medium">
-                  Completed Chapters
-                </span>
-              </div>
-              <div className="neu-recessed rounded-xl p-4 text-center">
-                <span className="block text-2xl font-bold text-ink mb-1">--</span>
-                <span className="block text-[11px] leading-tight text-muted-foreground font-medium">
-                  Current Streak
-                </span>
-              </div>
-              <div className="neu-recessed rounded-xl p-4 text-center">
-                <span className="block text-2xl font-bold text-ink mb-1">--</span>
-                <span className="block text-[11px] leading-tight text-muted-foreground font-medium">
-                  Study Goal
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Notification Preferences Entry Point */}
+          {/* Card 3: Notification Preferences Entry Point */}
           <div className="neu-card rounded-2xl p-8 flex flex-col items-start">
             <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-3 font-semibold">
               Notification Alerts

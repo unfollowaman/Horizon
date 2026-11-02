@@ -65,16 +65,6 @@ const DashboardSkeleton: React.FC = () => {
                 <div className="w-full h-5 bg-ink/5 rounded" />
               </div>
             </div>
-
-            {/* Card 3: Study Statistics */}
-            <div className="neu-card rounded-2xl p-8 space-y-4 animate-pulse">
-              <div className="w-36 h-4 bg-ink/10 rounded" />
-              <div className="grid grid-cols-3 gap-3">
-                <div className="neu-recessed rounded-xl h-20 bg-ink/5" />
-                <div className="neu-recessed rounded-xl h-20 bg-ink/5" />
-                <div className="neu-recessed rounded-xl h-20 bg-ink/5" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
