@@ -308,19 +308,19 @@ const ResourceDetails: React.FC = () => {
           {/* Chapter Header Card */}
           <article className="neu-card rounded-2xl px-4 py-3.5 sm:px-8 sm:py-6 md:px-10 md:py-7 space-y-3 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
             {/* Badges Row */}
-            <div className="flex flex-nowrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full overflow-x-auto no-scrollbar">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full">
               {resource.student_class && (
-                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">
                   {resource.student_class}
                 </span>
               )}
               {resource.subject && (
-                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">
                   {resource.subject}
                 </span>
               )}
               {resource.medium && (
-                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">
                   {resource.medium.charAt(0).toUpperCase() + resource.medium.slice(1).toLowerCase()} Medium
                 </span>
               )}
@@ -328,7 +328,7 @@ const ResourceDetails: React.FC = () => {
 
             {/* Resource Identity & Title Header */}
             <header className="space-y-1.5 sm:space-y-2 relative z-10 min-w-0">
-              <p className="text-[11px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase break-words">
+              <p className="text-xs font-semibold tracking-wide text-ink/50 uppercase break-words">
                 {kickerText}
               </p>
               <h1 className="text-xl sm:text-3xl md:text-4xl font-bold uppercase text-ink leading-snug sm:leading-tight text-left break-words min-w-0">
@@ -359,7 +359,7 @@ const ResourceDetails: React.FC = () => {
                   </svg>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block truncate">
+                  <span className="text-xs font-bold tracking-widest text-[#E91E8C] uppercase block truncate">
                     {isNotes ? 'FULL STUDY RESOURCE' : isPYQ ? 'EXAM PRACTICE PAPER' : 'FULL STUDY RESOURCE'}
                   </span>
                   <h2 className="text-base sm:text-h2 font-bold text-ink uppercase m-0 leading-snug break-words min-w-0">
@@ -369,7 +369,7 @@ const ResourceDetails: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
+            <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
               {isNotes
                 ? 'Access the complete interactive study note in Horizon\'s reader featuring full-page rendering, structured subtopics, and reading progress tracking.'
                 : isPYQ
@@ -380,7 +380,7 @@ const ResourceDetails: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 min-w-0">
               <Link
                 to={`/view/${resource.id}`}
-                className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-caption sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
               >
                 <span className="truncate">{isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
                 <span className="transition-transform group-hover:translate-x-1 shrink-0" aria-hidden="true">&rarr;</span>
@@ -392,7 +392,7 @@ const ResourceDetails: React.FC = () => {
                   onClick={(e) => handleDownload(resource.pdfUrl, resource, e)}
                   aria-label={`Download ${resource.title}`}
                   title={`Download ${resource.title}`}
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center cursor-pointer min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-caption sm:text-body1 neu-raised rounded-xl hover:neu-raised-hover no-underline text-ink text-center cursor-pointer min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2"
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E91E8C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -406,13 +406,13 @@ const ResourceDetails: React.FC = () => {
           {/* Chapter & Resource Overview Section / Paper Overview */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-3.5 sm:space-y-4 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
+              <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
                 {isPYQ ? 'Paper Overview' : 'Chapter & Resource Overview'}
               </h2>
             </div>
 
-            <div className="space-y-3 sm:space-y-4 text-xs sm:text-body1 leading-relaxed text-ink/90 min-w-0">
+            <div className="space-y-3 sm:space-y-4 text-caption sm:text-body1 leading-relaxed text-ink/90 min-w-0">
               {resource.chapter_summary ? (
                 resource.chapter_summary.split(/\n\n|\n/).filter(Boolean).map((para, idx) => (
                   <p key={idx} className="break-words m-0">
@@ -454,13 +454,13 @@ const ResourceDetails: React.FC = () => {
           {/* Topics Covered & Key Concepts Section / Subject Areas & Question Coverage */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
+              <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
                 {isPYQ ? 'Subject Areas & Question Coverage' : 'Topics Covered & Key Concepts'}
               </h2>
             </div>
 
-            <p className="text-xs sm:text-body1 text-ink/80 break-words m-0">
+            <p className="text-caption sm:text-body1 text-ink/80 break-words m-0">
               {isPYQ
                 ? 'Subject areas and question types represented in this question paper include:'
                 : 'Key syllabus areas addressed in this educational resource include:'}
@@ -490,13 +490,13 @@ const ResourceDetails: React.FC = () => {
 
                 if (topicsList.length > 0) {
                   return topicsList.map((topicItem, idx) => (
-                    <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div key={idx} className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         {topicItem}
                       </span>
                     </div>
@@ -505,119 +505,119 @@ const ResourceDetails: React.FC = () => {
 
                 return isNotes ? (
                   <>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Fundamental definitions, laws, and core theoretical concepts.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Structured breakdown of key chapter subtopics and formulas.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         High-yield exam points and recurring conceptual questions.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Diagrams, illustrative examples, and chapter summaries.
                       </span>
                     </div>
                   </>
                 ) : isPYQ ? (
                   <>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Multiple-choice and objective assessment questions.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Short-answer conceptual problems and core syllabus coverage.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Long-answer analytical and structured essay questions.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Direct insight into examination question formats and marking weightage.
                       </span>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Comprehensive topic review and core definitions.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Practice questions and self-assessment exercises.
                       </span>
                     </div>
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+                      <span className="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
                         Key takeaways for quick revision before tests.
                       </span>
                     </div>
@@ -630,7 +630,7 @@ const ResourceDetails: React.FC = () => {
           {/* Study Guidance & Preparation Tips Section / How to Use This Paper */}
           <section className="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div className="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
+              <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0" />
               <h2 className="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">
                 {isPYQ ? 'How to Use This Paper' : 'Study Guidance & Preparation Tips'}
               </h2>
@@ -643,17 +643,17 @@ const ResourceDetails: React.FC = () => {
                     const stepTitle = typeof stepItem === 'string' ? `Step ${idx + 1}` : (stepItem.title || `Step ${idx + 1}`);
                     const stepDesc = typeof stepItem === 'string' ? stepItem : stepItem.description;
                     return (
-                      <div key={idx} className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div key={idx} className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             {stepTitle}
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             {stepDesc}
                           </p>
                         </div>
@@ -666,85 +666,85 @@ const ResourceDetails: React.FC = () => {
                   return (
                     <>
                       {/* PYQ Step 01 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             Closed-Book Attempt
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             Attempt the paper without referring to notes or textbooks to test true recall.
                           </p>
                         </div>
                       </div>
 
                       {/* PYQ Step 02 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             Timed Practice
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             Follow the prescribed time limit where available to improve speed and exam stamina.
                           </p>
                         </div>
                       </div>
 
                       {/* PYQ Step 03 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             Self-Evaluation
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             Review incorrect or incomplete answers systematically to spot knowledge gaps.
                           </p>
                         </div>
                       </div>
 
                       {/* PYQ Step 04 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             Identify Patterns
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             Identify recurring concepts and high-weightage question formats across multiple years.
                           </p>
                         </div>
                       </div>
 
                       {/* PYQ Step 05 */}
-                      <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                      <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                         <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                          <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                         <div className="space-y-0.5 min-w-0 flex-1">
-                          <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                          <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                             Targeted Revision
                           </h3>
-                          <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                          <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                             Revisit relevant chapter notes for topics where errors occurred during practice.
                           </p>
                         </div>
@@ -756,68 +756,68 @@ const ResourceDetails: React.FC = () => {
                 return (
                   <>
                     {/* Step 01 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                        <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                           Initial Review
                         </h3>
-                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                        <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                           Read through the chapter overview to establish a clear conceptual framework before delving into details.
                         </p>
                       </div>
                     </div>
 
                     {/* Step 02 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                        <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                           Active Recall
                         </h3>
-                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                        <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                           Test yourself on key definitions and concepts without looking at the reference material.
                         </p>
                       </div>
                     </div>
 
                     {/* Step 03 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                        <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                           Practice Questions
                         </h3>
-                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                        <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                           Work through example problems and practice questions under timed conditions.
                         </p>
                       </div>
                     </div>
 
                     {/* Step 04 */}
-                    <div className="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+                    <div className="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
                       <div className="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg className="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <h3 className="text-xs sm:text-body1 font-bold text-ink m-0 break-words">
+                        <h3 className="text-caption sm:text-body1 font-bold text-ink m-0 break-words">
                           Interactive Note Viewing
                         </h3>
-                        <p className="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
+                        <p className="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">
                           Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.
                         </p>
                       </div>
@@ -848,7 +848,7 @@ const ResourceDetails: React.FC = () => {
               Resource Details
             </h2>
 
-            <dl className="space-y-2 text-xs sm:text-body1 m-0 min-w-0">
+            <dl className="space-y-2 text-caption sm:text-body1 m-0 min-w-0">
               {resource.student_class && (
                 <div className="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt className="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">

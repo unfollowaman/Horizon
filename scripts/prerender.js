@@ -347,90 +347,90 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
   let topicsHtml = '';
   if (topicsList.length > 0) {
     topicsHtml = topicsList.map(topicItem => `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">
           ${escapeHtml(topicItem)}
         </span>
       </div>
     `).join('');
   } else if (isNotes) {
     topicsHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Fundamental definitions, laws, and core theoretical concepts.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Fundamental definitions, laws, and core theoretical concepts.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Structured breakdown of key chapter subtopics and formulas.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Structured breakdown of key chapter subtopics and formulas.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">High-yield exam points and recurring conceptual questions.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">High-yield exam points and recurring conceptual questions.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Diagrams, illustrative examples, and chapter summaries.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Diagrams, illustrative examples, and chapter summaries.</span>
       </div>
     `;
   } else if (isPYQ) {
     topicsHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Multiple-choice and objective assessment questions.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Multiple-choice and objective assessment questions.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Short-answer conceptual problems and core syllabus coverage.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Short-answer conceptual problems and core syllabus coverage.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Long-answer analytical and structured essay questions.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Long-answer analytical and structured essay questions.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Direct insight into examination question formats and marking weightage.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Direct insight into examination question formats and marking weightage.</span>
       </div>
     `;
   } else {
     topicsHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Comprehensive topic review and core definitions.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Comprehensive topic review and core definitions.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Practice questions and self-assessment exercises.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Practice questions and self-assessment exercises.</span>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-center gap-1 sm:gap-2 min-w-0">
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
-        <span class="text-xs sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Key takeaways for quick revision before tests.</span>
+        <span class="text-caption sm:text-body1 text-ink/90 font-medium break-words min-w-0 flex-1 leading-normal">Key takeaways for quick revision before tests.</span>
       </div>
     `;
   }
@@ -442,59 +442,59 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
       const stepTitle = typeof stepItem === 'string' ? `Step ${idx + 1}` : (stepItem.title || `Step ${idx + 1}`);
       const stepDesc = typeof stepItem === 'string' ? stepItem : stepItem.description;
       return `
-        <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
+        <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
           <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0">
-            <svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
           <div class="space-y-0.5 min-w-0 flex-1">
-            <h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">${escapeHtml(stepTitle)}</h3>
-            <p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">${escapeHtml(stepDesc)}</p>
+            <h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">${escapeHtml(stepTitle)}</h3>
+            <p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">${escapeHtml(stepDesc)}</p>
           </div>
         </div>
       `;
     }).join('');
   } else if (isPYQ) {
     studyGuidanceHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Closed-Book Attempt</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Attempt the paper without referring to notes or textbooks to test true recall.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Closed-Book Attempt</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Attempt the paper without referring to notes or textbooks to test true recall.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Timed Practice</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Follow the prescribed time limit where available to improve speed and exam stamina.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Timed Practice</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Follow the prescribed time limit where available to improve speed and exam stamina.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Self-Evaluation</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Review incorrect or incomplete answers systematically to spot knowledge gaps.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Self-Evaluation</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Review incorrect or incomplete answers systematically to spot knowledge gaps.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Identify Patterns</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Identify recurring concepts and high-weightage question formats across multiple years.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Identify Patterns</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Identify recurring concepts and high-weightage question formats across multiple years.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Targeted Revision</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Revisit relevant chapter notes for topics where errors occurred during practice.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Targeted Revision</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Revisit relevant chapter notes for topics where errors occurred during practice.</p></div>
       </div>
     `;
   } else {
     studyGuidanceHtml = `
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Initial Review</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Read through the chapter overview to establish a clear conceptual framework before delving into details.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Initial Review</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Read through the chapter overview to establish a clear conceptual framework before delving into details.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Active Recall</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Test yourself on key definitions and concepts without looking at the reference material.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Active Recall</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Test yourself on key definitions and concepts without looking at the reference material.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Practice Questions</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Work through example problems and practice questions under timed conditions.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Practice Questions</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Work through example problems and practice questions under timed conditions.</p></div>
       </div>
-      <div class="neu-recessed p-1 sm:p-2 rounded-xl flex items-start gap-1 sm:gap-2 min-w-0">
-        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-2 h-2 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-xs sm:text-body1 font-bold text-ink m-0 break-words">Interactive Note Viewing</h3><p class="text-xs sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.</p></div>
+      <div class="neu-recessed p-2.5 sm:p-3 rounded-xl flex items-start gap-2 sm:gap-2.5 min-w-0">
+        <div class="w-7 h-7 neu-raised-sm rounded-full flex items-center justify-center shrink-0"><svg class="w-3 h-3 text-[#E91E8C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="space-y-0.5 min-w-0 flex-1"><h3 class="text-caption sm:text-body1 font-bold text-ink m-0 break-words">Interactive Note Viewing</h3><p class="text-caption sm:text-body1 text-ink/80 leading-relaxed m-0 break-words">Click <em>Open Full Notes</em> above to access Horizon's full interactive viewer with page tracking and layout tools.</p></div>
       </div>
     `;
   }
@@ -554,14 +554,14 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-8 items-start w-full min-w-0">
         <main class="lg:col-span-2 space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
           <article class="neu-card rounded-2xl px-4 py-3.5 sm:px-8 sm:py-6 md:px-10 md:py-7 space-y-3 sm:space-y-4 relative overflow-hidden min-w-0 w-full">
-            <div class="flex flex-nowrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full overflow-x-auto no-scrollbar">
-              ${resource.student_class ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.student_class)}</span>` : ''}
-              ${resource.subject ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.subject)}</span>` : ''}
-              ${resource.medium ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.medium.charAt(0).toUpperCase() + resource.medium.slice(1).toLowerCase())} Medium</span>` : ''}
+            <div class="flex flex-wrap gap-1.5 sm:gap-2 items-center justify-start relative z-10 min-w-0 w-full">
+              ${resource.student_class ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.student_class)}</span>` : ''}
+              ${resource.subject ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.subject)}</span>` : ''}
+              ${resource.medium ? `<span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold text-ink/80 bg-black/5 shrink-0">${escapeHtml(resource.medium.charAt(0).toUpperCase() + resource.medium.slice(1).toLowerCase())} Medium</span>` : ''}
             </div>
 
             <header class="space-y-1.5 sm:space-y-2 relative z-10 min-w-0">
-              <p class="text-[11px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase break-words">${escapeHtml(kickerText)}</p>
+              <p class="text-xs font-semibold tracking-wide text-ink/50 uppercase break-words">${escapeHtml(kickerText)}</p>
               <h1 class="text-xl sm:text-3xl md:text-4xl font-bold uppercase text-ink leading-snug sm:leading-tight text-left break-words min-w-0">${escapeHtml(resource.title)}</h1>
               ${showSubtitle ? `<p class="text-sm sm:text-body1 font-semibold text-ink/70 pt-0.5 sm:pt-1 break-words min-w-0">Chapter ${escapeHtml(String(resource.chapters.chapter_number))}: ${escapeHtml(resource.chapters.chapter_name)}</p>` : ''}
             </header>
@@ -578,18 +578,18 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
                   </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-[#E91E8C] uppercase block truncate">${isNotes ? 'FULL STUDY RESOURCE' : isPYQ ? 'EXAM PRACTICE PAPER' : 'FULL STUDY RESOURCE'}</span>
+                  <span class="text-xs font-bold tracking-widest text-[#E91E8C] uppercase block truncate">${isNotes ? 'FULL STUDY RESOURCE' : isPYQ ? 'EXAM PRACTICE PAPER' : 'FULL STUDY RESOURCE'}</span>
                   <h2 class="text-base sm:text-h2 font-bold text-ink uppercase m-0 leading-snug break-words min-w-0">${isNotes ? 'Open Complete Study Notes' : isPYQ ? 'Open Question Paper' : 'Access Full Document'}</h2>
                 </div>
               </div>
             </div>
 
-            <p class="text-xs sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
+            <p class="text-caption sm:text-body1 text-ink/80 leading-relaxed break-words min-w-0">
               ${isNotes ? 'Access the complete interactive study note in Horizon\'s reader featuring full-page rendering, structured subtopics, and reading progress tracking.' : isPYQ ? 'Open the complete question paper in Horizon\'s dedicated reader for full-screen practice, zooming, and examination review.' : 'Open the full document in Horizon\'s reader for structured review, zooming, and comprehensive exam revision.'}
             </p>
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 min-w-0">
-              <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0">
+              <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-caption sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0">
                 <span class="truncate">${isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
                 <span class="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
               </a>
@@ -598,24 +598,24 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
 
           <section class="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-3.5 sm:space-y-4 min-w-0 w-full">
             <div class="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div class="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
+              <div class="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
               <h2 class="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">${isPYQ ? 'Paper Overview' : 'Chapter &amp; Resource Overview'}</h2>
             </div>
-            <div class="space-y-3 sm:space-y-4 text-xs sm:text-body1 leading-relaxed text-ink/90 min-w-0">${overviewHtml}</div>
+            <div class="space-y-3 sm:space-y-4 text-caption sm:text-body1 leading-relaxed text-ink/90 min-w-0">${overviewHtml}</div>
           </section>
 
           <section class="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div class="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div class="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
+              <div class="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
               <h2 class="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">${isPYQ ? 'Subject Areas &amp; Question Coverage' : 'Topics Covered &amp; Key Concepts'}</h2>
             </div>
-            <p class="text-xs sm:text-body1 text-ink/80 break-words m-0">${isPYQ ? 'Subject areas and question types represented in this question paper include:' : 'Key syllabus areas addressed in this educational resource include:'}</p>
+            <p class="text-caption sm:text-body1 text-ink/80 break-words m-0">${isPYQ ? 'Subject areas and question types represented in this question paper include:' : 'Key syllabus areas addressed in this educational resource include:'}</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 min-w-0">${topicsHtml}</div>
           </section>
 
           <section class="neu-card rounded-2xl p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-5 min-w-0 w-full">
             <div class="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-ink/10 min-w-0">
-              <div class="w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
+              <div class="w-1.5 sm:w-2 h-5 sm:h-6 bg-gradient-to-b from-[#E91E8C] to-[#8B0A50] rounded-full shrink-0"></div>
               <h2 class="text-base sm:text-h2 font-bold uppercase text-ink m-0 break-words min-w-0 flex-1 leading-snug">${isPYQ ? 'How to Use This Paper' : 'Study Guidance &amp; Preparation Tips'}</h2>
             </div>
             <div class="space-y-3 sm:space-y-4 min-w-0">${studyGuidanceHtml}</div>
@@ -633,7 +633,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
         <aside class="space-y-5 sm:space-y-6 md:space-y-8 min-w-0 w-full">
           <section class="neu-card rounded-2xl p-4 sm:p-6 space-y-3.5 sm:space-y-4 min-w-0 w-full">
             <h2 class="text-base sm:text-h2 uppercase text-ink pb-2 border-b border-ink/10 break-words">Resource Details</h2>
-            <dl class="space-y-2 text-xs sm:text-body1 m-0 min-w-0">
+            <dl class="space-y-2 text-caption sm:text-body1 m-0 min-w-0">
               ${resource.student_class ? `
                 <div class="flex flex-row items-center justify-between gap-2 py-1.5 border-b border-ink/5 min-w-0">
                   <dt class="text-ink/70 font-semibold text-caption flex items-center gap-1.5 shrink-0">
@@ -738,7 +738,7 @@ export function generateResourceHtml(resource, templateHtml, relatedResources = 
             </div>
             <h2 class="text-base sm:text-h2 uppercase text-ink m-0 break-words">${isPYQ ? 'Ready to Practice?' : 'Ready to Study?'}</h2>
             <p class="text-caption text-ink/80 max-w-xs mx-auto break-words">${isPYQ ? 'Open the question paper in Horizon\'s dedicated reader to start practicing now.' : 'Open the full notes in Horizon\'s dedicated reader to start studying now.'}</p>
-            <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0">
+            <a href="/view/${escapeHtml(resource.id)}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-caption sm:text-body1 text-white bg-gradient-to-r from-[#E91E8C] via-[#C2185B] to-[#8B0A50] rounded-xl shadow-md hover:opacity-95 transition-all no-underline text-center cursor-pointer group min-w-0">
               <span class="truncate">${isNotes ? 'Open Full Notes' : isPYQ ? 'Open Question Paper' : 'View Full Resource'}</span>
               <span class="transition-transform group-hover:translate-x-1 shrink-0">&rarr;</span>
             </a>
@@ -1774,7 +1774,7 @@ export function generateSyllabusClassHtml(classConfig, subjects, templateHtml) {
           <h1 class="text-2xl sm:text-4xl font-bold text-ink m-0">
             Select Subject for <span class="text-gradient">${escapeHtml(classConfig.name)}</span>
           </h1>
-          <p class="text-xs sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
+          <p class="text-caption sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
             Choose a subject below to view its complete chapter hierarchy, subtopics, and practice exercises.
           </p>
         </header>
@@ -1875,7 +1875,7 @@ export function generateSyllabusSubjectHtml(classConfig, subjectName, subjectSlu
                   <span class="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0 ${typeBadgeClass}">
                     ${escapeHtml(typeLabel)}
                   </span>
-                  <h4 class="text-xs sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1">
+                  <h4 class="text-caption sm:text-body1 font-bold text-ink break-words m-0 min-w-0 flex-1">
                     ${escapeHtml(t.title)}
                   </h4>
                 </div>
@@ -1932,7 +1932,7 @@ export function generateSyllabusSubjectHtml(classConfig, subjectName, subjectSlu
         <h1 class="text-2xl sm:text-4xl font-bold text-ink m-0">
           ${escapeHtml(classConfig.name)} <span class="text-gradient">${escapeHtml(subjectName)}</span> Syllabus
         </h1>
-        <p class="text-xs sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
+        <p class="text-caption sm:text-body1 text-ink/80 max-w-xl mx-auto m-0">
           Chapter-by-chapter topics, exercises, and linked study resources according to the 2026-27 curriculum.
         </p>
       </header>
