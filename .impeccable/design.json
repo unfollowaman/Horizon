@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T17:28:00.000Z",
+  "title": "Design System: Horizon",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Editorial Magenta",
+        "canonical": "oklch(62% 0.26 355)",
+        "tonalRamp": [
+          "#3a0220",
+          "#5e0435",
+          "#8b0a50",
+          "#c2185b",
+          "#e91e8c",
+          "#f06292",
+          "#f8bbd0",
+          "#fde4ec"
+        ]
+      },
+      "primary-deep": {
+        "role": "primary",
+        "displayName": "Deep Plum",
+        "canonical": "oklch(50% 0.22 355)",
+        "tonalRamp": [
+          "#280116",
+          "#480327",
+          "#70063e",
+          "#c2185b",
+          "#d81b60",
+          "#e91e63",
+          "#f48fb1",
+          "#fce4ec"
+        ]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Linen Paper",
+        "canonical": "oklch(96% 0.003 95)",
+        "tonalRamp": [
+          "#2b2b2b",
+          "#4a4a4a",
+          "#737373",
+          "#a3a3a3",
+          "#d4d4d4",
+          "#e5e5e5",
+          "#f4f4f4",
+          "#fafafa"
+        ]
+      },
+      "surface-raised": {
+        "role": "neutral",
+        "displayName": "Studio Porcelain",
+        "canonical": "oklch(98% 0.002 95)",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#666666",
+          "#8c8c8c",
+          "#b3b3b3",
+          "#d9d9d9",
+          "#f0f0f0",
+          "#fafafa"
+        ]
+      },
+      "surface-recessed": {
+        "role": "neutral",
+        "displayName": "Recessed Well",
+        "canonical": "oklch(99% 0.001 95)",
+        "tonalRamp": [
+          "#2e2e2e",
+          "#525252",
+          "#7a7a7a",
+          "#a3a3a3",
+          "#cccccc",
+          "#e6e6e6",
+          "#f5f5f5",
+          "#fdfdfd"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Deep Ink",
+        "canonical": "oklch(15% 0.005 95)",
+        "tonalRamp": [
+          "#050505",
+          "#111111",
+          "#262626",
+          "#404040",
+          "#666666",
+          "#8c8c8c",
+          "#cccccc",
+          "#f5f5f5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Hero",
+        "purpose": "Hero landmarks, expressive headings, and section statements."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Primary section titles, page headers, and curriculum directory headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Subject titles, card headers, and modal dialog names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Explanatory paragraphs, chapter summaries, and student guidance."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Filter tags, class chips, metadata timestamps, and button labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "raised-structural",
+        "value": "0 0 0 1px rgba(0,0,0,0.15), 8px 10px 20px rgba(0,0,0,0.10), 2px 3px 6px rgba(0,0,0,0.06), -4px -4px 10px rgba(255,255,255,0.95)",
+        "purpose": "Primary dual-direction neumorphic elevation for cards and buttons."
+      },
+      {
+        "name": "raised-hover",
+        "value": "0 0 0 1px rgba(233,30,140,0.15), 12px 14px 28px rgba(233,30,140,0.12), 4px 6px 10px rgba(233,30,140,0.08), -6px -6px 14px rgba(255,255,255,0.98)",
+        "purpose": "Hover elevation with subtle magenta bloom."
+      },
+      {
+        "name": "recessed-well",
+        "value": "inset 0 0 0 1px rgba(0,0,0,0.15), inset 3px 3px 8px rgba(0,0,0,0.08), inset -3px -3px 8px rgba(255,255,255,0.95)",
+        "purpose": "Engraved recessed wells for document previews and input fields."
+      },
+      {
+        "name": "ambient-nav",
+        "value": "0 8px 32px rgba(0,0,0,0.04)",
+        "purpose": "Soft diffuse floating shadow for navigation bars."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-tactile",
+        "value": "300ms ease",
+        "purpose": "Smooth tactile card elevation and shadow bloom transitions."
+      },
+      {
+        "name": "fade-rise",
+        "value": "fade-rise 0.6s ease-out forwards",
+        "purpose": "Entrance animation for hero title and subtitles."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Pill",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Tactile porcelain capsule button for key page actions and navigation triggers.",
+      "html": "<button class=\"ds-btn-primary\">Get Started</button>",
+      "css": ".ds-btn-primary { background: #fafafa; color: #111111; font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500; height: 40px; padding: 0 20px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 8px 10px 20px rgba(0,0,0,0.10), 2px 3px 6px rgba(0,0,0,0.06), -4px -4px 10px rgba(255,255,255,0.95); cursor: pointer; transition: transform 300ms ease, box-shadow 300ms ease; outline: none; } .ds-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(233,30,140,0.15), 12px 14px 28px rgba(233,30,140,0.12), 4px 6px 10px rgba(233,30,140,0.08), -6px -6px 14px rgba(255,255,255,0.98); } .ds-btn-primary:focus-visible { ring: 2px solid #e91e8c; outline: 2px solid #e91e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Compact Card Action",
+      "kind": "button",
+      "refersTo": "button-sm",
+      "description": "Compact tactile tile button for document card actions (View, Download).",
+      "html": "<button class=\"ds-btn-compact\"><svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#e91e8c\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z\"/><polyline points=\"14 2 14 8 20 8\"/></svg><span>View</span></button>",
+      "css": ".ds-btn-compact { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #fafafa; color: #111111; font-family: 'Roboto', sans-serif; font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 4px 5px 10px rgba(0,0,0,0.08), -2px -2px 6px rgba(255,255,255,0.95); cursor: pointer; transition: transform 200ms ease, box-shadow 200ms ease; outline: none; } .ds-btn-compact:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(233,30,140,0.15), 6px 8px 14px rgba(233,30,140,0.12), -3px -3px 8px rgba(255,255,255,0.98); } .ds-btn-compact:focus-visible { outline: 2px solid #e91e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tactile Material Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Primary raised content container featuring an inner recessed thumbnail well.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-well\"><span class=\"ds-card-badge\">NCERT</span></div><h4 class=\"ds-card-title\">Class 10 Mathematics</h4><p class=\"ds-card-meta\">2025-26 Solutions</p></div>",
+      "css": ".ds-card { background: #fafafa; border-radius: 16px; padding: 14px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 8px 10px 20px rgba(0,0,0,0.10), 2px 3px 6px rgba(0,0,0,0.06), -4px -4px 10px rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; text-align: center; } .ds-card-well { width: 100%; height: 90px; background: #fdfdfd; border-radius: 8px; border: 1px solid rgba(0,0,0,0.03); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), inset 3px 3px 8px rgba(0,0,0,0.08), inset -3px -3px 8px rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; } .ds-card-badge { font-family: 'Roboto', sans-serif; font-size: 11px; font-weight: 700; color: #e91e8c; letter-spacing: 0.05em; } .ds-card-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #111111; margin: 0 0 4px 0; } .ds-card-meta { font-family: 'Roboto', sans-serif; font-size: 12px; color: #6b7280; margin: 0; }"
+    },
+    {
+      "name": "Dropdown Trigger",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Accessible custom select trigger with arrow traversal and ARIA listbox support.",
+      "html": "<button class=\"ds-dropdown-trigger\"><span class=\"ds-dropdown-label\">Class 10th</span><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg></button>",
+      "css": ".ds-dropdown-trigger { width: 100%; height: 48px; background: #fafafa; border-radius: 12px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 8px 10px 20px rgba(0,0,0,0.10), -4px -4px 10px rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: space-between; cursor: pointer; outline: none; } .ds-dropdown-trigger:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(233,30,140,0.15), 10px 12px 24px rgba(233,30,140,0.10), -5px -5px 12px rgba(255,255,255,0.98); } .ds-dropdown-trigger:focus-visible { outline: 2px solid #e91e8c; outline-offset: 2px; } .ds-dropdown-label { font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 700; color: #111111; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Digital Study Desk",
+    "overview": "Horizon is designed as a tranquil, tangible academic environment engineered for sustained study without cognitive fatigue. Unlike standard modern software interfaces dominated by flat, sterile grey planes or loud commercial gamification, Horizon crafts a physical desk feeling. Interactive surfaces possess soft tangible mass, tactile recessed wells hold study materials, and delicate hairline perimeter traces ground each element in physical space.\n\nThe aesthetic blends editorial typographic prestige with refined tactile neumorphism. Academic serif headlines evoke library volumes and textbook clarity, while cushioned pill controls and smooth dual-cast shadows provide tactile confidence. The palette is calm and light-absorbing, allowing secondary school students to focus on dense NCERT/CBSE chapter texts and past-year exam questions for hours without visual strain.",
+    "keyCharacteristics": [
+      "Physical dual-direction neumorphism with balanced raised and recessed planes.",
+      "Editorial typographic pairing blending Instrument Serif prestige with Playfair Display structural titles and Roboto functional clarity.",
+      "Low-contrast, glare-free paper tones with rare, high-intent magenta accents.",
+      "Strict keyboard accessibility with dedicated focus-visible ring precision."
+    ],
+    "rules": [
+      {
+        "name": "The Rare Accent Doctrine",
+        "body": "Editorial Magenta (#e91e8c) is strictly restricted to ≤10% of any given viewport. Its power comes from restraint; when everything calls for attention, nothing receives it. It is reserved for keyboard focus rings, active filters, and primary conversion triggers.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dual-Trace Doctrine",
+        "body": "Every raised card and button must feature an outer boundary trace (rgba(0,0,0,0.15)) coupled with an opposing inner highlight trace (rgba(255,255,255,0.95)). Physical surfaces never end abruptly in a CSS border without lighting cues.",
+        "section": "colors"
+      },
+      {
+        "name": "The Editorial Em Rule",
+        "body": "Italicized emphasis spans (<em>) in display headings use the Editorial Magenta gradient (linear-gradient(to bottom right, #E91E8C, #C2185B, #8B0A50)) with -webkit-background-clip: text and generous right padding (0.15em) to prevent italic glyph clipping.",
+        "section": "typography"
+      },
+      {
+        "name": "The Inset Companion Rule",
+        "body": "Every major raised card (.neu-card) must contain an internal recessed child container or well (.neu-recessed) with a 4px inset buffer to create physical depth equilibrium.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do wrap all interactive custom buttons and links with focus-visible:ring-2 focus-visible:ring-[#E91E8C] focus-visible:ring-offset-2 rather than generic focus:ring.",
+      "Do maintain the 10% maximum surface limit on Editorial Magenta accents to keep student focus centered on reading material.",
+      "Do pair raised containers with internal recessed wells to preserve the physical desk metaphor.",
+      "Do provide explicit WAI-ARIA roles, attributes (role=\"listbox\", role=\"slider\", role=\"dialog\"), and aria-hidden=\"true\" on decorative SVG icons.",
+      "Do use Instrument Serif strictly for display heroes and section highlights, relying on Playfair Display for structural titles."
+    ],
+    "donts": [
+      "Don't use solid pure-black #000000 borders or harsh flat box-shadows.",
+      "Don't add promotional banners, gamified point popups, countdown timers, or confetti animations to educational surfaces.",
+      "Don't use generic cold blue SaaS accents; Horizon's identity is grounded in warm paper neutrals and Editorial Magenta.",
+      "Don't trigger focus rings on pointer/mouse clicks; always isolate keyboard focus with :focus-visible.",
+      "Don't apply decorative icons without aria-hidden=\"true\" or icon-only buttons without aria-label and matching title."
+    ]
+  }
+}
