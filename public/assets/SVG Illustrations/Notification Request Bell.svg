@@ -1,0 +1,300 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512" width="512" height="512" preserveAspectRatio="xMidYMid meet">
+  <!-- ===================================================================== -->
+  <!-- 2. DEFINITIONS (Gradients, Shading & 3D Filters)                      -->
+  <!-- ===================================================================== -->
+  <defs>
+    <!-- Soft ambient ground shadow under the bell -->
+    <radialGradient id="nb-ground-shadow-grad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#8C5200" stop-opacity="0.28" />
+      <stop offset="55%" stop-color="#8C5200" stop-opacity="0.10" />
+      <stop offset="100%" stop-color="#8C5200" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Top Mounting Loop 3D Golden Gradient -->
+    <radialGradient id="nb-loop-grad" cx="-8" cy="-144" r="32" fx="-12" fy="-148" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF8A8" />
+      <stop offset="30%" stop-color="#FFE96B" />
+      <stop offset="65%" stop-color="#FFD72E" />
+      <stop offset="90%" stop-color="#FFBF00" />
+      <stop offset="100%" stop-color="#D99100" />
+    </radialGradient>
+
+    <!-- Main Bell Body Primary 3D Golden Material (Upper-Left Light Source) -->
+    <radialGradient id="nb-body-main-grad" cx="-38" cy="-58" r="235" fx="-54" fy="-78" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF8A8" />
+      <stop offset="22%" stop-color="#FFE96B" />
+      <stop offset="52%" stop-color="#FFD72E" />
+      <stop offset="80%" stop-color="#FFBF00" />
+      <stop offset="100%" stop-color="#D99100" />
+    </radialGradient>
+
+    <!-- Main Bell Body Lower-Right Dimensional Shadow Overlay -->
+    <linearGradient id="nb-body-depth-grad" x1="-90" y1="-95" x2="125" y2="65" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF8A8" stop-opacity="0.35" />
+      <stop offset="45%" stop-color="#FFD72E" stop-opacity="0" />
+      <stop offset="80%" stop-color="#E59800" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#C87A00" stop-opacity="0.72" />
+    </linearGradient>
+
+    <!-- Bell Body Glossy Left Studio Reflection Gradient -->
+    <linearGradient id="nb-body-gloss-grad" x1="-68" y1="-112" x2="-15" y2="35" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.88" />
+      <stop offset="35%" stop-color="#FFF8A8" stop-opacity="0.78" />
+      <stop offset="75%" stop-color="#FFE96B" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFD72E" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Bell Shoulder-to-Rim Crease Shading -->
+    <linearGradient id="nb-crease-grad" x1="0" y1="8" x2="0" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D99100" stop-opacity="0" />
+      <stop offset="65%" stop-color="#D99100" stop-opacity="0.48" />
+      <stop offset="100%" stop-color="#B86E00" stop-opacity="0.65" />
+    </linearGradient>
+
+    <!-- Lower Rim Outer Lip 3D Gradient -->
+    <linearGradient id="nb-rim-outer-grad" x1="-140" y1="32" x2="145" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE96B" />
+      <stop offset="22%" stop-color="#FFF8A8" />
+      <stop offset="48%" stop-color="#FFD72E" />
+      <stop offset="78%" stop-color="#FFBF00" />
+      <stop offset="100%" stop-color="#D99100" />
+    </linearGradient>
+
+    <!-- Lower Rim Upper Edge Bright Highlight Gradient -->
+    <linearGradient id="nb-rim-highlight-grad" x1="-135" y1="45" x2="130" y2="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE96B" stop-opacity="0.5" />
+      <stop offset="28%" stop-color="#FFF8A8" stop-opacity="0.95" />
+      <stop offset="55%" stop-color="#FFE96B" stop-opacity="0.85" />
+      <stop offset="85%" stop-color="#FFD72E" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#FFBF00" stop-opacity="0.1" />
+    </linearGradient>
+
+    <!-- Lower Rim Recessed Mouth / Cavity Gradient -->
+    <linearGradient id="nb-mouth-cavity-grad" x1="-95" y1="46" x2="95" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7A3E00" />
+      <stop offset="32%" stop-color="#9A5200" />
+      <stop offset="70%" stop-color="#C47100" />
+      <stop offset="100%" stop-color="#E08E00" />
+    </linearGradient>
+
+    <!-- Inner Mouth Rim Depth Shadow -->
+    <radialGradient id="nb-mouth-inner-shadow" cx="0" cy="62" r="128" fx="0" fy="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5E2D00" stop-opacity="0.75" />
+      <stop offset="65%" stop-color="#874600" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#D99100" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Clapper 3D Spherical Golden Gradient -->
+    <radialGradient id="nb-clapper-grad" cx="-10" cy="76" r="44" fx="-14" fy="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF8A8" />
+      <stop offset="26%" stop-color="#FFE96B" />
+      <stop offset="58%" stop-color="#FFD72E" />
+      <stop offset="84%" stop-color="#FFBF00" />
+      <stop offset="100%" stop-color="#C97D00" />
+    </radialGradient>
+
+    <!-- Clapper Contact Shadow Inside Bell Mouth -->
+    <linearGradient id="nb-clapper-neck-shadow" x1="0" y1="48" x2="0" y2="82" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#592A00" stop-opacity="0.82" />
+      <stop offset="55%" stop-color="#8C4800" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#D99100" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Magenta Notification Badge 3D Gradient -->
+    <radialGradient id="nb-badge-magenta-grad" cx="316" cy="158" r="78" fx="312" fy="152" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF78B8" />
+      <stop offset="24%" stop-color="#FF5BA8" />
+      <stop offset="58%" stop-color="#E91E83" />
+      <stop offset="88%" stop-color="#C8126C" />
+      <stop offset="100%" stop-color="#9E0A52" />
+    </radialGradient>
+
+    <!-- Magenta Badge Rim Bevel Highlight -->
+    <linearGradient id="nb-badge-rim-grad" x1="292" y1="136" x2="372" y2="218" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF99CA" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#E91E83" stop-opacity="0" />
+      <stop offset="100%" stop-color="#8F0749" stop-opacity="0.65" />
+    </linearGradient>
+
+    <!-- Magenta Decorative Rays 3D Gradient -->
+    <linearGradient id="nb-ray-magenta-grad" x1="95" y1="70" x2="185" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5BA8" />
+      <stop offset="50%" stop-color="#E91E83" />
+      <stop offset="100%" stop-color="#B80F62" />
+    </linearGradient>
+
+    <!-- Clip Path for Main Bell Body Interior Shadings -->
+    <clipPath id="nb-body-clip">
+      <path d="M 0 -128 C 46 -128, 76 -98, 84 -48 C 92 2, 106 34, 142 58 L -142 58 C -106 34, -92 2, -84 -48 C -76 -98, -46 -128, 0 -128 Z" />
+    </clipPath>
+
+    <!-- Soft Gaussian Blur for Studio Highlights -->
+    <filter id="nb-blur-soft" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+
+    <filter id="nb-blur-fine" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="2.5" />
+    </filter>
+
+    <!-- Overall Bell Soft Drop Shadow -->
+    <filter id="nb-bell-drop-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="4" dy="14" stdDeviation="12" flood-color="#8A5200" flood-opacity="0.22" />
+    </filter>
+
+    <!-- Floating Badge Drop Shadow onto the Bell -->
+    <filter id="nb-badge-shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="-4" dy="9" stdDeviation="7" flood-color="#6B2200" flood-opacity="0.34" />
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#8A0845" flood-opacity="0.22" />
+    </filter>
+
+    <!-- White Badge Icon Subtle Elevation Shadow -->
+    <filter id="nb-symbol-shadow" x="-35%" y="-35%" width="170%" height="170%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#850642" flood-opacity="0.42" />
+    </filter>
+
+    <!-- Notification Rays Subtle Depth Shadow -->
+    <filter id="nb-ray-shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="1" dy="4" stdDeviation="3.5" flood-color="#9E0B52" flood-opacity="0.22" />
+    </filter>
+  </defs>
+
+  <!-- Subtle Ambient Ground Shadow Underneath Bell -->
+  <ellipse cx="248" cy="422" rx="112" ry="20" fill="url(#nb-ground-shadow-grad)" />
+
+  <!-- ===================================================================== -->
+  <!-- 4. DECORATIVE NOTIFICATION RAYS (Upper-Left, Magenta)                 -->
+  <!-- ===================================================================== -->
+  <g id="notification-rays" filter="url(#nb-ray-shadow)">
+    <!-- Lower-left angled ray -->
+    <path d="M 135 170 C 118 166, 98 160, 84 155 C 76 152, 74 143, 79 137 C 84 131, 93 131, 101 135 C 115 142, 131 150, 141 156 C 147 160, 147 167, 142 170 C 140 171, 137 171, 135 170 Z" fill="url(#nb-ray-magenta-grad)" />
+    <!-- Middle diagonal ray -->
+    <path d="M 154 142 C 141 129, 124 112, 113 100 C 107 93, 108 84, 115 79 C 122 74, 131 76, 137 84 C 147 97, 159 116, 166 130 C 170 137, 167 143, 162 145 C 159 146, 156 144, 154 142 Z" fill="url(#nb-ray-magenta-grad)" />
+    <!-- Upper near-vertical ray -->
+    <path d="M 183 125 C 180 107, 176 86, 174 71 C 173 62, 179 55, 187 55 C 196 55, 202 62, 201 71 C 200 87, 198 107, 196 124 C 195 131, 190 134, 186 132 C 184 131, 183 128, 183 125 Z" fill="url(#nb-ray-magenta-grad)" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- SHARED 3D GOLDEN BELL (Tilted 12 deg clockwise around center)         -->
+  <!-- ===================================================================== -->
+  <g id="golden-bell" transform="translate(252, 274) rotate(12)" filter="url(#nb-bell-drop-shadow)">
+
+    <!-- =================================================================== -->
+    <!-- 5. BELL MOUNTING LOOP (Partially behind top dome)                   -->
+    <!-- =================================================================== -->
+    <g id="bell-mounting-loop">
+      <path d="M -21 -118 C -23 -139, -13 -151, 0 -151 C 13 -151, 23 -139, 21 -118 Z" fill="url(#nb-loop-grad)" />
+      <!-- Subtle specular highlight on upper-left of loop -->
+      <path d="M -14 -126 C -14 -138, -7 -146, 2 -146" fill="none" stroke="#FFF8A8" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+      <!-- Ambient occlusion shadow where loop meets dome -->
+      <path d="M -20 -121 C -10 -126, 10 -126, 20 -121" fill="none" stroke="#B87000" stroke-width="3.5" stroke-linecap="round" opacity="0.55" />
+    </g>
+
+    <!-- =================================================================== -->
+    <!-- 6. MAIN BELL BODY                                                   -->
+    <!-- =================================================================== -->
+    <g id="main-bell-body">
+      <path id="nb-bell-silhouette" d="M 0 -128 C 46 -128, 76 -98, 84 -48 C 92 2, 106 34, 142 58 L -142 58 C -106 34, -92 2, -84 -48 C -76 -98, -46 -128, 0 -128 Z" fill="url(#nb-body-main-grad)" />
+    </g>
+
+    <!-- =================================================================== -->
+    <!-- 7. BELL HIGHLIGHTS AND SHADING                                      -->
+    <!-- =================================================================== -->
+    <g id="bell-highlights-and-shading" clip-path="url(#nb-body-clip)">
+      <!-- Dimensional shading toward lower-right and right flank -->
+      <path d="M 0 -128 C 46 -128, 76 -98, 84 -48 C 92 2, 106 34, 142 58 L -142 58 C -106 34, -92 2, -84 -48 C -76 -98, -46 -128, 0 -128 Z" fill="url(#nb-body-depth-grad)" />
+
+      <!-- Deep golden crescent shadow along the right contour -->
+      <path d="M 28 -122 C 62 -106, 78 -72, 86 -22 C 94 20, 112 42, 138 58 L 92 58 C 72 30, 62 -10, 54 -56 C 48 -90, 38 -110, 28 -122 Z" fill="#D99100" opacity="0.42" filter="url(#nb-blur-soft)" />
+
+      <!-- Soft warm bounce reflection along far right edge -->
+      <path d="M 65 -82 C 78 -56, 84 -18, 96 20 C 104 38, 118 48, 134 56" fill="none" stroke="#FFE96B" stroke-width="5" stroke-linecap="round" opacity="0.38" filter="url(#nb-blur-fine)" />
+
+      <!-- Broad glossy left-side studio highlight ribbon -->
+      <path d="M -8 -118 C -42 -114, -64 -84, -72 -36 C -78 4, -92 32, -118 52 L -56 50 C -42 24, -36 -12, -32 -52 C -28 -86, -18 -108, -8 -118 Z" fill="url(#nb-body-gloss-grad)" filter="url(#nb-blur-soft)" />
+
+      <!-- Intense upper-left dome specular gleam -->
+      <ellipse cx="-34" cy="-82" rx="22" ry="36" transform="rotate(24, -34, -82)" fill="#FFFDF2" opacity="0.62" filter="url(#nb-blur-soft)" />
+
+      <!-- Secondary crisp highlight streak along upper-left curve -->
+      <path d="M -18 -114 C -44 -104, -58 -76, -65 -34 C -70 -4, -80 20, -98 40" fill="none" stroke="#FFF8A8" stroke-width="6" stroke-linecap="round" opacity="0.55" filter="url(#nb-blur-fine)" />
+
+      <!-- Subtle crease shading just above the flared lower rim -->
+      <path d="M -142 36 C -80 12, 80 12, 142 36 L 142 60 L -142 60 Z" fill="url(#nb-crease-grad)" />
+    </g>
+
+    <!-- =================================================================== -->
+    <!-- 8. LOWER RIM (Wide flared lip & recessed elliptical opening)        -->
+    <!-- =================================================================== -->
+    <g id="lower-rim">
+      <!-- Outer 3D Flared Torus Lip -->
+      <path d="M -148 64 C -148 36, -82 24, 0 24 C 82 24, 148 36, 148 64 C 148 88, 84 100, 0 100 C -84 100, -148 88, -148 64 Z" fill="url(#nb-rim-outer-grad)" />
+
+      <!-- Lower-right underside shading on outer lip -->
+      <path d="M -148 64 C -148 42, -82 31, 0 31 C 82 31, 148 42, 148 64 C 148 88, 84 100, 0 100 C -84 100, -148 88, -148 64 Z" fill="#D99100" opacity="0.28" />
+
+      <!-- Bright golden highlight along the upper ridge of the flared rim -->
+      <path d="M -140 58 C -118 36, -64 27, 0 27 C 64 27, 118 36, 140 58 C 114 42, 62 34, 0 34 C -62 34, -114 42, -140 58 Z" fill="url(#nb-rim-highlight-grad)" />
+
+      <!-- Extra specular gleam on the left-center rim ridge -->
+      <path d="M -118 46 C -84 32, -38 27, 12 28" fill="none" stroke="#FFFDF0" stroke-width="3.5" stroke-linecap="round" opacity="0.75" filter="url(#nb-blur-fine)" />
+
+      <!-- Recessed Dark Golden Bell Opening (Mouth Cavity) -->
+      <path d="M -124 67 C -124 49, -68 42, 0 42 C 68 42, 124 49, 124 67 C 124 84, 68 92, 0 92 C -68 92, -124 84, -124 67 Z" fill="url(#nb-mouth-cavity-grad)" />
+
+      <!-- Deep recessed shadow under the front overhang of the mouth -->
+      <path d="M -124 67 C -124 49, -68 42, 0 42 C 68 42, 124 49, 124 67 C 124 79, 68 85, 0 85 C -68 85, -124 79, -124 67 Z" fill="url(#nb-mouth-inner-shadow)" />
+
+      <!-- Subtle golden inner rim bevel along the back lip of the mouth -->
+      <path d="M -116 70 C -92 84, -48 91, 0 91 C 48 91, 92 84, 116 70" fill="none" stroke="#FFCC29" stroke-width="2.2" stroke-linecap="round" opacity="0.55" />
+    </g>
+
+    <!-- =================================================================== -->
+    <!-- 9. CLAPPER (Spherical golden clapper hanging from center)           -->
+    <!-- =================================================================== -->
+    <g id="clapper">
+      <!-- Soft shadow cast by clapper onto the right interior mouth wall -->
+      <ellipse cx="14" cy="76" rx="34" ry="14" fill="#592A00" opacity="0.45" filter="url(#nb-blur-fine)" />
+
+      <!-- Spherical / slightly ovoid golden clapper body tucked behind front lip -->
+      <path d="M -25 56 C -10 54, 10 54, 25 56 C 30 64, 32 74, 32 84 C 32 103, 18 117, 0 117 C -18 117, -32 103, -32 84 C -32 74, -30 64, -25 56 Z" fill="url(#nb-clapper-grad)" />
+
+      <!-- Soft contact shadow where clapper emerges from inside the bell cavity -->
+      <path d="M -26 55 C -10 53, 10 53, 26 55 C 29 63, 31 71, 31 78 C 12 72, -12 72, -31 78 C -31 71, -29 63, -26 55 Z" fill="url(#nb-clapper-neck-shadow)" />
+
+      <!-- Bright glossy specular highlight on upper-left of clapper -->
+      <ellipse cx="-11" cy="78" rx="10" ry="8" transform="rotate(-20, -11, 78)" fill="#FFFDF2" opacity="0.78" filter="url(#nb-blur-fine)" />
+
+      <!-- Crisp front-inner lip edge overlap for seamless depth -->
+      <path d="M -52 45 C -26 42, 26 42, 52 45" fill="none" stroke="#D98A00" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 10. FLOATING NOTIFICATION BADGE (Upper-Right, Magenta)                -->
+  <!-- ===================================================================== -->
+  <g id="floating-notification-badge" filter="url(#nb-badge-shadow)">
+    <!-- Main 3D Circular Magenta Badge -->
+    <circle cx="334" cy="178" r="52" fill="url(#nb-badge-magenta-grad)" />
+
+    <!-- Subtle 3D Rim Bevel Highlight -->
+    <circle cx="334" cy="178" r="50.5" fill="none" stroke="url(#nb-badge-rim-grad)" stroke-width="2.5" />
+
+    <!-- Soft Upper-Left Gloss Reflection on Badge -->
+    <ellipse cx="316" cy="154" rx="22" ry="12" transform="rotate(-32, 316, 154)" fill="#FFFFFF" opacity="0.22" filter="url(#nb-blur-fine)" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 11. BADGE SYMBOL (Centered White Notification Bell Icon)              -->
+  <!-- ===================================================================== -->
+  <g id="badge-symbol" filter="url(#nb-symbol-shadow)">
+    <!-- White Bell Top Mounting Nub -->
+    <path d="M 329.5 156 C 329.5 152.5, 331.5 150, 334 150 C 336.5 150, 338.5 152.5, 338.5 156 Z" fill="#FFFFFF" />
+
+    <!-- White Bell Main Dome and Flared Base Lip -->
+    <path d="M 334 154 C 344.5 154, 351 161.5, 351 172.5 C 351 180.5, 353.5 185.5, 357.5 189.2 C 359.2 190.7, 358.2 194, 355.5 194 L 312.5 194 C 309.8 194, 308.8 190.7, 310.5 189.2 C 314.5 185.5, 317 180.5, 317 172.5 C 317 161.5, 323.5 154, 334 154 Z" fill="#FFFFFF" />
+
+    <!-- White Bell Rounded Clapper -->
+    <path d="M 327.5 197.5 L 340.5 197.5 C 340.5 201.8, 337.6 204.5, 334 204.5 C 330.4 204.5, 327.5 201.8, 327.5 197.5 Z" fill="#FFFFFF" />
+  </g>
+</svg>
