@@ -5,6 +5,7 @@ import { HeroPhoneAnimation } from './HeroPhoneAnimation';
 import ProfilePopover from '../../components/ProfilePopover';
 import ProfileButton from '../../components/ProfileButton';
 import { useAuth } from '../../context/AuthContext';
+import { HomeNotificationCard } from './components/HomeNotificationCard';
 import styles from './Home.module.css';
 
 const Header = React.memo(() => {
@@ -359,6 +360,8 @@ const FeaturesSection = React.memo(() => {
             </div>
           ))}
         </div>
+
+        <HomeNotificationCard />
       </div>
     </section>
   );

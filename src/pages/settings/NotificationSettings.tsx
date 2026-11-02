@@ -6,6 +6,7 @@ import {
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
 } from '../../services/notifications';
+import { dispatchPushStatusChanged } from '../../hooks/useNotificationStatus';
 
 interface StatusFeedback {
   type: 'success' | 'error' | 'info';
@@ -159,6 +160,7 @@ const NotificationSettings: React.FC = () => {
             type: 'success',
             text: 'Push notifications enabled successfully! You will now receive real-time alerts for new resources and announcements.',
           });
+          dispatchPushStatusChanged();
         } else {
           setIsSubscribed(false);
           const code = result.error?.code;
@@ -195,6 +197,7 @@ const NotificationSettings: React.FC = () => {
               ? 'Push notifications disabled on this device.'
               : 'Push notifications disabled.',
           });
+          dispatchPushStatusChanged();
         } else {
           setStatusFeedback({
             type: 'error',
