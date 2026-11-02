@@ -2,14 +2,15 @@
 
 .container {
   width: 100%;
-  max-width: 600px;
-  margin: 1.5rem auto 0 auto;
-  padding: 0 1rem;
+  max-width: 320px;
+  margin: 1.25rem auto 0 auto;
+  padding: 0 0.75rem;
 }
 
 @media (min-width: 640px) {
   .container {
-    margin-top: 2rem;
+    max-width: 360px;
+    margin-top: 1.5rem;
     padding: 0;
   }
 }
@@ -17,11 +18,11 @@
 .card {
   position: relative;
   background-color: #FEFEFE;
-  border-radius: 1.5rem;
-  padding: 1.5rem 1.25rem;
+  border-radius: 1rem;
+  padding: 1rem 0.875rem;
   box-shadow:
-    8px 8px 16px rgba(163, 177, 198, 0.25),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    4px 4px 10px rgba(163, 177, 198, 0.2),
+    -4px -4px 10px rgba(255, 255, 255, 0.8),
     inset 0 0 0 1px rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(229, 231, 235, 0.8);
   display: flex;
@@ -34,25 +35,25 @@
 
 @media (min-width: 640px) {
   .card {
-    padding: 2rem 2.5rem;
-    border-radius: 2rem;
+    padding: 1.25rem 1.25rem;
+    border-radius: 1.25rem;
   }
 }
 
 .illustrationWrapper {
-  width: 120px;
-  height: 120px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.625rem;
 }
 
 @media (min-width: 640px) {
   .illustrationWrapper {
-    width: 140px;
-    height: 140px;
-    margin-bottom: 1.25rem;
+    width: 72px;
+    height: 72px;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -65,32 +66,33 @@
 
 .heading {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
   line-height: 1.2;
 }
 
 @media (min-width: 640px) {
   .heading {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
 }
 
 .description {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.75rem;
+  line-height: 1.4;
   color: #6B7280;
-  max-width: 440px;
-  margin: 0 auto 1.25rem auto;
+  max-width: 280px;
+  margin: 0 auto 0.875rem auto;
 }
 
 @media (min-width: 640px) {
   .description {
-    font-size: 0.9375rem;
-    margin-bottom: 1.5rem;
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+    max-width: 300px;
   }
 }
 
@@ -98,29 +100,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 320px;
+  max-width: 240px;
 }
 
 @media (min-width: 640px) {
   .buttonGroup {
-    gap: 1rem;
-    max-width: 360px;
+    gap: 0.625rem;
+    max-width: 260px;
   }
 }
 
 .primaryButton {
   flex: 1;
-  padding: 0.75rem 1.25rem;
+  padding: 0.45rem 0.75rem;
   background-color: #E91E8C;
   color: #FFFFFF;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(233, 30, 140, 0.25);
+  box-shadow: 0 2px 8px rgba(233, 30, 140, 0.25);
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -129,18 +131,18 @@
 
 .primaryButton:hover:not(:disabled) {
   background-color: #D81B60;
-  box-shadow: 0 6px 16px rgba(233, 30, 140, 0.35);
+  box-shadow: 0 4px 12px rgba(233, 30, 140, 0.35);
   transform: translateY(-1px);
 }
 
 .primaryButton:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(233, 30, 140, 0.2);
+  box-shadow: 0 1px 4px rgba(233, 30, 140, 0.2);
 }
 
 .primaryButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.35);
+  box-shadow: 0 0 0 2px rgba(233, 30, 140, 0.35);
 }
 
 .primaryButton:disabled {
@@ -150,12 +152,12 @@
 
 .secondaryButton {
   flex: 1;
-  padding: 0.75rem 1.25rem;
+  padding: 0.45rem 0.75rem;
   background-color: #F3F4F6;
   color: #4B5563;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: 1px solid rgba(209, 213, 219, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -171,7 +173,7 @@
 
 .secondaryButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.3);
+  box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.3);
 }
 
 .secondaryButton:disabled {
@@ -180,9 +182,9 @@
 }
 
 .errorMessage {
-  margin-top: 0.75rem;
-  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
   color: #DC2626;
-  line-height: 1.4;
-  max-width: 440px;
+  line-height: 1.3;
+  max-width: 280px;
 }
