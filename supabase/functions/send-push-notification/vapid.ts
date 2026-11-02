@@ -74,6 +74,33 @@ const P256_SPKI_PREFIX = new Uint8Array([
   0x42, 0x00,
 ]);
 
+// NIST P-256 (secp256r1) curve order n:
+// FFFFFFFF 00000000 FFFFFFFF FFFFFFFF BCE6FAAD A7179E84 F3B9CAC2 FC632551
+export const P256_ORDER_N = BigInt("0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551");
+
+/**
+ * Converts a big-endian byte array to a BigInt.
+ */
+export function bytesToBigInt(bytes: Uint8Array): bigint {
+  let hex = "0x";
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, "0");
+  }
+  return BigInt(hex);
+}
+
+/**
+ * Constant-time byte buffer equality check.
+ */
+export function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a[i] ^ b[i];
+  }
+  return diff === 0;
+}
+
 /**
  * Imports a Base64URL VAPID private key into a CryptoKey for signing or derivation.
  * Supports both 32-byte raw uncompressed private scalars and full PKCS#8 DER bytes.
@@ -81,7 +108,8 @@ const P256_SPKI_PREFIX = new Uint8Array([
 export async function importVapidPrivateKey(
   privateKeyBase64Url: string,
   keyUsage: KeyUsage = "sign",
-  algorithmName: "ECDSA" | "ECDH" = "ECDSA"
+  algorithmName: "ECDSA" | "ECDH" = "ECDSA",
+  extractable = false
 ): Promise<CryptoKey> {
   let privateKeyBytes: Uint8Array;
   try {
@@ -93,6 +121,12 @@ export async function importVapidPrivateKey(
   let pkcs8Der: Uint8Array;
 
   if (privateKeyBytes.length === 32) {
+    // Validate private scalar range [1, n-1]
+    const scalarValue = bytesToBigInt(privateKeyBytes);
+    if (scalarValue <= 0n || scalarValue >= P256_ORDER_N) {
+      throw new Error("Invalid VAPID private key: Private scalar outside valid P-256 curve order range");
+    }
+
     // 32-byte raw scalar: wrap with standard P-256 PKCS#8 header
     pkcs8Der = new Uint8Array(P256_PKCS8_PREFIX.length + 32);
     pkcs8Der.set(P256_PKCS8_PREFIX, 0);
@@ -111,7 +145,7 @@ export async function importVapidPrivateKey(
       "pkcs8",
       pkcs8Der as unknown as BufferSource,
       { name: algorithmName, namedCurve: "P-256" },
-      false,
+      extractable,
       [keyUsage]
     );
   } catch (_e) {
@@ -176,47 +210,90 @@ export async function importVapidPublicKey(
 /**
  * Validates that a pair of Base64URL VAPID public and private keys are valid P-256 keys
  * and form a matching key pair.
+ * Directly derives the expected uncompressed public key point (0x04 || x || y) from the private key
+ * and compares it in constant time against the supplied public key.
  */
 export async function validateVapidKeys(
   publicKeyBase64Url: string,
   privateKeyBase64Url: string
 ): Promise<{ valid: boolean; error?: string }> {
-  let privateKey: CryptoKey;
-  let publicKey: CryptoKey;
+  if (typeof publicKeyBase64Url !== "string" || !publicKeyBase64Url.trim()) {
+    return { valid: false, error: "Missing or empty VAPID public key" };
+  }
 
+  if (typeof privateKeyBase64Url !== "string" || !privateKeyBase64Url.trim()) {
+    return { valid: false, error: "Missing or empty VAPID private key" };
+  }
+
+  let suppliedPubBytes: Uint8Array;
   try {
-    privateKey = await importVapidPrivateKey(privateKeyBase64Url, "sign", "ECDSA");
+    suppliedPubBytes = base64UrlDecode(publicKeyBase64Url);
+  } catch (e) {
+    return {
+      valid: false,
+      error: `Invalid VAPID public key: ${e instanceof Error ? e.message : "Malformed Base64URL string"}`,
+    };
+  }
+
+  if (suppliedPubBytes.length !== 65) {
+    return {
+      valid: false,
+      error: `Invalid VAPID public key length: Expected 65 bytes, got ${suppliedPubBytes.length}`,
+    };
+  }
+
+  if (suppliedPubBytes[0] !== 0x04) {
+    return {
+      valid: false,
+      error: "Invalid VAPID public key: Must begin with uncompressed point format byte 0x04",
+    };
+  }
+
+  // Validate public key format by attempting SPKI import
+  try {
+    await importVapidPublicKey(publicKeyBase64Url, "ECDSA", ["verify"]);
+  } catch (e) {
+    return { valid: false, error: e instanceof Error ? e.message : "Invalid VAPID public key" };
+  }
+
+  // Import private key as extractable to derive public coordinates
+  let privateKey: CryptoKey;
+  try {
+    privateKey = await importVapidPrivateKey(privateKeyBase64Url, "sign", "ECDSA", true);
   } catch (e) {
     return { valid: false, error: e instanceof Error ? e.message : "Invalid VAPID private key" };
   }
 
   try {
-    publicKey = await importVapidPublicKey(publicKeyBase64Url, "ECDSA", ["verify"]);
-  } catch (e) {
-    return { valid: false, error: e instanceof Error ? e.message : "Invalid VAPID public key" };
-  }
-
-  // Test signature and verification to ensure public and private key match
-  try {
-    const testData = new TextEncoder().encode("vapid-keypair-pair-verification");
-    const signature = await crypto.subtle.sign(
-      { name: "ECDSA", hash: "SHA-256" },
-      privateKey,
-      testData as unknown as BufferSource
-    );
-    const valid = await crypto.subtle.verify(
-      { name: "ECDSA", hash: "SHA-256" },
-      publicKey,
-      signature,
-      testData as unknown as BufferSource
-    );
-
-    if (!valid) {
-      return { valid: false, error: "VAPID keypair mismatch: Public key does not correspond to private key" };
+    const jwk = await crypto.subtle.exportKey("jwk", privateKey);
+    if (!jwk.x || !jwk.y) {
+      return {
+        valid: false,
+        error: "VAPID private key error: Failed to export public coordinates from private key",
+      };
     }
+
+    const xBytes = base64UrlDecode(jwk.x);
+    const yBytes = base64UrlDecode(jwk.y);
+    const derivedPubBytes = new Uint8Array(65);
+    derivedPubBytes[0] = 0x04;
+    derivedPubBytes.set(xBytes, 1);
+    derivedPubBytes.set(yBytes, 33);
+
+    const matches = timingSafeEqual(suppliedPubBytes, derivedPubBytes);
+    if (!matches) {
+      return {
+        valid: false,
+        error: "VAPID keypair mismatch: Public key does not correspond to private key",
+      };
+    }
+
     return { valid: true };
-  } catch (_e) {
-    return { valid: false, error: "VAPID keypair verification failed" };
+  } catch (e) {
+    return {
+      valid: false,
+      error: `VAPID keypair verification failed: ${e instanceof Error ? e.message : String(e)}`,
+    };
   }
 }
 
