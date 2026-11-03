@@ -16,12 +16,12 @@ const CopyrightFooter: React.FC = () => {
       className="w-full max-w-full px-4 sm:px-6 py-2 sm:py-2.5 flex justify-center mt-auto overflow-hidden select-none"
     >
       <div
-        className="relative w-full max-w-3xl overflow-hidden rounded-2xl sm:rounded-full bg-gradient-to-r from-[#FFFDFE] via-[#FFF8FA] to-[#FFF1F6] border border-[#FCE7F3] shadow-[0_4px_20px_-2px_rgba(225,21,132,0.06),0_2px_8px_-1px_rgba(0,0,0,0.03)] px-3 sm:px-4 py-1 sm:py-1.5 transition-all duration-300"
+        className="relative w-full max-w-[460px] overflow-hidden rounded-2xl sm:rounded-full bg-gradient-to-r from-[#FFFDFE] via-[#FFF8FA] to-[#FFF1F6] border border-[#FCE7F3] shadow-[0_4px_20px_-2px_rgba(225,21,132,0.06),0_2px_8px_-1px_rgba(0,0,0,0.03)] px-3 sm:px-4 py-1 sm:py-1.5 transition-all duration-300"
       >
         {/* Layered Decorative Flowing Pink Waves (Right & Lower Background) */}
         <div
           aria-hidden="true"
-          className="absolute right-0 top-0 bottom-0 w-32 sm:w-56 md:w-72 pointer-events-none z-0 overflow-hidden"
+          className="absolute right-0 top-0 bottom-0 w-28 sm:w-40 md:w-48 pointer-events-none z-0 overflow-hidden"
         >
           <svg
             className="w-full h-full object-cover"
@@ -57,10 +57,10 @@ const CopyrightFooter: React.FC = () => {
           </svg>
         </div>
 
-        {/* Foreground Content */}
-        <div className="relative z-10 flex items-center gap-2 sm:gap-3 w-full">
-          {/* Horizon Logo Badge */}
-          <div className="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200">
+        {/* Foreground Content - Centered Perfectly */}
+        <div className="relative z-10 flex items-center justify-center gap-2 sm:gap-2.5 w-full mx-auto">
+          {/* Horizon Logo Badge (10% larger logo) */}
+          <div className="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] transition-transform duration-200">
             <img
               src="/assets/favicon/logo.avif"
               alt="Horizon Logo"
@@ -68,7 +68,7 @@ const CopyrightFooter: React.FC = () => {
               height="24"
               loading="lazy"
               decoding="async"
-              className="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain"
+              className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-contain"
             />
           </div>
 
@@ -79,8 +79,8 @@ const CopyrightFooter: React.FC = () => {
           />
 
           {/* Centered Serif Copyright Text */}
-          <div className="flex-1 min-w-0 flex items-center">
-            <p className="m-0 font-serif text-[12px] sm:text-[14px] md:text-[15px] text-[#1F2937] tracking-wide leading-none break-words sm:whitespace-nowrap">
+          <div className="shrink-0 flex items-center">
+            <p className="m-0 font-serif text-[11.5px] sm:text-[13.5px] md:text-[14px] text-[#1F2937] tracking-wide leading-none break-words sm:whitespace-nowrap">
               &copy; 2026 Horizon Educational Platform. All rights reserved.
             </p>
           </div>
