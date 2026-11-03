@@ -3,6 +3,7 @@ import React, { Suspense, useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
 import RouteErrorFallback from '../components/RouteErrorFallback';
+import CopyrightFooter from '../components/common/CopyrightFooter';
 import { CHUNK_RELOAD_GUARD_KEY } from '../utils/lazyWithRetry';
 
 const MainLayout: React.FC = () => {
@@ -44,9 +45,7 @@ const MainLayout: React.FC = () => {
         </ErrorBoundary>
       </main>
 
-      <footer className="p-3 sm:p-4 text-center text-muted-foreground neu-recessed mt-auto text-xs sm:text-sm overflow-hidden w-full max-w-full">
-        <p className="m-0 break-words max-w-full">&copy; {new Date().getFullYear()} Horizon Educational Platform. All rights reserved.</p>
-      </footer>
+      <CopyrightFooter />
     </div>
   );
 };
