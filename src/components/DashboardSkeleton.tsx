@@ -29,18 +29,6 @@ const DashboardSkeleton: React.FC = () => {
               </div>
               <div className="w-40 h-12 neu-raised rounded-full bg-ink/5" />
             </div>
-
-            {/* Card 2: Learning Progress */}
-            <div className="neu-card rounded-2xl p-8 space-y-4 animate-pulse">
-              <div className="w-40 h-4 bg-ink/10 rounded" />
-              <div className="neu-recessed rounded-xl p-6 h-28 bg-ink/5" />
-            </div>
-
-            {/* Card 3: Recent Activity */}
-            <div className="neu-card rounded-2xl p-8 space-y-4 animate-pulse">
-              <div className="w-36 h-4 bg-ink/10 rounded" />
-              <div className="neu-recessed rounded-xl p-8 h-24 bg-ink/5" />
-            </div>
           </div>
 
           {/* Column 2: Sidebar Content Skeleton */}

@@ -4,17 +4,12 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import Dashboard from '../Dashboard';
 import { useAuth } from '../../../context/AuthContext';
-import { useDashboardProgress } from '../hooks/useDashboardProgress';
 
 // Enable React act environment flag for React 19 testing
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 vi.mock('../../../context/AuthContext', () => ({
   useAuth: vi.fn(),
-}));
-
-vi.mock('../hooks/useDashboardProgress', () => ({
-  useDashboardProgress: vi.fn(),
 }));
 
 describe('Dashboard Component Accessibility & UX', () => {
@@ -41,7 +36,7 @@ describe('Dashboard Component Accessibility & UX', () => {
     root = null;
   });
 
-  it('renders progress bars with role="progressbar" and ARIA attributes', () => {
+  it('does not render Learning Progress or Recent Activity cards', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: { id: 'usr-1', email: 'student@example.com' },
       profile: {
@@ -57,20 +52,6 @@ describe('Dashboard Component Accessibility & UX', () => {
       refreshProfile: vi.fn(),
     } as never);
 
-    vi.mocked(useDashboardProgress).mockReturnValue({
-      isLoadingProgress: false,
-      progressData: {
-        allTimeCompletedChapters: 5,
-        syllabusTotalChapters: 10,
-        syllabusCompletedChapters: 5,
-        percentageComplete: 50,
-        subjectProgress: {
-          Science: { total: 5, completed: 3, percentage: 60 },
-          Mathematics: { total: 5, completed: 2, percentage: 40 },
-        },
-      },
-    });
-
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -79,27 +60,9 @@ describe('Dashboard Component Accessibility & UX', () => {
       );
     });
 
-    const progressBars = container?.querySelectorAll('[role="progressbar"]');
-    expect(progressBars).not.toBeNull();
-    expect(progressBars?.length).toBe(3); // Overall + Science + Mathematics
-
-    // Overall Progress Bar assertions
-    const overallBar = progressBars?.[0];
-    expect(overallBar?.getAttribute('aria-label')).toBe('Overall Syllabus Progress');
-    expect(overallBar?.getAttribute('aria-valuenow')).toBe('50');
-    expect(overallBar?.getAttribute('aria-valuemin')).toBe('0');
-    expect(overallBar?.getAttribute('aria-valuemax')).toBe('100');
-    expect(overallBar?.getAttribute('aria-valuetext')).toBe('50% complete');
-
-    // Science Progress Bar assertions
-    const scienceBar = progressBars?.[1];
-    expect(scienceBar?.getAttribute('aria-label')).toBe('Science Progress');
-    expect(scienceBar?.getAttribute('aria-valuenow')).toBe('60');
-
-    // Mathematics Progress Bar assertions
-    const mathBar = progressBars?.[2];
-    expect(mathBar?.getAttribute('aria-label')).toBe('Mathematics Progress');
-    expect(mathBar?.getAttribute('aria-valuenow')).toBe('40');
+    expect(container?.textContent).not.toContain('Learning Progress');
+    expect(container?.textContent).not.toContain('Recent Activity');
+    expect(container?.textContent).toContain('Continue Learning');
   });
 
   it('renders interactive buttons with explicit type="button", ARIA labels, tooltips, and focus rings', () => {
@@ -116,11 +79,6 @@ describe('Dashboard Component Accessibility & UX', () => {
       signOut: vi.fn(),
       refreshProfile: vi.fn(),
     } as never);
-
-    vi.mocked(useDashboardProgress).mockReturnValue({
-      isLoadingProgress: false,
-      progressData: null,
-    });
 
     act(() => {
       root?.render(
@@ -169,11 +127,6 @@ describe('Dashboard Component Accessibility & UX', () => {
       refreshProfile: vi.fn(),
     } as never);
 
-    vi.mocked(useDashboardProgress).mockReturnValue({
-      isLoadingProgress: false,
-      progressData: null,
-    });
-
     act(() => {
       root?.render(
         <MemoryRouter>
@@ -209,11 +162,6 @@ describe('Dashboard Component Accessibility & UX', () => {
         signOut: vi.fn(),
         refreshProfile: vi.fn(),
       } as never);
-
-      vi.mocked(useDashboardProgress).mockReturnValue({
-        isLoadingProgress: false,
-        progressData: null,
-      });
 
       act(() => {
         root?.render(
