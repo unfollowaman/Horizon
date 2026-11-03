@@ -120,10 +120,11 @@ describe('Database Foundation Migration Specification & Safety Suite', () => {
     expect(sql).toMatch(/GRANT EXECUTE ON FUNCTION public\.is_active_session\(UUID, UUID\) TO service_role;/);
   });
 
-  it('7. verifies Supabase Realtime broadcast authorization RLS policy', () => {
+  it('7. verifies Supabase Realtime broadcast authorization RLS policy without altering realtime.messages RLS', () => {
     const sql = fs.readFileSync(migrationPath, 'utf8');
 
-    expect(sql).toMatch(/ALTER TABLE realtime\.messages ENABLE ROW LEVEL SECURITY/);
+    // Migration must NOT attempt to enable RLS on Supabase-managed realtime.messages
+    expect(sql).not.toMatch(/ALTER TABLE realtime\.messages ENABLE ROW LEVEL SECURITY/);
     expect(sql).toMatch(/CREATE POLICY \\?"Allow users to subscribe to own broadcast topic\\?"/);
     expect(sql).toMatch(/realtime\.messages\.extension = ''broadcast''/);
     expect(sql).toMatch(/realtime\.messages\.topic = \(''user:'' \|\| \(auth\.uid\(\)\)::text\)/);

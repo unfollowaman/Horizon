@@ -385,8 +385,8 @@ BEGIN
         WHERE table_schema = 'realtime'
           AND table_name = 'messages'
     ) THEN
-        -- Enable RLS on realtime.messages
-        EXECUTE 'ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY';
+        -- RLS is already enabled on Supabase-managed realtime.messages.
+        -- Do not ALTER this Supabase-managed table; only install the authorization policy.
 
         -- Drop existing policy if present to allow idempotent re-application
         EXECUTE 'DROP POLICY IF EXISTS "Allow users to subscribe to own broadcast topic" ON realtime.messages';
