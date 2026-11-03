@@ -24,13 +24,25 @@ export const HomeNotificationCard: React.FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEnabling, setIsEnabling] = useState<boolean>(false);
+  const [showGreeting, setShowGreeting] = useState<boolean>(false);
   const isMountedRef = useRef<boolean>(true);
+  const greetingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
+      if (greetingTimerRef.current !== null) {
+        clearTimeout(greetingTimerRef.current);
+      }
     };
+  }, []);
+
+  const handleDismiss = useCallback(() => {
+    setIsDismissed(true);
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      sessionStorage.setItem(SESSION_DISMISSAL_KEY, 'true');
+    }
   }, []);
 
   const handleAllow = useCallback(async () => {
@@ -42,7 +54,17 @@ export const HomeNotificationCard: React.FC = () => {
       const result = await enableNotifications();
       if (!isMountedRef.current) return;
 
-      if (!result.success) {
+      if (result.success) {
+        setShowGreeting(true);
+        if (greetingTimerRef.current !== null) {
+          clearTimeout(greetingTimerRef.current);
+        }
+        greetingTimerRef.current = setTimeout(() => {
+          if (!isMountedRef.current) return;
+          setShowGreeting(false);
+          handleDismiss();
+        }, 5000);
+      } else {
         const code = result.error?.code;
         if (code === 'PERMISSION_DENIED') {
           setErrorMessage('Notification permission was denied. You can enable it in your browser settings.');
@@ -65,14 +87,7 @@ export const HomeNotificationCard: React.FC = () => {
         setIsEnabling(false);
       }
     }
-  }, [enableNotifications, isEnabling]);
-
-  const handleDismiss = useCallback(() => {
-    setIsDismissed(true);
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-      sessionStorage.setItem(SESSION_DISMISSAL_KEY, 'true');
-    }
-  }, []);
+  }, [enableNotifications, handleDismiss, isEnabling]);
 
   // Condition checks
   // 1. If auth is still loading or status is loading, wait before rendering to prevent layout shifts
@@ -100,8 +115,13 @@ export const HomeNotificationCard: React.FC = () => {
     return null;
   }
 
-  // STATE B: Notifications Enabled (active subscription recognized)
-  if (isSubscribed) {
+  // 6. If user is already subscribed upon visit and not currently showing the 5s greeting, hide the card
+  if (isSubscribed && !showGreeting) {
+    return null;
+  }
+
+  // STATE B: Greeting Card (shown only for 5 seconds right after user taps "Yes, Allow")
+  if (showGreeting) {
     return (
       <section className={styles.container} aria-label="Notification Status">
         <div className={styles.card}>
