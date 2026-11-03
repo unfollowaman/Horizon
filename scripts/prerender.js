@@ -797,10 +797,10 @@ export function wrapInMainLayout(contentHtml) {
             </svg>
           </div>
           <div class="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 w-full mx-auto">
-            <div class="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] transition-transform duration-200">
-              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="24" height="24" loading="lazy" decoding="async" class="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] object-contain" />
+            <div class="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] transition-transform duration-200">
+              <img src="/assets/favicon/logo.avif" alt="Horizon Logo" width="32" height="32" loading="lazy" decoding="async" class="w-[26px] h-[26px] sm:w-[29px] sm:h-[29px] object-contain" />
             </div>
-            <div aria-hidden="true" class="shrink-0 w-[1.5px] h-3.5 sm:h-4 bg-[#E11584]/40 rounded-full"></div>
+            <div aria-hidden="true" class="shrink-0 w-[1.5px] h-4 sm:h-4.5 bg-[#E11584]/40 rounded-full"></div>
             <div class="shrink-0 flex items-center">
               <p class="m-0 font-serif text-[11px] sm:text-[12px] md:text-[12.5px] text-[#1F2937] tracking-normal leading-none break-words sm:whitespace-nowrap">
                 &copy; ${currentYear} Horizon Educational Platform. All rights reserved.

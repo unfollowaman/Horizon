@@ -59,23 +59,23 @@ const CopyrightFooter: React.FC = () => {
 
         {/* Foreground Content - Centered Perfectly */}
         <div className="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 w-full mx-auto">
-          {/* Horizon Logo Badge (20% larger logo) */}
-          <div className="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] transition-transform duration-200">
+          {/* Horizon Logo Badge (Enlarged by 20%) */}
+          <div className="shrink-0 flex items-center justify-center bg-white rounded-lg shadow-[0_2px_6px_rgba(225,21,132,0.08),0_1px_2px_rgba(0,0,0,0.04)] border border-[#FCE7F3]/70 p-0.5 sm:p-1 w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] transition-transform duration-200">
             <img
               src="/assets/favicon/logo.avif"
               alt="Horizon Logo"
-              width="24"
-              height="24"
+              width="32"
+              height="32"
               loading="lazy"
               decoding="async"
-              className="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] object-contain"
+              className="w-[26px] h-[26px] sm:w-[29px] sm:h-[29px] object-contain"
             />
           </div>
 
           {/* Vertical Pink Divider */}
           <div
             aria-hidden="true"
-            className="shrink-0 w-[1.5px] h-3.5 sm:h-4 bg-[#E11584]/40 rounded-full"
+            className="shrink-0 w-[1.5px] h-4 sm:h-4.5 bg-[#E11584]/40 rounded-full"
           />
 
           {/* Centered Serif Copyright Text */}
