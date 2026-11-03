@@ -111,6 +111,61 @@ describe('Dashboard Component Accessibility & UX', () => {
     // Profile Avatar img alt text assertion
     const avatarImg = container?.querySelector('img[alt="Aman Sharma\'s profile photo"]');
     expect(avatarImg).not.toBeNull();
+
+    // Student Badge assertion
+    const studentBadge = Array.from(container?.querySelectorAll('span') || []).find(
+      (span) => span.textContent?.trim() === 'Student'
+    );
+    expect(studentBadge).not.toBeUndefined();
+    expect(studentBadge?.className).toContain('text-[#E11584]');
+    expect(studentBadge?.className).toContain('bg-[#FFF0F6]');
+
+    // Unified Section B: Profile Summary heading and items assertion
+    const summaryHeading = Array.from(container?.querySelectorAll('h5') || []).find(
+      (h5) => h5.textContent?.trim() === 'Profile Summary'
+    );
+    expect(summaryHeading).not.toBeUndefined();
+
+    // Verify 3 summary items exist with labels and values
+    expect(container?.textContent).toContain('Class');
+    expect(container?.textContent).toContain('Class 10');
+    expect(container?.textContent).toContain('Study Medium');
+    expect(container?.textContent).toContain('English');
+    expect(container?.textContent).toContain('Member Since');
+  });
+
+  it('renders a single unified profile section container combining header and summary', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'usr-1', email: 'student@example.com' },
+      profile: {
+        id: 'usr-1',
+        name: 'Aman Sharma',
+        student_class: 'Class 10',
+        study_medium: 'English',
+        avatar_url: 'https://example.com/avatar.jpg',
+      },
+      loading: false,
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+    } as never);
+
+    act(() => {
+      root?.render(
+        <MemoryRouter>
+          <Dashboard />
+        </MemoryRouter>
+      );
+    });
+
+    const unifiedCard = container?.querySelector('section[aria-label="Student Profile"]');
+    expect(unifiedCard).not.toBeNull();
+    expect(unifiedCard?.textContent).toContain('Aman Sharma');
+    expect(unifiedCard?.textContent).toContain('student@example.com');
+    expect(unifiedCard?.textContent).toContain('Student');
+    expect(unifiedCard?.textContent).toContain('Edit Profile');
+    expect(unifiedCard?.textContent).toContain('Profile Summary');
+    expect(unifiedCard?.textContent).toContain('Class 10');
+    expect(unifiedCard?.textContent).toContain('English');
   });
 
   it('renders Notification Alerts preference card with navigation link to /settings/notifications', () => {
