@@ -3,15 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Dashboard.module.css';
 import { RESOURCE_CATEGORIES } from '../../config/resources';
-import { useDashboardProgress } from './hooks/useDashboardProgress';
 import DashboardSkeleton from '../../components/DashboardSkeleton';
 import { getDefaultAvatar } from '../../utils/avatar';
 
 const Dashboard: React.FC = () => {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
-
-  const { progressData, isLoadingProgress } = useDashboardProgress({ user, profile });
 
   const handleSignOut = async () => {
     await signOut();
@@ -78,105 +75,6 @@ const Dashboard: React.FC = () => {
             >
               Browse Notes
             </Link>
-          </div>
-
-          {/* Card 2: Learning Progress */}
-          <div className="neu-card rounded-2xl p-8">
-            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-4 font-semibold">
-              Learning Progress
-            </span>
-            {isLoadingProgress ? (
-              <div className="neu-recessed rounded-xl p-6 text-center animate-pulse">
-                <p className="text-muted-foreground text-body-base">Loading progress...</p>
-              </div>
-            ) : !profile?.student_class ? (
-              <div className="neu-recessed rounded-xl p-6 text-center">
-                <p className="text-muted-foreground text-body-base">
-                  Set your class in your profile to track your syllabus progress.
-                </p>
-              </div>
-            ) : !progressData || progressData.syllabusTotalChapters === 0 ? (
-              <div className="neu-recessed rounded-xl p-6 text-center">
-                <p className="text-muted-foreground text-body-base">
-                  No syllabus data found for {profile.student_class}. Start reading notes to track progress!
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-6">
-                {/* Overall Progress */}
-                <div className="neu-recessed rounded-xl p-6 flex flex-col gap-3">
-                  <div className="flex justify-between items-end">
-                    <span className="text-body-large text-ink font-bold">Overall Syllabus</span>
-                    <span className="text-h2 text-accent font-bold leading-none">{progressData.percentageComplete}%</span>
-                  </div>
-                  <div
-                    role="progressbar"
-                    aria-label="Overall Syllabus Progress"
-                    aria-valuenow={progressData.percentageComplete}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuetext={`${progressData.percentageComplete}% complete`}
-                    className="w-full h-3 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative"
-                  >
-                    <div
-                      className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
-                      style={{ width: `${progressData.percentageComplete}%` }}
-                    />
-                  </div>
-                  <span className="text-caption text-muted-foreground font-medium text-right">
-                    {progressData.syllabusCompletedChapters} of {progressData.syllabusTotalChapters} Chapters Completed
-                  </span>
-                </div>
-
-                {/* Subject-wise Progress */}
-                {Object.keys(progressData.subjectProgress).length > 0 && (
-                  <div className="flex flex-col gap-3">
-                    <span className="text-caption text-muted-foreground uppercase tracking-wider block font-semibold pl-2">
-                      Subject-wise Progress
-                    </span>
-                    <div className="flex flex-col gap-3">
-                      {Object.entries(progressData.subjectProgress).map(([subject, stats]) => (
-                        <div key={subject} className="neu-recessed rounded-xl p-4 flex flex-col gap-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-body-base text-ink font-bold">{subject}</span>
-                            <span className="text-caption font-bold text-accent">{stats.percentage}%</span>
-                          </div>
-                          <div
-                            role="progressbar"
-                            aria-label={`${subject} Progress`}
-                            aria-valuenow={stats.percentage}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-valuetext={`${stats.percentage}% complete`}
-                            className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden shadow-inner relative"
-                          >
-                            <div
-                              className="absolute top-0 left-0 h-full bg-accent transition-all duration-1000 ease-out rounded-full"
-                              style={{ width: `${stats.percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] leading-tight text-muted-foreground font-medium text-right mt-1">
-                            {stats.completed} / {stats.total} Chapters
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Card 3: Recent Activity */}
-          <div className="neu-card rounded-2xl p-8">
-            <span className="text-label-caps text-muted-foreground uppercase tracking-wider block mb-4 font-semibold">
-              Recent Activity
-            </span>
-            <div className="neu-recessed rounded-xl p-8 text-center">
-              <p className="text-muted-foreground text-body-base">
-                Your recent study activity will appear here.
-              </p>
-            </div>
           </div>
 
         </div>
