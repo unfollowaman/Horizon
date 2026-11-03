@@ -169,7 +169,7 @@ describe('HomeNotificationCard', () => {
     expect(container!.children.length).toBe(0);
   });
 
-  it('renders State B (Success Card) when isSubscribed is true', () => {
+  it('does not render greeting card on mount when user is already subscribed', () => {
     vi.mocked(NotifStatusModule.useNotificationStatus).mockReturnValue({
       ...defaultMockStatus,
       permission: 'granted',
@@ -180,18 +180,86 @@ describe('HomeNotificationCard', () => {
       root!.render(<HomeNotificationCard />);
     });
 
+    expect(container!.children.length).toBe(0);
+  });
+
+  it('renders greeting card upon clicking Yes, Allow and auto-dismisses after 5 seconds', async () => {
+    vi.useFakeTimers();
+    const enableMock = vi.fn().mockResolvedValue({
+      success: true,
+      data: { endpoint: 'https://test-sub' },
+    });
+
+    vi.mocked(NotifStatusModule.useNotificationStatus).mockReturnValue({
+      ...defaultMockStatus,
+      enableNotifications: enableMock,
+    });
+
+    act(() => {
+      root!.render(<HomeNotificationCard />);
+    });
+
+    const allowButton = container!.querySelector('button') as HTMLButtonElement;
+    expect(allowButton.textContent).toBe('Yes, Allow');
+
+    await act(async () => {
+      allowButton.click();
+    });
+
+    // Immediately after enabling, greeting card is shown
     expect(container!.textContent).toContain('Notifications Enabled');
     expect(container!.textContent).toContain(
       "Thank you! You'll now receive important updates, new resources and exam alerts."
     );
-
-    const buttons = container!.querySelectorAll('button');
-    expect(buttons.length).toBe(0);
-
     const img = container!.querySelector('img');
-    expect(img).not.toBeNull();
     expect(img?.getAttribute('src')).toBe('/assets/SVG%20Illustrations/Notification%20Success%20Bell.svg');
-    expect(img?.getAttribute('alt')).toBe('Notifications Enabled');
+
+    // Fast forward past 5 seconds
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    // Card is dismissed and section resizes flush to last feature card
+    expect(container!.children.length).toBe(0);
+    expect(sessionStorage.getItem('horizon_notif_card_dismissed')).toBe('true');
+    vi.useRealTimers();
+  });
+
+  it('cleans up auto-dismiss timer on unmount during greeting state', async () => {
+    vi.useFakeTimers();
+    const enableMock = vi.fn().mockResolvedValue({
+      success: true,
+      data: { endpoint: 'https://test-sub' },
+    });
+
+    vi.mocked(NotifStatusModule.useNotificationStatus).mockReturnValue({
+      ...defaultMockStatus,
+      enableNotifications: enableMock,
+    });
+
+    act(() => {
+      root!.render(<HomeNotificationCard />);
+    });
+
+    const allowButton = container!.querySelector('button') as HTMLButtonElement;
+    await act(async () => {
+      allowButton.click();
+    });
+
+    expect(container!.textContent).toContain('Notifications Enabled');
+
+    act(() => {
+      root!.unmount();
+    });
+
+    // Advancing timer after unmount should not throw or call state setters
+    expect(() => {
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+    }).not.toThrow();
+
+    vi.useRealTimers();
   });
 
   it('hides card if user is unauthenticated', () => {
