@@ -53,7 +53,7 @@ describe('CopyrightFooter Component', () => {
     const badgeContainer = logoImg.parentElement;
     expect(badgeContainer).not.toBeNull();
     expect(badgeContainer?.className).toContain('bg-white');
-    expect(badgeContainer?.className).toContain('rounded-xl');
+    expect(badgeContainer?.className).toContain('rounded-lg');
   });
 
   it('renders vertical divider with pink styling', () => {
