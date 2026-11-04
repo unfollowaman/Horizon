@@ -2,63 +2,23 @@
      xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1"
      id="subject-hindi-svg"
-     width="240"
-     height="100">
+     width="100%"
+     height="100%"
+     viewBox="4 3 92 92"
+     preserveAspectRatio="xMidYMid meet"
+     role="img"
+     aria-labelledby="svg-title svg-desc">
   <title>Hindi Subject Illustration (हिंदी)</title>
   <desc>Premium glossy 3D educational illustration for Hindi featuring an open textbook with the Devanagari letter अ, a golden feather quill inserted into a deep-purple inkpot, three magenta decorative rays, a soft rounded-square backdrop, and an editable हिंदी nameplate pill placed at the bottom of the illustration.</desc>
 
-  <!-- ===================================================================== -->
-  <!-- RESPONSIVE CSS MEDIA QUERIES (COMPACT: <=180px | WIDE: >=181px)       -->
-  <!-- Works inside external HTML <img> elements across 122x100 to 327x100   -->
-  <!-- ===================================================================== -->
-  <style type="text/css">
-    <![CDATA[
-      svg:root {
+  <defs>
+    <style type="text/css"><![CDATA[
+      svg#subject-hindi-svg {
         width: 100%;
         height: 100%;
-        overflow: visible;
-      }
-
-      .responsive-viewport {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-      }
-
-      /* Default to Wide layout for >180px viewports */
-      #viewport-compact {
-        display: none;
-      }
-      #viewport-wide {
         display: block;
       }
-
-      /* Compact layout (122px - 180px) */
-      @media (max-width: 180px) {
-        #viewport-compact {
-          display: block;
-        }
-        #viewport-wide {
-          display: none;
-        }
-      }
-
-      /* Wide layout (181px - 327px) */
-      @media (min-width: 181px) {
-        #viewport-compact {
-          display: none;
-        }
-        #viewport-wide {
-          display: block;
-        }
-      }
-    ]]>
-  </style>
-
-  <!-- ===================================================================== -->
-  <!-- DEFINITIONS: GRADIENTS, FILTERS & REUSABLE SCENE GROUPS               -->
-  <!-- ===================================================================== -->
-  <defs>
+    ]]></style>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- 1. FILTERS (Pure SVG 1.1 primitives, unclipped bounds)              -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -726,46 +686,16 @@
   </defs>
 
   <!-- ===================================================================== -->
-  <!-- COMPACT RESPONSIVE LAYOUT (122px - 180px width, 100px height)         -->
-  <!-- Book dominant, feather & inkpot recognizable, nameplate beneath book  -->
+  <!-- COMPACT COMPOSITION (BOOK CENTRED, NAMEPLATE PILL AT THE BOTTOM)      -->
   <!-- ===================================================================== -->
-  <svg id="viewport-compact"
-       class="responsive-viewport"
-       viewBox="0 0 122 100"
-       width="100%"
-       height="100%"
-       preserveAspectRatio="xMidYMid meet">
-    <g id="compact-layout-group" transform="translate(11, 1)">
-      <!-- Rounded-square supporting backdrop -->
-      <use id="compact-backdrop" xlink:href="#backdrop-rounded-square" href="#backdrop-rounded-square" />
+  <g id="layout-compact">
+    <!-- Rounded-Square Supporting Backdrop -->
+    <use id="compact-backdrop" xlink:href="#backdrop-rounded-square" href="#backdrop-rounded-square" />
 
-      <!-- Main 3D illustration (3 rays, open textbook with 'अ', feather quill, inkpot) -->
-      <use id="compact-illustration" xlink:href="#hindi-main-illustration" href="#hindi-main-illustration" />
+    <!-- Main 3D illustration (3 rays, open textbook with 'अ', feather quill, inkpot) -->
+    <use id="compact-illustration" xlink:href="#hindi-main-illustration" href="#hindi-main-illustration" />
 
-      <!-- Hindi subject nameplate pill beneath the textbook -->
-      <use id="compact-nameplate" xlink:href="#subject-nameplate" href="#subject-nameplate" />
-    </g>
-  </svg>
-
-  <!-- ===================================================================== -->
-  <!-- WIDE RESPONSIVE LAYOUT (181px - 327px width, 100px height)            -->
-  <!-- Keeps the हिंदी nameplate pill at the bottom of the illustration      -->
-  <!-- ===================================================================== -->
-  <svg id="viewport-wide"
-       class="responsive-viewport"
-       viewBox="0 0 194 100"
-       width="100%"
-       height="100%"
-       preserveAspectRatio="xMidYMid meet">
-    <g id="wide-layout-group" transform="translate(47, 1)">
-      <!-- Rounded-square supporting backdrop -->
-      <use id="wide-backdrop" xlink:href="#backdrop-rounded-square" href="#backdrop-rounded-square" />
-
-      <!-- Main 3D illustration (3 rays, open textbook with complete 'अ', feather quill, inkpot) -->
-      <use id="wide-illustration" xlink:href="#hindi-main-illustration" href="#hindi-main-illustration" />
-
-      <!-- Hindi subject nameplate pill placed at the bottom of the illustration -->
-      <use id="wide-nameplate" xlink:href="#subject-nameplate" href="#subject-nameplate" />
-    </g>
-  </svg>
+    <!-- Hindi subject nameplate pill beneath the textbook -->
+    <use id="compact-nameplate" xlink:href="#subject-nameplate" href="#subject-nameplate" />
+  </g>
 </svg>

@@ -110,27 +110,27 @@ describe('ClassSubjectSelector Component Tests', () => {
 
     const mathImg = container?.querySelector('img[alt="Mathematics illustration"]') as HTMLImageElement | null;
     expect(mathImg).not.toBeNull();
-    expect(mathImg?.src).toContain('/assets/SVG%20Illustrations/mathematics.svg');
+    expect(mathImg?.src).toContain('/assets/SVG%20Illustrations/mathematics-svg.svg');
 
     const scienceImg = container?.querySelector('img[alt="Science illustration"]') as HTMLImageElement | null;
     expect(scienceImg).not.toBeNull();
-    expect(scienceImg?.src).toContain('/assets/SVG%20Illustrations/science.svg');
+    expect(scienceImg?.src).toContain('/assets/SVG%20Illustrations/science-svg.svg');
 
     const socialScienceImg = container?.querySelector('img[alt="Social Science illustration"]') as HTMLImageElement | null;
     expect(socialScienceImg).not.toBeNull();
-    expect(socialScienceImg?.src).toContain('/assets/SVG%20Illustrations/social-science.svg');
+    expect(socialScienceImg?.src).toContain('/assets/SVG%20Illustrations/social-science-svg.svg');
 
     const englishImg = container?.querySelector('img[alt="English illustration"]') as HTMLImageElement | null;
     expect(englishImg).not.toBeNull();
-    expect(englishImg?.src).toContain('/assets/SVG%20Illustrations/english.svg');
+    expect(englishImg?.src).toContain('/assets/SVG%20Illustrations/english-svg.svg');
 
     const hindiImg = container?.querySelector('img[alt="Hindi illustration"]') as HTMLImageElement | null;
     expect(hindiImg).not.toBeNull();
-    expect(hindiImg?.src).toContain('/assets/SVG%20Illustrations/Hindi.svg');
+    expect(hindiImg?.src).toContain('/assets/SVG%20Illustrations/hindi-svg.svg');
 
     const sanskritImg = container?.querySelector('img[alt="Sanskrit illustration"]') as HTMLImageElement | null;
     expect(sanskritImg).not.toBeNull();
-    expect(sanskritImg?.src).toContain('/assets/SVG%20Illustrations/sanskrit.svg');
+    expect(sanskritImg?.src).toContain('/assets/SVG%20Illustrations/sanskrit-svg.svg');
   });
 
   it('3. Renders subject cards with 3D unfold reveal animation styling, perspective wrapper, capped stagger delay, and completion handler', async () => {

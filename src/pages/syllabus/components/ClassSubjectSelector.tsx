@@ -17,7 +17,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('social') || lower.includes('history') || lower.includes('geography') || lower.includes('civics')) {
     return (
       <img
-        src="/assets/SVG Illustrations/social-science.svg"
+        src="/assets/SVG Illustrations/social-science-svg.svg"
         alt="Social Science illustration"
         className="w-full h-full object-contain"
       />
@@ -27,7 +27,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('science')) {
     return (
       <img
-        src="/assets/SVG Illustrations/science.svg"
+        src="/assets/SVG Illustrations/science-svg.svg"
         alt="Science illustration"
         className="w-full h-full object-contain"
       />
@@ -37,7 +37,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('math')) {
     return (
       <img
-        src="/assets/SVG Illustrations/mathematics.svg"
+        src="/assets/SVG Illustrations/mathematics-svg.svg"
         alt="Mathematics illustration"
         className="w-full h-full object-contain"
       />
@@ -47,7 +47,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('hindi')) {
     return (
       <img
-        src="/assets/SVG Illustrations/Hindi.svg"
+        src="/assets/SVG Illustrations/hindi-svg.svg"
         alt="Hindi illustration"
         className="w-full h-full object-contain"
       />
@@ -57,7 +57,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('english')) {
     return (
       <img
-        src="/assets/SVG Illustrations/english.svg"
+        src="/assets/SVG Illustrations/english-svg.svg"
         alt="English illustration"
         className="w-full h-full object-contain"
       />
@@ -67,7 +67,7 @@ const getSubjectIllustration = (slug: string, name: string) => {
   if (lower.includes('sanskrit')) {
     return (
       <img
-        src="/assets/SVG Illustrations/sanskrit.svg"
+        src="/assets/SVG Illustrations/sanskrit-svg.svg"
         alt="Sanskrit illustration"
         className="w-full h-full object-contain"
       />
