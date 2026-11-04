@@ -94,15 +94,15 @@ describe('SyllabusLanding', () => {
 
     const class8Img = container?.querySelector('img[alt="Class 8 illustration"]') as HTMLImageElement | null;
     expect(class8Img).not.toBeNull();
-    expect(class8Img?.src).toContain('/assets/SVG%20Illustrations/class-8.svg');
+    expect(class8Img?.src).toContain('/assets/SVG%20Illustrations/class8-svg.svg');
 
     const class9Img = container?.querySelector('img[alt="Class 9 illustration"]') as HTMLImageElement | null;
     expect(class9Img).not.toBeNull();
-    expect(class9Img?.src).toContain('/assets/SVG%20Illustrations/class-9.svg');
+    expect(class9Img?.src).toContain('/assets/SVG%20Illustrations/class9-svg.svg');
 
     const class10Img = container?.querySelector('img[alt="Class 10 illustration"]') as HTMLImageElement | null;
     expect(class10Img).not.toBeNull();
-    expect(class10Img?.src).toContain('/assets/SVG%20Illustrations/class-10.svg');
+    expect(class10Img?.src).toContain('/assets/SVG%20Illustrations/class10-svg.svg');
   });
 
   it('triggers onSelectClass callback on click and keyboard enter', () => {

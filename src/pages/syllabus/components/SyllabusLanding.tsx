@@ -16,7 +16,7 @@ const getCardIllustration = (classId: string, classSlug?: string) => {
   if (normalized.includes('8')) {
     return (
       <img
-        src="/assets/SVG Illustrations/class-8.svg"
+        src="/assets/SVG Illustrations/class8-svg.svg"
         alt="Class 8 illustration"
         className="w-full h-full object-contain"
       />
@@ -25,7 +25,7 @@ const getCardIllustration = (classId: string, classSlug?: string) => {
   if (normalized.includes('9')) {
     return (
       <img
-        src="/assets/SVG Illustrations/class-9.svg"
+        src="/assets/SVG Illustrations/class9-svg.svg"
         alt="Class 9 illustration"
         className="w-full h-full object-contain"
       />
@@ -34,7 +34,7 @@ const getCardIllustration = (classId: string, classSlug?: string) => {
   if (normalized.includes('10')) {
     return (
       <img
-        src="/assets/SVG Illustrations/class-10.svg"
+        src="/assets/SVG Illustrations/class10-svg.svg"
         alt="Class 10 illustration"
         className="w-full h-full object-contain"
       />
@@ -43,7 +43,7 @@ const getCardIllustration = (classId: string, classSlug?: string) => {
 
   return (
     <img
-      src="/assets/SVG Illustrations/class-8.svg"
+      src="/assets/SVG Illustrations/class8-svg.svg"
       alt="Class illustration"
       className="w-full h-full object-contain"
     />
