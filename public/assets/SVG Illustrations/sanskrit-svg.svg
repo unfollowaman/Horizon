@@ -1,0 +1,748 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1"
+     width="400"
+     height="400"
+     viewBox="0 0 430 370"
+     preserveAspectRatio="xMidYMid meet"
+     aria-labelledby="sanskrit-title sanskrit-desc"
+     role="img">
+  <title id="sanskrit-title">Sanskrit Subject Illustration (संस्कृत)</title>
+  <desc id="sanskrit-desc">Compact 3D educational illustration for Sanskrit featuring an ancient parchment manuscript scroll with a raised Devanagari Om (ॐ) symbol, a magenta educational book, a glowing golden brass diya oil lamp, three decorative magenta rays, and a bottom-aligned संस्कृत nameplate pill.</desc>
+
+  <defs>
+    <!-- =================================================================== -->
+    <!-- TYPOGRAPHY STYLES                                                   -->
+    <!-- =================================================================== -->
+    <style type="text/css"><![CDATA[
+      .subject-label {
+        font-family: "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+        font-weight: 700;
+        fill: #FFFFFF;
+        text-anchor: middle;
+        letter-spacing: 0.5px;
+        user-select: text;
+      }
+    ]]></style>
+
+    <!-- =================================================================== -->
+    <!-- SOFT 3D SHADOW & LUMINOUS GLOW FILTERS                              -->
+    <!-- Generous filter bounds prevent any shadow clipping.                 -->
+    <!-- =================================================================== -->
+    <filter id="backdrop-drop-shadow" x="-18%" y="-14%" width="136%" height="136%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#583868" flood-opacity="0.14"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4A2A5A" flood-opacity="0.08"/>
+    </filter>
+
+    <filter id="scroll-ambient-shadow" x="-20%" y="-15%" width="145%" height="145%">
+      <feDropShadow dx="6" dy="10" stdDeviation="8" flood-color="#7B3E2A" flood-opacity="0.22"/>
+    </filter>
+
+    <filter id="ray-drop-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#9A0F48" flood-opacity="0.25"/>
+    </filter>
+
+    <filter id="pill-drop-shadow" x="-16%" y="-20%" width="132%" height="155%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#7A0838" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#4A0420" flood-opacity="0.16"/>
+    </filter>
+
+    <filter id="label-text-shadow" x="-15%" y="-15%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.4" flood-color="#6E0430" flood-opacity="0.45"/>
+    </filter>
+
+    <filter id="flame-outer-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+
+    <filter id="contact-blur" x="-30%" y="-40%" width="160%" height="180%">
+      <feGaussianBlur stdDeviation="4.5"/>
+    </filter>
+
+    <!-- =================================================================== -->
+    <!-- SUPPORTING BACKDROP GRADIENTS                                       -->
+    <!-- =================================================================== -->
+    <linearGradient id="backdrop-surface-grad" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="52%" stop-color="#FCF9FD"/>
+      <stop offset="100%" stop-color="#F2E8F4"/>
+    </linearGradient>
+
+    <linearGradient id="backdrop-rim-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="65%" stop-color="#EDE2F0"/>
+      <stop offset="100%" stop-color="#DECFE4"/>
+    </linearGradient>
+
+    <linearGradient id="backdrop-bevel-stroke" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#E5D4EC" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <radialGradient id="backdrop-warm-aura" cx="54%" cy="46%" r="46%">
+      <stop offset="0%" stop-color="#FFE6C2" stop-opacity="0.38"/>
+      <stop offset="65%" stop-color="#F8D5E8" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#F5ECF7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- =================================================================== -->
+    <!-- DECORATIVE MAGENTA RAYS GRADIENTS                                   -->
+    <!-- =================================================================== -->
+    <linearGradient id="ray-magenta-grad" x1="20%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FF5E99"/>
+      <stop offset="42%" stop-color="#E91E6C"/>
+      <stop offset="82%" stop-color="#BA0B4E"/>
+      <stop offset="100%" stop-color="#96053D"/>
+    </linearGradient>
+
+    <linearGradient id="ray-highlight-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD1E2" stop-opacity="0.88"/>
+      <stop offset="60%" stop-color="#FF78AC" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#E91E6C" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- ANCIENT PARCHMENT SCROLL GRADIENTS                                  -->
+    <!-- =================================================================== -->
+    <linearGradient id="parchment-body-grad" x1="12%" y1="4%" x2="86%" y2="96%">
+      <stop offset="0%" stop-color="#FFF7E2"/>
+      <stop offset="18%" stop-color="#FDE5B6"/>
+      <stop offset="55%" stop-color="#FAD598"/>
+      <stop offset="85%" stop-color="#F3C178"/>
+      <stop offset="100%" stop-color="#E5A95A"/>
+    </linearGradient>
+
+    <radialGradient id="parchment-center-glow" cx="50%" cy="48%" r="48%">
+      <stop offset="0%" stop-color="#FFF9EB" stop-opacity="0.72"/>
+      <stop offset="60%" stop-color="#FDE2B0" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#F4C37C" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="parchment-top-roll" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF7"/>
+      <stop offset="38%" stop-color="#FFF1D0"/>
+      <stop offset="78%" stop-color="#F7CE8E"/>
+      <stop offset="100%" stop-color="#E8B26B"/>
+    </linearGradient>
+
+    <linearGradient id="parchment-bottom-curl" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D9984A"/>
+      <stop offset="28%" stop-color="#FBE1B4"/>
+      <stop offset="58%" stop-color="#FFF4DA"/>
+      <stop offset="88%" stop-color="#ECC07E"/>
+      <stop offset="100%" stop-color="#C98235"/>
+    </linearGradient>
+
+    <linearGradient id="scroll-left-shaft" x1="0%" y1="0%" x2="100%" y2="4%">
+      <stop offset="0%" stop-color="#DDA059"/>
+      <stop offset="28%" stop-color="#FBE2B8"/>
+      <stop offset="56%" stop-color="#F6CE92"/>
+      <stop offset="84%" stop-color="#DF9E52"/>
+      <stop offset="100%" stop-color="#B87128"/>
+    </linearGradient>
+
+    <linearGradient id="scroll-right-shaft" x1="0%" y1="0%" x2="100%" y2="4%">
+      <stop offset="0%" stop-color="#B97329"/>
+      <stop offset="22%" stop-color="#E5A75C"/>
+      <stop offset="52%" stop-color="#FDE5BC"/>
+      <stop offset="78%" stop-color="#F2BD78"/>
+      <stop offset="100%" stop-color="#C87E30"/>
+    </linearGradient>
+
+    <linearGradient id="scroll-cap-gold" x1="18%" y1="8%" x2="82%" y2="92%">
+      <stop offset="0%" stop-color="#FFE08C"/>
+      <stop offset="28%" stop-color="#FBB244"/>
+      <stop offset="68%" stop-color="#E08016"/>
+      <stop offset="100%" stop-color="#A84E05"/>
+    </linearGradient>
+
+    <linearGradient id="scroll-cap-side" x1="0%" y1="0%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#E68A1E"/>
+      <stop offset="55%" stop-color="#BD5E08"/>
+      <stop offset="100%" stop-color="#7D3400"/>
+    </linearGradient>
+
+    <radialGradient id="scroll-hollow-dark" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#2E0E00"/>
+      <stop offset="65%" stop-color="#592202"/>
+      <stop offset="100%" stop-color="#8F3D06"/>
+    </radialGradient>
+
+    <!-- =================================================================== -->
+    <!-- SANSKRIT OM (ॐ) SYMBOL GRADIENTS                                    -->
+    <!-- =================================================================== -->
+    <linearGradient id="om-main-grad" x1="25%" y1="5%" x2="75%" y2="95%">
+      <stop offset="0%" stop-color="#D43242"/>
+      <stop offset="45%" stop-color="#B01E2E"/>
+      <stop offset="85%" stop-color="#8E1422"/>
+      <stop offset="100%" stop-color="#730D19"/>
+    </linearGradient>
+
+    <linearGradient id="om-extrude-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7D121E"/>
+      <stop offset="100%" stop-color="#4F0810"/>
+    </linearGradient>
+
+    <linearGradient id="om-highlight-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F26D7A" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#B01E2E" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- TRADITIONAL EDUCATIONAL BOOK GRADIENTS                              -->
+    <!-- =================================================================== -->
+    <linearGradient id="book-top-cover-grad" x1="15%" y1="10%" x2="88%" y2="90%">
+      <stop offset="0%" stop-color="#FF5E97"/>
+      <stop offset="45%" stop-color="#E51C68"/>
+      <stop offset="85%" stop-color="#BA0C4F"/>
+      <stop offset="100%" stop-color="#99063E"/>
+    </linearGradient>
+
+    <linearGradient id="book-spine-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6EA2"/>
+      <stop offset="35%" stop-color="#E01762"/>
+      <stop offset="75%" stop-color="#A80744"/>
+      <stop offset="100%" stop-color="#7D0331"/>
+    </linearGradient>
+
+    <linearGradient id="book-front-bevel" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF8BB4"/>
+      <stop offset="48%" stop-color="#FFA6C5"/>
+      <stop offset="53%" stop-color="#C81055"/>
+      <stop offset="100%" stop-color="#8F063A"/>
+    </linearGradient>
+
+    <linearGradient id="book-pages-left" x1="0%" y1="0%" x2="100%" y2="25%">
+      <stop offset="0%" stop-color="#FFF5DE"/>
+      <stop offset="55%" stop-color="#FCEAD0"/>
+      <stop offset="96%" stop-color="#FFF8E8"/>
+      <stop offset="100%" stop-color="#EBD0AD"/>
+    </linearGradient>
+
+    <linearGradient id="book-pages-right" x1="0%" y1="0%" x2="100%" y2="20%">
+      <stop offset="0%" stop-color="#ECC69B"/>
+      <stop offset="50%" stop-color="#DFB280"/>
+      <stop offset="100%" stop-color="#C89662"/>
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- GOLDEN BRASS DIYA & FLAME GRADIENTS                                 -->
+    <!-- =================================================================== -->
+    <radialGradient id="diya-bowl-grad" cx="34%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#FFD86B"/>
+      <stop offset="28%" stop-color="#FAA524"/>
+      <stop offset="62%" stop-color="#DF770D"/>
+      <stop offset="88%" stop-color="#A64804"/>
+      <stop offset="100%" stop-color="#7A3000"/>
+    </radialGradient>
+
+    <linearGradient id="diya-base-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9A4204"/>
+      <stop offset="35%" stop-color="#D97814"/>
+      <stop offset="75%" stop-color="#8C3802"/>
+      <stop offset="100%" stop-color="#5E2200"/>
+    </linearGradient>
+
+    <linearGradient id="diya-rim-grad" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#FFE68A"/>
+      <stop offset="35%" stop-color="#FDB42B"/>
+      <stop offset="75%" stop-color="#E07D0E"/>
+      <stop offset="100%" stop-color="#AD4E04"/>
+    </linearGradient>
+
+    <linearGradient id="diya-inner-wall" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#994102"/>
+      <stop offset="45%" stop-color="#C46008"/>
+      <stop offset="100%" stop-color="#EB8F16"/>
+    </linearGradient>
+
+    <radialGradient id="diya-oil-surface" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FFF078"/>
+      <stop offset="48%" stop-color="#FFC629"/>
+      <stop offset="85%" stop-color="#E5890E"/>
+      <stop offset="100%" stop-color="#B85C05"/>
+    </radialGradient>
+
+    <linearGradient id="diya-wick-mound" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FFE47A"/>
+      <stop offset="55%" stop-color="#F29B18"/>
+      <stop offset="100%" stop-color="#B55604"/>
+    </linearGradient>
+
+    <radialGradient id="flame-ambient-aura" cx="50%" cy="52%" r="50%">
+      <stop offset="0%" stop-color="#FFE855" stop-opacity="0.62"/>
+      <stop offset="55%" stop-color="#FFA812" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#FF7700" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="flame-outer-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFF04D"/>
+      <stop offset="38%" stop-color="#FFD41A"/>
+      <stop offset="78%" stop-color="#FF9E08"/>
+      <stop offset="100%" stop-color="#E86600"/>
+    </linearGradient>
+
+    <linearGradient id="flame-middle-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFF98C"/>
+      <stop offset="65%" stop-color="#FFE838"/>
+      <stop offset="100%" stop-color="#FFB712"/>
+    </linearGradient>
+
+    <linearGradient id="flame-core-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="65%" stop-color="#FFFDE0"/>
+      <stop offset="100%" stop-color="#FFEE88"/>
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- SUBJECT NAMEPLATE PILL GRADIENTS                                    -->
+    <!-- =================================================================== -->
+    <linearGradient id="pill-magenta-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#F23881"/>
+      <stop offset="42%" stop-color="#D61662"/>
+      <stop offset="85%" stop-color="#B00A4B"/>
+      <stop offset="100%" stop-color="#8C0539"/>
+    </linearGradient>
+
+    <linearGradient id="pill-rim-under" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9E0742"/>
+      <stop offset="100%" stop-color="#6E022B"/>
+    </linearGradient>
+
+    <linearGradient id="pill-top-highlight" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.48"/>
+      <stop offset="60%" stop-color="#FF9EC4" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#E61E6A" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- REUSABLE OM (ॐ) SYMBOL GEOMETRY                                     -->
+    <!-- Authentic Devanagari construction with smooth cubic Bézier curves.  -->
+    <!-- =================================================================== -->
+    <g id="om-glyph-paths">
+      <!-- Main 'ओ/ऊ' Body: Upper-left arch, sweeping lower bowl, waist & right loop -->
+      <path d="M 18.5,39.5
+               C 14.5,35.5 14.2,28.2 19.8,23.5
+               C 25.4,18.8 36.2,17.5 44.8,21.5
+               C 52.8,25.2 56.4,33.4 53.2,41.2
+               C 51.4,45.5 47.6,48.2 44.2,49.6
+               C 51.8,52.2 57.2,58.8 56.8,67.8
+               C 56.2,78.5 46.8,86.8 34.5,87.4
+               C 20.4,88.0 10.2,78.2 5.5,60.2
+               C 4.9,57.8 6.4,56.2 8.4,56.8
+               C 9.8,57.2 10.8,58.8 11.8,61.4
+               C 16.2,72.8 24.5,78.2 33.8,77.6
+               C 41.8,77.0 46.8,71.4 46.6,64.2
+               C 46.4,57.5 41.2,53.2 33.8,53.8
+               C 30.2,54.1 27.6,52.4 27.5,49.4
+               C 27.4,46.4 30.0,44.6 33.8,44.2
+               C 40.4,43.5 44.5,39.4 44.2,33.8
+               C 43.9,28.6 38.8,25.8 32.5,26.4
+               C 26.8,27.0 23.4,30.6 22.6,36.2
+               C 22.1,39.4 20.2,41.2 18.5,39.5 Z
+               M 44.8,48.8
+               C 51.2,49.5 56.5,48.2 62.8,43.2
+               C 68.8,38.4 74.5,34.5 81.8,34.8
+               C 91.5,35.2 98.4,43.5 98.2,55.8
+               C 98.0,68.2 90.4,77.5 80.2,77.6
+               C 71.8,77.7 65.2,72.2 64.6,65.8
+               C 64.2,62.4 66.8,60.4 69.6,61.2
+               C 71.5,61.8 72.8,63.6 74.5,65.4
+               C 76.5,67.5 78.8,68.4 81.2,68.0
+               C 86.2,67.2 89.2,61.4 89.0,54.2
+               C 88.8,47.2 85.2,43.2 79.8,43.4
+               C 74.5,43.6 69.8,47.8 64.2,52.8
+               C 58.2,58.2 51.5,58.8 44.2,55.2 Z"/>
+      <!-- Chandrabindu Crescent (ँ) -->
+      <path d="M 50.2,13.2
+               C 51.4,10.8 54.2,10.6 56.4,12.5
+               C 62.2,17.4 68.5,19.6 75.2,18.8
+               C 80.4,18.2 84.8,15.2 87.8,11.2
+               C 89.5,9.0 92.4,9.6 93.4,12.0
+               C 94.2,14.0 93.2,16.8 90.8,19.2
+               C 85.2,24.8 77.4,27.8 69.2,27.4
+               C 60.4,27.0 53.2,22.4 49.8,16.8
+               C 48.8,15.2 49.2,14.2 50.2,13.2 Z"/>
+      <!-- Bindu Dot (•) -->
+      <ellipse cx="71.2" cy="5.8" rx="6.2" ry="5.6" transform="rotate(-5 71.2 5.8)"/>
+    </g>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- COMPACT UNIFIED COMPOSITION                                           -->
+  <!-- Soft Rounded-Square 3D Backdrop with Scroll, ॐ Symbol, Rays, Book,    -->
+  <!-- Diya, and Bottom-Aligned संस्कृत Nameplate Pill.                      -->
+  <!-- ===================================================================== -->
+  <g id="compact-sanskrit-subject">
+    <!-- Supporting Soft Rounded-Square White/Lavender Backdrop -->
+    <g id="supporting-backdrop" filter="url(#backdrop-drop-shadow)">
+      <rect x="25" y="14" width="380" height="338" rx="68" ry="68" fill="url(#backdrop-rim-grad)"/>
+      <rect x="25" y="10" width="380" height="334" rx="68" ry="68" fill="url(#backdrop-surface-grad)" stroke="url(#backdrop-bevel-stroke)" stroke-width="2"/>
+    </g>
+
+    <!-- Main 3D Sanskrit Illustration Cluster -->
+    <g id="sanskrit-3d-illustration" transform="translate(0, 4)">
+      <!-- Soft Ambient Halo on Backdrop -->
+      <ellipse cx="222" cy="150" rx="145" ry="110" fill="url(#backdrop-warm-aura)"/>
+
+      <!-- 1. THREE DECORATIVE MAGENTA RAYS (Upper-Left) -->
+      <g id="decorative-rays" filter="url(#ray-drop-shadow)">
+        <!-- Ray 1: Lower-left ray -->
+        <g id="ray-lower-left">
+          <path d="M 103,85
+                   C 92,82 72,74 63,68
+                   C 56,63 55,56 59,51
+                   C 63,46 71,47 78,52
+                   C 87,58 99,70 107,77
+                   C 110,80 107,86 103,85 Z"
+                fill="url(#ray-magenta-grad)"/>
+          <path d="M 101,80
+                   C 91,76 74,67 65,61
+                   C 61,58 60,54 63,52
+                   C 66,50 71,51 76,55
+                   C 84,61 95,71 102,77 Z"
+                fill="url(#ray-highlight-grad)"/>
+        </g>
+
+        <!-- Ray 2: Middle diagonal ray -->
+        <g id="ray-middle">
+          <path d="M 121,69
+                   C 113,59 99,43 92,33
+                   C 87,26 89,19 95,16
+                   C 101,13 108,16 112,24
+                   C 117,34 124,52 128,63
+                   C 129,67 124,72 121,69 Z"
+                fill="url(#ray-magenta-grad)"/>
+          <path d="M 121,64
+                   C 114,54 102,39 96,30
+                   C 93,25 94,21 97,19
+                   C 100,18 104,20 107,26
+                   C 112,35 119,51 123,61 Z"
+                fill="url(#ray-highlight-grad)"/>
+        </g>
+
+        <!-- Ray 3: Upper vertical-left ray -->
+        <g id="ray-upper-right">
+          <path d="M 143,60
+                   C 140,48 136,30 135,19
+                   C 134,11 138,5 145,5
+                   C 152,5 156,11 155,19
+                   C 154,30 151,48 149,59
+                   C 148,63 144,64 143,60 Z"
+                fill="url(#ray-magenta-grad)"/>
+          <path d="M 144,55
+                   C 142,44 139,28 138,19
+                   C 138,14 140,9 144,9
+                   C 147,9 149,13 149,19
+                   C 149,28 147,44 146,55 Z"
+                fill="url(#ray-highlight-grad)"/>
+        </g>
+      </g>
+
+      <!-- 2. ANCIENT PARCHMENT SCROLL -->
+      <g id="parchment-scroll">
+        <!-- Soft Ambient Shadow Cast by Scroll onto Backdrop -->
+        <path d="M 118,88 L 320,66 C 332,96 322,175 312,208 L 112,204 Z"
+              fill="#7A3E2E" opacity="0.16" filter="url(#contact-blur)"/>
+
+        <!-- Bottom-Left Rolled Scroll End (Peeking behind the book) -->
+        <g id="scroll-roller-bottom-left">
+          <path d="M 112,174
+                   C 100,174 92,183 93,195
+                   C 94,206 104,213 118,212
+                   L 132,209
+                   L 130,176 Z"
+                fill="url(#scroll-cap-gold)"/>
+          <ellipse cx="128" cy="193" rx="8" ry="15" fill="url(#scroll-hollow-dark)"/>
+          <path d="M 99,183 C 103,177 111,176 119,178"
+                fill="none" stroke="#FFE8A3" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>
+        </g>
+
+        <!-- Left Cylindrical Scroll Shaft -->
+        <path id="scroll-shaft-left"
+              d="M 121,90
+                 L 140,92
+                 L 130,192
+                 L 110,189
+                 C 114,156 118,122 121,90 Z"
+              fill="url(#scroll-left-shaft)"/>
+
+        <!-- Right Cylindrical Scroll Shaft -->
+        <path id="scroll-shaft-right"
+              d="M 294,72
+                 L 314,75
+                 C 310,115 305,156 300,196
+                 L 280,194 Z"
+              fill="url(#scroll-right-shaft)"/>
+
+        <!-- Main Curved Horizontal Parchment Sheet -->
+        <g id="scroll-parchment-sheet" filter="url(#scroll-ambient-shadow)">
+          <!-- Base Parchment Surface -->
+          <path d="M 136,74
+                   C 188,71 244,64 296,57
+                   C 293,104 287,152 282,198
+                   C 230,194 176,190 123,185
+                   C 130,149 134,112 136,74 Z"
+                fill="url(#parchment-body-grad)"/>
+
+          <!-- Soft Luminous Center Highlight -->
+          <path d="M 136,74
+                   C 188,71 244,64 296,57
+                   C 293,104 287,152 282,198
+                   C 230,194 176,190 123,185
+                   C 130,149 134,112 136,74 Z"
+                fill="url(#parchment-center-glow)"/>
+
+          <!-- Top Rolled Parchment Lip & Soft Golden Highlight -->
+          <path d="M 135,78
+                   C 136,72 140,69 147,69
+                   C 196,66 246,59 294,53
+                   C 297,53 298,57 297,62
+                   C 246,69 192,76 135,78 Z"
+                fill="url(#parchment-top-roll)"/>
+
+          <!-- Subtle Warm Amber Crease Shadow along Left & Right Rollers -->
+          <path d="M 136,76 L 143,76 L 131,184 L 124,183 Z"
+                fill="#C98236" opacity="0.26"/>
+          <path d="M 289,59 L 296,58 L 283,196 L 276,195 Z"
+                fill="#C47B2C" opacity="0.28"/>
+
+          <!-- Subtle Manuscript Paper Grain Lines -->
+          <g stroke="#DF9F54" stroke-width="0.9" opacity="0.22" fill="none" stroke-linecap="round">
+            <path d="M 148,92 C 194,88 238,83 278,78"/>
+            <path d="M 145,116 C 192,112 236,107 275,102"/>
+            <path d="M 142,142 C 189,138 234,134 272,129"/>
+            <path d="M 138,166 C 185,163 230,159 269,155"/>
+          </g>
+
+          <!-- Bottom Curled Parchment Edge (3D Forward Lip) -->
+          <path d="M 122,181
+                   C 175,186 230,191 284,196
+                   C 286,202 282,208 274,207
+                   C 222,202 170,197 125,191
+                   C 119,190 119,183 122,181 Z"
+                fill="url(#parchment-bottom-curl)"/>
+          <path d="M 125,185 C 176,190 229,195 280,199"
+                fill="none" stroke="#FFF9E8" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+        </g>
+
+        <!-- Top-Left Rolled Cylindrical End (Scroll Hood/Cap) -->
+        <g id="scroll-roller-top-left">
+          <ellipse cx="126" cy="91" rx="14" ry="8.5" transform="rotate(-8 126 91)" fill="url(#scroll-hollow-dark)"/>
+          <path d="M 115,91 C 117,85 126,84 134,88 C 136,90 135,94 130,94"
+                fill="none" stroke="#E08319" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M 111,89
+                   C 110,74 118,62 130,61
+                   C 139,60 146,66 148,74
+                   C 142,74 138,79 138,91
+                   C 133,84 119,83 111,89 Z"
+                fill="url(#scroll-cap-gold)"/>
+          <path d="M 116,78 C 118,69 125,64 134,65"
+                fill="none" stroke="#FFF0B8" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+        </g>
+
+        <!-- Top-Right Rolled Cylindrical End (Scroll Hood/Cap) -->
+        <g id="scroll-roller-top-right">
+          <path d="M 308,52
+                   C 320,54 326,66 323,79
+                   C 320,88 313,92 305,90
+                   L 304,72 Z"
+                fill="url(#scroll-cap-side)"/>
+          <ellipse cx="304" cy="74" rx="14.5" ry="8.5" transform="rotate(6 304 74)" fill="url(#scroll-hollow-dark)"/>
+          <path d="M 293,73 C 296,67 306,67 313,72 C 315,75 312,79 307,78"
+                fill="none" stroke="#E5891C" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M 288,71
+                   C 289,54 297,43 310,44
+                   C 319,45 325,53 324,65
+                   C 321,57 316,54 313,75
+                   C 308,66 294,65 288,71 Z"
+                fill="url(#scroll-cap-gold)"/>
+          <path d="M 294,58 C 297,49 304,46 313,48"
+                fill="none" stroke="#FFF2C2" stroke-width="2.6" stroke-linecap="round" opacity="0.85"/>
+        </g>
+
+        <!-- 3. SANSKRIT SYMBOL — ॐ (Raised 3D Devanagari Glyph) -->
+        <g id="om-symbol" transform="translate(161, 82) rotate(-4 50 45) scale(0.95)">
+          <use xlink:href="#om-glyph-paths" x="2.2" y="3.8" fill="#8C3222" opacity="0.22"/>
+          <use xlink:href="#om-glyph-paths" x="1.2" y="2.0" fill="url(#om-extrude-grad)"/>
+          <use xlink:href="#om-glyph-paths" x="0" y="0" fill="url(#om-main-grad)"/>
+          <use xlink:href="#om-glyph-paths" x="-0.4" y="-0.5" fill="none" stroke="url(#om-highlight-grad)" stroke-width="1.1"/>
+        </g>
+      </g>
+
+      <!-- 4. TRADITIONAL EDUCATIONAL BOOK (Lower-Left) -->
+      <g id="educational-book">
+        <!-- Soft Contact Shadow Beneath Book -->
+        <path d="M 74,235 L 154,255 L 232,237 L 156,222 Z"
+              fill="#5A1032" opacity="0.26" filter="url(#contact-blur)"/>
+
+        <!-- Bottom Magenta Cover & Rim -->
+        <path d="M 84,226
+                 L 154,242
+                 L 225,226
+                 C 228,226 229,232 225,234
+                 L 155,250
+                 C 153,251 151,251 149,250
+                 L 84,235
+                 C 80,234 80,227 84,226 Z"
+              fill="url(#book-front-bevel)"/>
+
+        <!-- Cream Page Block: Front-Left Face -->
+        <path d="M 88,202
+                 L 154,215
+                 L 154,242
+                 L 88,228
+                 C 84,222 84,209 88,202 Z"
+              fill="url(#book-pages-left)"/>
+
+        <!-- Cream Page Block: Front-Right Fore-Edge Face -->
+        <path d="M 154,215
+                 L 220,203
+                 L 220,227
+                 L 154,242 Z"
+              fill="url(#book-pages-right)"/>
+
+        <!-- Fine Page Striations -->
+        <g fill="none" stroke-width="1" stroke-linecap="round">
+          <path d="M 90,208 L 152,220" stroke="#E4C199"/>
+          <path d="M 89,214 L 152,226" stroke="#DEC09C"/>
+          <path d="M 89,220 L 152,232" stroke="#E4C199"/>
+          <path d="M 90,225 L 152,237" stroke="#D8B288"/>
+          <path d="M 156,220 L 218,208" stroke="#C6915B"/>
+          <path d="M 156,226 L 218,214" stroke="#BE8852"/>
+          <path d="M 156,232 L 218,220" stroke="#C6915B"/>
+          <path d="M 156,237 L 218,224" stroke="#B57E48"/>
+        </g>
+
+        <!-- Vertical Center Page Corner Highlight -->
+        <line x1="154" y1="215" x2="154" y2="241" stroke="#FFFDF7" stroke-width="1.6" opacity="0.85"/>
+
+        <!-- Rounded Magenta Spine (Left Wrap) -->
+        <path d="M 91,196
+                 C 78,197 74,210 76,222
+                 C 77,230 82,235 89,236
+                 L 92,229
+                 C 86,228 84,222 84,215
+                 C 84,208 87,203 93,202 Z"
+              fill="url(#book-spine-grad)"/>
+        <path d="M 86,201 C 79,205 78,216 81,226"
+              fill="none" stroke="#FF8EB6" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+
+        <!-- Top Glossy Magenta Cover -->
+        <path d="M 86,197
+                 L 148,187
+                 L 225,198
+                 L 154,213 Z"
+              fill="url(#book-top-cover-grad)"/>
+
+        <!-- Top Cover 3D Front Overhang Lip -->
+        <path d="M 85,197
+                 L 153,211
+                 C 155,211 156,211 158,211
+                 L 225,198
+                 C 228,198 228,203 225,204
+                 L 157,217
+                 C 155,218 153,218 151,217
+                 L 85,203
+                 C 82,202 82,197 85,197 Z"
+              fill="url(#book-front-bevel)"/>
+
+        <!-- Glossy Specular Highlight along Front-Left Cover Ridge -->
+        <path d="M 89,199 L 153,212 L 195,204"
+              fill="none" stroke="#FFB8D1" stroke-width="1.6" stroke-linecap="round" opacity="0.8"/>
+      </g>
+
+      <!-- 5. TRADITIONAL OIL LAMP — DIYA & FLAME (Lower-Right) -->
+      <g id="oil-lamp-diya">
+        <!-- Soft Contact Shadow Beneath Diya -->
+        <ellipse cx="288" cy="246" rx="46" ry="8.5" fill="#6B2D0E" opacity="0.28" filter="url(#contact-blur)"/>
+        <ellipse cx="288" cy="245" rx="28" ry="5" fill="#4A1A02" opacity="0.35"/>
+
+        <!-- Diya Base Ring (Foot) -->
+        <path d="M 262,237
+                 C 262,243 274,246 288,246
+                 C 302,246 314,243 314,237
+                 L 310,232
+                 L 266,232 Z"
+              fill="url(#diya-base-grad)"/>
+
+        <!-- Diya Rounded Golden Bowl -->
+        <path d="M 236,198
+                 C 236,224 257,241 288,241
+                 C 319,241 340,224 340,198
+                 Z"
+              fill="url(#diya-bowl-grad)"/>
+
+        <!-- Subtle Glossy Highlight on Left Belly of Bowl -->
+        <path d="M 245,207 C 249,221 262,231 279,234"
+              fill="none" stroke="#FFE28A" stroke-width="2.6" stroke-linecap="round" opacity="0.55"/>
+
+        <!-- Subtle Under-Rim Shadow Groove -->
+        <path d="M 237,202 C 252,211 324,211 339,202"
+              fill="none" stroke="#9E4202" stroke-width="2.2" opacity="0.65"/>
+
+        <!-- Diya Raised Elliptical Rim -->
+        <ellipse cx="288" cy="197" rx="53" ry="11.5" fill="url(#diya-rim-grad)"/>
+
+        <!-- Recessed Inner Bowl Wall -->
+        <ellipse cx="288" cy="196.5" rx="43" ry="7.8" fill="url(#diya-inner-wall)"/>
+
+        <!-- Visible Luminous Oil Surface -->
+        <ellipse cx="288" cy="198" rx="39" ry="6" fill="url(#diya-oil-surface)"/>
+
+        <!-- Rim Front Glossy Highlight Arc -->
+        <path d="M 240,199 C 254,206 292,208 324,202"
+              fill="none" stroke="#FFF0A8" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+
+        <!-- Central Golden Wick Mound in Oil -->
+        <path d="M 276,201 C 281,192 295,192 300,201 C 293,203 283,203 276,201 Z"
+              fill="url(#diya-wick-mound)"/>
+
+        <!-- Luminous Teardrop Flame -->
+        <g id="diya-flame">
+          <ellipse cx="288" cy="162" rx="28" ry="32" fill="url(#flame-ambient-aura)" filter="url(#flame-outer-blur)"/>
+          <path d="M 288,129
+                   C 296,143 307,156 307,169
+                   C 307,181 298,189 288,189
+                   C 278,189 269,181 269,169
+                   C 269,156 280,143 288,129 Z"
+                fill="url(#flame-outer-grad)"/>
+          <path d="M 288,137
+                   C 294,149 302,159 302,170
+                   C 302,180 296,187 288,187
+                   C 280,187 274,180 274,170
+                   C 274,159 282,149 288,137 Z"
+                fill="url(#flame-middle-grad)"/>
+          <path d="M 288,149
+                   C 292,157 296,165 296,173
+                   C 296,180 293,185 288,185
+                   C 283,185 280,180 280,173
+                   C 280,165 284,157 288,149 Z"
+                fill="url(#flame-core-grad)"/>
+          <rect x="285.8" y="180" width="4.4" height="14" rx="2.2" fill="#4E1E02"/>
+          <circle cx="288" cy="181" r="2.2" fill="#FF9912" opacity="0.8"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- 6. BOTTOM SUBJECT NAMEPLATE (Independently Editable Pill & Text) -->
+    <g id="subject-nameplate">
+      <!-- Glossy Magenta Pill Background -->
+      <g id="nameplate-pill" filter="url(#pill-drop-shadow)">
+        <rect x="85" y="270" width="260" height="58" rx="29" ry="29" fill="url(#pill-rim-under)"/>
+        <rect x="85" y="267" width="260" height="56" rx="28" ry="28" fill="url(#pill-magenta-grad)"/>
+        <!-- Subtle Upper Specular Highlight -->
+        <rect x="103" y="270" width="224" height="22" rx="11" ry="11" fill="url(#pill-top-highlight)"/>
+      </g>
+
+      <!-- Editable Subject Label Text (Replaceable with "Sanskrit") -->
+      <text id="subject-label-text"
+            class="subject-label"
+            x="215"
+            y="307"
+            font-size="36"
+            filter="url(#label-text-shadow)">संस्कृत</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,597 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="420" height="410" viewBox="0 0 420 410" preserveAspectRatio="xMidYMid meet">
+  <title>Social Science Subject Illustration (सामाजिक विज्ञान)</title>
+  <desc>Glossy 3D educational illustration of Social Science featuring a terrestrial classroom globe with recognizable continents, a folded parchment map, a directional compass, a purple book, decorative magenta rays, and a bottom-aligned Hindi/English nameplate.</desc>
+
+  <defs>
+    <!-- ==================== TYPOGRAPHY STYLES ==================== -->
+    <style type="text/css">
+      <![CDATA[
+      .subject-label-text {
+        font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", sans-serif;
+        font-weight: 800;
+        fill: #FFFFFF;
+        text-anchor: middle;
+        dominant-baseline: central;
+        letter-spacing: 0.2px;
+      }
+      ]]>
+    </style>
+
+    <!-- ==================== SHADOW & 3D LIGHTING FILTERS ==================== -->
+    <!-- Soft outer shadow for main white/lavender card -->
+    <filter id="ss-card-shadow" x="-15%" y="-12%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#2A183B" flood-opacity="0.11" />
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#2A183B" flood-opacity="0.06" />
+    </filter>
+
+    <!-- Soft drop shadow for 3D illustration objects -->
+    <filter id="ss-obj-shadow" x="-20%" y="-20%" width="145%" height="145%">
+      <feDropShadow dx="2" dy="6" stdDeviation="4.5" flood-color="#231230" flood-opacity="0.22" />
+    </filter>
+
+    <!-- Subtle elevation shadow for continents on the globe -->
+    <filter id="ss-continent-extrude" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="1.2" dy="2.4" stdDeviation="1.1" flood-color="#042E58" flood-opacity="0.55" />
+    </filter>
+
+    <!-- Soft drop shadow for magenta pill nameplate -->
+    <filter id="ss-pill-shadow" x="-12%" y="-20%" width="124%" height="155%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4.5" flood-color="#7A0642" flood-opacity="0.34" />
+    </filter>
+
+    <!-- Soft blur for ambient floor contact shadows -->
+    <filter id="ss-floor-blur" x="-30%" y="-40%" width="160%" height="180%">
+      <feGaussianBlur stdDeviation="5.5" />
+    </filter>
+
+    <!-- Soft blur for specular sphere highlights -->
+    <filter id="ss-gloss-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.2" />
+    </filter>
+
+    <!-- Text subtle dimensional shadow -->
+    <filter id="ss-text-shadow" x="-10%" y="-15%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="1.8" stdDeviation="1.1" flood-color="#6A0036" flood-opacity="0.48" />
+    </filter>
+
+    <!-- ==================== COLOR & 3D SHADING GRADIENTS ==================== -->
+    <!-- Soft rounded-square backdrop gradients -->
+    <linearGradient id="ss-card-bg" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="55%" stop-color="#FCF8FE" />
+      <stop offset="100%" stop-color="#F3EAF8" />
+    </linearGradient>
+
+    <linearGradient id="ss-card-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#F2E7F7" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#E2D2EC" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Decorative Magenta Rays Gradient -->
+    <linearGradient id="ss-ray-grad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FF5CA8" />
+      <stop offset="45%" stop-color="#EC1B76" />
+      <stop offset="100%" stop-color="#AD064D" />
+    </linearGradient>
+
+    <!-- Historical Parchment Map Panel Gradients -->
+    <linearGradient id="ss-map-panel-left" x1="0%" y1="10%" x2="100%" y2="25%">
+      <stop offset="0%" stop-color="#FFF0CF" />
+      <stop offset="65%" stop-color="#F9D79E" />
+      <stop offset="100%" stop-color="#E7BA78" />
+    </linearGradient>
+
+    <linearGradient id="ss-map-panel-mid" x1="0%" y1="20%" x2="100%" y2="10%">
+      <stop offset="0%" stop-color="#DCAB68" />
+      <stop offset="25%" stop-color="#E9BE7E" />
+      <stop offset="100%" stop-color="#F7D69D" />
+    </linearGradient>
+
+    <linearGradient id="ss-map-panel-right" x1="0%" y1="0%" x2="100%" y2="15%">
+      <stop offset="0%" stop-color="#FFE6B8" />
+      <stop offset="55%" stop-color="#F6CE90" />
+      <stop offset="100%" stop-color="#DFAD6C" />
+    </linearGradient>
+
+    <linearGradient id="ss-map-roll" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F9D79B" />
+      <stop offset="28%" stop-color="#FFEAC1" />
+      <stop offset="68%" stop-color="#E5B271" />
+      <stop offset="100%" stop-color="#BD8346" />
+    </linearGradient>
+
+    <linearGradient id="ss-map-roll-hole" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7D491D" />
+      <stop offset="60%" stop-color="#A56834" />
+      <stop offset="100%" stop-color="#CA8C52" />
+    </linearGradient>
+
+    <!-- Purple Educational Book Gradients -->
+    <linearGradient id="ss-book-top" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#B07CFF" />
+      <stop offset="50%" stop-color="#8446E6" />
+      <stop offset="100%" stop-color="#5B24B8" />
+    </linearGradient>
+
+    <linearGradient id="ss-book-spine" x1="0%" y1="0%" x2="100%" y2="85%">
+      <stop offset="0%" stop-color="#9B63F8" />
+      <stop offset="40%" stop-color="#6B30CB" />
+      <stop offset="85%" stop-color="#471799" />
+      <stop offset="100%" stop-color="#360E7A" />
+    </linearGradient>
+
+    <linearGradient id="ss-book-pages-front" x1="0%" y1="0%" x2="100%" y2="15%">
+      <stop offset="0%" stop-color="#FFF2D6" />
+      <stop offset="75%" stop-color="#F7DCAC" />
+      <stop offset="100%" stop-color="#DEC08E" />
+    </linearGradient>
+
+    <linearGradient id="ss-book-pages-side" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D9B47E" />
+      <stop offset="45%" stop-color="#C69D66" />
+      <stop offset="100%" stop-color="#A87E49" />
+    </linearGradient>
+
+    <!-- Ocean Sphere 3D Radial Gradient -->
+    <radialGradient id="ss-globe-ocean" cx="34%" cy="28%" r="68%" fx="26%" fy="22%">
+      <stop offset="0%" stop-color="#82F0FF" />
+      <stop offset="22%" stop-color="#2BC0FE" />
+      <stop offset="56%" stop-color="#057EE8" />
+      <stop offset="84%" stop-color="#0351AA" />
+      <stop offset="100%" stop-color="#023476" />
+    </radialGradient>
+
+    <!-- Continents 3D Natural Green Gradients -->
+    <radialGradient id="ss-continent-fill" cx="30%" cy="26%" r="72%" fx="25%" fy="22%">
+      <stop offset="0%" stop-color="#E2FF70" />
+      <stop offset="30%" stop-color="#9BE931" />
+      <stop offset="68%" stop-color="#53B814" />
+      <stop offset="100%" stop-color="#277905" />
+    </radialGradient>
+
+    <linearGradient id="ss-continent-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2FF9E" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#85DB24" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#1E5E04" stop-opacity="0.7" />
+    </linearGradient>
+
+    <!-- Globe Atmospheric Inner Shadow & Rim Light -->
+    <radialGradient id="ss-globe-shade" cx="46%" cy="44%" r="54%">
+      <stop offset="70%" stop-color="#001D4A" stop-opacity="0" />
+      <stop offset="91%" stop-color="#001D4A" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#00102B" stop-opacity="0.62" />
+    </radialGradient>
+
+    <!-- Golden-Orange Globe Stand & Compass Gradients -->
+    <linearGradient id="ss-gold-arm" x1="12%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFD05B" />
+      <stop offset="28%" stop-color="#FCA11B" />
+      <stop offset="68%" stop-color="#E27105" />
+      <stop offset="100%" stop-color="#9F4100" />
+    </linearGradient>
+
+    <linearGradient id="ss-gold-highlight" x1="0%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0A8" stop-opacity="0.9" />
+      <stop offset="45%" stop-color="#FDB838" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#B94E00" stop-opacity="0" />
+    </linearGradient>
+
+    <linearGradient id="ss-gold-base" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CF5E02" />
+      <stop offset="28%" stop-color="#FFBB3D" />
+      <stop offset="50%" stop-color="#FFD96A" />
+      <stop offset="76%" stop-color="#E67707" />
+      <stop offset="100%" stop-color="#9C3F00" />
+    </linearGradient>
+
+    <linearGradient id="ss-gold-base-top" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FFE07D" />
+      <stop offset="55%" stop-color="#F79B16" />
+      <stop offset="100%" stop-color="#C85800" />
+    </linearGradient>
+
+    <!-- Compass Gradients -->
+    <linearGradient id="ss-compass-outer" x1="18%" y1="10%" x2="82%" y2="90%">
+      <stop offset="0%" stop-color="#FFE074" />
+      <stop offset="35%" stop-color="#FBA31B" />
+      <stop offset="75%" stop-color="#DE6D04" />
+      <stop offset="100%" stop-color="#9C3E00" />
+    </linearGradient>
+
+    <linearGradient id="ss-compass-inner-rim" x1="80%" y1="85%" x2="20%" y2="15%">
+      <stop offset="0%" stop-color="#FFD25A" />
+      <stop offset="50%" stop-color="#D96B05" />
+      <stop offset="100%" stop-color="#8F3900" />
+    </linearGradient>
+
+    <radialGradient id="ss-compass-dial" cx="55%" cy="58%" r="58%" fx="60%" fy="62%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="68%" stop-color="#FCECD7" />
+      <stop offset="88%" stop-color="#EED1B0" />
+      <stop offset="100%" stop-color="#D8AF84" />
+    </radialGradient>
+
+    <!-- Compass Needle Gradients -->
+    <linearGradient id="ss-needle-red-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7388" />
+      <stop offset="50%" stop-color="#FA2A4A" />
+      <stop offset="100%" stop-color="#D80D2D" />
+    </linearGradient>
+
+    <linearGradient id="ss-needle-red-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D80D2D" />
+      <stop offset="100%" stop-color="#8F0018" />
+    </linearGradient>
+
+    <linearGradient id="ss-needle-blue-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#68C8FF" />
+      <stop offset="55%" stop-color="#1E85F5" />
+      <stop offset="100%" stop-color="#0757C2" />
+    </linearGradient>
+
+    <linearGradient id="ss-needle-blue-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D63D1" />
+      <stop offset="100%" stop-color="#03337D" />
+    </linearGradient>
+
+    <!-- Subject Nameplate Magenta Pill Gradients -->
+    <linearGradient id="ss-pill-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#F62A87" />
+      <stop offset="48%" stop-color="#DA106B" />
+      <stop offset="100%" stop-color="#A6044E" />
+    </linearGradient>
+
+    <linearGradient id="ss-pill-gloss" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.46" />
+      <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Clip Path for 3D Globe Sphere -->
+    <clipPath id="ss-globe-clip">
+      <circle cx="176" cy="176" r="78" />
+    </clipPath>
+
+    <!-- ==================== MASTER 3D ARTWORK CLUSTER ==================== -->
+    <!-- Coordinates calibrated in a 400x340 space around the globe at (176,176) -->
+    <g id="ss-illustration-cluster">
+
+      <!-- 1. AMBIENT FLOOR CONTACT SHADOWS -->
+      <g id="ss-contact-shadows" filter="url(#ss-floor-blur)">
+        <!-- Book floor shadow -->
+        <ellipse cx="118" cy="274" rx="58" ry="12" fill="#2A143D" opacity="0.28" transform="rotate(6 118 274)" />
+        <!-- Globe stand floor shadow -->
+        <ellipse cx="182" cy="285" rx="52" ry="11" fill="#2A1038" opacity="0.38" />
+        <!-- Compass floor shadow -->
+        <ellipse cx="268" cy="284" rx="56" ry="12" fill="#2A1038" opacity="0.36" />
+        <!-- Parchment map ambient shadow -->
+        <ellipse cx="295" cy="246" rx="54" ry="14" fill="#3C1E2E" opacity="0.20" transform="rotate(8 295 246)" />
+      </g>
+
+      <!-- 2. THREE MAGENTA DECORATIVE RAYS (UPPER-LEFT) -->
+      <g id="ss-decorative-rays" filter="url(#ss-obj-shadow)">
+        <!-- Leftmost lower ray -->
+        <g id="ss-ray-1">
+          <path d="M 88,89 C 77,85 62,79 58,76 C 51,71 55,61 64,63 C 70,65 84,74 93,81 C 98,85 94,92 88,89 Z" fill="url(#ss-ray-grad)" />
+          <path d="M 62,66 C 68,67 80,74 88,80" stroke="#FF99C8" stroke-width="2.6" stroke-linecap="round" fill="none" opacity="0.75" />
+        </g>
+        <!-- Middle diagonal ray -->
+        <g id="ss-ray-2">
+          <path d="M 111,72 C 103,63 90,50 87,44 C 82,36 91,28 98,34 C 103,38 113,53 119,65 C 122,71 115,76 111,72 Z" fill="url(#ss-ray-grad)" />
+          <path d="M 92,36 C 97,40 106,52 113,63" stroke="#FF99C8" stroke-width="2.6" stroke-linecap="round" fill="none" opacity="0.75" />
+        </g>
+        <!-- Rightmost vertical ray -->
+        <g id="ss-ray-3">
+          <path d="M 139,65 C 136,53 132,36 132,29 C 131,19 142,16 146,25 C 148,31 148,49 147,63 C 147,69 140,70 139,65 Z" fill="url(#ss-ray-grad)" />
+          <path d="M 138,24 C 140,30 141,45 141,58" stroke="#FF99C8" stroke-width="2.6" stroke-linecap="round" fill="none" opacity="0.75" />
+        </g>
+      </g>
+
+      <!-- 3. HISTORICAL PARCHMENT MAP (BEHIND GLOBE & RIGHT) -->
+      <g id="ss-parchment-map" filter="url(#ss-obj-shadow)">
+        <!-- Leftmost slightly rolled edge behind globe -->
+        <path d="M 206,96 C 210,88 220,89 221,98 L 204,218 C 202,225 192,224 194,214 Z" fill="url(#ss-map-roll)" />
+
+        <!-- Panel 1: Left Map Section -->
+        <path d="M 213,95 L 263,89 L 246,218 L 198,222 Z" fill="url(#ss-map-panel-left)" />
+
+        <!-- Panel 2: Center Folded Section (In shadow) -->
+        <path d="M 263,89 L 298,104 L 281,231 L 246,218 Z" fill="url(#ss-map-panel-mid)" />
+
+        <!-- Panel 3: Right Map Section -->
+        <path d="M 298,104 L 341,97 L 323,229 L 281,231 Z" fill="url(#ss-map-panel-right)" />
+
+        <!-- Subtle Aged Geographical Landmass Blobs on Map (Clipped/Aligned to Folds) -->
+        <g id="ss-map-geography" opacity="0.46">
+          <!-- Continent shape on Panel 1 -->
+          <path d="M 224,126 C 232,121 246,120 254,125 C 257,134 251,148 248,159 C 242,165 232,161 226,152 C 221,144 219,131 224,126 Z" fill="#D59858" />
+          <!-- Continent shape crossing Fold 1 into Panel 2 -->
+          <path d="M 263,134 C 272,138 282,147 288,159 C 285,172 276,182 266,185 C 259,181 255,171 257,158 Z" fill="#BC7E41" />
+          <!-- Large Vintage Terra Landmass on Panel 3 -->
+          <path d="M 295,146 C 302,137 310,129 316,133 C 321,136 325,131 334,127 L 328,176 C 318,180 309,179 301,185 C 293,191 286,184 287,172 C 288,162 291,152 295,146 Z" fill="#CF9050" />
+          <!-- Small Cartographic Islands -->
+          <path d="M 303,196 C 309,194 316,197 314,203 C 311,208 302,206 300,201 Z" fill="#CF9050" />
+        </g>
+
+        <!-- Faint Cartographic Latitude/Longitude Graticule Lines -->
+        <g id="ss-map-gridlines" stroke="#C5894B" stroke-width="1.1" stroke-dasharray="3,3" opacity="0.38" fill="none">
+          <path d="M 211,138 L 258,132 L 293,146 L 336,140" />
+          <path d="M 205,180 L 252,174 L 287,188 L 329,182" />
+          <path d="M 238,93 L 222,218" />
+          <path d="M 318,101 L 302,228" />
+        </g>
+
+        <!-- Crisp Fold Crease Highlights & Shadows -->
+        <line x1="263" y1="89" x2="246" y2="218" stroke="#FFF6E2" stroke-width="1.6" opacity="0.75" />
+        <line x1="298" y1="104" x2="281" y2="231" stroke="#B87D42" stroke-width="1.5" opacity="0.55" />
+
+        <!-- Rightmost 3D Rolled Scroll Cylinder -->
+        <!-- Dark Inner Hollow of Bottom Scroll Roll -->
+        <ellipse cx="328" cy="227" rx="14" ry="7.5" transform="rotate(-6 328 227)" fill="url(#ss-map-roll-hole)" />
+        <ellipse cx="326" cy="227" rx="9" ry="4.5" transform="rotate(-6 326 227)" fill="#5E3310" />
+        <!-- Inner spiral paper edge -->
+        <path d="M 317,225 C 321,231 334,232 339,226" stroke="#F8D89E" stroke-width="1.8" fill="none" />
+
+        <!-- Main Right Cylindrical Roll Body -->
+        <path d="M 336,102 C 337,93 361,95 360,106 L 342,228 C 341,221 317,219 318,226 Z" fill="url(#ss-map-roll)" />
+        <!-- Specular vertical highlight along scroll roll -->
+        <path d="M 343,102 L 325,221" stroke="#FFF6DF" stroke-width="3.5" stroke-linecap="round" opacity="0.65" />
+      </g>
+
+      <!-- 4. PURPLE EDUCATIONAL BOOK (LOWER-LEFT SECONDARY OBJECT) -->
+      <g id="ss-purple-book" filter="url(#ss-obj-shadow)">
+        <!-- Bottom Purple Cover Board -->
+        <path d="M 66,253 L 143,267 C 149,268 156,266 162,262 L 201,244 C 204,242 204,248 200,251 L 161,270 C 155,273 148,275 141,274 L 65,260 C 60,259 60,252 66,253 Z" fill="url(#ss-book-spine)" />
+
+        <!-- Cream Paper Pages Block (Front Stepped Edge) -->
+        <path d="M 67,226 L 144,239 L 143,267 L 66,254 C 61,250 61,231 67,226 Z" fill="url(#ss-book-pages-front)" />
+
+        <!-- Cream Paper Pages Block (Right Side Shaded Edge) -->
+        <path d="M 144,239 L 198,221 L 197,246 L 143,267 Z" fill="url(#ss-book-pages-side)" />
+
+        <!-- Individual Page Striations / Grooves -->
+        <g stroke="#D5B07B" stroke-width="1.1" opacity="0.65" fill="none">
+          <path d="M 66,232 L 143,245 L 196,227" />
+          <path d="M 65,238 L 143,251 L 196,233" />
+          <path d="M 65,244 L 143,257 L 196,239" />
+          <path d="M 66,250 L 143,263 L 195,244" />
+        </g>
+
+        <!-- Upper Purple Cover Board (Perspective Top) -->
+        <path d="M 62,218 L 122,202 C 128,200 135,200 142,202 L 201,214 C 205,215 205,220 200,222 L 152,239 C 146,241 140,242 134,241 L 63,228 C 58,227 58,220 62,218 Z" fill="url(#ss-book-top)" />
+
+        <!-- Rounded 3D Book Spine Wrap (Left End) -->
+        <path d="M 66,218 C 51,218 50,259 66,260 L 142,274 C 145,274 147,270 143,267 L 69,254 C 61,252 61,229 69,228 L 143,241 C 147,241 148,235 143,234 L 66,218 Z" fill="url(#ss-book-spine)" />
+
+        <!-- Book Cover Glossy Rim Highlight -->
+        <path d="M 63,222 L 138,235 C 144,236 150,235 156,233 L 198,218" stroke="#D2B3FF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.7" />
+        <path d="M 57,228 C 54,236 55,247 59,253" stroke="#C49BFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55" />
+      </g>
+
+      <!-- 5. MAIN OBJECT — EDUCATIONAL CLASSROOM GLOBE -->
+      <g id="ss-classroom-globe">
+
+        <!-- 5A. GLOBE STAND BASE & SUPPORTING STEM -->
+        <g id="ss-globe-stand-lower" filter="url(#ss-obj-shadow)">
+          <!-- Vertical Supporting Golden Stem -->
+          <path d="M 168,248 L 164,267 C 164,271 196,271 196,267 L 192,248 Z" fill="url(#ss-gold-base)" />
+          <!-- Stem Collar Ring -->
+          <ellipse cx="180" cy="253" rx="14" ry="4.5" fill="#B44B00" />
+
+          <!-- Circular Golden Base Body (3D Tiered Plinth) -->
+          <path d="M 134,269 C 134,262 152,258 180,258 C 208,258 226,262 226,269 L 228,278 C 228,285 208,289 180,289 C 152,289 132,285 132,278 Z" fill="url(#ss-gold-base)" />
+
+          <!-- Circular Golden Base Upper Bevel Surface -->
+          <ellipse cx="180" cy="268" rx="45" ry="9.5" fill="url(#ss-gold-base-top)" />
+
+          <!-- Stem-to-Base Contact Ring & Specular Highlight -->
+          <ellipse cx="180" cy="266" rx="18" ry="4.5" fill="#C95902" opacity="0.65" />
+          <ellipse cx="180" cy="264" rx="15" ry="3.8" fill="url(#ss-gold-base)" />
+          <path d="M 140,270 C 154,275 190,276 216,271" stroke="#FFF2A6" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.8" />
+        </g>
+
+        <!-- 5B. SPHERICAL BLUE EARTH WITH RECOGNIZABLE CONTINENTS -->
+        <g id="ss-globe-sphere" filter="url(#ss-obj-shadow)">
+          <!-- Base Ocean Sphere -->
+          <circle cx="176" cy="176" r="78" fill="url(#ss-globe-ocean)" />
+
+          <!-- Clipped Geographical Continents & Graticules -->
+          <g clip-path="url(#ss-globe-clip)">
+            <!-- Subtle Ocean Latitude & Longitude Lines -->
+            <g stroke="#63D8FF" stroke-width="1" opacity="0.22" fill="none">
+              <ellipse cx="176" cy="176" rx="78" ry="28" transform="rotate(-12 176 176)" />
+              <ellipse cx="176" cy="176" rx="78" ry="58" transform="rotate(-12 176 176)" />
+              <ellipse cx="176" cy="176" rx="34" ry="78" transform="rotate(-12 176 176)" />
+              <ellipse cx="176" cy="176" rx="64" ry="78" transform="rotate(-12 176 176)" />
+            </g>
+
+            <!-- RECOGNIZABLE GEOGRAPHICAL CONTINENTS (Elevated 3D Relief) -->
+            <g id="ss-globe-continents" filter="url(#ss-continent-extrude)">
+
+              <!-- North America (Alaska, Canada, USA, Gulf of Mexico, Central America) -->
+              <path d="M 96,152
+                       C 101,134 114,116 132,107
+                       C 142,102 153,103 156,109
+                       C 158,114 150,119 146,123
+                       C 142,126 149,129 156,127
+                       C 163,125 169,130 164,137
+                       C 158,144 148,149 144,155
+                       C 141,159 143,164 139,167
+                       C 135,169 133,162 128,162
+                       C 122,162 118,167 121,172
+                       C 124,177 132,179 135,184
+                       C 131,188 123,185 117,179
+                       C 110,173 105,164 96,152 Z"
+                    fill="url(#ss-continent-fill)" stroke="url(#ss-continent-rim)" stroke-width="1.2" stroke-linejoin="round" />
+
+              <!-- Caribbean Islands (Cuba & Hispaniola) -->
+              <path d="M 140,171 C 145,169 151,171 150,174 C 148,176 141,175 140,171 Z"
+                    fill="url(#ss-continent-fill)" />
+
+              <!-- Greenland -->
+              <path d="M 164,99 C 172,96 184,98 186,105 C 187,111 179,118 172,117 C 166,116 160,104 164,99 Z"
+                    fill="url(#ss-continent-fill)" stroke="url(#ss-continent-rim)" stroke-width="1" />
+
+              <!-- South America (Andes curve, Brazil bulge, Patagonia tip) -->
+              <path d="M 135,184
+                       C 142,181 152,182 158,187
+                       C 164,193 175,196 177,204
+                       C 179,212 170,221 164,228
+                       C 159,235 157,244 152,247
+                       C 147,249 144,242 143,234
+                       C 142,224 136,214 132,205
+                       C 129,197 130,188 135,184 Z"
+                    fill="url(#ss-continent-fill)" stroke="url(#ss-continent-rim)" stroke-width="1.2" stroke-linejoin="round" />
+
+              <!-- Europe (Iberia, France, Italy boot, British Isles, Scandinavia) -->
+              <path d="M 197,110
+                       C 205,103 219,103 229,111
+                       C 238,118 246,127 244,136
+                       C 237,139 229,136 223,139
+                       C 219,141 221,147 217,148
+                       C 213,148 212,142 208,141
+                       C 203,140 198,145 193,143
+                       C 188,141 189,133 195,130
+                       C 200,128 205,127 204,122
+                       C 202,118 194,115 197,110 Z"
+                    fill="url(#ss-continent-fill)" stroke="url(#ss-continent-rim)" stroke-width="1.1" stroke-linejoin="round" />
+
+              <!-- British Isles -->
+              <path d="M 188,121 C 191,119 195,122 193,126 C 191,128 186,125 188,121 Z"
+                    fill="url(#ss-continent-fill)" />
+
+              <!-- Africa (West Africa bulge, Gulf of Guinea, Horn of Africa, Southern Cape) -->
+              <path d="M 194,148
+                       C 204,145 216,147 225,152
+                       C 232,156 236,152 242,157
+                       C 250,165 256,178 252,191
+                       C 248,203 238,218 228,226
+                       C 220,231 213,223 211,212
+                       C 209,201 210,191 203,187
+                       C 195,183 185,181 183,171
+                       C 181,161 186,151 194,148 Z"
+                    fill="url(#ss-continent-fill)" stroke="url(#ss-continent-rim)" stroke-width="1.2" stroke-linejoin="round" />
+            </g>
+
+            <!-- Spherical Shading & Ambient Occlusion Overlay -->
+            <circle cx="176" cy="176" r="78" fill="url(#ss-globe-shade)" />
+
+            <!-- Soft Upper-Left Glossy Specular Highlight -->
+            <ellipse cx="144" cy="130" rx="36" ry="22" transform="rotate(-32 144 130)" fill="#FFFFFF" opacity="0.34" filter="url(#ss-gloss-blur)" />
+            <ellipse cx="134" cy="122" rx="16" ry="8.5" transform="rotate(-32 134 122)" fill="#FFFFFF" opacity="0.45" filter="url(#ss-gloss-blur)" />
+
+            <!-- Subtle Bottom-Right Rim Reflection -->
+            <path d="M 128,240 A 74,74 0 0,0 242,205" stroke="#5CE1FF" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.28" />
+          </g>
+        </g>
+
+        <!-- 5C. CURVED GOLDEN-ORANGE MERIDIAN FRAME & AXIS CAPS -->
+        <g id="ss-globe-meridian" filter="url(#ss-obj-shadow)">
+          <!-- North Pole Tilted Axis Finial & Pin -->
+          <path d="M 150,82 L 155,103 L 165,100 L 160,80 Z" fill="url(#ss-gold-base)" />
+          <ellipse cx="155" cy="79" rx="9.5" ry="5.5" transform="rotate(-14 155 79)" fill="url(#ss-gold-arm)" />
+
+          <!-- South Pole Tilted Axis Pin -->
+          <path d="M 192,246 L 196,258 L 205,255 L 201,243 Z" fill="url(#ss-gold-base)" />
+
+          <!-- Semi-Circular Golden Meridian C-Arc Wrapping Left Side of Globe -->
+          <path d="M 157,74
+                   C 103,87 72,141 84,196
+                   C 97,250 151,277 204,259
+                   C 211,256 213,246 208,243
+                   C 204,240 198,243 193,245
+                   C 148,259 108,236 98,192
+                   C 87,146 114,100 160,88
+                   C 166,86 168,79 164,75
+                   C 162,73 159,73 157,74 Z"
+                fill="url(#ss-gold-arm)" />
+
+          <!-- Meridian Frame Specular Bevel Highlight -->
+          <path d="M 157,79 C 109,91 80,141 91,193 C 101,238 142,263 188,253"
+                stroke="url(#ss-gold-highlight)" stroke-width="3.5" stroke-linecap="round" fill="none" />
+        </g>
+      </g>
+
+      <!-- 6. CIRCULAR COMPASS (LOWER-RIGHT FOREGROUND) -->
+      <g id="ss-compass" filter="url(#ss-obj-shadow)">
+        <!-- Deep Golden-Orange 3D Outer Casing Side Depth -->
+        <circle cx="268" cy="222" r="59" fill="#9E3F00" />
+
+        <!-- Golden-Orange Raised Outer Rim -->
+        <circle cx="266" cy="219" r="58" fill="url(#ss-compass-outer)" />
+
+        <!-- Specular Upper-Left Rim Highlight -->
+        <path d="M 220,185 A 55,55 0 0,1 304,180" stroke="#FFF3AA" stroke-width="2.8" stroke-linecap="round" fill="none" opacity="0.85" />
+
+        <!-- Inner Recessed Golden Bevel Ring -->
+        <circle cx="266" cy="219" r="45.5" fill="url(#ss-compass-inner-rim)" />
+
+        <!-- Cream-Coloured Interior Dial Face -->
+        <circle cx="266" cy="219" r="42.5" fill="url(#ss-compass-dial)" />
+
+        <!-- Interior Cast Shadow from Raised Rim (Upper-Left to Lower-Right) -->
+        <path d="M 226,232 A 42.5,42.5 0 0,1 286,181 A 43.5,43.5 0 0,0 226,232 Z" fill="#D5A676" opacity="0.35" />
+
+        <!-- Four Cardinal Tear-Drop / Diamond Markings (N, E, S, W) -->
+        <g id="ss-compass-markers" fill="#DFAD82">
+          <!-- North Marker -->
+          <path d="M 266,181 C 269,185 270,190 266,194 C 262,190 263,185 266,181 Z" />
+          <!-- South Marker -->
+          <path d="M 266,257 C 269,253 270,248 266,244 C 262,248 263,253 266,257 Z" />
+          <!-- West Marker -->
+          <path d="M 228,219 C 232,216 237,215 241,219 C 237,223 232,222 228,219 Z" />
+          <!-- East Marker -->
+          <path d="M 304,219 C 300,216 295,215 291,219 C 295,223 300,222 304,219 Z" />
+        </g>
+
+        <!-- Directional Needle Soft Drop Shadow on Dial -->
+        <path d="M 292,199 L 275,230 L 241,247 L 258,216 Z" fill="#8C5830" opacity="0.26" />
+
+        <!-- Clearly Visible Directional Needle (42° NE / SW Orientation) -->
+        <g id="ss-compass-needle">
+          <!-- North-East RED Needle Half (Light Top-Left Facet) -->
+          <polygon points="291,194 266,219 257,210" fill="url(#ss-needle-red-light)" />
+          <!-- North-East RED Needle Half (Shaded Bottom-Right Facet) -->
+          <polygon points="291,194 275,228 266,219" fill="url(#ss-needle-red-dark)" />
+
+          <!-- South-West BLUE Needle Half (Light Top-Left Facet) -->
+          <polygon points="241,244 266,219 257,210" fill="url(#ss-needle-blue-light)" />
+          <!-- South-West BLUE Needle Half (Shaded Bottom-Right Facet) -->
+          <polygon points="241,244 275,228 266,219" fill="url(#ss-needle-blue-dark)" />
+
+          <!-- Crisp Center Ridge Highlight & Pin -->
+          <line x1="241" y1="244" x2="291" y2="194" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity="0.65" />
+          <circle cx="266" cy="219" r="3.2" fill="#FFE680" stroke="#B54E00" stroke-width="1" />
+        </g>
+      </g>
+
+    </g>
+  </defs>
+
+  <!-- ========================================================================= -->
+  <!-- COMPACT COMPOSITION WITH BOTTOM SUBJECT NAMEPLATE                         -->
+  <!-- ========================================================================= -->
+  <g id="social-science-illustration">
+    <!-- Soft Rounded-Square White/Lavender Supporting Backdrop -->
+    <rect id="card-backdrop" x="25" y="12" width="370" height="374" rx="76" ry="76"
+          fill="url(#ss-card-bg)" stroke="url(#ss-card-rim)" stroke-width="3.5" filter="url(#ss-card-shadow)" />
+
+    <!-- 3D Illustration Group (Centered above Nameplate) -->
+    <use xlink:href="#ss-illustration-cluster" x="6" y="-2" />
+
+    <!-- Subject Nameplate Group (Positioned at the Bottom Beneath the Illustration) -->
+    <g id="subject-nameplate" transform="translate(50, 294)">
+      <!-- Glossy Magenta Pill Background -->
+      <rect id="nameplate-pill" x="0" y="0" width="320" height="66" rx="33" ry="33"
+            fill="url(#ss-pill-grad)" stroke="#8E0240" stroke-width="1.2" filter="url(#ss-pill-shadow)" />
+
+      <!-- Slight Upper Highlight -->
+      <rect id="nameplate-highlight" x="14" y="4" width="292" height="28" rx="14" ry="14"
+            fill="url(#ss-pill-gloss)" />
+
+      <!-- Editable Subject Label -->
+      <text id="subject-label" class="subject-label-text" x="160" y="34" font-size="36" filter="url(#ss-text-shadow)">Social Science</text>
+    </g>
+  </g>
+</svg>

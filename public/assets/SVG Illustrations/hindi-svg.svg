@@ -1,0 +1,771 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1"
+     id="subject-hindi-svg"
+     width="240"
+     height="100">
+  <title>Hindi Subject Illustration (हिंदी)</title>
+  <desc>Premium glossy 3D educational illustration for Hindi featuring an open textbook with the Devanagari letter अ, a golden feather quill inserted into a deep-purple inkpot, three magenta decorative rays, a soft rounded-square backdrop, and an editable हिंदी nameplate pill placed at the bottom of the illustration.</desc>
+
+  <!-- ===================================================================== -->
+  <!-- RESPONSIVE CSS MEDIA QUERIES (COMPACT: <=180px | WIDE: >=181px)       -->
+  <!-- Works inside external HTML <img> elements across 122x100 to 327x100   -->
+  <!-- ===================================================================== -->
+  <style type="text/css">
+    <![CDATA[
+      svg:root {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .responsive-viewport {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      /* Default to Wide layout for >180px viewports */
+      #viewport-compact {
+        display: none;
+      }
+      #viewport-wide {
+        display: block;
+      }
+
+      /* Compact layout (122px - 180px) */
+      @media (max-width: 180px) {
+        #viewport-compact {
+          display: block;
+        }
+        #viewport-wide {
+          display: none;
+        }
+      }
+
+      /* Wide layout (181px - 327px) */
+      @media (min-width: 181px) {
+        #viewport-compact {
+          display: none;
+        }
+        #viewport-wide {
+          display: block;
+        }
+      }
+    ]]>
+  </style>
+
+  <!-- ===================================================================== -->
+  <!-- DEFINITIONS: GRADIENTS, FILTERS & REUSABLE SCENE GROUPS               -->
+  <!-- ===================================================================== -->
+  <defs>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- 1. FILTERS (Pure SVG 1.1 primitives, unclipped bounds)              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Soft ambient drop shadow for the rounded-square backdrop -->
+    <filter id="filter-backdrop-shadow" x="-25%" y="-20%" width="150%" height="155%" filterUnits="objectBoundingBox">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.4" result="blur" />
+      <feOffset in="blur" dx="0" dy="2.2" result="offsetBlur" />
+      <feComponentTransfer in="offsetBlur" result="shadow">
+        <feFuncA type="linear" slope="0.09" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Soft drop shadow for the decorative magenta rays -->
+    <filter id="filter-ray-shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0.9" result="blur" />
+      <feOffset in="blur" dx="0.4" dy="1.1" result="offsetBlur" />
+      <feComponentTransfer in="offsetBlur" result="shadow">
+        <feFuncA type="linear" slope="0.22" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Contact blur for book and inkpot ambient occlusion shadows -->
+    <filter id="filter-contact-blur" x="-35%" y="-45%" width="170%" height="190%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.1" />
+    </filter>
+
+    <filter id="filter-tight-ao" x="-30%" y="-40%" width="160%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.0" />
+    </filter>
+
+    <!-- Soft shadow cast by the feather quill onto the right page -->
+    <filter id="filter-quill-shadow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" />
+    </filter>
+
+    <!-- Soft blur for the inkpot glossy shoulder reflection -->
+    <filter id="filter-inkpot-gloss" x="-20%" y="-30%" width="140%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.55" />
+    </filter>
+
+    <!-- Nameplate pill drop shadow -->
+    <filter id="filter-pill-shadow" x="-25%" y="-30%" width="150%" height="175%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" />
+    </filter>
+
+    <!-- Subtle dimensional shadow for nameplate text -->
+    <filter id="filter-label-text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0.45" result="blur" />
+      <feOffset in="blur" dx="0" dy="0.65" result="offsetBlur" />
+      <feComponentTransfer in="offsetBlur" result="shadow">
+        <feFuncA type="linear" slope="0.32" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- 2. GRADIENTS                                                        -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Rounded-Square Backdrop Gradients -->
+    <linearGradient id="grad-backdrop-outer-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="55%" stop-color="#F7F2FA" />
+      <stop offset="100%" stop-color="#E5DCEF" />
+    </linearGradient>
+
+    <radialGradient id="grad-backdrop-surface" cx="35%" cy="25%" r="78%" fx="30%" fy="20%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="48%" stop-color="#FDFBFE" />
+      <stop offset="82%" stop-color="#F6EFFA" />
+      <stop offset="100%" stop-color="#EFE6F6" />
+    </radialGradient>
+
+    <linearGradient id="grad-backdrop-inner-bevel" x1="0%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#DECFF0" stop-opacity="0.55" />
+    </linearGradient>
+
+    <!-- Decorative Magenta Rays Gradients -->
+    <linearGradient id="grad-ray-body" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FF4797" />
+      <stop offset="45%" stop-color="#E5156B" />
+      <stop offset="100%" stop-color="#B5094E" />
+    </linearGradient>
+
+    <linearGradient id="grad-ray-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B80B52" />
+      <stop offset="100%" stop-color="#87043A" />
+    </linearGradient>
+
+    <!-- Book Outer Cover Gradients -->
+    <linearGradient id="grad-cover-binding" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8A053B" />
+      <stop offset="12%" stop-color="#B80C50" />
+      <stop offset="44%" stop-color="#9E0743" />
+      <stop offset="50%" stop-color="#730330" />
+      <stop offset="56%" stop-color="#9E0743" />
+      <stop offset="88%" stop-color="#B80C50" />
+      <stop offset="100%" stop-color="#850539" />
+    </linearGradient>
+
+    <linearGradient id="grad-cover-face" x1="0%" y1="0%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#FF4292" />
+      <stop offset="25%" stop-color="#E8196C" />
+      <stop offset="75%" stop-color="#CF105C" />
+      <stop offset="100%" stop-color="#AD084A" />
+    </linearGradient>
+
+    <linearGradient id="grad-cover-rim-gloss" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF94C2" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#FF599E" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#C90D58" stop-opacity="0.1" />
+    </linearGradient>
+
+    <linearGradient id="grad-spine-hollow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#591522" />
+      <stop offset="100%" stop-color="#8C2D38" />
+    </linearGradient>
+
+    <!-- Stacked Page Edges & Curved Pages Gradients -->
+    <linearGradient id="grad-page-stack-lower" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FCEAD7" />
+      <stop offset="8%" stop-color="#ECC29F" />
+      <stop offset="38%" stop-color="#E2B189" />
+      <stop offset="50%" stop-color="#C48960" />
+      <stop offset="62%" stop-color="#DFAF87" />
+      <stop offset="92%" stop-color="#ECC29F" />
+      <stop offset="100%" stop-color="#FCEAD7" />
+    </linearGradient>
+
+    <linearGradient id="grad-page-stack-mid" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFF4E6" />
+      <stop offset="10%" stop-color="#F2CEAF" />
+      <stop offset="42%" stop-color="#E8BE9A" />
+      <stop offset="50%" stop-color="#CF9972" />
+      <stop offset="58%" stop-color="#E8BE9A" />
+      <stop offset="90%" stop-color="#F2CEAF" />
+      <stop offset="100%" stop-color="#FFF4E6" />
+    </linearGradient>
+
+    <linearGradient id="grad-page-left-surface" x1="12%" y1="18%" x2="98%" y2="85%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="52%" stop-color="#FFF6EA" />
+      <stop offset="84%" stop-color="#F6D8BC" />
+      <stop offset="100%" stop-color="#E3B38D" />
+    </linearGradient>
+
+    <linearGradient id="grad-page-right-surface" x1="88%" y1="18%" x2="2%" y2="85%">
+      <stop offset="0%" stop-color="#FFFDF8" />
+      <stop offset="48%" stop-color="#FDF1E2" />
+      <stop offset="82%" stop-color="#F2CFAF" />
+      <stop offset="100%" stop-color="#DFB08A" />
+    </linearGradient>
+
+    <linearGradient id="grad-page-raised-lip" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="35%" stop-color="#F5D3B3" />
+      <stop offset="50%" stop-color="#D9A37B" />
+      <stop offset="65%" stop-color="#F5D3B3" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <linearGradient id="grad-spine-crease" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D5B8" stop-opacity="0" />
+      <stop offset="35%" stop-color="#DEAD86" stop-opacity="0.55" />
+      <stop offset="50%" stop-color="#C78C63" stop-opacity="0.82" />
+      <stop offset="65%" stop-color="#DEAD86" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#F4D5B8" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Devanagari Character 'अ' 3D Gradients (userSpaceOnUse prevents zero-width bbox issues) -->
+    <linearGradient id="grad-letter-a-extrusion" gradientUnits="userSpaceOnUse" x1="32" y1="33" x2="50" y2="49">
+      <stop offset="0%" stop-color="#990943" />
+      <stop offset="50%" stop-color="#7D0536" />
+      <stop offset="100%" stop-color="#5E0227" />
+    </linearGradient>
+
+    <linearGradient id="grad-letter-a-face" gradientUnits="userSpaceOnUse" x1="33" y1="33" x2="49" y2="48">
+      <stop offset="0%" stop-color="#F22277" />
+      <stop offset="45%" stop-color="#D1115E" />
+      <stop offset="100%" stop-color="#9E0744" />
+    </linearGradient>
+
+    <linearGradient id="grad-letter-a-gloss" gradientUnits="userSpaceOnUse" x1="33" y1="33" x2="48" y2="46">
+      <stop offset="0%" stop-color="#FF94C2" stop-opacity="0.8" />
+      <stop offset="55%" stop-color="#FF5C9E" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#D1115E" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Golden Feather Quill Gradients -->
+    <linearGradient id="grad-quill-left-vane" x1="15%" y1="5%" x2="80%" y2="90%">
+      <stop offset="0%" stop-color="#FFF587" />
+      <stop offset="28%" stop-color="#FFDF38" />
+      <stop offset="68%" stop-color="#FFBA08" />
+      <stop offset="100%" stop-color="#F08700" />
+    </linearGradient>
+
+    <linearGradient id="grad-quill-right-vane" x1="25%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFEA61" />
+      <stop offset="35%" stop-color="#FFC719" />
+      <stop offset="72%" stop-color="#FA9800" />
+      <stop offset="100%" stop-color="#D96500" />
+    </linearGradient>
+
+    <linearGradient id="grad-quill-depth" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E67E00" />
+      <stop offset="100%" stop-color="#B84A00" />
+    </linearGradient>
+
+    <linearGradient id="grad-quill-shaft" x1="80%" y1="0%" x2="20%" y2="100%">
+      <stop offset="0%" stop-color="#FFF078" />
+      <stop offset="32%" stop-color="#FFBE14" />
+      <stop offset="68%" stop-color="#EB7300" />
+      <stop offset="100%" stop-color="#BD4900" />
+    </linearGradient>
+
+    <!-- Deep-Purple 3D Inkpot Gradients -->
+    <radialGradient id="grad-inkpot-body" cx="38%" cy="28%" r="72%" fx="34%" fy="24%">
+      <stop offset="0%" stop-color="#7B52C7" />
+      <stop offset="36%" stop-color="#5830A3" />
+      <stop offset="72%" stop-color="#3C197A" />
+      <stop offset="100%" stop-color="#220A4B" />
+    </radialGradient>
+
+    <linearGradient id="grad-inkpot-shoulder-sheen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8A63D8" stop-opacity="0" />
+      <stop offset="22%" stop-color="#B497F7" stop-opacity="0.65" />
+      <stop offset="45%" stop-color="#D2BFFA" stop-opacity="0.78" />
+      <stop offset="75%" stop-color="#9A73E6" stop-opacity="0.48" />
+      <stop offset="100%" stop-color="#6B42B8" stop-opacity="0" />
+    </linearGradient>
+
+    <linearGradient id="grad-inkpot-collar" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#936BE0" />
+      <stop offset="42%" stop-color="#683EB8" />
+      <stop offset="80%" stop-color="#442087" />
+      <stop offset="100%" stop-color="#2B105E" />
+    </linearGradient>
+
+    <linearGradient id="grad-inkpot-opening" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#170533" />
+      <stop offset="100%" stop-color="#311463" />
+    </linearGradient>
+
+    <!-- Subject Nameplate Pill Gradients -->
+    <linearGradient id="grad-pill-base" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C90D58" />
+      <stop offset="100%" stop-color="#8F053D" />
+    </linearGradient>
+
+    <linearGradient id="grad-pill-body" x1="30%" y1="0%" x2="70%" y2="100%">
+      <stop offset="0%" stop-color="#FF3D8E" />
+      <stop offset="48%" stop-color="#E01566" />
+      <stop offset="100%" stop-color="#B8094F" />
+    </linearGradient>
+
+    <linearGradient id="grad-pill-gloss" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF9EC7" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#FF4794" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- 3. EDITABLE SUBJECT NAMEPLATE GROUP (HINDI / ENGLISH COMPATIBLE)    -->
+    <!-- To switch to English-medium in the future, replace "हिंदी" with     -->
+    <!-- "Hindi" inside #nameplate-label-text below. Pill dimensions         -->
+    <!-- (#nameplate-pill-background, #nameplate-pill-base) are independent. -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <g id="subject-nameplate">
+      <!-- Soft contact shadow beneath the pill -->
+      <rect id="nameplate-pill-shadow"
+            x="24" y="70.6" width="52" height="15.2" rx="7.6" ry="7.6"
+            fill="#5C062B" opacity="0.28" filter="url(#filter-pill-shadow)" />
+
+      <!-- Deeper magenta lower 3D rim/shading -->
+      <rect id="nameplate-pill-base"
+            x="24" y="69.4" width="52" height="15.4" rx="7.7" ry="7.7"
+            fill="url(#grad-pill-base)" />
+
+      <!-- Main glossy Horizon magenta pill body -->
+      <rect id="nameplate-pill-background"
+            x="24" y="68.4" width="52" height="15.0" rx="7.5" ry="7.5"
+            fill="url(#grad-pill-body)" />
+
+      <!-- Subtle upper specular highlight -->
+      <rect id="nameplate-pill-highlight"
+            x="26.8" y="69.1" width="46.4" height="6.2" rx="3.1" ry="3.1"
+            fill="url(#grad-pill-gloss)" />
+
+      <!-- Editable SVG <text> label using required Devanagari font stack -->
+      <text id="nameplate-label-text"
+            x="50" y="79.2"
+            text-anchor="middle"
+            font-family="&quot;Noto Sans Devanagari&quot;, &quot;Nirmala UI&quot;, sans-serif"
+            font-size="9.6"
+            font-weight="700"
+            fill="#FFFFFF"
+            filter="url(#filter-label-text-shadow)">हिंदी</text>
+    </g>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- 4. SOFT ROUNDED-SQUARE SUPPORTING BACKDROP                          -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <g id="backdrop-rounded-square">
+      <!-- Outer 3D rim with soft drop shadow -->
+      <rect id="backdrop-outer-body"
+            x="6" y="5" width="88" height="88" rx="20" ry="20"
+            fill="url(#grad-backdrop-outer-rim)"
+            filter="url(#filter-backdrop-shadow)" />
+
+      <!-- Main white/lavender shaded surface -->
+      <rect id="backdrop-main-surface"
+            x="6.8" y="5.8" width="86.4" height="86.4" rx="19.2" ry="19.2"
+            fill="url(#grad-backdrop-surface)" />
+
+      <!-- Subtle top-left specular rim highlight -->
+      <rect id="backdrop-inner-highlight"
+            x="7.4" y="6.4" width="85.2" height="85.2" rx="18.6" ry="18.6"
+            fill="none"
+            stroke="url(#grad-backdrop-inner-bevel)"
+            stroke-width="0.9" />
+    </g>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- 5. MAIN 3D ILLUSTRATION SCENE (RAYS, BOOK, 'अ', QUILL, INKPOT)      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <g id="hindi-main-illustration">
+
+      <!-- ================================================================= -->
+      <!-- A. THREE DISTINCTIVE MAGENTA DECORATIVE RAYS (UPPER-LEFT)         -->
+      <!-- ================================================================= -->
+      <g id="decorative-rays" filter="url(#filter-ray-shadow)">
+        <!-- Ray 1: Lower-left ray -->
+        <g id="decorative-ray-left">
+          <path d="M 28.9 26.9 C 26.0 25.9, 22.1 24.3, 20.1 23.0 C 18.8 22.2, 19.0 20.3, 20.5 19.8 C 21.5 19.5, 22.5 20.0, 24.1 21.1 C 26.4 22.6, 28.5 24.1, 29.8 25.1 C 30.6 25.7, 30.0 27.2, 28.9 26.9 Z"
+                transform="translate(0.2, 0.55)"
+                fill="url(#grad-ray-rim)" />
+          <path d="M 28.9 26.9 C 26.0 25.9, 22.1 24.3, 20.1 23.0 C 18.8 22.2, 19.0 20.3, 20.5 19.8 C 21.5 19.5, 22.5 20.0, 24.1 21.1 C 26.4 22.6, 28.5 24.1, 29.8 25.1 C 30.6 25.7, 30.0 27.2, 28.9 26.9 Z"
+                fill="url(#grad-ray-body)" />
+          <path d="M 20.8 20.6 C 22.6 21.2, 26.2 23.4, 28.9 25.2"
+                fill="none" stroke="#FF9EC7" stroke-width="0.65" stroke-linecap="round" opacity="0.8" />
+        </g>
+
+        <!-- Ray 2: Middle diagonal ray -->
+        <g id="decorative-ray-middle">
+          <path d="M 32.9 22.7 C 30.9 20.4, 28.3 17.2, 27.0 15.3 C 26.1 13.9, 27.0 12.2, 28.5 12.2 C 29.6 12.2, 30.5 13.0, 31.5 14.7 C 32.8 16.9, 34.0 19.4, 34.7 21.2 C 35.2 22.5, 33.8 23.6, 32.9 22.7 Z"
+                transform="translate(0.25, 0.55)"
+                fill="url(#grad-ray-rim)" />
+          <path d="M 32.9 22.7 C 30.9 20.4, 28.3 17.2, 27.0 15.3 C 26.1 13.9, 27.0 12.2, 28.5 12.2 C 29.6 12.2, 30.5 13.0, 31.5 14.7 C 32.8 16.9, 34.0 19.4, 34.7 21.2 C 35.2 22.5, 33.8 23.6, 32.9 22.7 Z"
+                fill="url(#grad-ray-body)" />
+          <path d="M 28.3 13.2 C 29.5 14.4, 32.0 18.0, 33.6 20.9"
+                fill="none" stroke="#FF9EC7" stroke-width="0.65" stroke-linecap="round" opacity="0.8" />
+        </g>
+
+        <!-- Ray 3: Upper-right nearly vertical ray -->
+        <g id="decorative-ray-right">
+          <path d="M 38.2 20.1 C 37.7 17.4, 37.0 13.8, 36.8 11.7 C 36.6 10.1, 37.9 9.0, 39.5 9.3 C 40.7 9.5, 41.3 10.6, 41.2 12.3 C 41.1 14.7, 40.6 17.7, 40.2 19.8 C 40.0 21.0, 38.5 21.2, 38.2 20.1 Z"
+                transform="translate(0.25, 0.55)"
+                fill="url(#grad-ray-rim)" />
+          <path d="M 38.2 20.1 C 37.7 17.4, 37.0 13.8, 36.8 11.7 C 36.6 10.1, 37.9 9.0, 39.5 9.3 C 40.7 9.5, 41.3 10.6, 41.2 12.3 C 41.1 14.7, 40.6 17.7, 40.2 19.8 C 40.0 21.0, 38.5 21.2, 38.2 20.1 Z"
+                fill="url(#grad-ray-body)" />
+          <path d="M 38.8 10.3 C 39.1 12.2, 39.4 16.0, 39.3 19.0"
+                fill="none" stroke="#FF9EC7" stroke-width="0.65" stroke-linecap="round" opacity="0.8" />
+        </g>
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- B. REALISTIC CONTACT SHADOWS & AMBIENT OCCLUSION                  -->
+      <!-- ================================================================= -->
+      <g id="contact-shadows">
+        <!-- Broad soft shadow beneath the open book and inkpot -->
+        <path d="M 20.5 60.5 L 81.5 60.5 C 83.5 60.5, 84.0 63.8, 80.5 64.2 L 57.5 64.2 C 55.5 65.8, 47.0 65.8, 45.0 64.2 L 21.5 64.2 C 18.5 63.8, 18.5 60.5, 20.5 60.5 Z"
+              fill="#420928" opacity="0.22" filter="url(#filter-contact-blur)" />
+
+        <!-- Tight ambient occlusion crease directly under book cover -->
+        <path d="M 21.0 61.2 L 81.0 61.2 C 82.0 61.2, 82.0 62.8, 80.0 63.0 L 57.0 63.0 C 55.2 64.9, 47.2 64.9, 45.5 63.0 L 22.0 63.0 C 20.2 62.8, 20.0 61.2, 21.0 61.2 Z"
+              fill="#380520" opacity="0.32" filter="url(#filter-tight-ao)" />
+
+        <!-- Soft purple-tinted contact shadow underneath the inkpot -->
+        <ellipse cx="65.6" cy="64.8" rx="9.6" ry="2.2"
+                 fill="#1E073D" opacity="0.38" filter="url(#filter-tight-ao)" />
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- C. OPEN HINDI TEXTBOOK                                            -->
+      <!-- ================================================================= -->
+      <g id="open-hindi-textbook">
+
+        <!-- 1. Thick Magenta/Pink Outer Cover & Darker Lower Binding -->
+        <g id="book-outer-cover">
+          <!-- Darker magenta lower binding / 3D thickness ledge -->
+          <path id="book-lower-binding"
+                d="M 19.3 57.8 L 83.1 57.8 L 83.1 59.8 C 83.1 61.5, 81.8 62.5, 79.8 62.5 L 57.6 62.5 C 56.1 62.5, 55.4 64.6, 53.2 64.8 L 49.2 64.8 C 47.0 64.6, 46.3 62.5, 44.8 62.5 L 22.6 62.5 C 20.6 62.5, 19.3 61.5, 19.3 59.8 Z"
+                fill="url(#grad-cover-binding)" />
+
+          <!-- Upper magenta cover face in perspective -->
+          <path id="book-cover-upper"
+                d="M 24.8 33.4 L 77.6 33.4 C 79.4 33.4, 80.5 34.5, 80.7 36.2 L 83.1 57.6 C 83.3 59.3, 82.0 60.4, 80.1 60.4 L 57.4 60.4 C 56.0 60.4, 55.2 62.5, 53.1 62.7 L 49.3 62.7 C 47.2 62.5, 46.4 60.4, 45.0 60.4 L 22.3 60.4 C 20.4 60.4, 19.1 59.3, 19.3 57.6 L 21.7 36.2 C 21.9 34.5, 23.0 33.4, 24.8 33.4 Z"
+                fill="url(#grad-cover-face)" />
+
+          <!-- Glossy pink top/side bevel highlight on the outer cover -->
+          <path id="book-cover-highlight"
+                d="M 20.0 58.6 L 22.3 36.3 C 22.5 34.8, 23.4 34.0, 25.0 34.0 L 77.4 34.0 C 79.0 34.0, 79.9 34.8, 80.1 36.3 L 82.4 58.6"
+                fill="none" stroke="url(#grad-cover-rim-gloss)" stroke-width="0.85" stroke-linecap="round" />
+
+          <!-- Lower binding highlight ridge -->
+          <path d="M 21.2 60.4 L 45.2 60.4 C 46.6 60.4, 47.4 62.5, 49.4 62.6 L 53.0 62.6 C 55.0 62.5, 55.8 60.4, 57.2 60.4 L 81.2 60.4"
+                fill="none" stroke="#FF6BA8" stroke-width="0.45" opacity="0.6" />
+
+          <!-- Central spine hollow arch under pages -->
+          <path id="book-spine-arch"
+                d="M 47.6 60.4 C 48.8 58.6, 53.6 58.6, 54.8 60.4 C 54.2 61.9, 53.4 62.4, 51.2 62.4 C 49.0 62.4, 48.2 61.9, 47.6 60.4 Z"
+                fill="url(#grad-spine-hollow)" />
+        </g>
+
+        <!-- 2. Raised Page Edges / Dimensional Stacked Pages -->
+        <g id="book-page-edges">
+          <!-- Bottom page block tier -->
+          <path id="page-block-lower"
+                d="M 25.4 31.4 L 77.0 31.4 L 79.5 56.6 C 79.6 57.9, 78.7 58.7, 77.3 58.6 C 70.0 58.1, 58.8 56.5, 53.0 60.1 C 51.9 60.7, 50.5 60.7, 49.4 60.1 C 43.6 56.5, 32.4 58.1, 25.1 58.6 C 23.7 58.7, 22.8 57.9, 22.9 56.6 Z"
+                fill="url(#grad-page-stack-lower)" />
+
+          <!-- Subtle shadow crease along bottom page block -->
+          <path d="M 23.6 57.8 C 31.6 57.2, 43.4 55.6, 49.5 59.5 C 50.6 60.1, 51.8 60.1, 52.9 59.5 C 59.0 55.6, 70.8 57.2, 78.8 57.8"
+                fill="none" stroke="#BA7D54" stroke-width="0.55" opacity="0.7" />
+
+          <!-- Middle stepped page tier -->
+          <path id="page-block-middle"
+                d="M 26.6 30.2 L 75.8 30.2 L 77.9 54.6 C 78.0 55.8, 77.2 56.5, 75.9 56.4 C 68.8 55.5, 58.2 54.2, 52.4 58.8 C 51.6 59.4, 50.8 59.4, 50.0 58.8 C 44.2 54.2, 33.6 55.5, 26.5 56.4 C 25.2 56.5, 24.4 55.8, 24.5 54.6 Z"
+                fill="url(#grad-page-stack-mid)" />
+
+          <!-- Fine page layer striations on the lower page stack -->
+          <path d="M 25.2 55.6 C 33.2 54.6, 44.0 53.3, 50.2 58.1 C 50.9 58.6, 51.5 58.6, 52.2 58.1 C 58.4 53.3, 69.2 54.6, 77.2 55.6"
+                fill="none" stroke="#C98F67" stroke-width="0.45" opacity="0.75" />
+
+          <!-- Top page raised 3D thickness lip -->
+          <path id="page-top-raised-lip"
+                d="M 27.6 29.0 L 74.8 29.0 L 76.5 52.6 C 76.6 53.8, 75.8 54.5, 74.5 54.3 C 67.6 53.0, 57.6 52.0, 51.9 57.5 C 51.4 58.0, 51.0 58.0, 50.5 57.5 C 44.8 52.0, 34.8 53.0, 27.9 54.3 C 26.6 54.5, 25.8 53.8, 25.9 52.6 Z"
+                fill="url(#grad-page-raised-lip)" />
+        </g>
+
+        <!-- 3. Two Curved Cream-Coloured Open Pages & Central Spine -->
+        <g id="book-curved-pages">
+          <!-- Left curved cream page -->
+          <path id="book-page-left"
+                d="M 29.5 27.6 C 35.8 25.4, 45.6 25.8, 51.2 31.2 L 51.2 57.2 C 45.8 51.2, 35.6 51.6, 28.1 53.1 C 26.8 53.3, 26.0 52.6, 26.1 51.3 L 27.5 29.6 C 27.6 28.4, 28.4 27.9, 29.5 27.6 Z"
+                fill="url(#grad-page-left-surface)" />
+
+          <!-- Right curved cream page -->
+          <path id="book-page-right"
+                d="M 72.9 27.6 C 66.6 25.4, 56.8 25.8, 51.2 31.2 L 51.2 57.2 C 56.6 51.2, 66.8 51.6, 74.3 53.1 C 75.6 53.3, 76.4 52.6, 76.3 51.3 L 74.9 29.6 C 74.8 28.4, 74.0 27.9, 72.9 27.6 Z"
+                fill="url(#grad-page-right-surface)" />
+
+          <!-- Raised bright cream bottom highlight along top pages -->
+          <path d="M 26.5 52.3 C 34.5 50.8, 45.2 50.5, 51.2 56.8 C 57.2 50.5, 67.9 50.8, 75.9 52.3"
+                fill="none" stroke="#FFFDF9" stroke-width="0.65" stroke-linecap="round" opacity="0.9" />
+
+          <!-- Subtle ruled page lines on left and right pages -->
+          <g id="book-page-lines" fill="none" stroke="#F0D8C0" stroke-width="0.7" stroke-linecap="round" opacity="0.75">
+            <!-- Left page lower line below 'अ' -->
+            <path d="M 30.2 48.6 C 36.2 47.4, 43.8 48.2, 48.5 51.4" />
+            <!-- Right page curved lines -->
+            <path d="M 54.4 35.6 C 59.8 32.4, 66.8 32.0, 71.8 33.4" />
+            <path d="M 54.4 40.4 C 60.0 37.2, 67.0 36.8, 72.2 38.2" />
+            <path d="M 54.4 45.2 C 60.2 42.0, 67.2 41.6, 72.6 43.0" />
+            <path d="M 54.4 50.0 C 59.0 47.3, 64.5 46.8, 69.2 47.6" />
+          </g>
+
+          <!-- Visible central spine vertical shading & crease -->
+          <path id="book-central-spine"
+                d="M 48.6 29.4 C 49.6 30.2, 50.5 30.8, 51.2 31.2 C 51.9 30.8, 52.8 30.2, 53.8 29.4 L 53.8 55.2 C 52.8 55.8, 51.9 56.5, 51.2 57.2 C 50.5 56.5, 49.6 55.8, 48.6 55.2 Z"
+                fill="url(#grad-spine-crease)" />
+          <line x1="51.2" y1="31.1" x2="51.2" y2="57.2"
+                stroke="#C48962" stroke-width="0.45" opacity="0.65" />
+        </g>
+
+        <!-- =============================================================== -->
+        <!-- D. PROMINENT 3D DEVANAGARI CHARACTER 'अ' ON LEFT PAGE           -->
+        <!-- Complete 3D geometry: double-bowl '3', madhya-rekha crossbar,   -->
+        <!-- full vertical stem (khadi pai), and top bar (shirorekha)        -->
+        <!-- =============================================================== -->
+        <g id="devanagari-letter-a">
+          <!-- 1. Soft warm contact shadow on the cream page -->
+          <g id="letter-a-page-shadow" transform="translate(0.55, 1.05)" opacity="0.30" fill="#B87352" stroke="#B87352" stroke-linejoin="round" stroke-linecap="round">
+            <!-- Left '3' double-bowl curve -->
+            <path d="M 34.8 35.2 C 36.3 33.4, 40.3 33.3, 41.5 35.6 C 42.3 37.2, 40.9 38.9, 38.8 39.4 C 41.6 39.8, 43.1 41.8, 42.5 44.3 C 41.8 46.8, 38.0 47.2, 35.3 45.2 C 33.9 44.1, 33.1 42.6, 32.7 41.4"
+                  fill="none" stroke-width="2.85" />
+            <!-- Horizontal connecting crossbar (madhya-rekha) -->
+            <path d="M 39.3 40.2 C 41.5 40.6, 44.0 40.9, 46.2 41.1"
+                  fill="none" stroke-width="2.55" />
+            <!-- Complete vertical stem (khadi pai) as closed rounded pill -->
+            <rect x="44.8" y="34.2" width="2.75" height="14.5" rx="1.2" ry="1.2"
+                  transform="rotate(2, 46.2, 41.4)" stroke="none" />
+            <!-- Top horizontal bar (shirorekha) -->
+            <path d="M 43.1 34.4 L 48.9 35.5"
+                  fill="none" stroke-width="2.55" />
+          </g>
+
+          <!-- 2. Deep burgundy-magenta 3D extrusion layer -->
+          <g id="letter-a-3d-extrusion" transform="translate(0.55, 0.65)">
+            <path d="M 34.8 35.2 C 36.3 33.4, 40.3 33.3, 41.5 35.6 C 42.3 37.2, 40.9 38.9, 38.8 39.4 C 41.6 39.8, 43.1 41.8, 42.5 44.3 C 41.8 46.8, 38.0 47.2, 35.3 45.2 C 33.9 44.1, 33.1 42.6, 32.7 41.4"
+                  fill="none" stroke="url(#grad-letter-a-extrusion)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M 39.3 40.2 C 41.5 40.6, 44.0 40.9, 46.2 41.1"
+                  fill="none" stroke="url(#grad-letter-a-extrusion)" stroke-width="2.5" stroke-linecap="round" />
+            <rect x="44.8" y="34.2" width="2.75" height="14.5" rx="1.2" ry="1.2"
+                  transform="rotate(2, 46.2, 41.4)" fill="url(#grad-letter-a-extrusion)" />
+            <path d="M 43.1 34.4 L 48.9 35.5"
+                  fill="none" stroke="url(#grad-letter-a-extrusion)" stroke-width="2.5" stroke-linecap="round" />
+          </g>
+
+          <!-- 3. Main raised deep-magenta front surface -->
+          <g id="letter-a-front-face">
+            <!-- Left '3' double-bowl curve -->
+            <path d="M 34.8 35.2 C 36.3 33.4, 40.3 33.3, 41.5 35.6 C 42.3 37.2, 40.9 38.9, 38.8 39.4 C 41.6 39.8, 43.1 41.8, 42.5 44.3 C 41.8 46.8, 38.0 47.2, 35.3 45.2 C 33.9 44.1, 33.1 42.6, 32.7 41.4"
+                  fill="none" stroke="url(#grad-letter-a-face)" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Horizontal connecting crossbar (madhya-rekha) -->
+            <path d="M 39.3 40.2 C 41.5 40.6, 44.0 40.9, 46.2 41.1"
+                  fill="none" stroke="url(#grad-letter-a-face)" stroke-width="2.45" stroke-linecap="round" />
+            <!-- Complete right vertical stem (khadi pai) -->
+            <rect x="44.85" y="34.2" width="2.65" height="14.4" rx="1.15" ry="1.15"
+                  transform="rotate(2, 46.2, 41.4)" fill="url(#grad-letter-a-face)" />
+            <!-- Top horizontal bar (shirorekha) -->
+            <path d="M 43.1 34.4 L 48.9 35.5"
+                  fill="none" stroke="url(#grad-letter-a-face)" stroke-width="2.45" stroke-linecap="round" />
+          </g>
+
+          <!-- 4. Smooth specular top-left bevel highlight on 'अ' -->
+          <g id="letter-a-specular-gloss" transform="translate(-0.2, -0.25)">
+            <path d="M 34.9 35.0 C 36.4 33.4, 40.1 33.4, 41.2 35.3"
+                  fill="none" stroke="url(#grad-letter-a-gloss)" stroke-width="0.8" stroke-linecap="round" />
+            <path d="M 39.1 39.4 C 41.3 39.7, 42.6 41.3, 42.3 43.6"
+                  fill="none" stroke="url(#grad-letter-a-gloss)" stroke-width="0.75" stroke-linecap="round" />
+            <path d="M 43.3 34.2 L 48.6 35.2"
+                  fill="none" stroke="url(#grad-letter-a-gloss)" stroke-width="0.75" stroke-linecap="round" />
+            <path d="M 45.7 35.5 L 45.4 47.2"
+                  fill="none" stroke="url(#grad-letter-a-gloss)" stroke-width="0.65" stroke-linecap="round" />
+          </g>
+        </g>
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- E. DEEP-PURPLE INKPOT (BODY & COLLAR BACK RIM)                    -->
+      <!-- Drawn so the feather quill shaft inserts naturally into the rim   -->
+      <!-- ================================================================= -->
+      <g id="purple-inkpot">
+        <!-- 1. Rounded squat inkpot body with natural darker lower shading -->
+        <path id="inkpot-rounded-body"
+              d="M 60.4 52.6 C 58.3 53.9, 57.2 55.8, 57.2 58.3 C 57.2 61.6, 58.1 64.5, 60.4 64.9 L 70.8 64.9 C 73.1 64.5, 74.0 61.6, 74.0 58.3 C 74.0 55.8, 72.9 53.9, 70.8 52.6 Z"
+              fill="url(#grad-inkpot-body)" />
+
+        <!-- Natural darker lower shading along base -->
+        <path id="inkpot-lower-shading"
+              d="M 57.4 60.2 C 57.8 63.0, 58.7 64.6, 60.5 64.9 L 70.7 64.9 C 72.5 64.6, 73.4 63.0, 73.8 60.2 C 71.2 62.3, 60.0 62.3, 57.4 60.2 Z"
+              fill="#19063B" opacity="0.58" />
+
+        <!-- Glossy lavender-purple horizontal shoulder reflection band -->
+        <path id="inkpot-shoulder-gloss"
+              d="M 58.1 56.2 C 60.5 55.3, 70.7 55.3, 73.1 56.2 C 73.4 57.1, 73.4 57.8, 73.1 58.3 C 70.5 57.5, 60.7 57.5, 58.1 58.3 C 57.8 57.8, 57.8 57.1, 58.1 56.2 Z"
+              fill="url(#grad-inkpot-shoulder-sheen)"
+              filter="url(#filter-inkpot-gloss)" />
+
+        <!-- Left contour specular highlight -->
+        <path d="M 58.5 56.0 C 58.1 58.2, 58.3 61.2, 59.3 63.2"
+              fill="none" stroke="#9B75E8" stroke-width="0.65" stroke-linecap="round" opacity="0.42" />
+
+        <!-- Narrow neck shadow under flared rim -->
+        <path id="inkpot-neck-groove"
+              d="M 60.1 52.3 L 71.1 52.3 L 70.8 53.7 C 67.5 54.2, 63.7 54.2, 60.4 53.7 Z"
+              fill="#230B4F" />
+
+        <!-- Slightly flared rounded rim collar -->
+        <rect id="inkpot-flared-rim"
+              x="59.5" y="49.7" width="12.2" height="3.3" rx="1.65" ry="1.65"
+              fill="url(#grad-inkpot-collar)" />
+
+        <!-- Narrow dark top opening where feather quill enters -->
+        <ellipse id="inkpot-narrow-opening"
+                 cx="65.6" cy="50.5" rx="4.3" ry="0.85"
+                 fill="url(#grad-inkpot-opening)" />
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- F. GOLDEN-YELLOW FEATHER QUILL (INSERTED INTO INKPOT)             -->
+      <!-- ================================================================= -->
+      <g id="golden-feather-quill">
+        <!-- 1. Soft shadow cast by feather onto the right book page -->
+        <path id="feather-page-shadow"
+              d="M 64.2 48.2 C 60.5 42.5, 61.5 32.0, 68.5 24.5 C 71.2 28.8, 74.5 36.2, 69.5 46.8 Z"
+              fill="#C77B38" opacity="0.26" filter="url(#filter-quill-shadow)" />
+
+        <!-- 2. 3D amber back/lower thickness layer for feather vanes -->
+        <path id="feather-3d-thickness"
+              d="M 64.7 46.8 C 61.6 43.2, 61.4 39.2, 62.6 36.2 C 63.1 36.6, 63.8 36.9, 64.4 37.1 C 63.3 34.0, 64.1 30.2, 66.0 28.0 C 66.5 28.5, 67.1 28.9, 67.7 29.2 C 67.2 26.0, 68.7 22.8, 70.9 21.0 C 71.3 21.5, 71.8 22.0, 72.3 22.4 C 74.4 19.2, 78.2 17.0, 82.5 16.8 C 83.0 21.2, 81.6 25.8, 79.1 28.6 C 78.0 28.7, 77.0 28.9, 76.2 29.2 C 78.1 29.5, 79.0 30.2, 78.6 32.0 C 78.0 34.2, 76.2 35.8, 74.2 36.7 C 75.5 37.0, 76.0 37.7, 75.4 39.4 C 74.7 41.2, 72.9 42.5, 71.0 43.1 C 72.1 43.4, 72.4 44.1, 71.6 45.4 C 70.4 46.9, 67.8 47.6, 65.5 47.0 Z"
+              transform="translate(0.45, 0.65)"
+              fill="url(#grad-quill-depth)" />
+
+        <!-- 3. Left Feather Vane (with distinct segments & curved edges) -->
+        <path id="feather-vane-left"
+              d="M 64.7 46.8 C 61.6 43.2, 61.4 39.2, 62.6 36.2 C 63.2 36.7, 63.9 37.1, 64.6 37.3 C 63.3 34.0, 64.1 30.2, 66.0 28.0 C 66.6 28.6, 67.2 29.0, 67.9 29.3 C 67.2 26.0, 68.7 22.8, 70.9 21.0 C 71.4 21.6, 71.9 22.1, 72.5 22.5 C 74.5 19.2, 78.3 17.0, 82.5 16.8 C 78.6 22.8, 71.2 34.8, 65.2 46.9 Z"
+              fill="url(#grad-quill-left-vane)" />
+
+        <!-- 4. Right Feather Vane (with distinct segments & amber shading) -->
+        <path id="feather-vane-right"
+              d="M 82.5 16.8 C 83.0 21.2, 81.6 25.8, 79.1 28.6 C 77.9 28.7, 76.8 28.9, 75.9 29.2 C 77.9 29.5, 79.0 30.2, 78.6 32.0 C 78.0 34.2, 76.2 35.8, 74.0 36.7 C 75.4 37.0, 76.0 37.7, 75.4 39.4 C 74.7 41.2, 72.9 42.5, 70.8 43.1 C 72.0 43.4, 72.4 44.1, 71.6 45.4 C 70.4 46.9, 67.8 47.6, 65.2 46.9 C 71.2 34.8, 78.6 22.8, 82.5 16.8 Z"
+              fill="url(#grad-quill-right-vane)" />
+
+        <!-- 5. Subtle amber shading along central shaft & segment creases -->
+        <g id="feather-segment-details" fill="none" stroke-linecap="round">
+          <!-- Inner amber shadow along shaft -->
+          <path d="M 65.3 46.5 C 70.2 36.2, 76.4 25.8, 81.2 18.6"
+                stroke="#D96500" stroke-width="1.35" opacity="0.42" />
+          <!-- Left vane segment barb creases -->
+          <path d="M 64.6 37.3 C 66.2 38.0, 67.5 38.4, 68.7 38.6" stroke="#E07C00" stroke-width="0.55" opacity="0.65" />
+          <path d="M 67.9 29.3 C 69.5 30.1, 70.9 30.6, 72.2 30.9" stroke="#E07C00" stroke-width="0.55" opacity="0.65" />
+          <path d="M 72.5 22.5 C 73.9 23.3, 75.1 23.8, 76.3 24.1" stroke="#E07C00" stroke-width="0.55" opacity="0.65" />
+          <!-- Right vane segment barb creases -->
+          <path d="M 75.9 29.2 C 74.8 29.5, 73.8 29.9, 72.8 30.4" stroke="#CC5800" stroke-width="0.55" opacity="0.6" />
+          <path d="M 74.0 36.7 C 72.6 37.1, 71.2 37.6, 69.8 38.2" stroke="#CC5800" stroke-width="0.55" opacity="0.6" />
+          <path d="M 70.8 43.1 C 69.5 43.4, 68.2 43.8, 67.0 44.3" stroke="#CC5800" stroke-width="0.55" opacity="0.6" />
+          <!-- Glossy golden top-edge highlights on segments -->
+          <path d="M 72.8 22.1 C 75.0 19.2, 78.4 17.3, 82.1 17.0" stroke="#FFF9A6" stroke-width="0.65" opacity="0.85" />
+          <path d="M 68.1 28.9 C 67.8 26.2, 69.0 23.2, 70.8 21.4" stroke="#FFF799" stroke-width="0.55" opacity="0.75" />
+          <path d="M 64.7 36.8 C 63.8 34.0, 64.5 30.6, 66.0 28.4" stroke="#FFF799" stroke-width="0.55" opacity="0.7" />
+        </g>
+
+        <!-- 6. Clearly defined central shaft (rachis) entering the inkpot -->
+        <g id="feather-central-shaft">
+          <!-- Shaft lower/right amber-brown shadow edge -->
+          <path d="M 64.4 51.2 C 66.8 42.4, 73.2 29.6, 80.9 18.8"
+                transform="translate(0.3, 0.35)"
+                fill="none" stroke="#AD4100" stroke-width="1.5" stroke-linecap="round" />
+
+          <!-- Main 3D tapered golden-orange shaft -->
+          <path d="M 63.6 51.1 C 65.8 42.6, 72.4 29.8, 81.2 18.4 C 81.5 18.0, 81.9 18.3, 81.6 18.8 C 73.6 30.4, 67.5 42.8, 65.3 51.3 Z"
+                fill="url(#grad-quill-shaft)" />
+
+          <!-- Bright specular ridge highlight along the shaft -->
+          <path d="M 64.3 50.6 C 66.6 42.2, 73.0 30.0, 80.6 19.2"
+                fill="none" stroke="#FFF6A1" stroke-width="0.48" stroke-linecap="round" opacity="0.9" />
+        </g>
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- G. INKPOT FRONT COLLAR LIP OVERLAY                                -->
+      <!-- Occludes the base of the quill shaft so it sits INSIDE the inkpot -->
+      <!-- ================================================================= -->
+      <g id="inkpot-front-rim-occlusion">
+        <path d="M 59.6 50.5 C 61.2 51.3, 70.0 51.3, 71.6 50.5 L 71.6 51.5 C 71.6 52.4, 70.8 53.0, 69.8 53.0 L 61.4 53.0 C 60.4 53.0, 59.6 52.4, 59.6 51.5 Z"
+              fill="url(#grad-inkpot-collar)" />
+        <!-- Glossy lavender highlight along the front lip of the rim -->
+        <path d="M 60.8 51.1 C 63.6 51.6, 67.6 51.6, 70.4 51.1"
+              fill="none" stroke="#C8B2FA" stroke-width="0.55" stroke-linecap="round" opacity="0.8" />
+      </g>
+    </g>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- COMPACT RESPONSIVE LAYOUT (122px - 180px width, 100px height)         -->
+  <!-- Book dominant, feather & inkpot recognizable, nameplate beneath book  -->
+  <!-- ===================================================================== -->
+  <svg id="viewport-compact"
+       class="responsive-viewport"
+       viewBox="0 0 122 100"
+       width="100%"
+       height="100%"
+       preserveAspectRatio="xMidYMid meet">
+    <g id="compact-layout-group" transform="translate(11, 1)">
+      <!-- Rounded-square supporting backdrop -->
+      <use id="compact-backdrop" xlink:href="#backdrop-rounded-square" href="#backdrop-rounded-square" />
+
+      <!-- Main 3D illustration (3 rays, open textbook with 'अ', feather quill, inkpot) -->
+      <use id="compact-illustration" xlink:href="#hindi-main-illustration" href="#hindi-main-illustration" />
+
+      <!-- Hindi subject nameplate pill beneath the textbook -->
+      <use id="compact-nameplate" xlink:href="#subject-nameplate" href="#subject-nameplate" />
+    </g>
+  </svg>
+
+  <!-- ===================================================================== -->
+  <!-- WIDE RESPONSIVE LAYOUT (181px - 327px width, 100px height)            -->
+  <!-- Keeps the हिंदी nameplate pill at the bottom of the illustration      -->
+  <!-- ===================================================================== -->
+  <svg id="viewport-wide"
+       class="responsive-viewport"
+       viewBox="0 0 194 100"
+       width="100%"
+       height="100%"
+       preserveAspectRatio="xMidYMid meet">
+    <g id="wide-layout-group" transform="translate(47, 1)">
+      <!-- Rounded-square supporting backdrop -->
+      <use id="wide-backdrop" xlink:href="#backdrop-rounded-square" href="#backdrop-rounded-square" />
+
+      <!-- Main 3D illustration (3 rays, open textbook with complete 'अ', feather quill, inkpot) -->
+      <use id="wide-illustration" xlink:href="#hindi-main-illustration" href="#hindi-main-illustration" />
+
+      <!-- Hindi subject nameplate pill placed at the bottom of the illustration -->
+      <use id="wide-nameplate" xlink:href="#subject-nameplate" href="#subject-nameplate" />
+    </g>
+  </svg>
+</svg>

@@ -1,0 +1,689 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     version="1.1"
+     width="360"
+     height="344"
+     viewBox="30 0 360 344"
+     preserveAspectRatio="xMidYMid meet"
+     aria-labelledby="math-illustration-title math-illustration-desc"
+     role="img">
+  <title id="math-illustration-title">Mathematics Subject Illustration</title>
+  <desc id="math-illustration-desc">Compact 3D educational illustration featuring a royal-purple scientific calculator, golden-yellow triangular geometry ruler, circular magenta pi badge, three decorative rays, and a bottom-aligned Mathematics nameplate.</desc>
+
+  <defs>
+    <!-- =================================================================== -->
+    <!-- TYPOGRAPHY & COMPACT LAYOUT STYLES                                  -->
+    <!-- =================================================================== -->
+    <style type="text/css"><![CDATA[
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+      .subject-label-text {
+        font-family: "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+        font-size: 33px;
+        font-weight: 700;
+        fill: #ffffff;
+        text-anchor: middle;
+        dominant-baseline: central;
+        letter-spacing: 0.3px;
+        user-select: none;
+      }
+    ]]></style>
+
+    <!-- =================================================================== -->
+    <!-- SUPPORTING BACKDROP GRADIENTS                                       -->
+    <!-- =================================================================== -->
+    <!-- Main soft white/lavender surface gradient -->
+    <linearGradient id="backdrop-surface-grad" x1="12%" y1="6%" x2="88%" y2="94%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="48%" stop-color="#f9f6ff" />
+      <stop offset="82%" stop-color="#efe9fb" />
+      <stop offset="100%" stop-color="#e5ddf5" />
+    </linearGradient>
+
+    <!-- 3D lower-right outer bevel rim for backdrop -->
+    <linearGradient id="backdrop-rim-grad" x1="8%" y1="4%" x2="92%" y2="96%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#e4dcf4" />
+      <stop offset="100%" stop-color="#cfc4e6" />
+    </linearGradient>
+
+    <!-- Soft upper-left specular border highlight -->
+    <linearGradient id="backdrop-highlight-grad" x1="0%" y1="0%" x2="75%" y2="75%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- THREE MAGENTA DECORATIVE RAYS GRADIENTS                             -->
+    <!-- =================================================================== -->
+    <linearGradient id="ray-body-grad" x1="18%" y1="12%" x2="86%" y2="90%">
+      <stop offset="0%" stop-color="#ff5398" />
+      <stop offset="45%" stop-color="#e81769" />
+      <stop offset="100%" stop-color="#b40749" />
+    </linearGradient>
+
+    <linearGradient id="ray-3d-edge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#be0a4e" />
+      <stop offset="100%" stop-color="#870334" />
+    </linearGradient>
+
+    <linearGradient id="ray-gloss-grad" x1="0%" y1="0%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#ffb8d5" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#ff5398" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- GOLDEN-YELLOW GEOMETRY RULER GRADIENTS                              -->
+    <!-- =================================================================== -->
+    <linearGradient id="ruler-face-grad" x1="16%" y1="14%" x2="88%" y2="90%">
+      <stop offset="0%" stop-color="#ffe66d" />
+      <stop offset="38%" stop-color="#ffd026" />
+      <stop offset="78%" stop-color="#ffba08" />
+      <stop offset="100%" stop-color="#f29b05" />
+    </linearGradient>
+
+    <linearGradient id="ruler-extrusion-grad" x1="10%" y1="15%" x2="95%" y2="85%">
+      <stop offset="0%" stop-color="#eb8205" />
+      <stop offset="55%" stop-color="#d46800" />
+      <stop offset="100%" stop-color="#b55000" />
+    </linearGradient>
+
+    <linearGradient id="ruler-inner-wall-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f08c08" />
+      <stop offset="100%" stop-color="#c75e00" />
+    </linearGradient>
+
+    <linearGradient id="ruler-highlight-grad" x1="0%" y1="0%" x2="80%" y2="80%">
+      <stop offset="0%" stop-color="#fff9c4" stop-opacity="0.95" />
+      <stop offset="55%" stop-color="#ffe169" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#ffba08" stop-opacity="0" />
+    </linearGradient>
+
+    <linearGradient id="ruler-tick-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e37c00" />
+      <stop offset="100%" stop-color="#f7a40c" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- SCIENTIFIC CALCULATOR GRADIENTS                                     -->
+    <!-- =================================================================== -->
+    <!-- Deep royal-purple 3D casing thickness -->
+    <linearGradient id="calc-casing-3d-grad" x1="15%" y1="5%" x2="90%" y2="98%">
+      <stop offset="0%" stop-color="#5829b5" />
+      <stop offset="52%" stop-color="#3f178f" />
+      <stop offset="85%" stop-color="#2e0e6e" />
+      <stop offset="100%" stop-color="#3b1585" />
+    </linearGradient>
+
+    <!-- Glossy royal-purple front body surface -->
+    <linearGradient id="calc-body-grad" x1="12%" y1="6%" x2="86%" y2="94%">
+      <stop offset="0%" stop-color="#a779ff" />
+      <stop offset="22%" stop-color="#8b55f7" />
+      <stop offset="62%" stop-color="#6c34db" />
+      <stop offset="100%" stop-color="#5520bf" />
+    </linearGradient>
+
+    <!-- Upper-left specular edge highlight on calculator body -->
+    <linearGradient id="calc-rim-gloss" x1="4%" y1="2%" x2="72%" y2="76%">
+      <stop offset="0%" stop-color="#decaff" stop-opacity="0.95" />
+      <stop offset="38%" stop-color="#ad7eff" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#6c34db" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Recessed display outer bezel -->
+    <linearGradient id="screen-bezel-grad" x1="18%" y1="8%" x2="82%" y2="95%">
+      <stop offset="0%" stop-color="#270e5e" />
+      <stop offset="48%" stop-color="#3c1b85" />
+      <stop offset="100%" stop-color="#9163f2" />
+    </linearGradient>
+
+    <!-- Dark blue-purple screen surface -->
+    <linearGradient id="screen-surface-grad" x1="15%" y1="10%" x2="85%" y2="92%">
+      <stop offset="0%" stop-color="#6772f0" />
+      <stop offset="45%" stop-color="#8490ff" />
+      <stop offset="85%" stop-color="#7683fa" />
+      <stop offset="100%" stop-color="#626de6" />
+    </linearGradient>
+
+    <!-- Recessed top-left inner shadow inside screen -->
+    <linearGradient id="screen-inner-shadow-grad" x1="20%" y1="0%" x2="65%" y2="85%">
+      <stop offset="0%" stop-color="#261b6e" stop-opacity="0.72" />
+      <stop offset="38%" stop-color="#3c3799" stop-opacity="0.24" />
+      <stop offset="100%" stop-color="#7683fa" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Subtle reflective screen highlight -->
+    <linearGradient id="screen-reflection-grad" x1="10%" y1="0%" x2="75%" y2="90%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+      <stop offset="50%" stop-color="#c7d0ff" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#8490ff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Calculator standard button 3D side shading -->
+    <linearGradient id="btn-white-side-grad" x1="15%" y1="15%" x2="95%" y2="95%">
+      <stop offset="0%" stop-color="#bfa9eb" />
+      <stop offset="55%" stop-color="#9d82d6" />
+      <stop offset="100%" stop-color="#8264c2" />
+    </linearGradient>
+
+    <!-- Calculator standard button top surface -->
+    <linearGradient id="btn-white-top-grad" x1="12%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="42%" stop-color="#f4ecff" />
+      <stop offset="100%" stop-color="#decdf7" />
+    </linearGradient>
+
+    <!-- Elongated golden-yellow button 3D side shading -->
+    <linearGradient id="btn-yellow-side-grad" x1="15%" y1="10%" x2="95%" y2="95%">
+      <stop offset="0%" stop-color="#f09307" />
+      <stop offset="55%" stop-color="#d67200" />
+      <stop offset="100%" stop-color="#b35400" />
+    </linearGradient>
+
+    <!-- Elongated golden-yellow button top surface -->
+    <linearGradient id="btn-yellow-top-grad" x1="14%" y1="8%" x2="86%" y2="92%">
+      <stop offset="0%" stop-color="#fff099" />
+      <stop offset="35%" stop-color="#ffd84d" />
+      <stop offset="80%" stop-color="#ffbf1f" />
+      <stop offset="100%" stop-color="#f2a707" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- PI BADGE GRADIENTS                                                  -->
+    <!-- =================================================================== -->
+    <!-- 3D circular outer rim -->
+    <linearGradient id="pi-badge-rim-grad" x1="14%" y1="10%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#f2e1e7" />
+      <stop offset="100%" stop-color="#d6bcc6" />
+    </linearGradient>
+
+    <!-- Cream/white circular dome surface -->
+    <radialGradient id="pi-badge-dome-grad" cx="34%" cy="28%" r="72%" fx="30%" fy="24%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="48%" stop-color="#fff9fb" />
+      <stop offset="82%" stop-color="#f5e6ec" />
+      <stop offset="100%" stop-color="#e8d2db" />
+    </radialGradient>
+
+    <!-- Deep magenta Pi symbol 3D extrusion -->
+    <linearGradient id="pi-symbol-side-grad" x1="20%" y1="10%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#a80744" />
+      <stop offset="100%" stop-color="#75022e" />
+    </linearGradient>
+
+    <!-- Deep magenta Pi symbol main surface -->
+    <linearGradient id="pi-symbol-face-grad" x1="22%" y1="8%" x2="80%" y2="94%">
+      <stop offset="0%" stop-color="#ff3886" />
+      <stop offset="45%" stop-color="#e31262" />
+      <stop offset="100%" stop-color="#b50648" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- SUBJECT NAMEPLATE PILL GRADIENTS                                    -->
+    <!-- =================================================================== -->
+    <!-- Lower 3D rim of the magenta pill -->
+    <linearGradient id="pill-3d-rim-grad" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#b8094d" />
+      <stop offset="100%" stop-color="#870337" />
+    </linearGradient>
+
+    <!-- Rich glossy magenta pill surface -->
+    <linearGradient id="pill-body-grad" x1="20%" y1="4%" x2="80%" y2="96%">
+      <stop offset="0%" stop-color="#ff4593" />
+      <stop offset="36%" stop-color="#e6196b" />
+      <stop offset="78%" stop-color="#c90b56" />
+      <stop offset="100%" stop-color="#ad0546" />
+    </linearGradient>
+
+    <!-- Subtle top specular highlight on the pill -->
+    <linearGradient id="pill-top-gloss-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ff99c4" stop-opacity="0.82" />
+      <stop offset="45%" stop-color="#ff5ba0" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#e6196b" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- =================================================================== -->
+    <!-- SHADOW & LIGHTING FILTERS (WITH GENEROUS UNCLIPPED REGIONS)         -->
+    <!-- =================================================================== -->
+    <!-- Soft ambient drop shadow for supporting backdrop -->
+    <filter id="backdrop-shadow" x="-25%" y="-22%" width="150%" height="156%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#2c1d54" flood-opacity="0.13" />
+    </filter>
+
+    <!-- Soft shadow for three magenta rays -->
+    <filter id="ray-shadow" x="-45%" y="-45%" width="190%" height="190%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="1.8" dy="3.2" stdDeviation="2.4" flood-color="#4a092c" flood-opacity="0.24" />
+    </filter>
+
+    <!-- Contact shadow for golden-yellow geometry ruler -->
+    <filter id="ruler-shadow" x="-30%" y="-30%" width="165%" height="170%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="2" dy="6" stdDeviation="5.5" flood-color="#3b2154" flood-opacity="0.24" />
+    </filter>
+
+    <!-- Deep contact shadow for royal-purple calculator -->
+    <filter id="calculator-shadow" x="-35%" y="-30%" width="175%" height="175%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="4" dy="8" stdDeviation="6.5" flood-color="#1f0b4d" flood-opacity="0.38" />
+    </filter>
+
+    <!-- Soft individual shadow for raised calculator buttons -->
+    <filter id="button-shadow" x="-45%" y="-40%" width="195%" height="195%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="1.6" dy="2.8" stdDeviation="1.6" flood-color="#260b5c" flood-opacity="0.52" />
+    </filter>
+
+    <!-- Soft contact shadow for circular Pi badge -->
+    <filter id="pi-badge-shadow" x="-35%" y="-35%" width="175%" height="175%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="2" dy="6" stdDeviation="5" flood-color="#260c52" flood-opacity="0.32" />
+    </filter>
+
+    <!-- Subtle contact shadow for raised Pi symbol -->
+    <filter id="pi-symbol-shadow" x="-35%" y="-35%" width="175%" height="175%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="1" dy="2.2" stdDeviation="1.4" flood-color="#6e0530" flood-opacity="0.28" />
+    </filter>
+
+    <!-- Contact shadow for glossy magenta nameplate pill -->
+    <filter id="pill-shadow" x="-25%" y="-30%" width="150%" height="175%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="6" stdDeviation="5.5" flood-color="#4d082e" flood-opacity="0.30" />
+    </filter>
+
+    <!-- Subtle 3D text shadow for white Devanagari / English label -->
+    <filter id="label-text-shadow" x="-20%" y="-25%" width="140%" height="150%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="1.8" stdDeviation="1.1" flood-color="#780230" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Clip path for calculator screen inner shadow & reflection -->
+    <clipPath id="calc-screen-clip">
+      <rect x="-50" y="-60" width="100" height="35" rx="8.5" ry="8.5" />
+    </clipPath>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- COMPACT ILLUSTRATION LAYOUT (PILL AT BOTTOM)                          -->
+  <!-- ===================================================================== -->
+  <g id="compact-layout">
+
+    <!-- 1. SOFT ROUNDED-SQUARE WHITE/LAVENDER SUPPORTING BACKDROP -->
+    <g id="supporting-backdrop">
+      <!-- 3D outer rim / lower-right thickness with ambient shadow -->
+      <rect x="44" y="12" width="334" height="318" rx="68" ry="68"
+            fill="url(#backdrop-rim-grad)"
+            filter="url(#backdrop-shadow)" />
+      <!-- Crisp white outer specular rim -->
+      <rect x="42" y="10" width="334" height="318" rx="68" ry="68"
+            fill="url(#backdrop-surface-grad)"
+            stroke="#ffffff"
+            stroke-width="2" />
+      <!-- Soft upper-left 3D bevel highlight -->
+      <rect x="44" y="12" width="330" height="314" rx="66" ry="66"
+            fill="none"
+            stroke="url(#backdrop-highlight-grad)"
+            stroke-width="3.5" />
+    </g>
+
+    <!-- MASTER ILLUSTRATION ARTWORK GROUP (RAYS, RULER, CALCULATOR, PI BADGE) -->
+    <g id="illustration-artwork" transform="translate(0, -5)">
+
+      <!-- 2. THREE MAGENTA DECORATIVE RAYS (UPPER-LEFT) -->
+      <g id="decorative-rays" filter="url(#ray-shadow)">
+        <!-- Lower-left ray (~10 o'clock) -->
+        <g id="ray-lower-left">
+          <path d="M 110,95 C 102,91 84,84 76,80 C 69,76 69,66 76,64 C 84,62 103,75 112,84 C 117,89 115,97 110,95 Z"
+                fill="url(#ray-3d-edge-grad)"
+                transform="translate(1.2, 2.0)" />
+          <path d="M 110,95 C 102,91 84,84 76,80 C 69,76 69,66 76,64 C 84,62 103,75 112,84 C 117,89 115,97 110,95 Z"
+                fill="url(#ray-body-grad)" />
+          <path d="M 76,67 C 83,66 99,76 108,85"
+                fill="none"
+                stroke="url(#ray-gloss-grad)"
+                stroke-width="2.6"
+                stroke-linecap="round" />
+        </g>
+
+        <!-- Middle diagonal ray (~11 o'clock) -->
+        <g id="ray-middle">
+          <path d="M 125,83 C 119,76 105,60 99,52 C 94,45 101,37 108,42 C 115,47 126,67 131,77 C 134,83 129,87 125,83 Z"
+                fill="url(#ray-3d-edge-grad)"
+                transform="translate(1.3, 2.0)" />
+          <path d="M 125,83 C 119,76 105,60 99,52 C 94,45 101,37 108,42 C 115,47 126,67 131,77 C 134,83 129,87 125,83 Z"
+                fill="url(#ray-body-grad)" />
+          <path d="M 103,44 C 109,49 120,65 126,76"
+                fill="none"
+                stroke="url(#ray-gloss-grad)"
+                stroke-width="2.6"
+                stroke-linecap="round" />
+        </g>
+
+        <!-- Upper vertical-left ray (~12 o'clock) -->
+        <g id="ray-upper-right">
+          <path d="M 143,75 C 141,65 138,46 138,37 C 138,29 149,28 151,36 C 153,45 151,65 150,75 C 149,81 144,81 143,75 Z"
+                fill="url(#ray-3d-edge-grad)"
+                transform="translate(1.4, 2.0)" />
+          <path d="M 143,75 C 141,65 138,46 138,37 C 138,29 149,28 151,36 C 153,45 151,65 150,75 C 149,81 144,81 143,75 Z"
+                fill="url(#ray-body-grad)" />
+          <path d="M 143,34 C 144,43 145,60 145,71"
+                fill="none"
+                stroke="url(#ray-gloss-grad)"
+                stroke-width="2.5"
+                stroke-linecap="round" />
+        </g>
+      </g>
+
+      <!-- 3. GOLDEN-YELLOW TRIANGULAR GEOMETRY RULER (BEHIND CALCULATOR) -->
+      <g id="geometry-ruler" filter="url(#ruler-shadow)">
+        <!-- Soft ambient shadow inside the hollow triangular cutout -->
+        <path d="M 251,150 L 236,198 L 286,186 Z"
+              fill="#d6c8eb"
+              opacity="0.55" />
+
+        <!-- 3D inner thickness wall visible inside the hollow triangular centre -->
+        <path d="M 244,142 L 254,149 L 240,198 L 289,185 L 286,193 L 228,207 Z"
+              fill="url(#ruler-inner-wall-grad)" />
+
+        <!-- 3D lower/outer thickness wall of the triangular ruler (compound path with hollow centre) -->
+        <path fill-rule="evenodd"
+              d="M 232,99
+                 C 238,94 246,96 252,103
+                 L 330,190
+                 C 336,197 334,206 325,208
+                 L 204,238
+                 C 195,240 189,233 192,224
+                 L 225,107
+                 C 227,102 229,100 232,99 Z
+                 M 250,147
+                 C 252,144 255,144 258,147
+                 L 291,184
+                 C 294,187 293,191 288,192
+                 L 239,204
+                 C 235,205 232,202 234,198
+                 L 250,147 Z"
+              fill="url(#ruler-extrusion-grad)"
+              transform="translate(2.5, 6.5)" />
+
+        <!-- Main golden-yellow ruler surface (compound path with hollow triangular cutout) -->
+        <path fill-rule="evenodd"
+              d="M 232,99
+                 C 238,94 246,96 252,103
+                 L 330,190
+                 C 336,197 334,206 325,208
+                 L 204,238
+                 C 195,240 189,233 192,224
+                 L 225,107
+                 C 227,102 229,100 232,99 Z
+                 M 250,147
+                 C 252,144 255,144 258,147
+                 L 291,184
+                 C 294,187 293,191 288,192
+                 L 239,204
+                 C 235,205 232,202 234,198
+                 L 250,147 Z"
+              fill="url(#ruler-face-grad)" />
+
+        <!-- Bright upper-edge & inner-bottom cutout bevel highlights -->
+        <path d="M 248,101 L 328,190 C 332,195 331,200 326,202"
+              fill="none"
+              stroke="url(#ruler-highlight-grad)"
+              stroke-width="3"
+              stroke-linecap="round" />
+        <path d="M 235,203 L 289,190"
+              fill="none"
+              stroke="#fff394"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              opacity="0.85" />
+
+        <!-- Embossed 3D ruler graduation ticks along the sloped upper-right edge -->
+        <g id="ruler-graduation-marks" stroke-linecap="round">
+          <line x1="269" y1="132" x2="275" y2="127" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="270" y1="133" x2="276" y2="128" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+
+          <line x1="278" y1="142" x2="284" y2="137" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="279" y1="143" x2="285" y2="138" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+
+          <line x1="287" y1="152" x2="293" y2="147" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="288" y1="153" x2="294" y2="148" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+
+          <line x1="296" y1="162" x2="302" y2="157" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="297" y1="163" x2="303" y2="158" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+
+          <line x1="305" y1="172" x2="311" y2="167" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="306" y1="173" x2="312" y2="168" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+
+          <line x1="314" y1="182" x2="320" y2="177" stroke="url(#ruler-tick-grad)" stroke-width="2.6" />
+          <line x1="315" y1="183" x2="321" y2="178" stroke="#fff08a" stroke-width="1.1" opacity="0.7" />
+        </g>
+      </g>
+
+      <!-- 4. MAIN OBJECT — ROYAL-PURPLE SCIENTIFIC CALCULATOR -->
+      <g id="scientific-calculator"
+         transform="translate(172, 165) rotate(12.2)"
+         filter="url(#calculator-shadow)">
+
+        <!-- Thick 3D dimensional casing (right and bottom extrusion walls) -->
+        <rect x="-61" y="-71" width="134" height="151" rx="22" ry="22"
+              fill="url(#calc-casing-3d-grad)" />
+        <rect x="-64" y="-73.5" width="134" height="151" rx="22" ry="22"
+              fill="url(#calc-casing-3d-grad)" />
+
+        <!-- Main glossy royal-purple calculator front face -->
+        <rect x="-67" y="-76" width="134" height="150" rx="21" ry="21"
+              fill="url(#calc-body-grad)" />
+
+        <!-- Smooth upper-left specular bevel highlight on calculator face -->
+        <rect x="-65.5" y="-74.5" width="131" height="147" rx="19.5" ry="19.5"
+              fill="none"
+              stroke="url(#calc-rim-gloss)"
+              stroke-width="2.6" />
+
+        <!-- Deeper purple lower shading arc -->
+        <path d="M -52,71 L 46,71 C 57,71 64,64 64,53"
+              fill="none"
+              stroke="#43169e"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              opacity="0.7" />
+
+        <!-- RECESSED BLANK DISPLAY NEAR TOP -->
+        <g id="calculator-display">
+          <!-- Outer sunken bezel rim -->
+          <rect x="-52.5" y="-62.5" width="105" height="39.5" rx="10.5" ry="10.5"
+                fill="url(#screen-bezel-grad)" />
+          <!-- Dark blue-purple screen surface -->
+          <rect x="-50" y="-60" width="100" height="35" rx="8.5" ry="8.5"
+                fill="url(#screen-surface-grad)" />
+          <!-- Inner recessed shadow & subtle reflective glass highlight (kept completely blank) -->
+          <g clip-path="url(#calc-screen-clip)">
+            <rect x="-50" y="-60" width="100" height="35"
+                  fill="url(#screen-inner-shadow-grad)" />
+            <path d="M -52,-62 L 26,-62 L -8,-23 L -52,-23 Z"
+                  fill="url(#screen-reflection-grad)" />
+            <rect x="-50" y="-60" width="100" height="5.5"
+                  fill="#221363"
+                  opacity="0.48" />
+            <rect x="-50" y="-60" width="5" height="35"
+                  fill="#221363"
+                  opacity="0.38" />
+          </g>
+          <!-- Lower bevel reflection along bottom screen lip -->
+          <path d="M -42,-24.5 L 42,-24.5"
+                stroke="#a87dff"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                opacity="0.75" />
+        </g>
+
+        <!-- RAISED 3D CALCULATOR BUTTONS (7 WHITE/LAVENDER + 1 ELONGATED GOLDEN-YELLOW) -->
+        <g id="calculator-buttons">
+          <!-- Row 1, Column 1 -->
+          <g id="calc-btn-r1c1" filter="url(#button-shadow)">
+            <rect x="-48.2" y="-10.8" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-50" y="-13.5" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -47,-12 L -25,-12" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 1, Column 2 -->
+          <g id="calc-btn-r1c2" filter="url(#button-shadow)">
+            <rect x="-12.2" y="-10.8" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-14" y="-13.5" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -11,-12 L 11,-12" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 1, Column 3 -->
+          <g id="calc-btn-r1c3" filter="url(#button-shadow)">
+            <rect x="23.8" y="-10.8" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="22" y="-13.5" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M 25,-12 L 47,-12" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 2, Column 1 -->
+          <g id="calc-btn-r2c1" filter="url(#button-shadow)">
+            <rect x="-48.2" y="15.7" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-50" y="13" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -47,14.5 L -25,14.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 2, Column 2 -->
+          <g id="calc-btn-r2c2" filter="url(#button-shadow)">
+            <rect x="-12.2" y="15.7" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-14" y="13" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -11,14.5 L 11,14.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 3, Column 1 -->
+          <g id="calc-btn-r3c1" filter="url(#button-shadow)">
+            <rect x="-48.2" y="42.2" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-50" y="39.5" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -47,41 L -25,41" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Row 3, Column 2 -->
+          <g id="calc-btn-r3c2" filter="url(#button-shadow)">
+            <rect x="-12.2" y="42.2" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-side-grad)" />
+            <rect x="-14" y="39.5" width="28" height="20.5" rx="6.2" ry="6.2" fill="url(#btn-white-top-grad)" />
+            <path d="M -11,41 L 11,41" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95" />
+          </g>
+
+          <!-- Elongated Golden-Yellow Button (Lower-Right: Column 3, spanning Rows 2 & 3) -->
+          <g id="calc-btn-equals-yellow" filter="url(#button-shadow)">
+            <rect x="24" y="16" width="28" height="47" rx="6.8" ry="6.8" fill="url(#btn-yellow-side-grad)" />
+            <rect x="22" y="13" width="28" height="47" rx="6.8" ry="6.8" fill="url(#btn-yellow-top-grad)" />
+            <path d="M 25,14.8 L 47,14.8" stroke="#fffbe0" stroke-width="1.6" stroke-linecap="round" opacity="0.95" />
+            <path d="M 23.6,17 L 23.6,55" stroke="#fff7bf" stroke-width="1.3" stroke-linecap="round" opacity="0.75" />
+          </g>
+        </g>
+      </g>
+
+      <!-- 5. RAISED 3D CIRCULAR PI BADGE (UPPER-RIGHT) -->
+      <g id="pi-badge" filter="url(#pi-badge-shadow)">
+        <!-- 3D lower-right outer rim -->
+        <circle cx="256.5" cy="95.5" r="47.5" fill="url(#pi-badge-rim-grad)" />
+        <!-- Main cream/white circular dome surface -->
+        <circle cx="254.5" cy="93" r="46" fill="url(#pi-badge-dome-grad)" />
+        <!-- Smooth rounded outer rim specular highlight -->
+        <path d="M 218,65 A 45,45 0 0 1 286,61"
+              fill="none"
+              stroke="#ffffff"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              opacity="0.92" />
+
+        <!-- Sculptural 3D Deep Magenta Pi (π) Symbol -->
+        <g id="pi-symbol" filter="url(#pi-symbol-shadow)">
+          <!-- 3D lower thickness of Pi symbol -->
+          <path d="M 237,72
+                   H 278
+                   C 281.5,72 284,74.5 284,77.5
+                   C 284,80.5 281.5,83 278,83
+                   H 269.5
+                   C 268.2,92 267.5,100 267.5,106.5
+                   C 267.5,110 269,111.8 271.5,111.8
+                   C 273.5,111.8 275,110.2 276.2,108.5
+                   C 277.6,106.5 280.4,106.2 282.2,107.8
+                   C 284,109.4 284.2,112.2 282.5,114.6
+                   C 279.5,118.8 274.8,121 269.5,121
+                   C 261.5,121 256.8,116.2 256.8,107
+                   C 256.8,100 257.6,91.8 258.8,83
+                   H 249.5
+                   C 248.2,95.5 246.5,107.5 244.2,114.8
+                   C 242.6,119.5 239.2,121.2 235.8,120.6
+                   C 232,120 229.8,116.5 230.8,112.5
+                   C 231.5,109.8 233.6,107.8 235.4,105.5
+                   C 237.2,103.2 238.5,93.5 239.5,83
+                   H 236.2
+                   C 232.8,83 230.8,84.8 229.2,87.2
+                   C 227.6,89.4 224.8,89.6 223.2,88
+                   C 221.5,86.4 221.5,83.4 223.2,80.8
+                   C 226.5,75.5 231.2,72 237,72 Z"
+                fill="url(#pi-symbol-side-grad)"
+                transform="translate(1.4, 2.5)" />
+
+          <!-- Main glossy deep-magenta Pi face -->
+          <path d="M 237,72
+                   H 278
+                   C 281.5,72 284,74.5 284,77.5
+                   C 284,80.5 281.5,83 278,83
+                   H 269.5
+                   C 268.2,92 267.5,100 267.5,106.5
+                   C 267.5,110 269,111.8 271.5,111.8
+                   C 273.5,111.8 275,110.2 276.2,108.5
+                   C 277.6,106.5 280.4,106.2 282.2,107.8
+                   C 284,109.4 284.2,112.2 282.5,114.6
+                   C 279.5,118.8 274.8,121 269.5,121
+                   C 261.5,121 256.8,116.2 256.8,107
+                   C 256.8,100 257.6,91.8 258.8,83
+                   H 249.5
+                   C 248.2,95.5 246.5,107.5 244.2,114.8
+                   C 242.6,119.5 239.2,121.2 235.8,120.6
+                   C 232,120 229.8,116.5 230.8,112.5
+                   C 231.5,109.8 233.6,107.8 235.4,105.5
+                   C 237.2,103.2 238.5,93.5 239.5,83
+                   H 236.2
+                   C 232.8,83 230.8,84.8 229.2,87.2
+                   C 227.6,89.4 224.8,89.6 223.2,88
+                   C 221.5,86.4 221.5,83.4 223.2,80.8
+                   C 226.5,75.5 231.2,72 237,72 Z"
+                fill="url(#pi-symbol-face-grad)" />
+
+          <!-- Specular top highlight along Pi bar -->
+          <path d="M 227,80 C 230,76 234,74.5 239,74.5 H 277"
+                fill="none"
+                stroke="#ff9ec4"
+                stroke-width="2"
+                stroke-linecap="round"
+                opacity="0.8" />
+        </g>
+      </g>
+    </g>
+
+    <!-- 6. SUBJECT NAMEPLATE AT THE BOTTOM (INDEPENDENTLY EDITABLE PILL & TEXT) -->
+    <g id="subject-nameplate">
+      <g id="nameplate-pill" filter="url(#pill-shadow)">
+        <!-- 3D lower magenta rim -->
+        <rect x="73" y="253" width="274" height="62" rx="31" ry="31"
+              fill="url(#pill-3d-rim-grad)" />
+        <!-- Main rich magenta pill body -->
+        <rect x="73" y="249" width="274" height="62" rx="31" ry="31"
+              fill="url(#pill-body-grad)" />
+        <!-- Subtle upper glossy highlight arc -->
+        <rect x="79" y="251.5" width="262" height="28" rx="14" ry="14"
+              fill="url(#pill-top-gloss-grad)" />
+        <path d="M 106,252 H 314"
+              stroke="#ffb3d4"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              opacity="0.75" />
+      </g>
+
+      <!-- Editable SVG Text -->
+      <text id="subject-label"
+            class="subject-label-text"
+            x="210"
+            y="280"
+            filter="url(#label-text-shadow)">Mathematics</text>
+    </g>
+
+  </g>
+</svg>
