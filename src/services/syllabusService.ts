@@ -158,7 +158,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
 
   if (lower.includes('social') || lower.includes('history') || lower.includes('geography')) {
     return {
-      url: '/assets/SVG Illustrations/social-science.svg',
+      url: '/assets/SVG Illustrations/social-science-svg.svg',
       alt: 'Social Science illustration',
       attribution: {
         url: 'https://storyset.com/nature',
@@ -168,7 +168,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
   }
   if (lower.includes('science')) {
     return {
-      url: '/assets/SVG Illustrations/science.svg',
+      url: '/assets/SVG Illustrations/science-svg.svg',
       alt: 'Science illustration',
       attribution: {
         url: 'https://storyset.com/medical',
@@ -178,7 +178,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
   }
   if (lower.includes('math')) {
     return {
-      url: '/assets/SVG Illustrations/mathematics.svg',
+      url: '/assets/SVG Illustrations/mathematics-svg.svg',
       alt: 'Mathematics illustration',
       attribution: {
         url: 'https://storyset.com/work',
@@ -188,7 +188,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
   }
   if (lower.includes('hindi')) {
     return {
-      url: '/assets/SVG Illustrations/Hindi.svg',
+      url: '/assets/SVG Illustrations/hindi-svg.svg',
       alt: 'Hindi illustration',
       attribution: {
         url: 'https://storyset.com/home',
@@ -198,7 +198,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
   }
   if (lower.includes('english')) {
     return {
-      url: '/assets/SVG Illustrations/english.svg',
+      url: '/assets/SVG Illustrations/english-svg.svg',
       alt: 'English illustration',
       attribution: {
         url: 'https://storyset.com/people',
@@ -208,7 +208,7 @@ export function getSubjectIllustrationMeta(subjectSlugOrName: string | null | un
   }
   if (lower.includes('sanskrit')) {
     return {
-      url: '/assets/SVG Illustrations/sanskrit.svg',
+      url: '/assets/SVG Illustrations/sanskrit-svg.svg',
       alt: 'Sanskrit illustration',
       attribution: {
         url: 'https://storyset.com/people',
