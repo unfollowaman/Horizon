@@ -1,0 +1,949 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1"
+     width="640"
+     height="512"
+     viewBox="0 0 640 512"
+     role="img"
+     aria-labelledby="svg-title svg-desc">
+  <title id="svg-title">Class 9th Educational Illustration</title>
+  <desc id="svg-desc">A dimensional 3D educational illustration displaying a spiral-bound Class 9th notepad surrounded by a purple graduation cap with a golden tassel, two stacked books with bookmarks, a purple pencil holder with two pencils, and three magenta decorative rays on a soft rounded-square surface.</desc>
+
+  <!-- ===================================================================== -->
+  <!-- 1. DEFINITIONS: GRADIENTS, FILTERS, AND RESPONSIVE STYLES             -->
+  <!-- ===================================================================== -->
+  <defs id="definitions">
+    <style type="text/css"><![CDATA[
+      /* Responsive Layout Switching (Breakpoint: 180px)
+         Uses opacity rather than display:none so <use> references inside
+         #compact-layout always render reliably across all SVG engines. */
+      #compact-layout {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #wide-layout {
+        opacity: 1;
+      }
+      @media (max-width: 180px) {
+        #compact-layout {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        #wide-layout {
+          opacity: 0;
+          pointer-events: none;
+        }
+      }
+
+      /* Editable Typography Styles */
+      .label-class {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-weight: 700;
+        font-size: 52px;
+        letter-spacing: 0.5px;
+        fill: url(#grad-class-purple);
+        stroke: url(#grad-class-purple);
+        stroke-width: 1.4px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+      }
+      .label-number {
+        font-family: 'Times New Roman', Georgia, Times, serif;
+        font-weight: 700;
+        font-size: 124px;
+        letter-spacing: -2px;
+        fill: url(#grad-number-magenta);
+        stroke: url(#grad-number-magenta);
+        stroke-width: 3.6px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        paint-order: stroke fill;
+      }
+      .label-suffix {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-weight: 700;
+        font-size: 68px;
+        letter-spacing: -0.5px;
+        fill: url(#grad-number-magenta);
+        stroke: url(#grad-number-magenta);
+        stroke-width: 2px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+      }
+    ]]></style>
+
+    <!-- =================== SUPPORTING SURFACE GRADIENTS =================== -->
+    <!-- Outer Rim Base Gradient -->
+    <linearGradient id="grad-tile-outer" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#FBF9FF" />
+      <stop offset="80%" stop-color="#F2ECFC" />
+      <stop offset="100%" stop-color="#E9E0F8" />
+    </linearGradient>
+
+    <!-- Inner Surface Neumorphic Fill -->
+    <linearGradient id="grad-tile-inner" x1="10%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FDF9FD" />
+      <stop offset="70%" stop-color="#F8F3FC" />
+      <stop offset="100%" stop-color="#F1EAF9" />
+    </linearGradient>
+
+    <!-- Subtle Warm Pink/Lavender Ambient Glow (Left/Center) -->
+    <radialGradient id="grad-ambient-pink" cx="34%" cy="48%" r="48%">
+      <stop offset="0%" stop-color="#FCE4F2" stop-opacity="0.65" />
+      <stop offset="55%" stop-color="#F7E8F6" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#F5EEFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Subtle Cool Lavender Ambient Glow (Right/Bottom) -->
+    <radialGradient id="grad-ambient-lavender" cx="72%" cy="68%" r="45%">
+      <stop offset="0%" stop-color="#E7DDF8" stop-opacity="0.55" />
+      <stop offset="65%" stop-color="#EFE9FA" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#F5EEFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Inner Bevel Border Gradient -->
+    <linearGradient id="grad-tile-bevel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#EDE5F8" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- =================== DECORATIVE RAYS GRADIENTS ====================== -->
+    <linearGradient id="grad-ray-magenta" x1="20%" y1="15%" x2="85%" y2="88%">
+      <stop offset="0%" stop-color="#FF5CA8" />
+      <stop offset="35%" stop-color="#F32B89" />
+      <stop offset="75%" stop-color="#D8126B" />
+      <stop offset="100%" stop-color="#AD0851" />
+    </linearGradient>
+
+    <linearGradient id="grad-ray-highlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.65" />
+      <stop offset="60%" stop-color="#FF94C6" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#E91E83" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- =================== EDUCATIONAL BOOKS GRADIENTS ==================== -->
+    <!-- Lower Book (Magenta/Pink) -->
+    <linearGradient id="grad-book-pink-cover" x1="10%" y1="15%" x2="90%" y2="85%">
+      <stop offset="0%" stop-color="#FF58A6" />
+      <stop offset="38%" stop-color="#EE2280" />
+      <stop offset="78%" stop-color="#C90E63" />
+      <stop offset="100%" stop-color="#9E074B" />
+    </linearGradient>
+
+    <linearGradient id="grad-book-pink-spine" x1="0%" y1="10%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#FF78B7" />
+      <stop offset="30%" stop-color="#F32B89" />
+      <stop offset="75%" stop-color="#CF1268" />
+      <stop offset="100%" stop-color="#A60A50" />
+    </linearGradient>
+
+    <!-- Upper Book (Royal Purple) -->
+    <linearGradient id="grad-book-purple-top" x1="15%" y1="10%" x2="88%" y2="90%">
+      <stop offset="0%" stop-color="#BA8CFF" />
+      <stop offset="40%" stop-color="#9656F2" />
+      <stop offset="80%" stop-color="#7534D1" />
+      <stop offset="100%" stop-color="#5B20B0" />
+    </linearGradient>
+
+    <linearGradient id="grad-book-purple-spine" x1="5%" y1="10%" x2="95%" y2="90%">
+      <stop offset="0%" stop-color="#B98BFF" />
+      <stop offset="32%" stop-color="#8A48E8" />
+      <stop offset="72%" stop-color="#6525C2" />
+      <stop offset="100%" stop-color="#481496" />
+    </linearGradient>
+
+    <!-- Book Pages (Left Cream & Right Shaded Gold-Cream) -->
+    <linearGradient id="grad-pages-left" x1="0%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#FFF9F0" />
+      <stop offset="45%" stop-color="#FDECD6" />
+      <stop offset="85%" stop-color="#F4D7B5" />
+      <stop offset="100%" stop-color="#E8C39B" />
+    </linearGradient>
+
+    <linearGradient id="grad-pages-right-upper" x1="0%" y1="10%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#FBE0B4" />
+      <stop offset="45%" stop-color="#F5C478" />
+      <stop offset="85%" stop-color="#E5A249" />
+      <stop offset="100%" stop-color="#CC832B" />
+    </linearGradient>
+
+    <linearGradient id="grad-pages-right-lower" x1="0%" y1="10%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#F7D9B9" />
+      <stop offset="45%" stop-color="#EAB688" />
+      <stop offset="85%" stop-color="#D9925F" />
+      <stop offset="100%" stop-color="#BE7241" />
+    </linearGradient>
+
+    <!-- Golden Bookmarks -->
+    <linearGradient id="grad-bookmark-left" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#FFE45C" />
+      <stop offset="40%" stop-color="#FFC724" />
+      <stop offset="80%" stop-color="#F59F0C" />
+      <stop offset="100%" stop-color="#D47A00" />
+    </linearGradient>
+
+    <linearGradient id="grad-bookmark-right" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#FFCA3A" />
+      <stop offset="45%" stop-color="#F59E14" />
+      <stop offset="85%" stop-color="#DC7606" />
+      <stop offset="100%" stop-color="#B85600" />
+    </linearGradient>
+
+    <!-- =================== NOTEPAD & SPIRAL GRADIENTS ===================== -->
+    <!-- Left A-Frame Tent Interior -->
+    <linearGradient id="grad-notepad-tent" x1="15%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%" stop-color="#FFAE19" />
+      <stop offset="45%" stop-color="#EB8505" />
+      <stop offset="85%" stop-color="#C96400" />
+      <stop offset="100%" stop-color="#A64B00" />
+    </linearGradient>
+
+    <!-- Left Tent Outer Fold Edge -->
+    <linearGradient id="grad-notepad-tent-edge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE359" />
+      <stop offset="50%" stop-color="#FFC11E" />
+      <stop offset="100%" stop-color="#EE9308" />
+    </linearGradient>
+
+    <!-- Front Golden-Orange Backing Board -->
+    <linearGradient id="grad-notepad-board" x1="8%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%" stop-color="#FFE566" />
+      <stop offset="25%" stop-color="#FFC621" />
+      <stop offset="65%" stop-color="#FA9E0D" />
+      <stop offset="100%" stop-color="#E07800" />
+    </linearGradient>
+
+    <linearGradient id="grad-notepad-board-bottom" x1="0%" y1="0%" x2="95%" y2="80%">
+      <stop offset="0%" stop-color="#FFB91C" />
+      <stop offset="45%" stop-color="#F5960A" />
+      <stop offset="85%" stop-color="#E07900" />
+      <stop offset="100%" stop-color="#C25E00" />
+    </linearGradient>
+
+    <!-- Main Warm Cream Paper Surface -->
+    <linearGradient id="grad-notepad-paper" x1="12%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFFCF7" />
+      <stop offset="35%" stop-color="#FFF5EA" />
+      <stop offset="75%" stop-color="#FDEBD8" />
+      <stop offset="100%" stop-color="#F9DEC3" />
+    </linearGradient>
+
+    <!-- Paper Left Edge Thickness -->
+    <linearGradient id="grad-paper-edge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="55%" stop-color="#FCE8D2" />
+      <stop offset="100%" stop-color="#EBC59E" />
+    </linearGradient>
+
+    <!-- Punched Binding Holes -->
+    <linearGradient id="grad-punch-hole" x1="20%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#5E2006" />
+      <stop offset="55%" stop-color="#8C3810" />
+      <stop offset="100%" stop-color="#BA581E" />
+    </linearGradient>
+
+    <!-- Golden Spiral Binding Rings -->
+    <linearGradient id="grad-spiral-ring" x1="15%" y1="8%" x2="85%" y2="92%">
+      <stop offset="0%" stop-color="#FFF282" />
+      <stop offset="28%" stop-color="#FFD62E" />
+      <stop offset="65%" stop-color="#F7A812" />
+      <stop offset="88%" stop-color="#DE7D04" />
+      <stop offset="100%" stop-color="#B85A00" />
+    </linearGradient>
+
+    <linearGradient id="grad-spiral-back" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFCA28" />
+      <stop offset="60%" stop-color="#EA9008" />
+      <stop offset="100%" stop-color="#BD6300" />
+    </linearGradient>
+
+    <!-- =================== TEXT / LETTERING GRADIENTS ===================== -->
+    <linearGradient id="grad-class-purple" x1="20%" y1="5%" x2="80%" y2="95%">
+      <stop offset="0%" stop-color="#7E3FE0" />
+      <stop offset="45%" stop-color="#6427C4" />
+      <stop offset="100%" stop-color="#4A179E" />
+    </linearGradient>
+
+    <linearGradient id="grad-number-magenta" x1="18%" y1="5%" x2="82%" y2="95%">
+      <stop offset="0%" stop-color="#F72B8B" />
+      <stop offset="45%" stop-color="#E01372" />
+      <stop offset="85%" stop-color="#C40A5E" />
+      <stop offset="100%" stop-color="#A8054D" />
+    </linearGradient>
+
+    <!-- =================== GRADUATION CAP & TASSEL GRADIENTS ============== -->
+    <!-- Cap Underside -->
+    <linearGradient id="grad-cap-under" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#4D1B99" />
+      <stop offset="50%" stop-color="#370F75" />
+      <stop offset="100%" stop-color="#22064F" />
+    </linearGradient>
+
+    <!-- Cap Cylindrical Skullcap -->
+    <linearGradient id="grad-cap-skull" x1="8%" y1="25%" x2="92%" y2="75%">
+      <stop offset="0%" stop-color="#9A60F2" />
+      <stop offset="22%" stop-color="#A974FA" />
+      <stop offset="48%" stop-color="#7837D9" />
+      <stop offset="78%" stop-color="#531BA8" />
+      <stop offset="100%" stop-color="#3B0E82" />
+    </linearGradient>
+
+    <!-- Cap Top Diamond Mortarboard Surface -->
+    <linearGradient id="grad-cap-top" x1="15%" y1="10%" x2="88%" y2="90%">
+      <stop offset="0%" stop-color="#C396FF" />
+      <stop offset="35%" stop-color="#A366F7" />
+      <stop offset="72%" stop-color="#803DE0" />
+      <stop offset="100%" stop-color="#6221C4" />
+    </linearGradient>
+
+    <!-- Cap Front Rounded Rim Bevel -->
+    <linearGradient id="grad-cap-rim" x1="0%" y1="15%" x2="100%" y2="85%">
+      <stop offset="0%" stop-color="#B583FF" />
+      <stop offset="25%" stop-color="#8C48EB" />
+      <stop offset="65%" stop-color="#6122BF" />
+      <stop offset="100%" stop-color="#431091" />
+    </linearGradient>
+
+    <!-- Golden Tassel Gradients -->
+    <radialGradient id="grad-tassel-button" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFF587" />
+      <stop offset="45%" stop-color="#FFCA24" />
+      <stop offset="85%" stop-color="#EE9608" />
+      <stop offset="100%" stop-color="#C26A00" />
+    </radialGradient>
+
+    <linearGradient id="grad-tassel-cord" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFF075" />
+      <stop offset="35%" stop-color="#FFCC24" />
+      <stop offset="75%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#CC7000" />
+    </linearGradient>
+
+    <linearGradient id="grad-tassel-fringe" x1="15%" y1="5%" x2="88%" y2="95%">
+      <stop offset="0%" stop-color="#FFF070" />
+      <stop offset="35%" stop-color="#FFD026" />
+      <stop offset="75%" stop-color="#F5A30A" />
+      <stop offset="100%" stop-color="#D67900" />
+    </linearGradient>
+
+    <!-- =================== PENCIL HOLDER & PENCILS GRADIENTS ============== -->
+    <!-- Cup Inner Opening -->
+    <linearGradient id="grad-cup-inside" x1="0%" y1="10%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#3F157D" />
+      <stop offset="55%" stop-color="#5822A8" />
+      <stop offset="100%" stop-color="#763BD1" />
+    </linearGradient>
+
+    <!-- Cup Outer Cylindrical Body -->
+    <linearGradient id="grad-cup-body" x1="5%" y1="30%" x2="95%" y2="70%">
+      <stop offset="0%" stop-color="#A874FA" />
+      <stop offset="22%" stop-color="#9B62F5" />
+      <stop offset="52%" stop-color="#7C3CE0" />
+      <stop offset="82%" stop-color="#5E22BF" />
+      <stop offset="100%" stop-color="#48159C" />
+    </linearGradient>
+
+    <!-- Cup Upper Rim Lip -->
+    <linearGradient id="grad-cup-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C89EFF" />
+      <stop offset="45%" stop-color="#9A5EF2" />
+      <stop offset="100%" stop-color="#6B2BC9" />
+    </linearGradient>
+
+    <!-- Pencil 1 (Golden-Yellow) -->
+    <linearGradient id="grad-pencil1-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF078" />
+      <stop offset="50%" stop-color="#FFD938" />
+      <stop offset="100%" stop-color="#F7B814" />
+    </linearGradient>
+    <linearGradient id="grad-pencil1-mid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD22B" />
+      <stop offset="55%" stop-color="#F7B00E" />
+      <stop offset="100%" stop-color="#E08E00" />
+    </linearGradient>
+    <linearGradient id="grad-pencil1-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F29E0B" />
+      <stop offset="60%" stop-color="#D97B00" />
+      <stop offset="100%" stop-color="#B85E00" />
+    </linearGradient>
+    <linearGradient id="grad-pencil1-wood" x1="10%" y1="20%" x2="90%" y2="80%">
+      <stop offset="0%" stop-color="#FFF5E4" />
+      <stop offset="45%" stop-color="#F7D6A8" />
+      <stop offset="85%" stop-color="#DFAC72" />
+      <stop offset="100%" stop-color="#C78A4E" />
+    </linearGradient>
+    <linearGradient id="grad-pencil1-tip" x1="15%" y1="15%" x2="85%" y2="85%">
+      <stop offset="0%" stop-color="#68527A" />
+      <stop offset="45%" stop-color="#3C2A4D" />
+      <stop offset="100%" stop-color="#1E1329" />
+    </linearGradient>
+
+    <!-- Pencil 2 (Pink/Red with Silver Band & Coral Top) -->
+    <linearGradient id="grad-pencil2-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF78B2" />
+      <stop offset="50%" stop-color="#FA438E" />
+      <stop offset="100%" stop-color="#E01E6D" />
+    </linearGradient>
+    <linearGradient id="grad-pencil2-mid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FA3C89" />
+      <stop offset="55%" stop-color="#E3196B" />
+      <stop offset="100%" stop-color="#C20C56" />
+    </linearGradient>
+    <linearGradient id="grad-pencil2-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D41360" />
+      <stop offset="60%" stop-color="#B3094C" />
+      <stop offset="100%" stop-color="#8F043B" />
+    </linearGradient>
+    <linearGradient id="grad-pencil2-silver" x1="0%" y1="20%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="28%" stop-color="#F0F2F7" />
+      <stop offset="62%" stop-color="#C5CAD6" />
+      <stop offset="88%" stop-color="#949BA8" />
+      <stop offset="100%" stop-color="#787F8C" />
+    </linearGradient>
+    <linearGradient id="grad-pencil2-top" x1="10%" y1="15%" x2="90%" y2="85%">
+      <stop offset="0%" stop-color="#FFA07A" />
+      <stop offset="42%" stop-color="#F26A44" />
+      <stop offset="82%" stop-color="#D14521" />
+      <stop offset="100%" stop-color="#A82C0E" />
+    </linearGradient>
+
+    <!-- =================== SHADOW & 3D FILTERS ============================ -->
+    <!-- Supporting Surface Soft Drop Shadow -->
+    <filter id="filter-tile-shadow" x="-20%" y="-15%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#9A78D1" flood-opacity="0.18" />
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#7E57C2" flood-opacity="0.09" />
+    </filter>
+
+    <!-- Soft Object Elevation Shadow -->
+    <filter id="filter-soft-shadow" x="-25%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="3" dy="7" stdDeviation="6" flood-color="#3E1969" flood-opacity="0.18" />
+    </filter>
+
+    <!-- Ray Drop Shadow -->
+    <filter id="filter-ray-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3.5" flood-color="#C21868" flood-opacity="0.24" />
+    </filter>
+
+    <!-- 3D Extrusion & Shadow for "Class" Text -->
+    <filter id="filter-text-purple-3d" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0.8" dy="1.8" stdDeviation="0" flood-color="#3A0F80" flood-opacity="0.95" />
+      <feDropShadow dx="1.5" dy="3.5" stdDeviation="2.2" flood-color="#5A2899" flood-opacity="0.22" />
+    </filter>
+
+    <!-- 3D Extrusion & Shadow for "9th" Text -->
+    <filter id="filter-text-magenta-3d" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2.4" stdDeviation="0" flood-color="#8F0441" flood-opacity="0.95" />
+      <feDropShadow dx="2" dy="5" stdDeviation="3" flood-color="#9E1958" flood-opacity="0.22" />
+    </filter>
+
+    <!-- Gaussian Blur for Ambient Ground & Contact Shadows -->
+    <filter id="filter-contact-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+
+    <filter id="filter-tight-blur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="4.5" />
+    </filter>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- 2. WIDE LAYOUT (Master Composition for >180px & Default 640x512)      -->
+  <!-- ===================================================================== -->
+  <g id="wide-layout">
+
+    <!-- 2.1 Supporting Rounded-Square Surface -->
+    <g id="background-surface">
+      <!-- Outer Neumorphic Platform -->
+      <rect x="82" y="28" width="476" height="452" rx="98" ry="98"
+            fill="url(#grad-tile-outer)"
+            filter="url(#filter-tile-shadow)" />
+
+      <!-- Subtle Outer Edge Highlight -->
+      <rect x="83" y="29" width="474" height="450" rx="97" ry="97"
+            fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.9" />
+
+      <!-- Inner Slightly Recessed Surface -->
+      <rect x="93" y="38" width="454" height="430" rx="88" ry="88"
+            fill="url(#grad-tile-inner)"
+            stroke="url(#grad-tile-bevel)" stroke-width="2" />
+
+      <!-- Soft Ambient Pink & Lavender Lighting Overlays -->
+      <rect x="93" y="38" width="454" height="430" rx="88" ry="88"
+            fill="url(#grad-ambient-pink)" />
+      <rect x="93" y="38" width="454" height="430" rx="88" ry="88"
+            fill="url(#grad-ambient-lavender)" />
+
+      <!-- Ground Contact Shadows for Main Objects -->
+      <!-- Books Ground Shadow -->
+      <ellipse cx="212" cy="404" rx="86" ry="18"
+               transform="rotate(8 212 404)"
+               fill="#6D3285" opacity="0.22" filter="url(#filter-contact-blur)" />
+      <!-- Notepad Ground Shadow -->
+      <path d="M 244,412 L 486,384 L 494,404 L 252,430 Z"
+            fill="#8A3E1B" opacity="0.26" filter="url(#filter-contact-blur)" />
+      <!-- Pencil Holder Ground Shadow -->
+      <ellipse cx="484" cy="414" rx="44" ry="13"
+               fill="#4A1985" opacity="0.28" filter="url(#filter-tight-blur)" />
+    </g>
+
+    <!-- 2.2 Three Magenta Decorative Rays -->
+    <g id="decorative-rays" filter="url(#filter-ray-shadow)">
+      <!-- Left/Lower Ray -->
+      <g id="ray-1">
+        <path d="M 192,155 C 178,153 158,147 146,142 C 136,138 134,126 142,121 C 150,116 172,127 195,141 C 202,145 200,156 192,155 Z"
+              fill="url(#grad-ray-magenta)" />
+        <path d="M 145,125 C 153,122 172,131 190,142"
+              fill="none" stroke="url(#grad-ray-highlight)" stroke-width="3.5" stroke-linecap="round" />
+      </g>
+
+      <!-- Middle Diagonal Ray -->
+      <g id="ray-2">
+        <path d="M 209,134 C 198,125 182,108 172,97 C 164,88 170,76 180,76 C 189,76 203,95 218,121 C 223,129 216,139 209,134 Z"
+              fill="url(#grad-ray-magenta)" />
+        <path d="M 178,81 C 185,83 199,101 212,122"
+              fill="none" stroke="url(#grad-ray-highlight)" stroke-width="3.8" stroke-linecap="round" />
+      </g>
+
+      <!-- Right Upper Ray -->
+      <g id="ray-3">
+        <path d="M 236,122 C 232,108 228,85 227,72 C 226,60 237,54 245,60 C 252,65 251,90 249,119 C 248,128 238,130 236,122 Z"
+              fill="url(#grad-ray-magenta)" />
+        <path d="M 236,62 C 239,67 241,90 241,115"
+              fill="none" stroke="url(#grad-ray-highlight)" stroke-width="3.8" stroke-linecap="round" />
+      </g>
+    </g>
+
+    <!-- 2.3 Stack of Two Educational Books -->
+    <g id="educational-books">
+      <!-- ================= LOWER BOOK (MAGENTA/PINK) ================= -->
+      <g id="lower-book">
+        <!-- Lower Book Back/Under Cover Base -->
+        <path d="M 132,334 L 222,366 L 284,344 L 284,392 L 224,414 C 220,415 215,415 210,413 L 134,386 C 123,382 120,370 120,358 C 120,344 124,336 132,334 Z"
+              fill="url(#grad-book-pink-cover)" />
+
+        <!-- Lower Book Left Cream Page Block -->
+        <path d="M 135,345 L 222,375 L 222,404 L 136,375 C 130,372 128,365 128,359 C 128,351 131,346 135,345 Z"
+              fill="url(#grad-pages-left)" />
+
+        <!-- Lower Book Right Shaded Page Block -->
+        <path d="M 222,375 L 278,354 L 278,383 L 222,404 Z"
+              fill="url(#grad-pages-right-lower)" />
+
+        <!-- Page Striation Lines (Lower Book) -->
+        <path d="M 134,354 L 221,384 M 133,361 L 221,391 M 135,368 L 221,398"
+              fill="none" stroke="#E2B990" stroke-width="1.2" opacity="0.65" />
+        <path d="M 222,384 L 276,363 M 222,391 L 276,370 M 222,398 L 276,377"
+              fill="none" stroke="#C47E4F" stroke-width="1.2" opacity="0.6" />
+
+        <!-- Lower Book Spine & Cover Rim Wrap -->
+        <path d="M 136,333 L 222,363 C 225,364 228,364 231,363 L 282,344 L 282,354 L 228,374 C 224,375 220,375 216,374 L 136,346 C 131,345 129,351 129,360 C 129,369 131,373 137,375 L 218,403 C 221,404 224,404 228,403 L 282,382 L 282,392 L 227,413 C 222,415 217,415 212,413 L 131,385 C 122,381 119,372 119,359 C 119,344 124,331 136,333 Z"
+              fill="url(#grad-book-pink-spine)" />
+
+        <!-- Glossy Rim Highlights on Lower Book Cover -->
+        <path d="M 125,356 C 125,345 129,338 137,340 L 220,368"
+              fill="none" stroke="#FF94C6" stroke-width="2.2" stroke-linecap="round" opacity="0.75" />
+        <path d="M 132,381 L 216,409 C 221,411 225,410 230,408 L 274,391"
+              fill="none" stroke="#FF85BE" stroke-width="2" stroke-linecap="round" opacity="0.65" />
+      </g>
+
+      <!-- Shadow Cast by Upper Book onto Lower Book -->
+      <path d="M 128,336 L 222,368 L 278,348 L 278,358 L 222,378 L 128,346 Z"
+            fill="#5E0836" opacity="0.28" filter="url(#filter-tight-blur)" />
+
+      <!-- ================= UPPER BOOK (ROYAL PURPLE) ================= -->
+      <g id="upper-book">
+        <!-- Upper Book Top Cover Surface -->
+        <path d="M 130,287 L 208,264 C 214,262 220,262 226,265 L 276,284 L 226,318 C 221,320 215,320 210,318 L 130,287 Z"
+              fill="url(#grad-book-purple-top)" />
+
+        <!-- Left Cream Page Block (Upper Book) -->
+        <path d="M 135,299 L 220,328 L 220,359 L 135,330 C 129,328 127,321 127,314 C 127,306 130,300 135,299 Z"
+              fill="url(#grad-pages-left)" />
+
+        <!-- Right Golden-Cream Page Block (Upper Book) -->
+        <path d="M 220,328 L 274,307 L 274,338 L 220,359 Z"
+              fill="url(#grad-pages-right-upper)" />
+
+        <!-- Page Striation Lines (Upper Book) -->
+        <path d="M 133,308 L 219,337 M 132,315 L 219,344 M 134,322 L 219,351"
+              fill="none" stroke="#E2BA91" stroke-width="1.2" opacity="0.65" />
+        <path d="M 220,337 L 272,316 M 220,344 L 272,323 M 220,351 L 272,330"
+              fill="none" stroke="#CC8835" stroke-width="1.2" opacity="0.6" />
+
+        <!-- Upper Book Spine & Cover Rim Wrap -->
+        <path d="M 132,285 L 216,314 C 220,315 224,315 228,313 L 276,294 L 276,306 L 227,325 C 222,327 217,327 212,325 L 136,299 C 130,297 128,304 128,314 C 128,323 130,328 136,330 L 214,357 C 219,359 223,359 228,357 L 276,338 L 276,349 L 226,368 C 221,370 216,370 210,368 L 131,341 C 121,337 118,327 118,313 C 118,298 122,283 132,285 Z"
+              fill="url(#grad-book-purple-spine)" />
+
+        <!-- Glossy Lavender Highlights on Upper Book Cover -->
+        <path d="M 132,288 L 214,317 C 219,319 224,319 229,317 L 272,299"
+              fill="none" stroke="#D7B8FF" stroke-width="2.4" stroke-linecap="round" opacity="0.8" />
+        <path d="M 124,312 C 124,324 127,333 135,336 L 214,363 C 219,365 224,365 229,363 L 270,346"
+              fill="none" stroke="#B785FF" stroke-width="2" stroke-linecap="round" opacity="0.65" />
+      </g>
+
+      <!-- ================= TWO GOLDEN BOOKMARKS ================= -->
+      <g id="bookmarks">
+        <!-- Left Bookmark Shadow -->
+        <path d="M 171,335 L 195,343 L 190,378 L 180,370 L 167,374 Z"
+              fill="#6E1241" opacity="0.28" filter="url(#filter-tight-blur)" />
+        <!-- Left Golden Bookmark Ribbon -->
+        <path d="M 168,331 C 175,331 187,335 193,339 C 194,348 191,364 189,374 C 188,376 186,376 184,374 L 178,366 L 169,370 C 167,371 165,369 165,367 C 166,356 168,340 168,331 Z"
+              fill="url(#grad-bookmark-left)" />
+        <path d="M 170,333 C 170,343 168,356 167,367"
+              fill="none" stroke="#FFF394" stroke-width="2" stroke-linecap="round" opacity="0.85" />
+
+        <!-- Right Bookmark Shadow -->
+        <path d="M 229,342 L 249,335 L 252,374 L 242,369 L 233,375 Z"
+              fill="#5E0E38" opacity="0.28" filter="url(#filter-tight-blur)" />
+        <!-- Right Golden-Orange Bookmark Ribbon -->
+        <path d="M 227,338 C 233,335 241,332 246,331 C 248,342 250,358 250,370 C 250,372 248,373 246,372 L 240,366 L 233,371 C 231,372 229,371 229,368 C 229,357 228,346 227,338 Z"
+              fill="url(#grad-bookmark-right)" />
+        <path d="M 230,339 C 231,348 231,358 231,367"
+              fill="none" stroke="#FFE070" stroke-width="1.8" stroke-linecap="round" opacity="0.7" />
+      </g>
+    </g>
+
+    <!-- 2.4 Spiral-Bound Educational Notepad -->
+    <g id="spiral-notepad">
+      <!-- Shadow Cast by Notepad onto Books (Left Side) -->
+      <path d="M 206,276 L 246,162 L 274,404 L 244,410 Z"
+            fill="#4A154B" opacity="0.26" filter="url(#filter-contact-blur)" />
+
+      <!-- A-Frame Rear Tent Leg (Visible on Left Side Resting on Books) -->
+      <g id="notepad-tent-backing">
+        <!-- Recessed Orange Interior Triangle -->
+        <path d="M 226,158 L 246,282 L 204,284 C 202,284 200,281 201,278 L 221,159 C 222,156 225,156 226,158 Z"
+              fill="url(#grad-notepad-tent)" />
+        <!-- Shadow Inside Tent Crease -->
+        <path d="M 225,160 L 245,282 L 228,283 Z"
+              fill="#8C3800" opacity="0.35" />
+        <!-- Outer Left Fold Bevel Edge -->
+        <path d="M 224,155 C 221,155 218,158 217,162 L 199,277 C 198,281 201,284 205,284 L 210,284 L 227,156 Z"
+              fill="url(#grad-notepad-tent-edge)" />
+      </g>
+
+      <!-- Front Golden-Yellow Backing Board -->
+      <g id="notepad-backing-board">
+        <!-- Main Golden Backing Plate -->
+        <path d="M 234,148 L 434,138 C 443,138 450,144 452,153 L 483,372 C 485,382 478,391 468,392 L 266,416 C 254,417 245,409 243,397 L 218,165 C 217,155 224,148 234,148 Z"
+              fill="url(#grad-notepad-board)" />
+
+        <!-- Lower 3D Beveled Lip of Backing Board -->
+        <path d="M 243,395 L 483,368 C 485,380 478,390 467,392 L 266,416 C 254,417 245,408 243,395 Z"
+              fill="url(#grad-notepad-board-bottom)" />
+
+        <!-- Bright Yellow Highlight Along Left Edge of Backing Board -->
+        <path d="M 230,151 C 223,152 220,157 221,165 L 246,396 C 247,405 253,411 262,411"
+              fill="none" stroke="#FFF085" stroke-width="3" stroke-linecap="round" opacity="0.85" />
+      </g>
+
+      <!-- Shadow Between Paper Block and Backing Board -->
+      <path d="M 254,380 L 478,356 L 480,376 L 262,402 C 254,403 249,396 250,388 Z"
+            fill="#A84900" opacity="0.45" filter="url(#filter-tight-blur)" />
+
+      <!-- Main Cream Paper Sheet & Layered Edge -->
+      <g id="notepad-paper">
+        <!-- Underlying Paper Stack Edge (Adds Convincing Thickness) -->
+        <path d="M 235,148 L 440,138 C 447,138 453,143 454,150 L 483,354 C 484,363 478,371 469,372 L 278,393 C 266,394 257,386 255,374 L 226,161 C 225,154 229,148 235,148 Z"
+              fill="url(#grad-paper-edge)" />
+
+        <!-- Primary Cream Paper Surface -->
+        <path d="M 239,146 L 442,136 C 449,136 455,141 456,148 L 485,350 C 486,359 480,367 471,368 L 281,389 C 269,390 260,382 258,370 L 230,159 C 229,152 233,146 239,146 Z"
+              fill="url(#grad-notepad-paper)" />
+
+        <!-- Subtle Paper Left & Bottom Curve Highlight -->
+        <path d="M 237,148 C 233,149 231,153 232,159 L 260,369 C 262,380 270,387 281,386 L 470,366"
+              fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity="0.9" />
+
+        <!-- Three Punched Binding Holes in Paper -->
+        <!-- Left Hole -->
+        <ellipse cx="282" cy="164" rx="11.5" ry="9.5"
+                 transform="rotate(-8 282 164)"
+                 fill="url(#grad-punch-hole)" />
+        <!-- Middle Hole -->
+        <ellipse cx="337" cy="161" rx="11.5" ry="9.5"
+                 transform="rotate(-8 337 161)"
+                 fill="url(#grad-punch-hole)" />
+        <!-- Right Hole -->
+        <ellipse cx="387" cy="158" rx="11.5" ry="9.5"
+                 transform="rotate(-8 387 158)"
+                 fill="url(#grad-punch-hole)" />
+      </g>
+    </g>
+
+    <!-- 2.5 Three Golden Spiral Binding Loops -->
+    <g id="spiral-binding">
+      <!-- ================= LOOP 1 (LEFT) ================= -->
+      <g id="spiral-loop-1">
+        <!-- Cast Shadow on Paper -->
+        <path d="M 278,144 C 292,144 298,162 288,173 C 282,178 274,174 276,166"
+              fill="#B85D14" opacity="0.28" filter="url(#filter-tight-blur)" />
+        <!-- Back Segment of Ring -->
+        <path d="M 251,146 C 250,130 258,118 270,118 C 278,118 283,124 284,132 L 267,146 Z"
+              fill="url(#grad-spiral-back)" />
+        <!-- Front Tubular Arch of Ring -->
+        <path d="M 251,146 C 251,126 263,115 276,116 C 290,117 299,133 297,152 C 296,165 289,173 280,172 C 274,171 271,165 275,160 C 279,156 280,151 279,144 C 278,136 274,132 269,133 C 265,134 264,140 264,146 Z"
+              fill="url(#grad-spiral-ring)" />
+        <!-- Specular Metallic Highlight -->
+        <path d="M 258,138 C 259,125 268,120 277,122 C 286,125 291,137 289,152 C 288,159 285,164 281,165"
+              fill="none" stroke="#FFF9B0" stroke-width="3.2" stroke-linecap="round" opacity="0.85" />
+      </g>
+
+      <!-- ================= LOOP 2 (MIDDLE) ================= -->
+      <g id="spiral-loop-2">
+        <!-- Cast Shadow on Paper -->
+        <path d="M 333,142 C 347,142 353,160 343,171 C 337,176 329,172 331,164"
+              fill="#B85D14" opacity="0.28" filter="url(#filter-tight-blur)" />
+        <!-- Back Segment of Ring -->
+        <path d="M 307,143 C 306,128 314,116 326,116 C 334,116 339,122 340,130 L 323,143 Z"
+              fill="url(#grad-spiral-back)" />
+        <!-- Front Tubular Arch of Ring -->
+        <path d="M 307,143 C 307,124 319,113 332,114 C 346,115 354,131 352,150 C 351,162 344,170 335,169 C 329,168 326,162 330,157 C 334,153 335,148 334,141 C 333,134 329,130 325,131 C 321,132 320,137 320,143 Z"
+              fill="url(#grad-spiral-ring)" />
+        <!-- Specular Metallic Highlight -->
+        <path d="M 314,136 C 315,123 324,118 333,120 C 342,123 346,135 344,149 C 343,156 340,161 336,162"
+              fill="none" stroke="#FFF9B0" stroke-width="3.2" stroke-linecap="round" opacity="0.85" />
+      </g>
+
+      <!-- ================= LOOP 3 (RIGHT - Partially Under Cap) ================= -->
+      <g id="spiral-loop-3">
+        <!-- Cast Shadow on Paper -->
+        <path d="M 382,140 C 396,140 402,156 392,167 C 386,172 378,168 380,160"
+              fill="#9E4210" opacity="0.32" filter="url(#filter-tight-blur)" />
+        <!-- Visible Lower & Arch Portion of 3rd Golden Ring -->
+        <path d="M 366,140 C 367,124 377,114 389,115 C 401,116 408,131 405,148 C 403,160 395,167 386,166 C 380,165 377,159 381,154 C 385,150 387,145 386,139 C 385,133 381,130 377,131 C 374,132 373,136 373,140 Z"
+              fill="url(#grad-spiral-ring)" />
+        <!-- Specular Metallic Highlight -->
+        <path d="M 394,136 C 395,146 392,155 387,159"
+              fill="none" stroke="#FFF79E" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+      </g>
+    </g>
+
+    <!-- 2.6 Editable Class 9th Label (3 Separate <text> Elements) -->
+    <g id="class-label" transform="translate(356, 286) rotate(-5.6)">
+      <!-- 1. "Class" Heading -->
+      <text id="class-title"
+            class="label-class"
+            x="-4"
+            y="-64"
+            text-anchor="middle"
+            filter="url(#filter-text-purple-3d)">Class</text>
+
+      <!-- 2. Dominant Class Number ("9") -->
+      <text id="class-number"
+            class="label-number"
+            x="2"
+            y="42"
+            text-anchor="end"
+            filter="url(#filter-text-magenta-3d)">9</text>
+
+      <!-- 3. Ordinal Suffix ("th") -->
+      <text id="class-suffix"
+            class="label-suffix"
+            x="8"
+            y="-2"
+            text-anchor="start"
+            filter="url(#filter-text-magenta-3d)">th</text>
+    </g>
+
+    <!-- 2.7 Purple Graduation Cap -->
+    <g id="graduation-cap">
+      <!-- Soft Ambient Shadow Cast by Cap onto Notepad & Backdrop -->
+      <path d="M 356,144 L 468,140 L 474,204 C 440,206 385,188 356,162 Z"
+            fill="#6B1F4E" opacity="0.28" filter="url(#filter-contact-blur)" />
+
+      <!-- Dark Purple Underside of Mortarboard Wings -->
+      <path id="cap-board-underside"
+            d="M 352,102 L 444,92 L 528,158 C 526,167 516,171 502,169 L 372,126 C 358,120 351,111 352,102 Z"
+            fill="url(#grad-cap-under)" />
+
+      <!-- Cylindrical/Conical Skullcap -->
+      <g id="cap-skullcap">
+        <path d="M 382,110 L 486,146 L 467,188 C 464,193 456,194 446,192 C 420,186 388,172 368,158 C 362,154 360,148 363,142 Z"
+              fill="url(#grad-cap-skull)" />
+        <!-- Subtle Bottom Rim Highlight on Skullcap -->
+        <path d="M 364,151 C 384,166 420,181 452,188 C 459,190 464,189 466,186"
+              fill="none" stroke="#9A62F2" stroke-width="2" stroke-linecap="round" opacity="0.55" />
+      </g>
+
+      <!-- Upper Diamond Mortarboard (Top Plane + Rounded 3D Front Bevel) -->
+      <g id="cap-mortarboard">
+        <!-- Top Perspective Diamond Surface -->
+        <path d="M 354,94 C 378,86 418,79 445,77 C 455,76 463,79 470,86 C 490,105 514,132 528,150 C 532,155 529,161 521,159 C 472,144 404,120 356,102 C 349,99 349,95 354,94 Z"
+              fill="url(#grad-cap-top)" />
+
+        <!-- Thick 3D Rounded Front Rim Edge of Mortarboard -->
+        <path d="M 351,95 C 355,93 361,95 369,98 C 416,115 476,137 524,152 C 529,154 532,157 530,162 C 528,167 521,168 513,165 C 464,149 405,127 357,108 C 350,105 347,98 351,95 Z"
+              fill="url(#grad-cap-rim)" />
+
+        <!-- Bright Lavender Specular Ridge Along Mortarboard Rim -->
+        <path d="M 355,96 C 404,114 468,137 524,155"
+              fill="none" stroke="#DFC4FF" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+      </g>
+    </g>
+
+    <!-- 2.8 Golden Tassel -->
+    <g id="golden-tassel">
+      <!-- Tassel Shadow on Cap and Backdrop -->
+      <path d="M 452,110 C 474,126 492,144 494,164 L 494,226"
+            fill="none" stroke="#3D126E" stroke-width="6" stroke-linecap="round" opacity="0.22" filter="url(#filter-tight-blur)" />
+
+      <!-- Center Attachment Button on Cap -->
+      <ellipse cx="452" cy="107" rx="8.5" ry="6.5"
+               transform="rotate(18 452 107)"
+               fill="url(#grad-tassel-button)" />
+
+      <!-- Curved Golden Cord -->
+      <path d="M 454,108 C 470,119 486,133 493,146 C 497,154 496,168 495,185"
+            fill="none" stroke="url(#grad-tassel-cord)" stroke-width="6.5" stroke-linecap="round" />
+      <!-- Cord Specular Highlight -->
+      <path d="M 455,107 C 470,118 485,131 492,144 C 495,151 495,165 494,182"
+            fill="none" stroke="#FFF79E" stroke-width="2" stroke-linecap="round" opacity="0.85" />
+
+      <!-- Tassel Collar Ring/Node -->
+      <rect x="484" y="180" width="21" height="11" rx="5.5" ry="5.5"
+            fill="url(#grad-tassel-button)" />
+      <path d="M 487,184 L 501,184"
+            fill="none" stroke="#FFF9B0" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+
+      <!-- Tassel Flared Fringe Skirt -->
+      <path d="M 486,190 L 503,190 C 507,200 511,214 511,222 C 511,226 507,228 503,227 C 501,229 497,229 494,228 C 491,229 487,229 485,227 C 481,228 477,225 478,221 C 479,212 482,199 486,190 Z"
+            fill="url(#grad-tassel-fringe)" />
+
+      <!-- Tassel Ribbed Detail Lines -->
+      <path d="M 491,193 L 488,225 M 496,193 L 496,226 M 500,193 L 503,225"
+            fill="none" stroke="#E08400" stroke-width="1.6" stroke-linecap="round" opacity="0.55" />
+      <path d="M 486,194 L 482,221 M 493,193 L 492,224"
+            fill="none" stroke="#FFF599" stroke-width="1.6" stroke-linecap="round" opacity="0.7" />
+    </g>
+
+    <!-- 2.9 Purple Pencil Holder (Back Opening & Shadow) + 2.10 Pencils + Holder Front -->
+    <!-- Shadow Cast by Pencils & Holder onto Notepad Lower-Right -->
+    <path d="M 442,272 L 472,268 L 490,398 L 440,402 Z"
+          fill="#6E2820" opacity="0.2" filter="url(#filter-contact-blur)" />
+
+    <!-- 2.10 Two Writing Pencils (Placed Between Cup Back Wall & Cup Front Body) -->
+    <g id="pencils">
+      <!-- Inner Hollow of Cup Opening (Rendered Behind Pencils) -->
+      <ellipse cx="482" cy="336" rx="35" ry="9.5"
+               fill="url(#grad-cup-inside)"
+               stroke="url(#grad-cup-rim)" stroke-width="3" />
+
+      <!-- ================= PENCIL 1: GOLDEN-YELLOW PENCIL (LEFT) ================= -->
+      <g id="pencil-yellow">
+        <!-- Left Facet -->
+        <path d="M 452,292 L 460,295 L 468,354 L 459,352 Z"
+              fill="url(#grad-pencil1-left)" />
+        <!-- Middle Facet -->
+        <path d="M 460,295 L 471,294 L 479,354 L 468,354 Z"
+              fill="url(#grad-pencil1-mid)" />
+        <!-- Right Facet -->
+        <path d="M 471,294 L 479,290 L 487,352 L 479,354 Z"
+              fill="url(#grad-pencil1-right)" />
+
+        <!-- Sharpened Wooden Cone -->
+        <path d="M 452,292 L 462,262 C 464,259 467,259 469,262 L 479,290 C 475,294 471,295 466,292 C 463,296 458,296 452,292 Z"
+              fill="url(#grad-pencil1-wood)" />
+
+        <!-- Dark Pointed Graphite Tip -->
+        <path d="M 459,272 L 463,260 C 464,257 467,257 468,260 L 472,272 C 468,274 463,274 459,272 Z"
+              fill="url(#grad-pencil1-tip)" />
+        <!-- Graphite Tip Highlight -->
+        <path d="M 462,269 L 465,260"
+              fill="none" stroke="#9B86AD" stroke-width="1.5" stroke-linecap="round" opacity="0.75" />
+      </g>
+
+      <!-- ================= PENCIL 2: PINK/RED PENCIL (RIGHT) ================= -->
+      <g id="pencil-pink">
+        <!-- Left Pink Facet -->
+        <path d="M 495,303 L 503,307 L 484,354 L 475,352 Z"
+              fill="url(#grad-pencil2-left)" />
+        <!-- Middle Pink Facet -->
+        <path d="M 503,307 L 512,311 L 494,355 L 484,354 Z"
+              fill="url(#grad-pencil2-mid)" />
+        <!-- Right Pink Facet -->
+        <path d="M 512,311 L 519,314 L 502,354 L 494,355 Z"
+              fill="url(#grad-pencil2-right)" />
+
+        <!-- Grey/Silver Upper Ferrule Band -->
+        <path d="M 501,289 L 525,300 L 519,314 L 495,303 Z"
+              fill="url(#grad-pencil2-silver)" />
+        <!-- Ferrule Ridges & Specular Shine -->
+        <path d="M 499,294 L 523,305 M 497,299 L 521,310"
+              fill="none" stroke="#8C93A1" stroke-width="1.2" opacity="0.65" />
+        <path d="M 503,290 L 497,303"
+              fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.9" />
+
+        <!-- Rounded Upper Coral-Red Section with Pointed Contour Detail -->
+        <path d="M 501,289 L 506,279 C 508,275 514,274 520,277 C 527,280 531,285 529,290 L 525,300 Z"
+              fill="url(#grad-pencil2-top)" />
+        <!-- Subtle Glossy Highlight on Upper Section -->
+        <path d="M 506,287 L 509,280 C 511,278 514,278 517,279"
+              fill="none" stroke="#FFC2AD" stroke-width="2" stroke-linecap="round" opacity="0.75" />
+      </g>
+    </g>
+
+    <!-- 2.9 Purple Pencil Holder (Front Cylindrical Body Overlapping Pencils) -->
+    <g id="pencil-holder">
+      <!-- Main Cylindrical Cup Body -->
+      <path d="M 445,336 C 445,342 462,347 482,347 C 502,347 519,342 519,336 L 513,399 C 512,408 499,414 482,414 C 465,414 452,408 451,399 Z"
+            fill="url(#grad-cup-body)" />
+
+      <!-- Front Upper Rim Lip -->
+      <path d="M 445,336 C 445,342 462,347 482,347 C 502,347 519,342 519,336"
+            fill="none" stroke="url(#grad-cup-rim)" stroke-width="3.4" stroke-linecap="round" />
+
+      <!-- Vertical Glossy Plastic Highlight on Cup Left-Center -->
+      <path d="M 456,348 L 459,398"
+            fill="none" stroke="#B98EFF" stroke-width="5" stroke-linecap="round" opacity="0.38" />
+      <path d="M 451,345 L 455,396"
+            fill="none" stroke="#DABFFF" stroke-width="2" stroke-linecap="round" opacity="0.45" />
+    </g>
+
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 3. COMPACT LAYOUT (Deliberately Scaled & Tucked for <=180px Widths)   -->
+  <!--    Reuses the exact master semantic groups via <use> so future edits  -->
+  <!--    to #class-label automatically propagate to both compositions!      -->
+  <!-- ===================================================================== -->
+  <g id="compact-layout">
+    <!-- Enlarged Supporting Surface to Maximize Area at 122x100px -->
+    <use xlink:href="#background-surface" href="#background-surface"
+         transform="translate(320, 256) scale(1.13) translate(-320, -256)" />
+
+    <!-- Tucked & Enlarged Decorative Rays -->
+    <use xlink:href="#decorative-rays" href="#decorative-rays"
+         transform="translate(320, 256) scale(1.15) translate(-304, -246)" />
+
+    <!-- Slightly Tucked & Enlarged Educational Books -->
+    <use xlink:href="#educational-books" href="#educational-books"
+         transform="translate(320, 256) scale(1.15) translate(-308, -258)" />
+
+    <!-- Dominant Central Spiral Notepad & Binding -->
+    <use xlink:href="#spiral-notepad" href="#spiral-notepad"
+         transform="translate(320, 256) scale(1.16) translate(-322, -256)" />
+    <use xlink:href="#spiral-binding" href="#spiral-binding"
+         transform="translate(320, 256) scale(1.16) translate(-322, -256)" />
+
+    <!-- Boosted Class 9th Label for Maximum Readability at 100px Height -->
+    <use xlink:href="#class-label" href="#class-label"
+         transform="translate(320, 256) scale(1.20) translate(-322, -256)" />
+
+    <!-- Tucked Graduation Cap & Tassel -->
+    <use xlink:href="#graduation-cap" href="#graduation-cap"
+         transform="translate(320, 256) scale(1.14) translate(-328, -252)" />
+    <use xlink:href="#golden-tassel" href="#golden-tassel"
+         transform="translate(320, 256) scale(1.14) translate(-328, -252)" />
+
+    <!-- Tucked Pencils & Pencil Holder -->
+    <use xlink:href="#pencils" href="#pencils"
+         transform="translate(320, 256) scale(1.15) translate(-330, -258)" />
+    <use xlink:href="#pencil-holder" href="#pencil-holder"
+         transform="translate(320, 256) scale(1.15) translate(-330, -258)" />
+  </g>
+</svg>
