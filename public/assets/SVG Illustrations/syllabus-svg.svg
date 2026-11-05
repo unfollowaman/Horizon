@@ -1,0 +1,830 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+  <!-- ===================================================================== -->
+  <!-- 1. DEFINITIONS: GRADIENTS & 3D LIGHTING FILTERS                       -->
+  <!-- ===================================================================== -->
+  <defs id="definitions">
+    <!-- Supporting Rounded-Square Surface Shadow -->
+    <filter id="surface-drop-shadow" x="-20%" y="-20%" width="140%" height="145%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#3B1968" flood-opacity="0.10" />
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#53238C" flood-opacity="0.05" />
+    </filter>
+
+    <!-- Soft Ambient Floor Blur -->
+    <filter id="ambient-floor-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="11" />
+    </filter>
+
+    <!-- Crisp Contact Shadow Blur -->
+    <filter id="contact-shadow-blur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="5.5" />
+    </filter>
+
+    <!-- Tight Occlusion Blur -->
+    <filter id="tight-occlusion-blur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Soft Highlight Blur -->
+    <filter id="soft-specular-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.6" />
+    </filter>
+
+    <!-- Supporting Surface Gradients -->
+    <linearGradient id="bg-outer-rim" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="55%" stop-color="#FAF5FF" />
+      <stop offset="100%" stop-color="#EDE2FA" />
+    </linearGradient>
+
+    <radialGradient id="bg-inner-surface" cx="62%" cy="34%" r="72%" fx="58%" fy="28%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="48%" stop-color="#FDF9FF" />
+      <stop offset="82%" stop-color="#F7EEFC" />
+      <stop offset="100%" stop-color="#F1E3FA" />
+    </radialGradient>
+
+    <linearGradient id="bg-bottom-pink-glow" x1="20%" y1="40%" x2="45%" y2="95%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="65%" stop-color="#F8E4F8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#F2D5F4" stop-opacity="0.75" />
+    </linearGradient>
+
+    <!-- Decorative Magenta Rays Gradients -->
+    <linearGradient id="ray-body-grad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FF58A6" />
+      <stop offset="42%" stop-color="#E91E83" />
+      <stop offset="85%" stop-color="#C81066" />
+      <stop offset="100%" stop-color="#A50950" />
+    </linearGradient>
+
+    <linearGradient id="ray-highlight-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB8D9" stop-opacity="0.85" />
+      <stop offset="60%" stop-color="#FF78B7" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#E91E83" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Lower Book (Bright Magenta) Gradients -->
+    <linearGradient id="lower-book-spine-left" x1="0%" y1="15%" x2="100%" y2="85%">
+      <stop offset="0%" stop-color="#FF63AC" />
+      <stop offset="30%" stop-color="#F4298D" />
+      <stop offset="78%" stop-color="#D81770" />
+      <stop offset="100%" stop-color="#B80E5B" />
+    </linearGradient>
+
+    <linearGradient id="lower-book-cover-right" x1="0%" y1="20%" x2="100%" y2="75%">
+      <stop offset="0%" stop-color="#D4156D" />
+      <stop offset="55%" stop-color="#AE0C56" />
+      <stop offset="100%" stop-color="#7D063C" />
+    </linearGradient>
+
+    <linearGradient id="lower-book-rim-light" x1="0%" y1="0%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#FF99C9" />
+      <stop offset="65%" stop-color="#FF55A4" />
+      <stop offset="100%" stop-color="#D81770" />
+    </linearGradient>
+
+    <!-- Upper Book (Royal Purple) Gradients -->
+    <linearGradient id="upper-book-top-cover" x1="8%" y1="35%" x2="94%" y2="62%">
+      <stop offset="0%" stop-color="#B97AFF" />
+      <stop offset="45%" stop-color="#9E55F7" />
+      <stop offset="76%" stop-color="#7830D6" />
+      <stop offset="100%" stop-color="#5218A1" />
+    </linearGradient>
+
+    <linearGradient id="upper-book-spine-left" x1="0%" y1="10%" x2="100%" y2="85%">
+      <stop offset="0%" stop-color="#BA7EFF" />
+      <stop offset="32%" stop-color="#9449F0" />
+      <stop offset="80%" stop-color="#7135C9" />
+      <stop offset="100%" stop-color="#5922AD" />
+    </linearGradient>
+
+    <linearGradient id="upper-book-cover-right" x1="0%" y1="20%" x2="100%" y2="75%">
+      <stop offset="0%" stop-color="#6B29C2" />
+      <stop offset="55%" stop-color="#4F189B" />
+      <stop offset="100%" stop-color="#350B70" />
+    </linearGradient>
+
+    <linearGradient id="upper-book-rim-light" x1="0%" y1="0%" x2="100%" y2="40%">
+      <stop offset="0%" stop-color="#E2C4FF" />
+      <stop offset="65%" stop-color="#BA7FFF" />
+      <stop offset="100%" stop-color="#7B37D9" />
+    </linearGradient>
+
+    <!-- Book Cream Pages Gradients -->
+    <linearGradient id="pages-left-grad" x1="0%" y1="10%" x2="95%" y2="85%">
+      <stop offset="0%" stop-color="#FFF9F0" />
+      <stop offset="45%" stop-color="#FDEBD4" />
+      <stop offset="100%" stop-color="#F4D3AF" />
+    </linearGradient>
+
+    <linearGradient id="pages-right-grad" x1="0%" y1="25%" x2="95%" y2="75%">
+      <stop offset="0%" stop-color="#F2C69D" />
+      <stop offset="48%" stop-color="#DC9F71" />
+      <stop offset="100%" stop-color="#B06C44" />
+    </linearGradient>
+
+    <!-- Golden Bookmarks Gradients -->
+    <linearGradient id="bookmark-front-grad" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#FFE670" />
+      <stop offset="35%" stop-color="#FFC928" />
+      <stop offset="85%" stop-color="#F5A623" />
+      <stop offset="100%" stop-color="#E0860B" />
+    </linearGradient>
+
+    <linearGradient id="bookmark-side-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#A64B00" />
+    </linearGradient>
+
+    <!-- Clipboard Backing (Royal Purple) Gradients -->
+    <linearGradient id="clipboard-side-extrusion" x1="10%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#9A5BF5" />
+      <stop offset="28%" stop-color="#6B28C9" />
+      <stop offset="72%" stop-color="#481498" />
+      <stop offset="100%" stop-color="#380C7A" />
+    </linearGradient>
+
+    <linearGradient id="clipboard-front-surface" x1="12%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#9E5FF8" />
+      <stop offset="28%" stop-color="#7B39DC" />
+      <stop offset="68%" stop-color="#6524C5" />
+      <stop offset="100%" stop-color="#4E16A0" />
+    </linearGradient>
+
+    <linearGradient id="clipboard-edge-highlight" x1="0%" y1="0%" x2="65%" y2="95%">
+      <stop offset="0%" stop-color="#E7CFFF" stop-opacity="0.95" />
+      <stop offset="35%" stop-color="#C18DFF" stop-opacity="0.75" />
+      <stop offset="75%" stop-color="#8B48E8" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#6524C5" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Clipboard Paper (Warm Cream) Gradients -->
+    <linearGradient id="paper-side-thickness" x1="5%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%" stop-color="#FCEAD8" />
+      <stop offset="55%" stop-color="#F2CBA7" />
+      <stop offset="100%" stop-color="#DFAC82" />
+    </linearGradient>
+
+    <linearGradient id="paper-front-surface" x1="18%" y1="8%" x2="86%" y2="92%">
+      <stop offset="0%" stop-color="#FFFDFB" />
+      <stop offset="45%" stop-color="#FFF7EC" />
+      <stop offset="82%" stop-color="#FDECD6" />
+      <stop offset="100%" stop-color="#F8DEC0" />
+    </linearGradient>
+
+    <linearGradient id="paper-curl-underside" x1="15%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#FFF7EC" />
+      <stop offset="35%" stop-color="#F8CEAA" />
+      <stop offset="75%" stop-color="#EBA87D" />
+      <stop offset="100%" stop-color="#D98B5F" />
+    </linearGradient>
+
+    <linearGradient id="paper-curl-shadow" x1="85%" y1="85%" x2="10%" y2="10%">
+      <stop offset="0%" stop-color="#C98253" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#E5A87E" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#FFF7EC" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Golden Clipboard Clip Gradients -->
+    <linearGradient id="clip-back-extrusion" x1="0%" y1="10%" x2="95%" y2="90%">
+      <stop offset="0%" stop-color="#FFE066" />
+      <stop offset="35%" stop-color="#F59E0B" />
+      <stop offset="85%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+
+    <linearGradient id="clip-front-body" x1="18%" y1="8%" x2="82%" y2="94%">
+      <stop offset="0%" stop-color="#FFE875" />
+      <stop offset="38%" stop-color="#FFC928" />
+      <stop offset="78%" stop-color="#F7B11E" />
+      <stop offset="100%" stop-color="#EA9010" />
+    </linearGradient>
+
+    <linearGradient id="clip-bottom-lip" x1="0%" y1="0%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#E07D06" />
+      <stop offset="100%" stop-color="#C46200" />
+    </linearGradient>
+
+    <linearGradient id="clip-hole-inner" x1="0%" y1="15%" x2="95%" y2="85%">
+      <stop offset="0%" stop-color="#B45309" />
+      <stop offset="55%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <linearGradient id="clip-top-specular" x1="10%" y1="0%" x2="85%" y2="75%">
+      <stop offset="0%" stop-color="#FFFBE0" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#FFE985" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#FFC928" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Syllabus Heading & Checklist Gradients -->
+    <linearGradient id="syllabus-text-grad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#7635D9" />
+      <stop offset="50%" stop-color="#5C20B8" />
+      <stop offset="100%" stop-color="#461396" />
+    </linearGradient>
+
+    <linearGradient id="checkbox-frame-grad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#B685FF" />
+      <stop offset="45%" stop-color="#8748E3" />
+      <stop offset="100%" stop-color="#6324BE" />
+    </linearGradient>
+
+    <linearGradient id="checkbox-well-grad" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#EFE4FC" />
+      <stop offset="55%" stop-color="#FAF3FC" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <linearGradient id="checkmark-body-grad" x1="10%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#FF59A6" />
+      <stop offset="45%" stop-color="#E91E83" />
+      <stop offset="100%" stop-color="#C20E63" />
+    </linearGradient>
+
+    <linearGradient id="checkmark-specular-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFC2DF" stop-opacity="0.9" />
+      <stop offset="65%" stop-color="#FF74B5" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#E91E83" stop-opacity="0" />
+    </linearGradient>
+
+    <linearGradient id="writing-line-grad" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#D4B5FF" />
+      <stop offset="50%" stop-color="#B589F6" />
+      <stop offset="100%" stop-color="#9664E3" />
+    </linearGradient>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- 2. SUPPORTING ROUNDED-SQUARE SURFACE                                  -->
+  <!-- ===================================================================== -->
+  <g id="background-surface">
+    <!-- Outer Neumorphic Rim & Soft Drop Shadow -->
+    <rect x="46" y="38" width="420" height="426" rx="96" ry="96"
+          fill="url(#bg-outer-rim)"
+          stroke="#F4EDFC" stroke-width="1.5"
+          filter="url(#surface-drop-shadow)" />
+
+    <!-- Slightly Inflated Inner Pillow Surface -->
+    <rect x="53" y="45" width="406" height="412" rx="90" ry="90"
+          fill="url(#bg-inner-surface)" />
+
+    <!-- Subtle Warm Pink/Lavender Ambient Shading in Lower-Left -->
+    <rect x="53" y="45" width="406" height="412" rx="90" ry="90"
+          fill="url(#bg-bottom-pink-glow)" />
+
+    <!-- Delicate Inner Specular Edge Highlight -->
+    <rect x="54" y="46" width="404" height="410" rx="89" ry="89"
+          fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.85" />
+
+    <!-- Ambient Floor Shadows Under Books & Clipboard -->
+    <ellipse cx="164" cy="422" rx="82" ry="20"
+             fill="#991B6B" opacity="0.22"
+             filter="url(#ambient-floor-blur)" />
+    <path d="M 198 424 L 448 384 C 460 388, 462 404, 444 412 L 236 448 C 212 451, 194 438, 198 424 Z"
+          fill="#3E127A" opacity="0.32"
+          filter="url(#ambient-floor-blur)" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 3. DECORATIVE MAGENTA RAYS (UPPER-LEFT)                               -->
+  <!-- ===================================================================== -->
+  <g id="decorative-rays">
+    <!-- Ray 1: Lower-Left Ray -->
+    <g id="ray-1">
+      <!-- Contact Shadow -->
+      <path d="M 92 126 C 83 123, 79 136, 88 140 L 127 151 C 134 153, 137 143, 130 140 Z"
+            fill="#C21868" opacity="0.26" filter="url(#tight-occlusion-blur)" />
+      <!-- 3D Lower Bevel -->
+      <path d="M 93 123 C 82 120, 77 135, 88 139 L 127 150 C 134 152, 138 142, 131 138 Z"
+            fill="#A80A52" />
+      <!-- Main Glossy Ray Body -->
+      <path d="M 94 121 C 83 118, 78 133, 89 137 L 128 148 C 135 150, 139 140, 132 136 Z"
+            fill="url(#ray-body-grad)" />
+      <!-- Upper-Left Specular Highlight -->
+      <path d="M 94 123.5 C 88 122, 85 128, 91 130.5 L 126 141.5 C 130 142.5, 131 138, 128 136.5 Z"
+            fill="url(#ray-highlight-grad)" />
+    </g>
+
+    <!-- Ray 2: Middle Diagonal Ray -->
+    <g id="ray-2">
+      <!-- Contact Shadow -->
+      <path d="M 127 84 C 119 76, 108 87, 116 95 L 143 123 C 149 129, 157 120, 152 114 Z"
+            fill="#C21868" opacity="0.26" filter="url(#tight-occlusion-blur)" />
+      <!-- 3D Lower Bevel -->
+      <path d="M 128 81 C 119 73, 107 85, 116 94 L 144 121 C 150 127, 158 119, 153 112 Z"
+            fill="#A80A52" />
+      <!-- Main Glossy Ray Body -->
+      <path d="M 129 79 C 120 71, 108 83, 117 92 L 145 119 C 151 125, 159 117, 154 110 Z"
+            fill="url(#ray-body-grad)" />
+      <!-- Upper-Left Specular Highlight -->
+      <path d="M 127 81.5 C 122 77, 116 82, 121 87 L 145 112 C 148 115, 152 112, 149 108.5 Z"
+            fill="url(#ray-highlight-grad)" />
+    </g>
+
+    <!-- Ray 3: Upper-Right Steep Ray -->
+    <g id="ray-3">
+      <!-- Contact Shadow -->
+      <path d="M 176 69 C 174 58, 158 61, 161 72 L 170 109 C 172 116, 183 114, 182 106 Z"
+            fill="#C21868" opacity="0.26" filter="url(#tight-occlusion-blur)" />
+      <!-- 3D Lower Bevel -->
+      <path d="M 176 66 C 174 55, 157 59, 160 70 L 170 107 C 172 114, 183 112, 182 104 Z"
+            fill="#A80A52" />
+      <!-- Main Glossy Ray Body -->
+      <path d="M 177 64 C 175 53, 158 57, 161 68 L 171 105 C 173 112, 184 110, 183 102 Z"
+            fill="url(#ray-body-grad)" />
+      <!-- Upper-Left Specular Highlight -->
+      <path d="M 172 64 C 170 58, 163 60, 164.5 66.5 L 172.5 99 C 173.5 103, 178 102, 177.5 98 Z"
+            fill="url(#ray-highlight-grad)" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 4. LOWER BOOK (BRIGHT MAGENTA/PINK HARDCOVER)                         -->
+  <!-- ===================================================================== -->
+  <g id="lower-book">
+    <!-- Floor Contact Shadow Under Lower Book -->
+    <path d="M 82 404 L 170 436 L 234 411 L 170 390 Z"
+          fill="#6E0938" opacity="0.38" filter="url(#tight-occlusion-blur)" />
+
+    <!-- Right-Side Shaded Magenta Cover Flaps (Top & Bottom) -->
+    <path d="M 170 370 L 224 350 L 224 362 L 170 382 Z"
+          fill="url(#lower-book-cover-right)" />
+    <path d="M 170 417 L 230 394 L 232 408 L 174 432 C 171 433.5, 170 433.5, 170 433.5 Z"
+          fill="url(#lower-book-cover-right)" />
+
+    <!-- Cream Page Block: Right Shaded Plane -->
+    <path d="M 170 380 L 224 360 L 228 397 L 170 419 Z"
+          fill="url(#pages-right-grad)" />
+    <!-- Right Page Grooves -->
+    <path d="M 170 390 L 225 370 M 170 399 L 226 379 M 170 408 L 227 388"
+          stroke="#B5744A" stroke-width="1.2" opacity="0.45" fill="none" />
+
+    <!-- Cream Page Block: Left Lit Plane -->
+    <path d="M 92 353 L 170 380 L 170 419 L 92 391 C 86 388, 86 356, 92 353 Z"
+          fill="url(#pages-left-grad)" />
+    <!-- Left Page Grooves -->
+    <path d="M 90 363 L 170 390 M 90 372 L 170 399 M 90 381 L 170 408"
+          stroke="#E5BC92" stroke-width="1.3" opacity="0.55" fill="none" />
+    <!-- Center Page Corner Crease Highlight -->
+    <line x1="170" y1="380" x2="170" y2="419" stroke="#FFFDF9" stroke-width="1.5" opacity="0.75" />
+    <!-- Subtle Shadow Under Upper Lip of Lower Book -->
+    <path d="M 90 353 L 170 380 L 224 360 L 224 365 L 170 385 L 90 358 Z"
+          fill="#9E5231" opacity="0.24" />
+
+    <!-- Left-Side & Curved C-Spine Magenta Cover Wrap -->
+    <path d="M 88 339 L 170 368 L 170 381 L 94 355 C 88 353, 88 388, 94 390 L 170 417 L 170 433.5 C 167 433.5, 164 432.5, 161 431.5 L 86 404 C 77 400, 77 345, 88 339 Z"
+          fill="url(#lower-book-spine-left)" />
+
+    <!-- Glossy Specular Rim Highlights on Lower Book Cover -->
+    <path d="M 89 341.5 L 170 370 L 218 352.5"
+          fill="none" stroke="url(#lower-book-rim-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 93 391.5 L 170 418.5 L 226 396.5"
+          fill="none" stroke="url(#lower-book-rim-light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+    <path d="M 83 349 C 80 364, 80 384, 83 396"
+          fill="none" stroke="#FF8AC2" stroke-width="2.5" stroke-linecap="round" opacity="0.65" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 5. UPPER BOOK (ROYAL PURPLE HARDCOVER)                                -->
+  <!-- ===================================================================== -->
+  <g id="upper-book">
+    <!-- Contact Shadow Cast by Upper Book onto Lower Book -->
+    <path d="M 84 345 L 170 375 L 222 356 L 222 363 L 170 383 L 84 352 Z"
+          fill="#4A072E" opacity="0.35" filter="url(#tight-occlusion-blur)" />
+
+    <!-- Right-Side Shaded Purple Bottom Cover Flap -->
+    <path d="M 170 358 L 218 341 L 220 355 L 174 372 C 171 373, 170 373, 170 373 Z"
+          fill="url(#upper-book-cover-right)" />
+
+    <!-- Cream Page Block: Right Shaded Plane -->
+    <path d="M 170 321 L 214 306 L 218 343 L 170 360 Z"
+          fill="url(#pages-right-grad)" />
+    <!-- Right Page Grooves -->
+    <path d="M 170 331 L 215 315 M 170 340 L 216 324 M 170 349 L 217 333"
+          stroke="#B5744A" stroke-width="1.2" opacity="0.45" fill="none" />
+
+    <!-- Cream Page Block: Left Lit Plane -->
+    <path d="M 92 294 L 170 321 L 170 360 L 92 333 C 86 330, 86 297, 92 294 Z"
+          fill="url(#pages-left-grad)" />
+    <!-- Left Page Grooves -->
+    <path d="M 90 304 L 170 331 M 90 313 L 170 340 M 90 322 L 170 349"
+          stroke="#E5BC92" stroke-width="1.3" opacity="0.55" fill="none" />
+    <!-- Center Page Corner Crease Highlight -->
+    <line x1="170" y1="321" x2="170" y2="360" stroke="#FFFDF9" stroke-width="1.5" opacity="0.75" />
+    <!-- Shadow Under Top Cover Overhang -->
+    <path d="M 90 294 L 170 321 L 214 306 L 214 312 L 170 327 L 90 300 Z"
+          fill="#8C482B" opacity="0.28" />
+
+    <!-- Top Cover Plane (Tilted Royal-Purple Hardcover Top) -->
+    <path d="M 85 281 L 194 248 L 214 294 L 170 309 Z"
+          fill="url(#upper-book-top-cover)" />
+
+    <!-- Top Cover Right-Side Front Lip -->
+    <path d="M 170 309 L 214 294 L 214 307 L 170 322 Z"
+          fill="url(#upper-book-cover-right)" />
+
+    <!-- Left-Side & Curved C-Spine Royal Purple Cover Wrap -->
+    <path d="M 85 281 L 170 309 L 170 322 L 94 296 C 88 294, 88 329, 94 331 L 170 358 L 170 373 C 167 373, 164 372, 161 371 L 86 345 C 77 341, 77 286, 85 281 Z"
+          fill="url(#upper-book-spine-left)" />
+
+    <!-- Glossy Specular Rim Highlights on Upper Book Cover -->
+    <path d="M 86 282 L 170 310 L 210 296"
+          fill="none" stroke="url(#upper-book-rim-light)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 93 332.5 L 170 359.5 L 216 342.5"
+          fill="none" stroke="url(#upper-book-rim-light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
+    <path d="M 83 291 C 80 306, 80 325, 83 337"
+          fill="none" stroke="#D2A6FF" stroke-width="2.5" stroke-linecap="round" opacity="0.65" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 6. GOLDEN BOOKMARKS                                                   -->
+  <!-- ===================================================================== -->
+  <g id="golden-bookmarks">
+    <!-- Left Bookmark (On Left-Facing Page Plane) -->
+    <g id="bookmark-left">
+      <!-- Contact Shadow on Book Covers -->
+      <path d="M 122 332 L 146 340 L 141 377 L 128 368 L 116 373 Z"
+            fill="#4A0E2E" opacity="0.32" filter="url(#tight-occlusion-blur)" />
+      <!-- 3D Right Side Thickness -->
+      <path d="M 142 337 C 145 339, 146 343, 145 348 L 140 374 L 135 372 L 139 345 L 122 332 L 126 330 Z"
+            fill="url(#bookmark-side-grad)" />
+      <!-- Main Golden Ribbon Body -->
+      <path d="M 122 331 L 141 337 C 143 339, 143 343, 142 348 L 136 373 L 126 363 L 115 369 L 120 341 C 121 336, 121 333, 122 331 Z"
+            fill="url(#bookmark-front-grad)" />
+      <!-- Ribbon Knee Bend Specular Highlight -->
+      <path d="M 121 337 L 140 343"
+            stroke="#FFF4A3" stroke-width="2.2" stroke-linecap="round" opacity="0.85" />
+    </g>
+
+    <!-- Right Bookmark (On Right-Facing Page Plane) -->
+    <g id="bookmark-right">
+      <!-- Contact Shadow on Book Covers -->
+      <path d="M 173 345 L 194 338 L 197 381 L 188 376 L 179 384 Z"
+            fill="#3B0824" opacity="0.36" filter="url(#tight-occlusion-blur)" />
+      <!-- 3D Left/Inner Side Thickness -->
+      <path d="M 172 343 L 177 348 L 179 381 L 175 379 L 173 349 Z"
+            fill="url(#bookmark-side-grad)" />
+      <!-- Main Golden Ribbon Body -->
+      <path d="M 172 343 L 188 337 C 192 339, 194 343, 194 348 L 194 378 L 186 372 L 179 381 L 177 349 C 176 346, 174 344, 172 343 Z"
+            fill="url(#bookmark-front-grad)" />
+      <!-- Ribbon Knee Bend Specular Highlight -->
+      <path d="M 177 347 L 192 342"
+            stroke="#FFF4A3" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 7. MAIN OBJECT — EDUCATIONAL CLIPBOARD BACKING                        -->
+  <!-- ===================================================================== -->
+  <g id="clipboard-backing">
+    <!-- Ambient Occlusion Shadow Cast by Clipboard onto Books & Supporting Surface -->
+    <path d="M 166 152 L 216 436 C 220 446, 236 448, 256 444 L 446 408 L 404 122 Z"
+          fill="#260754" opacity="0.38" filter="url(#contact-shadow-blur)" />
+
+    <!-- 3D Extruded Purple Backing Rim (Left & Bottom Depth Wall) -->
+    <path d="M 199 132
+             L 387 106
+             C 409 103, 421 114, 425 135
+             L 463 363
+             C 467 386, 456 400, 434 404
+             L 252 436
+             C 228 440, 214 429, 209 405
+             L 170 172
+             C 166 148, 177 135, 199 132 Z"
+          fill="url(#clipboard-side-extrusion)" />
+
+    <!-- Front Glossy Royal-Purple Surface -->
+    <path d="M 207 129
+             L 389 104
+             C 410 101, 422 112, 425 133
+             L 463 359
+             C 466 380, 455 393, 434 397
+             L 260 426
+             C 238 430, 224 419, 220 396
+             L 180 167
+             C 176 145, 187 132, 207 129 Z"
+          fill="url(#clipboard-front-surface)" />
+
+    <!-- Specular Lavender Rim Highlight Along Upper-Left & Left Edge -->
+    <path d="M 386 105
+             L 207 130
+             C 188 133, 178 145, 182 167
+             L 221 394
+             C 224 410, 232 420, 246 424"
+          fill="none" stroke="url(#clipboard-edge-highlight)" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Soft Glaze Highlight on Upper-Left Corner of Purple Board -->
+    <path d="M 176 164 C 173 144, 184 132, 205 129 L 238 125"
+          fill="none" stroke="#F0DFFF" stroke-width="2" stroke-linecap="round" opacity="0.65" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 8. CLIPBOARD PAPER (WARM CREAM WITH 3D THICKNESS & PAGE CURL)         -->
+  <!-- ===================================================================== -->
+  <g id="clipboard-paper">
+    <!-- Drop Shadow of Paper onto Purple Backing -->
+    <path d="M 213 153
+             L 391 128
+             C 404 126, 412 134, 415 147
+             L 454 348
+             C 444 374, 429 388, 408 395
+             L 262 419
+             C 246 421, 236 413, 233 397
+             L 196 180
+             C 193 164, 200 155, 213 153 Z"
+          fill="#2E0963" opacity="0.46" filter="url(#tight-occlusion-blur)" />
+
+    <!-- 3D Paper Left & Bottom Thickness Bevel -->
+    <path d="M 216 150
+             L 391 125
+             C 404 123, 412 131, 415 144
+             L 456 346
+             C 447 369, 433 384, 412 391
+             L 265 415
+             C 250 417, 239 409, 236 394
+             L 199 177
+             C 196 161, 203 152, 216 150 Z"
+          fill="url(#paper-side-thickness)" />
+
+    <!-- Main Warm Cream Paper Surface -->
+    <path d="M 222 147
+             L 394 123
+             C 406 121, 414 129, 417 142
+             L 456 346
+             C 446 367, 432 381, 412 387
+             L 271 409
+             C 257 411, 247 403, 244 389
+             L 206 173
+             C 203 158, 210 149, 222 147 Z"
+          fill="url(#paper-front-surface)" />
+
+    <!-- Crisp Cream Specular Edge Along Top-Left & Left Paper Margin -->
+    <path d="M 392 124
+             L 222 148
+             C 211 150, 205 158, 207 173
+             L 245 388
+             C 248 401, 256 408, 269 408"
+          fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+
+    <!-- Soft Ambient Shading Ahead of Bottom-Right Page Curl -->
+    <path d="M 392 389 L 415 338 L 456 346 L 412 387 Z"
+          fill="url(#paper-curl-shadow)" />
+
+    <!-- Bottom-Right 3D Lifted Page Curl Flap -->
+    <path d="M 456 346
+             C 444 352, 432 353, 421 353
+             C 422 365, 419 377, 412 389
+             C 433 383, 448 368, 456 346 Z"
+          fill="url(#paper-curl-underside)" />
+
+    <!-- Bright Ridge Highlight Along Page Curl Fold -->
+    <path d="M 455 346.5
+             C 443 351.5, 432 352.5, 421.5 352.5
+             C 422.5 364.5, 419.5 376, 412.5 388"
+          fill="none" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 9. CHECKLIST ("SYLLABUS" HEADING + THREE CHECKLIST ENTRIES)           -->
+  <!-- ===================================================================== -->
+  <g id="checklist">
+    <!-- "Syllabus" Bold 3D Rounded Heading -->
+    <g id="syllabus-heading" transform="translate(238, 224) rotate(-8.2)">
+      <!-- Soft 3D Contact Shadow -->
+      <text x="84.8" y="2.6"
+            text-anchor="middle"
+            font-family="'Arial Rounded MT Bold', 'SF Pro Rounded', 'Nunito', 'Fredoka', 'Rubik', 'Varela Round', 'Trebuchet MS', system-ui, sans-serif"
+            font-size="41"
+            font-weight="900"
+            letter-spacing="-0.5"
+            fill="#390C78"
+            stroke="#390C78"
+            stroke-width="2.2"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            paint-order="stroke fill"
+            opacity="0.22">Syllabus</text>
+
+      <!-- 3D Extruded Purple Depth Bevel -->
+      <text x="85.4" y="1.3"
+            text-anchor="middle"
+            font-family="'Arial Rounded MT Bold', 'SF Pro Rounded', 'Nunito', 'Fredoka', 'Rubik', 'Varela Round', 'Trebuchet MS', system-ui, sans-serif"
+            font-size="41"
+            font-weight="900"
+            letter-spacing="-0.5"
+            fill="#43108B"
+            stroke="#43108B"
+            stroke-width="2"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            paint-order="stroke fill">Syllabus</text>
+
+      <!-- Main Royal-Purple Glossy Heading -->
+      <text x="86" y="0"
+            text-anchor="middle"
+            font-family="'Arial Rounded MT Bold', 'SF Pro Rounded', 'Nunito', 'Fredoka', 'Rubik', 'Varela Round', 'Trebuchet MS', system-ui, sans-serif"
+            font-size="41"
+            font-weight="900"
+            letter-spacing="-0.5"
+            fill="url(#syllabus-text-grad)"
+            stroke="url(#syllabus-text-grad)"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            paint-order="stroke fill">Syllabus</text>
+    </g>
+
+    <!-- ================================================================= -->
+    <!-- CHECKLIST ENTRY 1 (TOP ROW)                                       -->
+    <!-- ================================================================= -->
+    <g id="checklist-entry-1" transform="translate(249, 255) rotate(-8.2)">
+      <!-- Checkbox 1 Shadow -->
+      <rect x="-2" y="2.5" width="35" height="35" rx="8.5" fill="#7D4EB0" opacity="0.24" />
+      <!-- Checkbox 1 3D Purple Base Bevel -->
+      <rect x="-1.2" y="1.2" width="35" height="35" rx="8.5" fill="#5A1FB2" />
+      <!-- Checkbox 1 Glossy Purple Frame -->
+      <rect x="0" y="0" width="34" height="34" rx="8" fill="url(#checkbox-frame-grad)" />
+      <!-- Checkbox 1 Inner Recessed Well -->
+      <rect x="5.5" y="5.5" width="23" height="23" rx="4.5" fill="url(#checkbox-well-grad)" />
+      <!-- Inner Well Top Shadow -->
+      <path d="M 7 7.5 L 27 7.5" stroke="#D8C2F2" stroke-width="1.5" stroke-linecap="round" />
+
+      <!-- Checkmark 1 Shadow -->
+      <path d="M 8.5 17.5 L 16 25.5 L 34 3.5"
+            fill="none" stroke="#6E0B3D" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.28" />
+      <!-- Checkmark 1 3D Dark-Magenta Bevel -->
+      <path d="M 8.8 16.8 L 16.3 24.8 L 34.2 2.8"
+            fill="none" stroke="#B00B55" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 1 Main Horizon Magenta Body -->
+      <path d="M 9.5 15.5 L 17 23.5 L 35 1.5"
+            fill="none" stroke="url(#checkmark-body-grad)" stroke-width="7.2" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 1 Specular Highlight -->
+      <path d="M 9.5 14.5 L 16.8 22.2 L 34.5 0.8"
+            fill="none" stroke="url(#checkmark-specular-grad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Writing Lines 1 (Two Horizontal Rounded Lavender Bars) -->
+      <!-- Top Line -->
+      <rect x="49" y="7.8" width="108" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="6" width="108" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="8.2" x2="153" y2="8.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+      <!-- Bottom Line -->
+      <rect x="49" y="23.8" width="78" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="22" width="78" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="24.2" x2="123" y2="24.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+    </g>
+
+    <!-- ================================================================= -->
+    <!-- CHECKLIST ENTRY 2 (MIDDLE ROW)                                    -->
+    <!-- ================================================================= -->
+    <g id="checklist-entry-2" transform="translate(256.2, 304.5) rotate(-8.2)">
+      <!-- Checkbox 2 Shadow -->
+      <rect x="-2" y="2.5" width="35" height="35" rx="8.5" fill="#7D4EB0" opacity="0.24" />
+      <!-- Checkbox 2 3D Purple Base Bevel -->
+      <rect x="-1.2" y="1.2" width="35" height="35" rx="8.5" fill="#5A1FB2" />
+      <!-- Checkbox 2 Glossy Purple Frame -->
+      <rect x="0" y="0" width="34" height="34" rx="8" fill="url(#checkbox-frame-grad)" />
+      <!-- Checkbox 2 Inner Recessed Well -->
+      <rect x="5.5" y="5.5" width="23" height="23" rx="4.5" fill="url(#checkbox-well-grad)" />
+      <path d="M 7 7.5 L 27 7.5" stroke="#D8C2F2" stroke-width="1.5" stroke-linecap="round" />
+
+      <!-- Checkmark 2 Shadow -->
+      <path d="M 8.5 17.5 L 16 25.5 L 34 3.5"
+            fill="none" stroke="#6E0B3D" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.28" />
+      <!-- Checkmark 2 3D Dark-Magenta Bevel -->
+      <path d="M 8.8 16.8 L 16.3 24.8 L 34.2 2.8"
+            fill="none" stroke="#B00B55" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 2 Main Horizon Magenta Body -->
+      <path d="M 9.5 15.5 L 17 23.5 L 35 1.5"
+            fill="none" stroke="url(#checkmark-body-grad)" stroke-width="7.2" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 2 Specular Highlight -->
+      <path d="M 9.5 14.5 L 16.8 22.2 L 34.5 0.8"
+            fill="none" stroke="url(#checkmark-specular-grad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Writing Lines 2 (Two Horizontal Rounded Lavender Bars) -->
+      <!-- Top Line -->
+      <rect x="49" y="7.8" width="106" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="6" width="106" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="8.2" x2="151" y2="8.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+      <!-- Bottom Line -->
+      <rect x="49" y="23.8" width="76" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="22" width="76" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="24.2" x2="121" y2="24.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+    </g>
+
+    <!-- ================================================================= -->
+    <!-- CHECKLIST ENTRY 3 (BOTTOM ROW)                                    -->
+    <!-- ================================================================= -->
+    <g id="checklist-entry-3" transform="translate(263.4, 354) rotate(-8.2)">
+      <!-- Checkbox 3 Shadow -->
+      <rect x="-2" y="2.5" width="35" height="35" rx="8.5" fill="#7D4EB0" opacity="0.24" />
+      <!-- Checkbox 3 3D Purple Base Bevel -->
+      <rect x="-1.2" y="1.2" width="35" height="35" rx="8.5" fill="#5A1FB2" />
+      <!-- Checkbox 3 Glossy Purple Frame -->
+      <rect x="0" y="0" width="34" height="34" rx="8" fill="url(#checkbox-frame-grad)" />
+      <!-- Checkbox 3 Inner Recessed Well -->
+      <rect x="5.5" y="5.5" width="23" height="23" rx="4.5" fill="url(#checkbox-well-grad)" />
+      <path d="M 7 7.5 L 27 7.5" stroke="#D8C2F2" stroke-width="1.5" stroke-linecap="round" />
+
+      <!-- Checkmark 3 Shadow -->
+      <path d="M 8.5 17.5 L 16 25.5 L 34 3.5"
+            fill="none" stroke="#6E0B3D" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.28" />
+      <!-- Checkmark 3 3D Dark-Magenta Bevel -->
+      <path d="M 8.8 16.8 L 16.3 24.8 L 34.2 2.8"
+            fill="none" stroke="#B00B55" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 3 Main Horizon Magenta Body -->
+      <path d="M 9.5 15.5 L 17 23.5 L 35 1.5"
+            fill="none" stroke="url(#checkmark-body-grad)" stroke-width="7.2" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark 3 Specular Highlight -->
+      <path d="M 9.5 14.5 L 16.8 22.2 L 34.5 0.8"
+            fill="none" stroke="url(#checkmark-specular-grad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Writing Lines 3 (Two Horizontal Rounded Lavender Bars) -->
+      <!-- Top Line -->
+      <rect x="49" y="7.8" width="104" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="6" width="104" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="8.2" x2="149" y2="8.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+      <!-- Bottom Line -->
+      <rect x="49" y="23.8" width="72" height="10" rx="5" fill="#8959DE" opacity="0.42" />
+      <rect x="50" y="22" width="72" height="10" rx="5" fill="url(#writing-line-grad)" />
+      <line x1="54" y1="24.2" x2="117" y2="24.2" stroke="#E9D8FF" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 10. GOLDEN CLIPBOARD CLIP (TOP CENTER)                                -->
+  <!-- ===================================================================== -->
+  <g id="clipboard-clip">
+    <!-- Natural Contact Shadow Cast by Clip onto Paper & Backing -->
+    <path d="M 226 128 L 238 164 C 241 171, 250 173, 260 171 L 368 154 C 376 152, 378 145, 375 136 L 366 112 Z"
+          fill="#8A4200" opacity="0.34" filter="url(#tight-occlusion-blur)" />
+
+    <!-- Back/Left 3D Metallic Depth Structure (Secondary Arch & Left Shoulder Hook) -->
+    <!-- Back Left Arch Extrusion -->
+    <path d="M 253 116
+             C 249 91, 266 70, 293 67
+             L 304 68
+             L 272 115 Z"
+          fill="url(#clip-back-extrusion)" />
+    <!-- Left Shoulder Hook Wrapping Top of Board -->
+    <path d="M 223 130
+             C 222 121, 230 116, 244 114
+             L 266 112
+             L 254 164
+             L 244 165
+             C 236 165, 233 159, 231 149
+             L 229 134
+             C 227 130, 224 129, 223 130 Z"
+          fill="url(#clip-back-extrusion)" />
+
+    <!-- Bottom 3D Orange-Gold Clamping Lip -->
+    <path d="M 239 149
+             L 374 130
+             C 376 140, 372 147, 362 149
+             L 255 165
+             C 245 166, 240 160, 239 149 Z"
+          fill="url(#clip-bottom-lip)" />
+
+    <!-- Main Front Golden Clip Body with Top Circular Ear -->
+    <path d="M 248 115
+             L 266 112
+             C 264 89, 280 70, 302 67
+             C 324 64, 341 79, 343 101
+             L 357 99
+             C 366 98, 372 103, 373 112
+             L 375 130
+             C 376 138, 371 143, 362 144
+             L 254 160
+             C 245 161, 240 156, 238 148
+             L 235 130
+             C 234 121, 239 116, 248 115 Z"
+          fill="url(#clip-front-body)" />
+
+    <!-- Circular Hanging/Attachment Opening Near Top -->
+    <!-- Inner 3D Recessed Cylinder Wall of Hole -->
+    <circle cx="303" cy="99" r="14.5" fill="url(#clip-hole-inner)" />
+    <!-- Through-Hole Crescent Showing Background Surface -->
+    <path d="M 305 85.5
+             A 13.5 13.5 0 0 1 308 111.5
+             A 12.5 14 0 0 0 305 85.5 Z"
+          fill="#FDF8FF" />
+    <!-- Bright Rim Highlight Around Lower-Right of Hole -->
+    <path d="M 294 110 A 14.5 14.5 0 0 0 317 95"
+          fill="none" stroke="#FFF29C" stroke-width="2" stroke-linecap="round" opacity="0.85" />
+
+    <!-- Bright Upper Specular Highlights on Golden Clip -->
+    <path d="M 237 128
+             C 236 121, 241 117, 249 116
+             L 267 113
+             C 266 90, 281 71, 302 68.5
+             C 316 66.5, 328 72, 335 82"
+          fill="none" stroke="url(#clip-top-specular)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Secondary Specular Ridge Along Left Arch Shoulder -->
+    <path d="M 255 111 C 254 91, 267 74, 288 69"
+          fill="none" stroke="#FFF5B5" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+    <!-- Subtle Golden Highlight Along Clamping Edge -->
+    <line x1="248" y1="157" x2="364" y2="140" stroke="#FFE675" stroke-width="1.8" stroke-linecap="round" opacity="0.75" />
+  </g>
+</svg>

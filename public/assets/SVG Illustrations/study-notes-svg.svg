@@ -1,0 +1,658 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <!-- ===================================================================== -->
+  <!-- 1. DEFINITIONS: GRADIENTS, FILTERS & CLIP PATHS                       -->
+  <!-- ===================================================================== -->
+  <defs id="definitions">
+    <!-- Supporting Surface Gradients -->
+    <linearGradient id="bg-outer-rim" x1="60" y1="40" x2="450" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="55%" stop-color="#F7F2FD" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <linearGradient id="bg-inner-surface" x1="120" y1="50" x2="390" y2="465" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#FDFBFF" />
+      <stop offset="80%" stop-color="#F6F0FC" />
+      <stop offset="100%" stop-color="#EFE5FA" />
+    </linearGradient>
+
+    <radialGradient id="bg-top-glow" cx="256" cy="110" r="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="bg-ambient-pink" cx="135" cy="395" r="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F4C6E8" stop-opacity="0.45" />
+      <stop offset="60%" stop-color="#E8D2F9" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#F2EDFA" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="bg-ambient-purple" cx="315" cy="415" r="165" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#DEC9F8" stop-opacity="0.52" />
+      <stop offset="65%" stop-color="#E9DDFB" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#F2EDFA" stop-opacity="0" />
+    </radialGradient>
+
+    <clipPath id="surface-clip">
+      <rect x="35" y="40" width="442" height="430" rx="100" />
+    </clipPath>
+
+    <!-- Decorative Rays Gradients -->
+    <linearGradient id="ray-grad-1" x1="60" y1="124" x2="104" y2="152" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF55A3" />
+      <stop offset="45%" stop-color="#E91E83" />
+      <stop offset="100%" stop-color="#B80D5D" />
+    </linearGradient>
+
+    <linearGradient id="ray-grad-2" x1="86" y1="82" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5CA8" />
+      <stop offset="48%" stop-color="#E91E83" />
+      <stop offset="100%" stop-color="#B50B5A" />
+    </linearGradient>
+
+    <linearGradient id="ray-grad-3" x1="136" y1="58" x2="160" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5CA8" />
+      <stop offset="48%" stop-color="#E91E83" />
+      <stop offset="100%" stop-color="#B50B5A" />
+    </linearGradient>
+
+    <!-- Lower Book (Bright Magenta) Gradients -->
+    <linearGradient id="lower-book-spine" x1="46" y1="345" x2="198" y2="424" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF4FA3" />
+      <stop offset="32%" stop-color="#E91E83" />
+      <stop offset="70%" stop-color="#C90F68" />
+      <stop offset="100%" stop-color="#9A084B" />
+    </linearGradient>
+
+    <linearGradient id="lower-book-top-rim" x1="50" y1="340" x2="190" y2="375" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF66B2" />
+      <stop offset="50%" stop-color="#E01678" />
+      <stop offset="100%" stop-color="#A80A54" />
+    </linearGradient>
+
+    <linearGradient id="lower-pages-left" x1="60" y1="355" x2="140" y2="410" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF6E8" />
+      <stop offset="55%" stop-color="#FBE0C2" />
+      <stop offset="100%" stop-color="#F0C195" />
+    </linearGradient>
+
+    <linearGradient id="lower-pages-right" x1="140" y1="368" x2="198" y2="402" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EA9F6C" />
+      <stop offset="50%" stop-color="#D98250" />
+      <stop offset="100%" stop-color="#BE6538" />
+    </linearGradient>
+
+    <!-- Upper Book (Royal Purple) Gradients -->
+    <linearGradient id="upper-book-cover" x1="64" y1="262" x2="188" y2="314" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C47AFF" />
+      <stop offset="42%" stop-color="#9F45F5" />
+      <stop offset="76%" stop-color="#872DE0" />
+      <stop offset="100%" stop-color="#9B32B8" />
+    </linearGradient>
+
+    <radialGradient id="upper-book-warm-bounce" cx="156" cy="286" r="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF8552" stop-opacity="0.55" />
+      <stop offset="55%" stop-color="#E94E96" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#9F45F5" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="upper-book-spine" x1="46" y1="286" x2="195" y2="366" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#B162FF" />
+      <stop offset="28%" stop-color="#8533E6" />
+      <stop offset="68%" stop-color="#641EC2" />
+      <stop offset="100%" stop-color="#481094" />
+    </linearGradient>
+
+    <linearGradient id="upper-pages-left" x1="60" y1="302" x2="140" y2="354" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF8EC" />
+      <stop offset="55%" stop-color="#FBE2C4" />
+      <stop offset="100%" stop-color="#F1C396" />
+    </linearGradient>
+
+    <linearGradient id="upper-pages-right" x1="140" y1="316" x2="196" y2="348" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F2AC74" />
+      <stop offset="55%" stop-color="#DF8B53" />
+      <stop offset="100%" stop-color="#C46C3B" />
+    </linearGradient>
+
+    <!-- Golden Bookmarks Gradients -->
+    <linearGradient id="bookmark-left-grad" x1="88" y1="332" x2="104" y2="374" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE96B" />
+      <stop offset="30%" stop-color="#FFC928" />
+      <stop offset="75%" stop-color="#F5A00E" />
+      <stop offset="100%" stop-color="#E07E00" />
+    </linearGradient>
+
+    <linearGradient id="bookmark-right-grad" x1="145" y1="332" x2="162" y2="378" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE96B" />
+      <stop offset="30%" stop-color="#FFC928" />
+      <stop offset="75%" stop-color="#F59B0B" />
+      <stop offset="100%" stop-color="#DC7600" />
+    </linearGradient>
+
+    <!-- Notebook Backing Gradients -->
+    <linearGradient id="nb-backing-edge" x1="138" y1="150" x2="395" y2="425" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFD047" />
+      <stop offset="22%" stop-color="#FFA514" />
+      <stop offset="62%" stop-color="#F27E00" />
+      <stop offset="85%" stop-color="#E36A00" />
+      <stop offset="100%" stop-color="#C95200" />
+    </linearGradient>
+
+    <linearGradient id="nb-backing-face" x1="152" y1="136" x2="424" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE680" />
+      <stop offset="25%" stop-color="#FFCA3A" />
+      <stop offset="68%" stop-color="#FAA31B" />
+      <stop offset="100%" stop-color="#E87A00" />
+    </linearGradient>
+
+    <linearGradient id="nb-easel-leg" x1="138" y1="168" x2="145" y2="325" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFB732" stop-opacity="0.85" />
+      <stop offset="65%" stop-color="#F58D1F" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#E05A47" stop-opacity="0.15" />
+    </linearGradient>
+
+    <!-- Notebook Paper Gradients -->
+    <linearGradient id="nb-paper-left-bevel" x1="162" y1="146" x2="218" y2="396" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF6EB" />
+      <stop offset="35%" stop-color="#F7DEC5" />
+      <stop offset="75%" stop-color="#EFC6A0" />
+      <stop offset="100%" stop-color="#E3AF82" />
+    </linearGradient>
+
+    <linearGradient id="nb-paper-bottom-bevel" x1="210" y1="392" x2="430" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E8B78C" />
+      <stop offset="50%" stop-color="#DFA574" />
+      <stop offset="100%" stop-color="#CD8955" />
+    </linearGradient>
+
+    <linearGradient id="nb-paper-surface" x1="186" y1="132" x2="412" y2="372" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFEFC" />
+      <stop offset="35%" stop-color="#FFF7EB" />
+      <stop offset="78%" stop-color="#FEEED8" />
+      <stop offset="100%" stop-color="#FBE1C2" />
+    </linearGradient>
+
+    <!-- Spiral Binding Gradients -->
+    <radialGradient id="hole-shadow-grad" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#4A1A00" />
+      <stop offset="65%" stop-color="#7C3205" />
+      <stop offset="100%" stop-color="#B8560C" />
+    </radialGradient>
+
+    <linearGradient id="spiral-back-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="60%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#9A3412" />
+    </linearGradient>
+
+    <linearGradient id="spiral-front-grad-1" x1="192" y1="90" x2="232" y2="154" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF07C" />
+      <stop offset="28%" stop-color="#FFD026" />
+      <stop offset="65%" stop-color="#FBA612" />
+      <stop offset="100%" stop-color="#E07500" />
+    </linearGradient>
+
+    <linearGradient id="spiral-front-grad-2" x1="255" y1="82" x2="295" y2="146" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF07C" />
+      <stop offset="28%" stop-color="#FFD026" />
+      <stop offset="65%" stop-color="#FBA612" />
+      <stop offset="100%" stop-color="#E07500" />
+    </linearGradient>
+
+    <linearGradient id="spiral-front-grad-3" x1="316" y1="74" x2="356" y2="138" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF07C" />
+      <stop offset="28%" stop-color="#FFD026" />
+      <stop offset="65%" stop-color="#FBA612" />
+      <stop offset="100%" stop-color="#E07500" />
+    </linearGradient>
+
+    <!-- Notebook Title & Writing Lines Gradients -->
+    <linearGradient id="title-purple-grad" x1="0%" y1="0%" x2="15%" y2="100%">
+      <stop offset="0%" stop-color="#6B2FD6" />
+      <stop offset="55%" stop-color="#5820B8" />
+      <stop offset="100%" stop-color="#451599" />
+    </linearGradient>
+
+    <linearGradient id="writing-line-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D4B8FF" />
+      <stop offset="48%" stop-color="#B68BF5" />
+      <stop offset="100%" stop-color="#9665E0" />
+    </linearGradient>
+
+    <!-- Highlighter Gradients (Aligned to Local Highlighter Space) -->
+    <linearGradient id="hl-body-cyl" x1="-33" y1="0" x2="33" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFD042" />
+      <stop offset="20%" stop-color="#FFF078" />
+      <stop offset="36%" stop-color="#FFD829" />
+      <stop offset="60%" stop-color="#FFB908" />
+      <stop offset="84%" stop-color="#F58500" />
+      <stop offset="100%" stop-color="#D95E00" />
+    </linearGradient>
+
+    <linearGradient id="hl-body-vert" x1="0" y1="-34" x2="0" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D96B00" stop-opacity="0.28" />
+      <stop offset="10%" stop-color="#FFFFFF" stop-opacity="0.12" />
+      <stop offset="82%" stop-color="#FFA000" stop-opacity="0" />
+      <stop offset="100%" stop-color="#B84500" stop-opacity="0.35" />
+    </linearGradient>
+
+    <linearGradient id="hl-cap-cyl" x1="-32" y1="-78" x2="32" y2="-78" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9E52F5" />
+      <stop offset="22%" stop-color="#D79EFF" />
+      <stop offset="38%" stop-color="#B362FF" />
+      <stop offset="62%" stop-color="#7E30D9" />
+      <stop offset="85%" stop-color="#5618A3" />
+      <stop offset="100%" stop-color="#3B0B78" />
+    </linearGradient>
+
+    <linearGradient id="hl-collar-cyl" x1="-34" y1="-42" x2="34" y2="-42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9142EB" />
+      <stop offset="24%" stop-color="#C888FF" />
+      <stop offset="44%" stop-color="#9E47F5" />
+      <stop offset="70%" stop-color="#6B22C2" />
+      <stop offset="100%" stop-color="#360970" />
+    </linearGradient>
+
+    <linearGradient id="hl-nozzle-ring" x1="-23" y1="64" x2="23" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#572394" />
+      <stop offset="26%" stop-color="#8A4BF0" />
+      <stop offset="52%" stop-color="#3B106E" />
+      <stop offset="80%" stop-color="#1E053D" />
+      <stop offset="100%" stop-color="#120226" />
+    </linearGradient>
+
+    <linearGradient id="hl-nozzle-cone" x1="-17" y1="79" x2="17" y2="79" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A1A82" />
+      <stop offset="28%" stop-color="#7B3FE4" />
+      <stop offset="55%" stop-color="#2D0A57" />
+      <stop offset="85%" stop-color="#15032E" />
+      <stop offset="100%" stop-color="#0D011F" />
+    </linearGradient>
+
+    <linearGradient id="hl-tip-magenta" x1="-11" y1="95" x2="11" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF66BF" />
+      <stop offset="25%" stop-color="#FF9EE0" />
+      <stop offset="48%" stop-color="#F52891" />
+      <stop offset="78%" stop-color="#C40E68" />
+      <stop offset="100%" stop-color="#850542" />
+    </linearGradient>
+
+    <!-- Soft Shadows & Dimensional Filters -->
+    <filter id="surface-drop-shadow" x="-18%" y="-15%" width="136%" height="138%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#5B24A8" flood-opacity="0.15" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#3D1478" flood-opacity="0.08" />
+    </filter>
+
+    <filter id="ray-shadow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-color="#8F0A49" flood-opacity="0.28" />
+    </filter>
+
+    <filter id="soft-blur-8" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+
+    <filter id="soft-blur-5" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="5" />
+    </filter>
+
+    <filter id="soft-blur-3" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.8" />
+    </filter>
+
+    <filter id="title-3d-filter" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="1.2" dy="2.2" stdDeviation="0.4" flood-color="#350D7A" flood-opacity="0.85" />
+      <feDropShadow dx="2" dy="4" stdDeviation="2.2" flood-color="#7A3EB8" flood-opacity="0.22" />
+    </filter>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- 2. SUPPORTING ROUNDED-SQUARE SURFACE                                  -->
+  <!-- ===================================================================== -->
+  <g id="background-surface">
+    <!-- Outer Neumorphic Rim with Soft Lavender Drop Shadow -->
+    <rect x="28" y="34" width="456" height="442" rx="106" fill="url(#bg-outer-rim)" filter="url(#surface-drop-shadow)" />
+
+    <!-- Subtle Inner Rim Bevel Highlight -->
+    <rect x="29.5" y="35.5" width="453" height="439" rx="104.5" stroke="#FFFFFF" stroke-width="2" />
+
+    <!-- Main Soft Inflated Interior Surface -->
+    <g clip-path="url(#surface-clip)">
+      <rect x="35" y="40" width="442" height="430" rx="100" fill="url(#bg-inner-surface)" />
+
+      <!-- Top Bright Studio Light Wash -->
+      <ellipse cx="256" cy="105" rx="230" ry="130" fill="url(#bg-top-glow)" />
+
+      <!-- Soft Ambient Tint Under Books (Lower-Left) -->
+      <ellipse cx="135" cy="395" rx="125" ry="65" fill="url(#bg-ambient-pink)" />
+
+      <!-- Soft Ambient Tint Under Notebook & Highlighter (Lower-Center/Right) -->
+      <ellipse cx="315" cy="415" rx="165" ry="65" fill="url(#bg-ambient-purple)" />
+
+      <!-- Delicate Inner Cushion Shadow Along Bottom & Sides -->
+      <rect x="35" y="40" width="442" height="430" rx="100" stroke="#E9DDF8" stroke-width="6" fill="none" opacity="0.7" />
+    </g>
+
+    <!-- Crisp Specular Rim Outline -->
+    <rect x="35" y="40" width="442" height="430" rx="100" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 3. THREE MAGENTA DECORATIVE RAYS (UPPER-LEFT)                         -->
+  <!-- ===================================================================== -->
+  <g id="decorative-rays" filter="url(#ray-shadow)">
+    <!-- Ray 1: Lower-Left Ray -->
+    <g id="ray-lower-left">
+      <path d="M 103 139.5 C 107.5 140.5 109.5 144.8 108 148.5 C 106.5 152.2 102.2 153.5 98 152.5 L 60 144.5 C 53 143 49 136.5 51 129.5 C 53 122.5 60 119 67 121.5 Z" fill="url(#ray-grad-1)" />
+      <!-- Upper Glossy Highlight -->
+      <path d="M 65 124.5 L 100 142 C 102 143 102.5 145 101 146 C 99.5 147 97 146.5 95 145.8 L 61 131.5 C 58 130.2 57.5 126.5 60 124.8 C 61.5 123.8 63.5 123.8 65 124.5 Z" fill="#FF94C8" opacity="0.55" />
+    </g>
+
+    <!-- Ray 2: Middle Diagonal Ray -->
+    <g id="ray-middle">
+      <path d="M 127.5 117.5 C 131 120.8 131.2 125.5 128.5 128.5 C 125.8 131.5 121 131.2 117.5 128 L 83.5 96.5 C 77.5 91 77 82.5 82.5 77 C 88 71.5 96.5 72 102 78 Z" fill="url(#ray-grad-2)" />
+      <!-- Upper Glossy Highlight -->
+      <path d="M 97.5 80.5 L 124 119.5 C 125.5 121.5 125 123.5 123.5 124 C 122 124.5 120 123.5 118.5 121.8 L 89 86.5 C 86.5 83.5 88 79.5 91.5 78.5 C 93.8 78 96 78.8 97.5 80.5 Z" fill="#FF94C8" opacity="0.58" />
+    </g>
+
+    <!-- Ray 3: Upper-Right Ray -->
+    <g id="ray-upper-right">
+      <path d="M 159.5 105 C 160.8 109.5 158.5 113.8 154.5 114.8 C 150.5 115.8 146.2 113.2 145 108.8 L 132 69 C 129.8 61.5 134 54 141.5 52.2 C 149 50.5 156 55.5 157.2 63.2 Z" fill="url(#ray-grad-3)" />
+      <!-- Left Glossy Highlight -->
+      <path d="M 149.5 58.5 L 155.5 104.5 C 155.8 107 154.5 108.5 153 108.5 C 151.5 108.5 150 107 149.5 104.8 L 139.5 63.5 C 138.8 59.8 141.5 56.5 145 56.2 C 147.2 56 149 57 149.5 58.5 Z" fill="#FF94C8" opacity="0.55" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 4. LOWER EDUCATIONAL BOOK (BRIGHT MAGENTA / PINK)                     -->
+  <!-- ===================================================================== -->
+  <g id="lower-book">
+    <!-- Ground Contact Shadow Under Lower Book -->
+    <path d="M 48 394 L 140 433 L 214 405 L 196 378 L 54 382 Z" fill="#460B3B" opacity="0.34" filter="url(#soft-blur-8)" />
+    <path d="M 52 396 L 140 428 L 204 402 L 188 386 L 56 388 Z" fill="#590939" opacity="0.32" filter="url(#soft-blur-3)" />
+
+    <!-- Lower Book Upper Cover Rim & Inner Spine Recess -->
+    <path d="M 52 341 L 140 375 L 202 352 L 185 334 L 56 334 Z" fill="url(#lower-book-top-rim)" />
+
+    <!-- Cream Page Block: Left-Front Face -->
+    <path d="M 60 350 L 140 381 L 140 413 L 60 382 C 54 374 54 358 60 350 Z" fill="url(#lower-pages-left)" />
+
+    <!-- Cream Page Block: Right-Front Face (Shaded by Notebook) -->
+    <path d="M 140 381 L 202 358 L 202 390 L 140 413 Z" fill="url(#lower-pages-right)" />
+
+    <!-- Subtle Page Striations on Lower Book -->
+    <path d="M 63 360 L 138 389 M 62 368 L 138 397 M 63 375 L 138 404" stroke="#E5B284" stroke-width="1.2" opacity="0.55" stroke-linecap="round" />
+    <path d="M 142 389 L 198 368 M 142 397 L 198 376 M 142 404 L 198 383" stroke="#BD6538" stroke-width="1.2" opacity="0.55" stroke-linecap="round" />
+
+    <!-- Vertical Center Page Corner Crease Highlight -->
+    <line x1="140" y1="381" x2="140" y2="412" stroke="#FFF9F0" stroke-width="1.6" opacity="0.75" />
+
+    <!-- Magenta Curved Spine & Bottom Cover Wrap -->
+    <path d="M 54 338 C 46 339 45 347 45 356 L 45 384 C 45 394 49 400 58 403.5 L 135 424.5 C 139 425.8 143 425.6 147 424.2 L 204 402 C 208 400.4 209 394 205 391 C 202 388.8 198 389.5 194 391 L 144 410.5 C 141 411.6 138 411.6 135 410.5 L 64 383.5 C 58.5 381.2 57 375.5 57 367 C 57 358 58.5 353 64 355 L 135 382.5 C 138.5 383.8 141.5 383.8 145 382.5 L 200 361.5 C 204 360 205 354.5 201 352.5 L 144 373 C 141 374 138 374 135 372.8 L 58 339.5 C 56.5 338.8 55 338 54 338 Z" fill="url(#lower-book-spine)" />
+
+    <!-- Glossy Pink Specular Highlights on Spine & Lower Cover Rim -->
+    <path d="M 50 350 L 50 382 C 50 389 53 394 60 396.8 L 136 418 C 139 418.8 142 418.8 145 417.6 L 194 398.5" stroke="#FF85C2" stroke-width="3" stroke-linecap="round" opacity="0.65" fill="none" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 5. UPPER EDUCATIONAL BOOK (ROYAL PURPLE)                              -->
+  <!-- ===================================================================== -->
+  <g id="upper-book">
+    <!-- Cast Shadow from Upper Book onto Lower Book -->
+    <path d="M 48 340 L 140 377 L 202 354 L 198 344 L 140 366 L 52 332 Z" fill="#520833" opacity="0.38" filter="url(#soft-blur-3)" />
+
+    <!-- Purple Top Cover Surface -->
+    <path d="M 53 284 L 172 246 L 204 294 L 140 318 L 53 284 Z" fill="url(#upper-book-cover)" />
+    <!-- Warm Golden-Pink Reflection from Notebook onto Purple Top Cover -->
+    <path d="M 53 284 L 172 246 L 204 294 L 140 318 L 53 284 Z" fill="url(#upper-book-warm-bounce)" />
+
+    <!-- Cream Page Block: Left-Front Face -->
+    <path d="M 60 295 L 140 326 L 140 358 L 60 327 C 54 319 54 303 60 295 Z" fill="url(#upper-pages-left)" />
+
+    <!-- Cream Page Block: Right-Front Face (Shaded) -->
+    <path d="M 140 326 L 198 304 L 198 336 L 140 358 Z" fill="url(#upper-pages-right)" />
+
+    <!-- Subtle Page Striations on Upper Book -->
+    <path d="M 63 305 L 138 334 M 62 313 L 138 342 M 63 320 L 138 349" stroke="#E5B284" stroke-width="1.2" opacity="0.55" stroke-linecap="round" />
+    <path d="M 142 334 L 194 314 M 142 342 L 194 322 M 142 349 L 194 329" stroke="#BD6538" stroke-width="1.2" opacity="0.55" stroke-linecap="round" />
+
+    <!-- Vertical Center Page Corner Highlight -->
+    <line x1="140" y1="326" x2="140" y2="357" stroke="#FFF9F0" stroke-width="1.6" opacity="0.8" />
+
+    <!-- Royal Purple Spine, Top Lip & Bottom Cover Rim -->
+    <path d="M 54 282 C 46 283 45 291 45 300 L 45 328 C 45 338 49 344 58 347.5 L 135 369.5 C 139 370.8 143 370.6 147 369.2 L 198 349.5 C 202 348 203 342 199 339 C 196 337 193 337.5 189 339 L 144 356 C 141 357 138 357 135 356 L 64 328.5 C 58.5 326.2 57 320.5 57 312 C 57 303 58.5 298 64 300 L 135 327.5 C 138.5 328.8 141.5 328.8 145 327.5 L 198 307 C 202 305.5 203 299.5 199 296.5 C 196 294.5 192 295.5 188 297 L 144 314 C 141 315 138 315 135 313.8 L 58 283.5 C 56.5 282.8 55 282 54 282 Z" fill="url(#upper-book-spine)" />
+
+    <!-- Bright Lavender Specular Rim Highlights -->
+    <path d="M 55 285.5 L 136 317.5 C 139.5 318.8 142.5 318.8 146 317.5 L 193 299" stroke="#E5B8FF" stroke-width="3.2" stroke-linecap="round" opacity="0.8" fill="none" />
+    <path d="M 50 296 L 50 326 C 50 333 53 338 60 341 L 136 363 C 139 364 142 364 145 362.8 L 190 345.5" stroke="#B76EFF" stroke-width="2.5" stroke-linecap="round" opacity="0.65" fill="none" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 6. GOLDEN BOOKMARKS                                                   -->
+  <!-- ===================================================================== -->
+  <g id="golden-bookmarks">
+    <!-- Left Bookmark Shadow -->
+    <path d="M 84 338 L 111 346 L 109 378 L 83 373 Z" fill="#460D54" opacity="0.32" filter="url(#soft-blur-3)" />
+
+    <!-- Left Bookmark 3D Side Thickness -->
+    <path d="M 92 332 L 112 339.5 C 114.5 341 115.5 344 115 348 L 111 372 C 110.5 374.5 108 375 106.5 373.5 L 98 366 L 103 338 Z" fill="#D46B00" />
+
+    <!-- Left Bookmark Main Golden Ribbon -->
+    <path d="M 92 332 L 110 338.8 C 112.5 340 113 343 112.2 347 L 107.5 372 C 107 374.5 104.5 375 102.5 373.2 L 96.5 367.5 L 89.5 370.8 C 87.2 371.8 85 370 85.5 367.2 L 89 338 C 89.5 334.5 90.5 332.5 92 332 Z" fill="url(#bookmark-left-grad)" />
+    <!-- Left Bookmark Top Curve Specular Highlight -->
+    <path d="M 91 335.5 L 108 342" stroke="#FFF7B2" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+
+    <!-- Right Bookmark Shadow -->
+    <path d="M 143 341 L 166 336 L 167 381 L 145 381 Z" fill="#460D54" opacity="0.32" filter="url(#soft-blur-3)" />
+
+    <!-- Right Bookmark 3D Side Thickness -->
+    <path d="M 141 338 L 146 344 L 147 377 C 147 379 149.5 380 151 378.5 L 157 371 L 156 335 Z" fill="#C96000" />
+
+    <!-- Right Bookmark Main Golden Ribbon -->
+    <path d="M 141 337.5 L 158 331 C 161 332 163.5 335.5 164 340 L 164.5 371.5 C 164.5 374 162.5 375.5 160.5 374 L 156.5 370.5 L 151.5 377.5 C 150 379.5 147.8 378.5 147.8 375.8 L 147.5 344.5 C 147.2 341 144.5 338.8 141 337.5 Z" fill="url(#bookmark-right-grad)" />
+    <!-- Right Bookmark Top Curve Specular Highlight -->
+    <path d="M 146 339.5 L 160 334.5" stroke="#FFF7B2" stroke-width="2.4" stroke-linecap="round" opacity="0.85" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 7. MAIN OBJECT — SPIRAL-BOUND NOTEBOOK BACKING                        -->
+  <!-- ===================================================================== -->
+  <g id="notebook-backing">
+    <!-- Subtle Warm Easel/Stand Reflection Line on Left (From Reference) -->
+    <path d="M 140 162 L 137 315 L 144 312 L 146 162 Z" fill="url(#nb-easel-leg)" />
+
+    <!-- Deep Ambient & Contact Shadow Behind/Under Notebook -->
+    <path d="M 148 250 L 190 434 L 444 392 L 424 345 L 178 242 Z" fill="#4B125E" opacity="0.34" filter="url(#soft-blur-8)" />
+    <path d="M 184 416 L 198 432 L 440 390 L 432 372 Z" fill="#59174E" opacity="0.38" filter="url(#soft-blur-5)" />
+
+    <!-- 3D Golden-Orange Backing Board: Outer Left & Bottom Thickness Extrusion -->
+    <path d="M 164 139 L 364 114 C 382 111.8 397 124 400.5 142 L 438.5 348 C 442 367 429.5 384.5 410.5 387.5 L 216 421 C 195 424.5 177.5 411.5 173.5 391 L 136.5 176 C 133 156.5 145.5 141.2 164 139 Z" fill="url(#nb-backing-edge)" />
+
+    <!-- 3D Golden-Orange Backing Board: Front Upper Plane -->
+    <path d="M 172 136.5 L 366 112.5 C 383.5 110.3 398 122 401.5 139.5 L 439 343 C 442.5 361.5 430 378 411.5 381 L 224 412 C 204.5 415 188 402.5 184 383 L 146.5 172.5 C 143.2 153.8 155 138.6 172 136.5 Z" fill="url(#nb-backing-face)" />
+
+    <!-- Bright Golden-Yellow Top-Left Edge Highlight -->
+    <path d="M 192 405 C 185 399 181 390 179 379 L 143 173 C 140 155 151.5 140 169 137.8 L 364 113.5" stroke="#FFF2A6" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.8" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 8. SPIRAL-BOUND NOTEBOOK PAPER BLOCK                                  -->
+  <!-- ===================================================================== -->
+  <g id="notebook-paper">
+    <!-- Cast Shadow of Paper Block onto Golden Backing Board -->
+    <path d="M 160 154 L 208 404 L 434 368 L 388 124 Z" fill="#C45100" opacity="0.38" filter="url(#soft-blur-5)" />
+
+    <!-- Paper Block 3D Left-Side Thickness Wall -->
+    <path d="M 186 135 L 368 112.5 C 384 110.5 398 121.5 401 137.5 L 436 332 C 439 349.5 427.5 365.5 410 368.5 L 234 397.5 C 216 400.5 200 388.5 196.5 370.5 L 160.5 169 C 157.2 151.5 169 137 186 135 Z" fill="url(#nb-paper-left-bevel)" />
+
+    <!-- Paper Block 3D Bottom Thickness Wall -->
+    <path d="M 200 375 C 204.5 390 218.5 399.5 235 397 L 410 368.5 C 426.5 365.5 438 351 436 335 L 424 342 L 212 376 Z" fill="url(#nb-paper-bottom-bevel)" />
+
+    <!-- Subtle Page Layer Lines Along Paper Edge -->
+    <path d="M 165 166 L 201 368 C 204 383 217 392 233 389.5 L 412 360" stroke="#D99B6C" stroke-width="1.2" fill="none" opacity="0.55" />
+
+    <!-- Top Cream Paper Surface -->
+    <path d="M 196 132 L 370 110.5 C 385.5 108.6 399.5 119.5 402.5 135 L 437 326 C 440 342.5 429 358 412 360.8 L 244 388 C 226.5 390.8 211 379 207.8 361.5 L 172 164.5 C 169 148 180 134 196 132 Z" fill="url(#nb-paper-surface)" />
+
+    <!-- Crisp Warm White Highlight on Paper Top-Left Rim -->
+    <path d="M 236 386.5 C 222 385.5 211.5 375 209 360.5 L 173.5 164 C 170.5 148.5 181 135 196.5 133 L 368 111.8" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.95" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 9. THREE GOLDEN SPIRAL BINDING LOOPS                                  -->
+  <!-- ===================================================================== -->
+  <g id="spiral-binding">
+    <!-- ==================== LOOP 1 (LEFT) ==================== -->
+    <g id="spiral-loop-1">
+      <!-- Punched Binding Hole 1 -->
+      <ellipse cx="217" cy="153" rx="14" ry="10.5" transform="rotate(-7 217 153)" fill="url(#hole-shadow-grad)" />
+      <path d="M 204 155 C 207 162 221 163 230 154" stroke="#FFEAD0" stroke-width="1.5" fill="none" opacity="0.7" />
+
+      <!-- Back Leg of Ring 1 (Behind Notebook Top Edge) -->
+      <path d="M 186 132 C 185 110 193 92 206 91 C 214 90.5 219 98 219 108 L 204 114 C 203 108 200 108 199 114 L 199 130 Z" fill="url(#spiral-back-grad)" />
+
+      <!-- Ring 1 Cast Shadow on Paper -->
+      <path d="M 205 148 C 210 165 228 164 231 146 Z" fill="#9E3D00" opacity="0.35" filter="url(#soft-blur-3)" />
+
+      <!-- Front Tubular Arch of Ring 1 -->
+      <path d="M 192 110 C 194 96 203 89.5 213 91 C 225 92.8 233 108 232 128 C 231.2 142 226.5 154 220 158 C 214 161 206.5 157.5 207.5 150 C 208 145 212 141 213.5 130 C 215 119 212.5 109 207.5 108.5 C 203.5 108 200.5 113 199 119 Z" fill="url(#spiral-front-grad-1)" />
+
+      <!-- Ring 1 Glossy Specular Highlight -->
+      <path d="M 205 95.5 C 215 95 223 107 222.5 126 C 222 137 219.5 146 216 151" stroke="#FFF9B8" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.85" />
+    </g>
+
+    <!-- ==================== LOOP 2 (MIDDLE) ==================== -->
+    <g id="spiral-loop-2">
+      <!-- Punched Binding Hole 2 -->
+      <ellipse cx="280" cy="145" rx="14" ry="10.5" transform="rotate(-7 280 145)" fill="url(#hole-shadow-grad)" />
+      <path d="M 267 147 C 270 154 284 155 293 146" stroke="#FFEAD0" stroke-width="1.5" fill="none" opacity="0.7" />
+
+      <!-- Back Leg of Ring 2 -->
+      <path d="M 249 124 C 248 102 256 84 269 83 C 277 82.5 282 90 282 100 L 267 106 C 266 100 263 100 262 106 L 262 122 Z" fill="url(#spiral-back-grad)" />
+
+      <!-- Ring 2 Cast Shadow on Paper -->
+      <path d="M 268 140 C 273 157 291 156 294 138 Z" fill="#9E3D00" opacity="0.35" filter="url(#soft-blur-3)" />
+
+      <!-- Front Tubular Arch of Ring 2 -->
+      <path d="M 255 102 C 257 88 266 81.5 276 83 C 288 84.8 296 100 295 120 C 294.2 134 289.5 146 283 150 C 277 153 269.5 149.5 270.5 142 C 271 137 275 133 276.5 122 C 278 111 275.5 101 270.5 100.5 C 266.5 100 263.5 105 262 111 Z" fill="url(#spiral-front-grad-2)" />
+
+      <!-- Ring 2 Glossy Specular Highlight -->
+      <path d="M 268 87.5 C 278 87 286 99 285.5 118 C 285 129 282.5 138 279 143" stroke="#FFF9B8" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.85" />
+    </g>
+
+    <!-- ==================== LOOP 3 (RIGHT) ==================== -->
+    <g id="spiral-loop-3">
+      <!-- Punched Binding Hole 3 -->
+      <ellipse cx="341" cy="137" rx="14" ry="10.5" transform="rotate(-7 341 137)" fill="url(#hole-shadow-grad)" />
+      <path d="M 328 139 C 331 146 345 147 354 138" stroke="#FFEAD0" stroke-width="1.5" fill="none" opacity="0.7" />
+
+      <!-- Back Leg of Ring 3 -->
+      <path d="M 310 116 C 309 94 317 76 330 75 C 338 74.5 343 82 343 92 L 328 98 C 327 92 324 92 323 98 L 323 114 Z" fill="url(#spiral-back-grad)" />
+
+      <!-- Ring 3 Cast Shadow on Paper -->
+      <path d="M 329 132 C 334 149 352 148 355 130 Z" fill="#9E3D00" opacity="0.35" filter="url(#soft-blur-3)" />
+
+      <!-- Front Tubular Arch of Ring 3 -->
+      <path d="M 316 94 C 318 80 327 73.5 337 75 C 349 76.8 357 92 356 112 C 355.2 126 350.5 138 344 142 C 338 145 330.5 141.5 331.5 134 C 332 129 336 125 337.5 114 C 339 103 336.5 93 331.5 92.5 C 327.5 92 324.5 97 323 103 Z" fill="url(#spiral-front-grad-3)" />
+
+      <!-- Ring 3 Glossy Specular Highlight -->
+      <path d="M 329 79.5 C 339 79 347 91 346.5 110 C 346 121 343.5 130 340 135" stroke="#FFF9B8" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.85" />
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 10. NOTEBOOK TITLE — "Study Notes" (TWO EDITABLE TEXT LINES)          -->
+  <!-- ===================================================================== -->
+  <g id="notebook-title" transform="translate(298, 212) rotate(-7.4) skewX(7.5)" filter="url(#title-3d-filter)">
+    <text x="0" y="0" text-anchor="middle" fill="url(#title-purple-grad)" font-family="'Arial Rounded MT Bold', 'Nunito', 'Fredoka', 'Helvetica Rounded', Arial, Helvetica, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.5">Study</text>
+    <text x="4" y="52" text-anchor="middle" fill="url(#title-purple-grad)" font-family="'Arial Rounded MT Bold', 'Nunito', 'Fredoka', 'Helvetica Rounded', Arial, Helvetica, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.5">Notes</text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 11. THREE HORIZONTAL WRITING LINES                                    -->
+  <!-- ===================================================================== -->
+  <g id="writing-lines" transform="translate(230, 302) rotate(-7.4) skewX(7.5)">
+    <!-- Writing Line 1 (Top - Longest) -->
+    <rect x="1" y="2.5" width="158" height="12" rx="6" fill="#7B46C7" opacity="0.26" />
+    <rect x="0" y="0" width="158" height="12" rx="6" fill="url(#writing-line-grad)" />
+    <line x1="6" y1="3" x2="152" y2="3" stroke="#EAD9FF" stroke-width="2" stroke-linecap="round" opacity="0.75" />
+
+    <!-- Writing Line 2 (Middle - Medium) -->
+    <rect x="3" y="27.5" width="124" height="12" rx="6" fill="#7B46C7" opacity="0.26" />
+    <rect x="2" y="25" width="124" height="12" rx="6" fill="url(#writing-line-grad)" />
+    <line x1="8" y1="28" x2="120" y2="28" stroke="#EAD9FF" stroke-width="2" stroke-linecap="round" opacity="0.75" />
+
+    <!-- Writing Line 3 (Bottom - Shortest) -->
+    <rect x="5" y="52.5" width="90" height="12" rx="6" fill="#7B46C7" opacity="0.26" />
+    <rect x="4" y="50" width="90" height="12" rx="6" fill="url(#writing-line-grad)" />
+    <line x1="10" y1="53" x2="88" y2="53" stroke="#EAD9FF" stroke-width="2" stroke-linecap="round" opacity="0.75" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 12. HIGHLIGHTER — LOWER SECTION & MAGENTA WRITING TIP                 -->
+  <!-- ===================================================================== -->
+  <g id="highlighter-tip" transform="translate(408, 342) rotate(25.5)">
+    <!-- Cast Shadow from Highlighter onto Notebook & Supporting Surface -->
+    <path d="M -38 -94 C -26 -104 10 -100 18 -82 L 22 62 L 6 108 L -18 106 L -28 60 Z" fill="#3B0D54" opacity="0.30" filter="url(#soft-blur-8)" />
+    <ellipse cx="-5" cy="105" rx="16" ry="7" fill="#4A0E4E" opacity="0.38" filter="url(#soft-blur-3)" />
+
+    <!-- Step 3: Magenta Chisel Highlighter Felt Tip -->
+    <path d="M -9.5 84 L 9.5 84 L 8 100 C 7.8 103.5 5 105.5 1.5 105 L -5.5 103 C -8 102.2 -9.2 99.8 -9 97 Z" fill="url(#hl-tip-magenta)" />
+    <!-- Specular Highlight on Magenta Tip -->
+    <path d="M -5.5 85 L -4.5 100.5" stroke="#FFB8E6" stroke-width="2.6" stroke-linecap="round" opacity="0.8" />
+
+    <!-- Step 2: Deep-Purple Tapered Cone Section -->
+    <path d="M -16 69 L 16 69 L 10.5 85.5 C 10 87 5 88 0 88 C -5 88 -10 87 -10.5 85.5 Z" fill="url(#hl-nozzle-cone)" />
+    <!-- Specular Highlight on Cone -->
+    <path d="M -9 71 L -6.5 85" stroke="#9D6BFF" stroke-width="2.5" stroke-linecap="round" opacity="0.65" />
+
+    <!-- Step 1: Dark-Purple Rounded Upper Nozzle Collar -->
+    <path d="M -22.5 56 L 22.5 56 C 24 60 23.5 66 20 70 C 14 72.5 -14 72.5 -20 70 C -23.5 66 -24 60 -22.5 56 Z" fill="url(#hl-nozzle-ring)" />
+    <!-- Specular Highlight on Nozzle Collar -->
+    <path d="M -13 58.5 L -12 68.5" stroke="#A675FF" stroke-width="3" stroke-linecap="round" opacity="0.65" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 13. HIGHLIGHTER — GOLDEN-YELLOW BODY                                  -->
+  <!-- ===================================================================== -->
+  <g id="highlighter-body" transform="translate(408, 342) rotate(25.5)">
+    <!-- Main Tapered Golden-Yellow Cylinder Barrel -->
+    <path d="M -32.5 -34 L 32.5 -34 L 26.8 53 C 26.2 58 21.5 60.5 14 61.5 C 5 62.5 -5 62.5 -14 61.5 C -21.5 60.5 -26.2 58 -26.8 53 Z" fill="url(#hl-body-cyl)" />
+
+    <!-- Subtle Vertical Dimensional Shading Overlay -->
+    <path d="M -32.5 -34 L 32.5 -34 L 26.8 53 C 26.2 58 21.5 60.5 14 61.5 C 5 62.5 -5 62.5 -14 61.5 C -21.5 60.5 -26.2 58 -26.8 53 Z" fill="url(#hl-body-vert)" />
+
+    <!-- Glossy Longitudinal Specular Highlight Band -->
+    <path d="M -20 -29 L -12 -29 L -9.5 56 L -16.5 55.5 Z" fill="#FFF9B0" opacity="0.65" />
+    <path d="M -17 -28 L -14 55" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.55" />
+
+    <!-- Soft Bottom Rim Highlight on Yellow Body -->
+    <path d="M -23 56.5 C -10 59.5 10 59.5 23 56.5" stroke="#FFE875" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6" />
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 14. HIGHLIGHTER — ROYAL-PURPLE UPPER CAP                              -->
+  <!-- ===================================================================== -->
+  <g id="highlighter-cap" transform="translate(408, 342) rotate(25.5)">
+    <!-- Shadow Cast by Cap Collar onto Yellow Body -->
+    <path d="M -32.5 -34 C -12 -30.5 12 -30.5 32.5 -34 L 32 -29 C 12 -25.5 -12 -25.5 -32 -29 Z" fill="#B84A00" opacity="0.38" />
+
+    <!-- Upper Tapered Purple Cap Dome -->
+    <path d="M -16 -108.5 C -6 -110.5 6 -110.5 16 -108.5 C 21.5 -107.2 24.5 -103.5 25.8 -98 L 32.2 -50 L -32.2 -50 L -25.8 -98 C -24.5 -103.5 -21.5 -107.2 -16 -108.5 Z" fill="url(#hl-cap-cyl)" />
+
+    <!-- Cap Dome Glossy Specular Highlight -->
+    <path d="M -14 -104 L -8 -104 L -11 -51 L -18.5 -51 Z" fill="#E9C2FF" opacity="0.55" />
+    <path d="M -18 -106.5 C -8 -108.5 8 -108.5 18 -106.5" stroke="#E5B8FF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.7" />
+
+    <!-- Cap Seam Groove Between Dome and Collar Ring -->
+    <path d="M -32.4 -50.5 C -12 -47.5 12 -47.5 32.4 -50.5" stroke="#380970" stroke-width="2.2" fill="none" />
+
+    <!-- Thick Purple Cap Collar Band -->
+    <path d="M -32.5 -50 C -12 -47 12 -47 32.5 -50 C 34.5 -45 34.5 -38 32.8 -33.2 C 12 -29.8 -12 -29.8 -32.8 -33.2 C -34.5 -38 -34.5 -45 -32.5 -50 Z" fill="url(#hl-collar-cyl)" />
+
+    <!-- Collar Band Specular Highlight & Rim -->
+    <path d="M -31.5 -48.5 C -12 -45.5 12 -45.5 31.5 -48.5" stroke="#DFB3FF" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.75" />
+    <path d="M -18 -47 L -11 -47 L -11.5 -32.5 L -18.5 -33 Z" fill="#E9C2FF" opacity="0.5" />
+  </g>
+</svg>
