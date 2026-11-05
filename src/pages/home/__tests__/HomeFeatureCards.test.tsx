@@ -58,15 +58,15 @@ describe('Home Feature Cards', () => {
       );
     });
 
-    const syllabusImg = container?.querySelector('img[src="/assets/SVG Illustrations/syllabus.svg"]');
+    const syllabusImg = container?.querySelector('img[src="/assets/SVG Illustrations/syllabus-svg.svg"]');
     expect(syllabusImg).not.toBeNull();
     expect(syllabusImg?.getAttribute('alt')).toBe('Syllabus illustration');
 
-    const notesImg = container?.querySelector('img[src="/assets/SVG Illustrations/notes.svg"]');
+    const notesImg = container?.querySelector('img[src="/assets/SVG Illustrations/study-notes-svg.svg"]');
     expect(notesImg).not.toBeNull();
     expect(notesImg?.getAttribute('alt')).toBe('Study Notes illustration');
 
-    const pyqsImg = container?.querySelector('img[src="/assets/SVG Illustrations/pyqs.svg"]');
+    const pyqsImg = container?.querySelector('img[src="/assets/SVG Illustrations/pyq-papers-svg.svg"]');
     expect(pyqsImg).not.toBeNull();
     expect(pyqsImg?.getAttribute('alt')).toBe('PYQ Papers illustration');
 

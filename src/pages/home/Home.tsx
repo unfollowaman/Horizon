@@ -266,7 +266,7 @@ const getFeatureIllustration = (id: string) => {
   if (id === 'syllabus') {
     return (
       <img
-        src="/assets/SVG Illustrations/syllabus.svg"
+        src="/assets/SVG Illustrations/syllabus-svg.svg"
         alt="Syllabus illustration"
         className="w-full h-full object-contain"
       />
@@ -275,7 +275,7 @@ const getFeatureIllustration = (id: string) => {
   if (id === 'notes') {
     return (
       <img
-        src="/assets/SVG Illustrations/notes.svg"
+        src="/assets/SVG Illustrations/study-notes-svg.svg"
         alt="Study Notes illustration"
         className="w-full h-full object-contain"
       />
@@ -284,7 +284,7 @@ const getFeatureIllustration = (id: string) => {
   if (id === 'pyq') {
     return (
       <img
-        src="/assets/SVG Illustrations/pyqs.svg"
+        src="/assets/SVG Illustrations/pyq-papers-svg.svg"
         alt="PYQ Papers illustration"
         className="w-full h-full object-contain"
       />
