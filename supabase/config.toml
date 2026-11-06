@@ -413,6 +413,16 @@ enabled = true
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
 
+[functions.auth-login]
+enabled = true
+# verify_jwt = false is correct and required: this endpoint IS the authenticator.
+# It performs its own authentication via signInWithPassword and enforces all
+# required security checks before returning credentials. It must not receive
+# a pre-authenticated JWT — the calling browser has none yet.
+verify_jwt = false
+import_map = "./functions/auth-login/deno.json"
+entrypoint = "./functions/auth-login/index.ts"
+
 [functions.resource-access]
 enabled = true
 verify_jwt = true
