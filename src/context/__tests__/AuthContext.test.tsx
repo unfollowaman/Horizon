@@ -369,4 +369,68 @@ describe('AuthContext', () => {
     expect(currentContextValue?.user).toBeNull();
     expect(currentContextValue?.isAdmin).toBe(false);
   });
+
+  it('11. signOut clears local authentication state (session, user, profile) on successful logout', async () => {
+    const studentUser = { id: 'user-1', email: 'student@example.com', app_metadata: { role: 'student' } };
+    mockGetSession.mockResolvedValue({ data: { session: { user: studentUser, access_token: 'tok' } }, error: null });
+    mockSingle.mockResolvedValue({ data: { id: 'user-1', name: 'Student 1' }, error: null });
+
+    await act(async () => {
+      root?.render(
+        <AuthProvider>
+          <TestConsumer />
+        </AuthProvider>
+      );
+    });
+
+    expect(currentContextValue?.user?.email).toBe('student@example.com');
+    expect(currentContextValue?.profile?.name).toBe('Student 1');
+
+    await act(async () => {
+      await currentContextValue?.signOut();
+    });
+
+    expect(mockLogout).toHaveBeenCalled();
+    expect(currentContextValue?.session).toBeNull();
+    expect(currentContextValue?.user).toBeNull();
+    expect(currentContextValue?.profile).toBeNull();
+    expect(currentContextValue?.isAdmin).toBe(false);
+  });
+
+  it('12. local authentication state is unconditionally cleared even if logout fails or throws an error', async () => {
+    const studentUser = { id: 'user-1', email: 'student@example.com', app_metadata: { role: 'student' } };
+    mockGetSession.mockResolvedValue({ data: { session: { user: studentUser, access_token: 'tok' } }, error: null });
+    mockSingle.mockResolvedValue({ data: { id: 'user-1', name: 'Student 1' }, error: null });
+
+    await act(async () => {
+      root?.render(
+        <AuthProvider>
+          <TestConsumer />
+        </AuthProvider>
+      );
+    });
+
+    expect(currentContextValue?.user?.email).toBe('student@example.com');
+
+    // Simulate logout throwing due to network or Auth sign-out error
+    mockLogout.mockRejectedValueOnce(new Error('Auth sign-out network failure'));
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await act(async () => {
+      await currentContextValue?.signOut();
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error during signOut in AuthContext:',
+      expect.any(Error)
+    );
+
+    // State MUST still be cleared in the finally block
+    expect(currentContextValue?.session).toBeNull();
+    expect(currentContextValue?.user).toBeNull();
+    expect(currentContextValue?.profile).toBeNull();
+    expect(currentContextValue?.isAdmin).toBe(false);
+
+    consoleSpy.mockRestore();
+  });
 });
