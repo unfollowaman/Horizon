@@ -100,9 +100,12 @@ export const extractSessionId = (accessToken: string): string | null => {
     const padded = base64Payload +
       '='.repeat((4 - (base64Payload.length % 4)) % 4);
 
-    const decoded = typeof atob === 'function'
-      ? atob(padded)
-      : Buffer.from(padded, 'base64').toString('utf8');
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const decoded = new TextDecoder().decode(bytes);
 
     const claims = JSON.parse(decoded) as Record<string, unknown>;
 

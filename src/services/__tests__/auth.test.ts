@@ -17,9 +17,21 @@ vi.mock('../supabase', () => ({
   },
 }));
 
+const toBase64Url = (str: string): string => {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+};
+
 const makeJwt = (claims: Record<string, unknown>): string => {
-  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-  const payload = Buffer.from(JSON.stringify(claims)).toString('base64url');
+  const header = toBase64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = toBase64Url(JSON.stringify(claims));
   return `${header}.${payload}.mock-sig`;
 };
 
