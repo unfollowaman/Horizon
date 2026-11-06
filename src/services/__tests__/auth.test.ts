@@ -5,7 +5,9 @@ import { supabase } from '../supabase';
 vi.mock('../supabase', () => ({
   supabase: {
     auth: {
-      signInWithPassword: vi.fn(),
+      // login() now uses setSession (not signInWithPassword) after the
+      // Phase 1.2.2 Login Orchestrator implementation.
+      setSession: vi.fn(),
       signUp: vi.fn(),
       signOut: vi.fn(),
       getUser: vi.fn(),
@@ -31,37 +33,209 @@ describe('auth service', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.location = originalLocation;
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // login — now calls the auth-login Edge Function + supabase.auth.setSession
+  // ─────────────────────────────────────────────────────────────────────────
   describe('login', () => {
-    it('successfully logs in a user', async () => {
-      const mockData = {
-        data: { user: { id: 'test-id' }, session: { access_token: 'token' } },
-        error: null,
-      };
-      vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue(mockData as never);
+    const SUPABASE_URL = 'https://test.supabase.co';
+    const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/auth-login`;
 
-      const result = await login('test@example.com', 'password123');
-
-      expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
-      });
-      expect(result).toEqual(mockData.data);
+    beforeEach(() => {
+      // Provide VITE_SUPABASE_URL for the import.meta.env read in login()
+      vi.stubEnv('VITE_SUPABASE_URL', SUPABASE_URL);
     });
 
-    it('throws error when login fails', async () => {
-      const mockError = new Error('Invalid credentials');
-      vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
-        data: { user: null, session: null },
-        error: mockError,
+    it('calls the auth-login Edge Function with correct method, headers, and body', async () => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          access_token: 'access-token-abc',
+          refresh_token: 'refresh-token-xyz',
+        }),
+      });
+      vi.stubGlobal('fetch', mockFetch);
+
+      vi.mocked(supabase.auth.setSession).mockResolvedValue({
+        data: { session: { access_token: 'access-token-abc' }, user: { id: 'user-1' } },
+        error: null,
       } as never);
 
-      await expect(login('test@example.com', 'wrongpassword'))
-        .rejects.toThrow('Invalid credentials');
+      await login('student@example.com', 'correct-password');
+
+      expect(mockFetch).toHaveBeenCalledOnce();
+      expect(mockFetch).toHaveBeenCalledWith(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'student@example.com', password: 'correct-password' }),
+      });
+    });
+
+    it('calls supabase.auth.setSession with the tokens returned by the Edge Function', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          access_token: 'access-token-abc',
+          refresh_token: 'refresh-token-xyz',
+        }),
+      }));
+
+      vi.mocked(supabase.auth.setSession).mockResolvedValue({
+        data: { session: { access_token: 'access-token-abc' }, user: { id: 'user-1' } },
+        error: null,
+      } as never);
+
+      await login('student@example.com', 'correct-password');
+
+      expect(supabase.auth.setSession).toHaveBeenCalledWith({
+        access_token: 'access-token-abc',
+        refresh_token: 'refresh-token-xyz',
+      });
+    });
+
+    it('resolves without returning a value (void) on success', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          access_token: 'tok',
+          refresh_token: 'rtok',
+        }),
+      }));
+
+      vi.mocked(supabase.auth.setSession).mockResolvedValue({
+        data: { session: null }, error: null,
+      } as never);
+
+      const result = await login('a@b.com', 'pass');
+      expect(result).toBeUndefined();
+    });
+
+    it('throws the error message from the Edge Function on 401 (invalid credentials)', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({ success: false, error: 'Invalid email or password' }),
+      }));
+
+      await expect(login('a@b.com', 'wrongpass'))
+        .rejects.toThrow('Invalid email or password');
+
+      // setSession must NOT be called when login fails
+      expect(supabase.auth.setSession).not.toHaveBeenCalled();
+    });
+
+    it('throws the error message from the Edge Function on 403 (unconfirmed email)', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          success: false,
+          error: 'Please confirm your email address before signing in.',
+          error_code: 'EMAIL_NOT_CONFIRMED',
+        }),
+      }));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Please confirm your email address before signing in.');
+
+      expect(supabase.auth.setSession).not.toHaveBeenCalled();
+    });
+
+    it('throws the error message from the Edge Function on 409 (concurrent login)', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          success: false,
+          error: 'Login conflict: another sign-in is in progress. Please try again in a moment.',
+          error_code: 'CONCURRENT_LOGIN',
+        }),
+      }));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Login conflict: another sign-in is in progress. Please try again in a moment.');
+
+      expect(supabase.auth.setSession).not.toHaveBeenCalled();
+    });
+
+    it('throws the error message from the Edge Function on 500 (service unavailable)', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          success: false,
+          error: 'Service temporarily unavailable. Please try again.',
+        }),
+      }));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Service temporarily unavailable. Please try again.');
+    });
+
+    it('throws a fallback message when Edge Function returns non-string error', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({ success: false }),
+      }));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Failed to login');
+    });
+
+    it('throws a network error message when fetch itself fails', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Unable to reach the login service. Please check your connection.');
+
+      expect(supabase.auth.setSession).not.toHaveBeenCalled();
+    });
+
+    it('throws when Edge Function response body is unparseable JSON', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => { throw new SyntaxError('Unexpected token'); },
+      }));
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Login service returned an unexpected response. Please try again.');
+    });
+
+    it('throws when supabase.auth.setSession fails', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          access_token: 'tok',
+          refresh_token: 'rtok',
+        }),
+      }));
+
+      vi.mocked(supabase.auth.setSession).mockResolvedValue({
+        data: { session: null, user: null },
+        error: { message: 'Invalid token' },
+      } as never);
+
+      await expect(login('a@b.com', 'pass'))
+        .rejects.toThrow('Failed to restore session. Please try again.');
+    });
+
+    it('does not call setSession when Edge Function returns success: false', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: false, error: 'Some server error' }),
+      }));
+
+      await expect(login('a@b.com', 'pass')).rejects.toThrow();
+      expect(supabase.auth.setSession).not.toHaveBeenCalled();
     });
   });
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // register — unchanged
+  // ─────────────────────────────────────────────────────────────────────────
   describe('register', () => {
     it('successfully registers a user', async () => {
       const mockData = {
@@ -116,6 +290,9 @@ describe('auth service', () => {
     });
   });
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // logout — unchanged
+  // ─────────────────────────────────────────────────────────────────────────
   describe('logout', () => {
     it('successfully logs out', async () => {
       vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
@@ -130,6 +307,9 @@ describe('auth service', () => {
     });
   });
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // getCurrentUser — unchanged
+  // ─────────────────────────────────────────────────────────────────────────
   describe('getCurrentUser', () => {
     it('returns null if no user is authenticated', async () => {
       vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as never);
@@ -175,7 +355,6 @@ describe('auth service', () => {
       const mockUser = { id: 'test-id' };
       const mockProfileError = new Error('Profile not found');
 
-      // Mocking supabase.auth.getUser
       // @ts-expect-error mockResolvedValue expects specific AuthError type
       vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null });
 
