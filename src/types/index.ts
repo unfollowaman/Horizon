@@ -510,7 +510,14 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      deactivate_active_session: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      is_active_session: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       resource_type: ResourceType

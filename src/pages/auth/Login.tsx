@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../../services/auth';
+import { useAuth } from '../../context/AuthContext';
+
+const SESSION_REPLACEMENT_STORAGE_KEY = 'horizon_session_replacement_message';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +12,33 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { sessionReplacementMessage, clearSessionReplacementMessage } = useAuth();
+
+  useEffect(() => {
+    // 1. Check location state
+    const stateMessage = (location.state as { message?: string })?.message;
+
+    // 2. Check AuthContext replacement message
+    // 3. Check sessionStorage replacement message notice
+    let storedNotice: string | null = null;
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        storedNotice = window.sessionStorage.getItem(SESSION_REPLACEMENT_STORAGE_KEY);
+        if (storedNotice) {
+          window.sessionStorage.removeItem(SESSION_REPLACEMENT_STORAGE_KEY);
+        }
+      }
+    } catch {
+      // Ignore storage errors in restricted contexts
+    }
+
+    const replacementMessage = stateMessage || sessionReplacementMessage || storedNotice;
+    if (replacementMessage) {
+      setError(replacementMessage);
+      clearSessionReplacementMessage?.();
+    }
+  }, [location.state, sessionReplacementMessage, clearSessionReplacementMessage]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

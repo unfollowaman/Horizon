@@ -77,9 +77,225 @@ export const register = async (email: string, password: string, name: string) =>
   return data;
 };
 
-export const logout = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+// ─────────────────────────────────────────────────────────────────────────────
+// Single-Device Session Deactivation & Logout Lifecycle (Phase 1.2.4)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Extracts the `session_id` UUID from a Supabase Auth JWT access token payload.
+ *
+ * Safe for browser and server environments.
+ * Returns null if the token is malformed, the session_id claim is missing,
+ * or the value is not a valid UUID string.
+ */
+export const extractSessionId = (accessToken: string): string | null => {
+  try {
+    const parts = accessToken.split('.');
+    if (parts.length !== 3) return null;
+
+    // Base64url → base64 conversion: replace URL-safe chars, add padding
+    const base64Payload = parts[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const padded = base64Payload +
+      '='.repeat((4 - (base64Payload.length % 4)) % 4);
+
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const decoded = new TextDecoder().decode(bytes);
+
+    const claims = JSON.parse(decoded) as Record<string, unknown>;
+
+    if (typeof claims.session_id !== 'string' || !claims.session_id) {
+      return null;
+    }
+
+    // Validate UUID format (8-4-4-4-12 hex)
+    const uuidPattern =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidPattern.test(claims.session_id)) {
+      return null;
+    }
+
+    return claims.session_id;
+  } catch {
+    return null;
+  }
+};
+
+export type DeactivationStatus =
+  | 'SUCCESSFUL_DEACTIVATION'
+  | 'NO_ACTIVE_SESSION'
+  | 'DATABASE_OR_RPC_FAILURE';
+
+export interface DeactivationResult {
+  serverDeactivated: boolean;
+  status: DeactivationStatus;
+  userId?: string | null;
+  sessionId?: string | null;
+  error?: unknown;
+}
+
+export interface LogoutResult extends DeactivationResult {
+  authSignedOut: boolean;
+}
+
+/**
+ * Attempts server-side active session deactivation using the existing database
+ * RPC `public.deactivate_active_session()`.
+ *
+ * Security & Lifecycle Invariants:
+ * 1. Must be executed while the user's JWT remains valid before calling auth.signOut().
+ * 2. Uses PostgreSQL advisory transaction locking derived from the authenticated user's UUID.
+ * 3. Uses conditional deletion: only deletes the session row if active_session_id still matches
+ *    the calling session's ID. Newer replacement sessions are never deactivated.
+ * 4. Distinguishes between successful deactivation, no active session, and database/RPC failures.
+ * 5. Genuine database failures are NEVER reported as successful deactivations.
+ */
+export const deactivateActiveSession = async (): Promise<DeactivationResult> => {
+  try {
+    // 1. Capture current authenticated session info
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error('deactivateActiveSession: Failed to obtain session:', sessionError);
+      return {
+        serverDeactivated: false,
+        status: 'DATABASE_OR_RPC_FAILURE',
+        error: sessionError,
+      };
+    }
+
+    const session = sessionData?.session;
+    if (!session || !session.access_token) {
+      return {
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId: null,
+        sessionId: null,
+      };
+    }
+
+    const userId = session.user?.id ?? null;
+    const sessionId = extractSessionId(session.access_token);
+
+    if (!sessionId) {
+      console.warn('deactivateActiveSession: JWT does not contain a valid session_id claim');
+      return {
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId,
+        sessionId: null,
+      };
+    }
+
+    // 2. Call existing parameterless session-deactivation RPC while JWT is valid.
+    // The database function derives user_id (sub) and session_id from request.jwt.claims,
+    // acquires the advisory transaction lock, and performs conditional deletion.
+    const { data, error: rpcError } = await supabase.rpc('deactivate_active_session');
+
+    if (rpcError) {
+      console.error('deactivateActiveSession: RPC transport error:', rpcError);
+      return {
+        serverDeactivated: false,
+        status: 'DATABASE_OR_RPC_FAILURE',
+        userId,
+        sessionId,
+        error: rpcError,
+      };
+    }
+
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      console.error('deactivateActiveSession: Unexpected RPC response shape:', typeof data);
+      return {
+        serverDeactivated: false,
+        status: 'DATABASE_OR_RPC_FAILURE',
+        userId,
+        sessionId,
+        error: 'INVALID_RESPONSE_SHAPE',
+      };
+    }
+
+    const rpcResult = data as { success?: boolean; deactivated?: boolean; error_code?: string };
+
+    if (rpcResult.success !== true) {
+      console.error('deactivateActiveSession: RPC returned failure:', rpcResult.error_code);
+      return {
+        serverDeactivated: false,
+        status: 'DATABASE_OR_RPC_FAILURE',
+        userId,
+        sessionId,
+        error: rpcResult.error_code ?? 'UNKNOWN_RPC_ERROR',
+      };
+    }
+
+    if (rpcResult.deactivated === true) {
+      return {
+        serverDeactivated: true,
+        status: 'SUCCESSFUL_DEACTIVATION',
+        userId,
+        sessionId,
+      };
+    }
+
+    // Deactivated is false: either no active session was present or a newer replacement session
+    // is already active (conditional deletion protected the newer session).
+    return {
+      serverDeactivated: false,
+      status: 'NO_ACTIVE_SESSION',
+      userId,
+      sessionId,
+    };
+  } catch (err) {
+    console.error('deactivateActiveSession: Unexpected exception:', err);
+    return {
+      serverDeactivated: false,
+      status: 'DATABASE_OR_RPC_FAILURE',
+      error: err,
+    };
+  }
+};
+
+/**
+ * Executes the complete logout lifecycle:
+ *
+ * Sequence:
+ * 1. Capture current authenticated session information.
+ * 2. Attempt server-side active session deactivation while JWT remains valid.
+ * 3. Perform Supabase Auth sign-out regardless of server-side deactivation failure.
+ * 4. Propagates Auth sign-out error if encountered (AuthContext.finally guarantees local UI cleanup).
+ *
+ * Stale session records left by failed deactivation self-heal automatically on the
+ * next successful login via register_active_session upsert.
+ */
+export const logout = async (): Promise<LogoutResult> => {
+  // ── 1. Capture session & attempt server-side deactivation while JWT is valid ──
+  const deactivationResult = await deactivateActiveSession();
+
+  // ── 2. Perform Supabase Auth sign-out regardless of deactivation outcome ──
+  let signOutError: unknown = null;
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      signOutError = error;
+    }
+  } catch (err) {
+    signOutError = err;
+  }
+
+  // ── 3. Propagate Auth sign-out failure if encountered ───────────────────
+  // Note: AuthContext.finally still guarantees local UI authentication state is cleared.
+  if (signOutError) {
+    console.error('logout: Supabase Auth signOut failed:', signOutError);
+    throw signOutError;
+  }
+
+  return {
+    ...deactivationResult,
+    authSignedOut: true,
+  };
 };
 
 export const getCurrentUser = async () => {
@@ -100,4 +316,173 @@ export const getCurrentUser = async () => {
       return profile;
   }
   return null;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Realtime Session Replacement & Frontend Teardown (Phase 1.2.5)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const SESSION_REPLACEMENT_MESSAGE =
+  "You've been logged out because your account was signed in on another device or browser.";
+
+export const SESSION_REPLACEMENT_STORAGE_KEY = 'horizon_session_replacement_message';
+
+/**
+ * Stores the session replacement message notice in sessionStorage for reliable
+ * retrieval across unmounting components and route redirects.
+ */
+export const setSessionReplacementNotice = (
+  message: string = SESSION_REPLACEMENT_MESSAGE
+): void => {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.setItem(SESSION_REPLACEMENT_STORAGE_KEY, message);
+    }
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+};
+
+/**
+ * Retrieves and clears the session replacement message notice from sessionStorage.
+ * Returns null if no notice was stored.
+ */
+export const consumeSessionReplacementNotice = (): string | null => {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const msg = window.sessionStorage.getItem(SESSION_REPLACEMENT_STORAGE_KEY);
+      if (msg) {
+        window.sessionStorage.removeItem(SESSION_REPLACEMENT_STORAGE_KEY);
+        return msg;
+      }
+    }
+  } catch {
+    // Ignore storage errors
+  }
+  return null;
+};
+
+export interface ActiveSessionCheckResult {
+  isActive: boolean;
+  isDefinitivelyInactive: boolean;
+  error?: unknown;
+}
+
+/**
+ * Authoritatively verifies whether the calling browser session is still active
+ * in the database registry using the public.is_active_session() parameterless RPC.
+ *
+ * Invariants:
+ * 1. Derives identity directly from current JWT claims on the server.
+ * 2. Returns isDefinitivelyInactive = true ONLY when the database RPC explicitly returns false.
+ * 3. Network or transport errors do NOT mark the session as inactive (prevents accidental logouts on transient offline).
+ */
+export const checkIsActiveSession = async (): Promise<ActiveSessionCheckResult> => {
+  try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.warn('checkIsActiveSession: Failed to obtain session:', sessionError);
+      return { isActive: false, isDefinitivelyInactive: false, error: sessionError };
+    }
+
+    const session = sessionData?.session;
+    if (!session || !session.access_token) {
+      return { isActive: false, isDefinitivelyInactive: true };
+    }
+
+    const sessionId = extractSessionId(session.access_token);
+    if (!sessionId) {
+      return { isActive: false, isDefinitivelyInactive: true, error: 'MISSING_SESSION_ID' };
+    }
+
+    const { data, error: rpcError } = await supabase.rpc('is_active_session');
+
+    if (rpcError) {
+      console.warn('checkIsActiveSession: RPC evaluation error:', rpcError);
+      return { isActive: true, isDefinitivelyInactive: false, error: rpcError };
+    }
+
+    if (data === false) {
+      // Authoritatively inactive (another device took over or session was deleted)
+      return { isActive: false, isDefinitivelyInactive: true };
+    }
+
+    return { isActive: data === true, isDefinitivelyInactive: false };
+  } catch (err) {
+    console.warn('checkIsActiveSession: Unexpected error:', err);
+    return { isActive: true, isDefinitivelyInactive: false, error: err };
+  }
+};
+
+let isTeardownInProgress = false;
+
+export interface TeardownResult {
+  completed: boolean;
+  message: string;
+}
+
+/**
+ * Performs local frontend session teardown when a session has been replaced.
+ *
+ * Steps:
+ * 1. Guard against duplicate or reentrant execution.
+ * 2. Save the replacement notice to sessionStorage.
+ * 3. Clear user-specific storage keys (while preserving unrelated application state).
+ * 4. Perform Supabase Auth local sign-out without attempting server deactivation
+ *    (the session in the registry already belongs to the replacement device).
+ * 5. Dispatch a custom window event for decoupled listeners.
+ */
+export const teardownSession = async (
+  options: { message?: string } = {}
+): Promise<TeardownResult> => {
+  const message = options.message || SESSION_REPLACEMENT_MESSAGE;
+
+  if (isTeardownInProgress) {
+    return { completed: false, message };
+  }
+
+  isTeardownInProgress = true;
+
+  try {
+    // 1. Persist message for retrieval after redirect/unmount
+    setSessionReplacementNotice(message);
+
+    // 2. Clear user-specific session storage keys (do not erase public app state like reload guards)
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        window.sessionStorage.removeItem('horizon_notif_card_dismissed');
+      }
+    } catch {
+      // Ignore storage errors
+    }
+
+    // 3. Clear local Supabase SDK auth session
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // Fallback: regular signOut
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('teardownSession: Error clearing SDK auth session:', err);
+      }
+    }
+
+    // 4. Dispatch browser event
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent('horizon:session_replaced', {
+          detail: { message },
+        })
+      );
+    }
+
+    return { completed: true, message };
+  } finally {
+    isTeardownInProgress = false;
+  }
+};
+
+export const resetTeardownGuardForTesting = (): void => {
+  isTeardownInProgress = false;
 };

@@ -20,6 +20,18 @@ export const handleDownload = async (url: string, resource: Resource, e?: { prev
       body: { resource_id: resource.id },
     });
     if (error || !data?.success) {
+      const errStr = (error?.message || data?.error || '').toLowerCase();
+      if (errStr.includes('401') || errStr.includes('unauthorized')) {
+        try {
+          const { checkIsActiveSession, teardownSession } = await import('../services/auth');
+          const check = await checkIsActiveSession();
+          if (check.isDefinitivelyInactive) {
+            await teardownSession();
+          }
+        } catch {
+          // Ignore
+        }
+      }
       console.error("Failed to generate signed url for download", error || data?.error);
       return;
     }

@@ -1,23 +1,44 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { login, register, logout, getCurrentUser } from '../auth';
+import { login, register, logout, getCurrentUser, extractSessionId, deactivateActiveSession } from '../auth';
 import { supabase } from '../supabase';
 
 vi.mock('../supabase', () => ({
   supabase: {
     auth: {
-      // login() now uses setSession (not signInWithPassword) after the
-      // Phase 1.2.2 Login Orchestrator implementation.
+      // login() uses setSession after Phase 1.2.2 Login Orchestrator
       setSession: vi.fn(),
       signUp: vi.fn(),
       signOut: vi.fn(),
       getUser: vi.fn(),
+      getSession: vi.fn(),
     },
     from: vi.fn(),
+    rpc: vi.fn(),
   },
 }));
 
+const toBase64Url = (str: string): string => {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+};
+
+const makeJwt = (claims: Record<string, unknown>): string => {
+  const header = toBase64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = toBase64Url(JSON.stringify(claims));
+  return `${header}.${payload}.mock-sig`;
+};
+
 describe('auth service', () => {
   const originalLocation = window.location;
+  const VALID_USER_ID = '6270e9bc-fa42-41a2-8bbd-b5b556473127';
+  const VALID_SESSION_ID = '94b32b85-0d32-4d43-bb9e-3d2319c72e90';
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,6 +48,16 @@ describe('auth service', () => {
     // @ts-ignore
     delete window.location;
     window.location = { origin: 'http://localhost' } as never;
+
+    vi.mocked(supabase.auth.getSession).mockResolvedValue({
+      data: { session: null },
+      error: null,
+    } as never);
+
+    vi.mocked(supabase.rpc).mockResolvedValue({
+      data: { success: true, deactivated: true },
+      error: null,
+    } as never);
   });
 
   afterEach(() => {
@@ -38,7 +69,7 @@ describe('auth service', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // login — now calls the auth-login Edge Function + supabase.auth.setSession
+  // login — calls the auth-login Edge Function + supabase.auth.setSession
   // ─────────────────────────────────────────────────────────────────────────
   describe('login', () => {
     const SUPABASE_URL = 'https://test.supabase.co';
@@ -291,19 +322,456 @@ describe('auth service', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // logout — unchanged
+  // extractSessionId — Phase 1.2.4 JWT claim utility
   // ─────────────────────────────────────────────────────────────────────────
-  describe('logout', () => {
-    it('successfully logs out', async () => {
-      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
-      await logout();
-      expect(supabase.auth.signOut).toHaveBeenCalled();
+  describe('extractSessionId', () => {
+    it('extracts UUID session_id from valid token payload', () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      expect(extractSessionId(token)).toBe(VALID_SESSION_ID);
     });
 
-    it('throws error when logout fails', async () => {
+    it('accepts uppercase UUID session_id', () => {
+      const upperUuid = VALID_SESSION_ID.toUpperCase();
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: upperUuid });
+      expect(extractSessionId(token)).toBe(upperUuid);
+    });
+
+    it('returns null when session_id claim is missing', () => {
+      const token = makeJwt({ sub: VALID_USER_ID });
+      expect(extractSessionId(token)).toBeNull();
+    });
+
+    it('returns null when session_id claim is not a valid UUID', () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: 'not-a-valid-uuid-string' });
+      expect(extractSessionId(token)).toBeNull();
+    });
+
+    it('returns null when session_id claim is empty string', () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: '' });
+      expect(extractSessionId(token)).toBeNull();
+    });
+
+    it('returns null for malformed token strings (not 3 dot-separated parts)', () => {
+      expect(extractSessionId('only.two')).toBeNull();
+      expect(extractSessionId('too.many.parts.here.extra')).toBeNull();
+      expect(extractSessionId('singlepart')).toBeNull();
+      expect(extractSessionId('')).toBeNull();
+    });
+
+    it('returns null for invalid base64 payload', () => {
+      expect(extractSessionId('header.!!!invalid_base64!!!.sig')).toBeNull();
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // deactivateActiveSession — Phase 1.2.4 Server-Side Session Deactivation
+  // ─────────────────────────────────────────────────────────────────────────
+  describe('deactivateActiveSession', () => {
+    it('1. successfully deactivates active session when matching session is found', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: { success: true, deactivated: true },
+        error: null,
+      } as never);
+
+      const result = await deactivateActiveSession();
+
+      expect(supabase.rpc).toHaveBeenCalledWith('deactivate_active_session');
+      expect(result).toEqual({
+        serverDeactivated: true,
+        status: 'SUCCESSFUL_DEACTIVATION',
+        userId: VALID_USER_ID,
+        sessionId: VALID_SESSION_ID,
+      });
+    });
+
+    it('2. returns NO_ACTIVE_SESSION when getSession reports no local session', async () => {
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: { session: null },
+        error: null,
+      } as never);
+
+      const result = await deactivateActiveSession();
+
+      expect(supabase.rpc).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId: null,
+        sessionId: null,
+      });
+    });
+
+    it('3. returns NO_ACTIVE_SESSION when JWT does not contain a session_id claim', async () => {
+      const tokenWithoutSession = makeJwt({ sub: VALID_USER_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: tokenWithoutSession,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const result = await deactivateActiveSession();
+
+      expect(supabase.rpc).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId: VALID_USER_ID,
+        sessionId: null,
+      });
+
+      warnSpy.mockRestore();
+    });
+
+    it('4. returns NO_ACTIVE_SESSION when RPC reports deactivated: false (already displaced/no active row)', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: { success: true, deactivated: false },
+        error: null,
+      } as never);
+
+      const result = await deactivateActiveSession();
+
+      expect(supabase.rpc).toHaveBeenCalledWith('deactivate_active_session');
+      expect(result).toEqual({
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId: VALID_USER_ID,
+        sessionId: VALID_SESSION_ID,
+      });
+    });
+
+    it('5. handles RPC transport/PostgREST error and marks DATABASE_OR_RPC_FAILURE', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      const rpcTransportError = { message: 'Database connection failed', code: 'PGRST000' };
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: null,
+        error: rpcTransportError,
+      } as never);
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await deactivateActiveSession();
+
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+      expect(result.error).toEqual(rpcTransportError);
+
+      errorSpy.mockRestore();
+    });
+
+    it('6. handles RPC internal error_code (e.g. DATABASE_ERROR) without treating as success', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: { success: false, error_code: 'DATABASE_ERROR' },
+        error: null,
+      } as never);
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await deactivateActiveSession();
+
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+      expect(result.error).toBe('DATABASE_ERROR');
+
+      errorSpy.mockRestore();
+    });
+
+    it('7. handles unexpected RPC response shape safely', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: 'unexpected-string',
+        error: null,
+      } as never);
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await deactivateActiveSession();
+
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+      expect(result.error).toBe('INVALID_RESPONSE_SHAPE');
+
+      errorSpy.mockRestore();
+    });
+
+    it('8. handles unexpected exception thrown during RPC execution safely', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockRejectedValue(new Error('Network offline'));
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await deactivateActiveSession();
+
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+
+      errorSpy.mockRestore();
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // logout — Phase 1.2.4 Logout Lifecycle
+  // ─────────────────────────────────────────────────────────────────────────
+  describe('logout', () => {
+    it('1. successfully logs out with server-side deactivation and auth sign out', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: { success: true, deactivated: true },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+      const result = await logout();
+
+      expect(supabase.rpc).toHaveBeenCalledWith('deactivate_active_session');
+      expect(supabase.auth.signOut).toHaveBeenCalled();
+      expect(result).toEqual({
+        serverDeactivated: true,
+        status: 'SUCCESSFUL_DEACTIVATION',
+        userId: VALID_USER_ID,
+        sessionId: VALID_SESSION_ID,
+        authSignedOut: true,
+      });
+    });
+
+    it('2. successfully logs out when no active session is present', async () => {
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: { session: null },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+      const result = await logout();
+
+      expect(supabase.rpc).not.toHaveBeenCalled();
+      expect(supabase.auth.signOut).toHaveBeenCalled();
+      expect(result).toEqual({
+        serverDeactivated: false,
+        status: 'NO_ACTIVE_SESSION',
+        userId: null,
+        sessionId: null,
+        authSignedOut: true,
+      });
+    });
+
+    it('3. strictly enforces logout operation ordering (capture -> deactivate RPC -> auth signOut)', async () => {
+      const callOrder: string[] = [];
+
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockImplementation(async () => {
+        callOrder.push('getSession');
+        return {
+          data: {
+            session: {
+              access_token: token,
+              user: { id: VALID_USER_ID },
+            },
+          },
+          error: null,
+        } as never;
+      });
+
+      vi.mocked(supabase.rpc).mockImplementation(async () => {
+        callOrder.push('rpc:deactivate');
+        return {
+          data: { success: true, deactivated: true },
+          error: null,
+        } as never;
+      });
+
+      vi.mocked(supabase.auth.signOut).mockImplementation(async () => {
+        callOrder.push('signOut');
+        return { error: null };
+      });
+
+      await logout();
+
+      expect(callOrder).toEqual(['getSession', 'rpc:deactivate', 'signOut']);
+    });
+
+    it('4. proceeds with Auth signOut when server-side deactivation fails with database error', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: null,
+        error: { message: 'Database connection lost' },
+      } as never);
+
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await logout();
+
+      // Auth signOut MUST still be called!
+      expect(supabase.auth.signOut).toHaveBeenCalled();
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+      expect(result.authSignedOut).toBe(true);
+
+      errorSpy.mockRestore();
+    });
+
+    it('5. proceeds with Auth signOut when server-side deactivation throws an exception', async () => {
+      const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: token,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.rpc).mockRejectedValue(new Error('Network offline'));
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const result = await logout();
+
+      expect(supabase.auth.signOut).toHaveBeenCalled();
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('DATABASE_OR_RPC_FAILURE');
+      expect(result.authSignedOut).toBe(true);
+
+      errorSpy.mockRestore();
+    });
+
+    it('6. throws error when Auth signOut fails and logs the failure', async () => {
       const mockError = new Error('Logout failed');
       vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: mockError as never });
+
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
       await expect(logout()).rejects.toThrow('Logout failed');
+
+      expect(errorSpy).toHaveBeenCalledWith('logout: Supabase Auth signOut failed:', mockError);
+
+      errorSpy.mockRestore();
+    });
+
+    it('7. conditional deletion protects replacement session when displaced session logs out', async () => {
+      // Displaced session calls logout
+      const displacedSessionId = '11111111-1111-1111-1111-111111111111';
+      const displacedToken = makeJwt({ sub: VALID_USER_ID, session_id: displacedSessionId });
+
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({
+        data: {
+          session: {
+            access_token: displacedToken,
+            user: { id: VALID_USER_ID },
+          },
+        },
+        error: null,
+      } as never);
+
+      // Database conditional deletion matched 0 rows because replacement session is active
+      vi.mocked(supabase.rpc).mockResolvedValue({
+        data: { success: true, deactivated: false },
+        error: null,
+      } as never);
+
+      vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+      const result = await logout();
+
+      expect(supabase.rpc).toHaveBeenCalledWith('deactivate_active_session');
+      expect(supabase.auth.signOut).toHaveBeenCalled();
+      // Server deactivation did NOT touch any row (protected the replacement session)
+      expect(result.serverDeactivated).toBe(false);
+      expect(result.status).toBe('NO_ACTIVE_SESSION');
+      expect(result.authSignedOut).toBe(true);
     });
   });
 

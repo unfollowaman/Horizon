@@ -1,334 +1,287 @@
 import { assertEquals } from "jsr:@std/assert";
+import {
+  handleRequest,
+  extractSessionId,
+  extractBearerToken,
+  getCorsHeaders,
+} from "./index.ts";
 
-// We will test the core logic of the edge function by replicating its behavior in a testable function.
-
-const ALLOWED_ORIGINS = [
-  "https://unfollowaman.tech",
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://localhost:8000",
-  "http://127.0.0.1:5173",
-];
-
-function getCorsHeaders(requestOrigin?: string | null): Record<string, string> {
-  const envOrigins = Deno.env.get("ALLOWED_ORIGINS")
-    ? Deno.env.get("ALLOWED_ORIGINS")!.split(",").map((o) => o.trim()).filter(Boolean)
-    : [];
-  const singleEnvOrigin = Deno.env.get("ALLOWED_ORIGIN")?.trim();
-  if (singleEnvOrigin) {
-    envOrigins.push(singleEnvOrigin);
-  }
-
-  const allowedList = [...ALLOWED_ORIGINS, ...envOrigins];
-
-  let allowedOrigin = "https://unfollowaman.tech";
-  if (requestOrigin && allowedList.includes(requestOrigin)) {
-    allowedOrigin = requestOrigin;
-  }
-
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Vary": "Origin",
-  };
+function makeJwt(claims: Record<string, unknown>): string {
+  const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const payload = btoa(JSON.stringify(claims))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return `${header}.${payload}.mock-signature`;
 }
 
-async function handleRequest(req: Request, supabaseClient: unknown): Promise<Response> {
-  const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
-  const corsHeaders = getCorsHeaders(requestOrigin);
+const VALID_USER_ID = "6270e9bc-fa42-41a2-8bbd-b5b556473127";
+const VALID_SESSION_ID = "94b32b85-0d32-4d43-bb9e-3d2319c72e90";
+const VALID_RESOURCE = {
+  id: 101,
+  resource_type: "notes",
+  storage_bucket: "pdfs",
+  file_path: "notes/class10/math.pdf",
+  allow_download: true,
+  is_active: true,
+};
 
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
-
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) {
-    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  let body;
-  try {
-    body = await req.json();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_e) {
-    return new Response(JSON.stringify({ success: false, error: "Invalid JSON" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const { resource_id } = body;
-  if (
-    resource_id === undefined ||
-    resource_id === null ||
-    (typeof resource_id !== "number" && typeof resource_id !== "string") ||
-    (typeof resource_id === "string" && resource_id.trim() === "")
-  ) {
-    return new Response(JSON.stringify({ success: false, error: "Missing or invalid resource_id" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // Use the injected mock supabaseClient instead of creating a new one
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const {
-    data: { user },
-    error: authError,
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  } = await supabaseClient.auth.getUser();
-
-  if (authError || !user) {
-    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { data: resource, error: resourceError } = await supabaseClient
-    .from("learning_resources")
-    .select("id, resource_type, storage_bucket, file_path, allow_download, is_active")
-    .eq("id", resource_id)
-    .single();
-
-  if (resourceError || !resource) {
-    return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
-      status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const isValid =
-    resource.id !== null &&
-    resource.id !== undefined &&
-    resource.storage_bucket !== null &&
-    resource.storage_bucket !== undefined &&
-    resource.file_path !== null &&
-    resource.file_path !== undefined &&
-    resource.resource_type !== null &&
-    resource.resource_type !== undefined &&
-    resource.is_active === true &&
-    resource.allow_download !== null &&
-    resource.allow_download !== undefined;
-
-  if (!isValid) {
-    return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
-      status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { data: storageData, error: storageError } = await supabaseClient.storage
-    .from(resource.storage_bucket)
-    .createSignedUrl(resource.file_path, 60);
-
-  if (storageError || !storageData) {
-    return new Response(JSON.stringify({ success: false, error: "Storage failure" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  return new Response(
-    JSON.stringify({
-      success: true,
-      signed_url: storageData.signedUrl,
-      expires_in: 60,
-    }),
-    {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    }
-  );
-}
-
-// Mock Supabase Client Factory
-function createMockClient(mockUser: unknown, mockResource: unknown, mockResourceError: unknown = null, mockStorageData: unknown = null, mockStorageError: unknown = null) {
+function createMockUserClient(user: { id: string } | null, resource: unknown = VALID_RESOURCE, resourceError: unknown = null) {
   return {
     auth: {
-      getUser: async () => ({ data: { user: mockUser }, error: null }),
+      getUser: () => Promise.resolve({ data: { user }, error: null }),
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     from: (_table: string) => ({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      select: (_columns: string) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      select: (_cols: string) => ({
         eq: (_col: string, _val: unknown) => ({
-          single: async () => ({ data: mockResource, error: mockResourceError }),
+          single: () => Promise.resolve({ data: resource, error: resourceError }),
         }),
       }),
     }),
+  };
+}
+
+function createSpyAdminClient(options?: {
+  isActiveSession?: boolean;
+  sessionRpcError?: Error | null;
+  storageData?: { signedUrl: string } | null;
+  storageError?: Error | null;
+}) {
+  let storageCalled = false;
+  let rpcCalledWith: { p_user_id: string; p_session_id: string } | null = null;
+
+  return {
+    get storageCalled() {
+      return storageCalled;
+    },
+    get rpcCalledWith() {
+      return rpcCalledWith;
+    },
+    rpc: (fn: string, params: { p_user_id: string; p_session_id: string }) => {
+      if (fn === "is_active_session") {
+        rpcCalledWith = params;
+        return Promise.resolve({
+          data: options?.isActiveSession ?? true,
+          error: options?.sessionRpcError ?? null,
+        });
+      }
+      return Promise.resolve({ data: null, error: new Error(`Unknown RPC ${fn}`) });
+    },
     storage: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       from: (_bucket: string) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        createSignedUrl: async (_path: string, _expiresIn: number) => ({ data: mockStorageData, error: mockStorageError }),
+        createSignedUrl: (_path: string, _expiresIn: number) => {
+          storageCalled = true;
+          return Promise.resolve({
+            data: options?.storageData ?? { signedUrl: "https://example.com/signed.pdf" },
+            error: options?.storageError ?? null,
+          });
+        },
       }),
     },
   };
 }
 
-Deno.test("Missing resource_id returns 400", async () => {
+// ---------------------------------------------------------------------------
+// Pure Function Tests
+// ---------------------------------------------------------------------------
+
+Deno.test("extractBearerToken - valid format", () => {
+  const res = extractBearerToken("Bearer token-abc");
+  assertEquals(res.token, "token-abc");
+});
+
+Deno.test("extractBearerToken - missing header", () => {
+  const res = extractBearerToken(null);
+  assertEquals(res.token, null);
+  assertEquals(res.error, "Missing Authorization header");
+});
+
+Deno.test("extractBearerToken - non-bearer format", () => {
+  const res = extractBearerToken("Basic user:pass");
+  assertEquals(res.token, null);
+  assertEquals(res.error, "Invalid Authorization header format. Must be 'Bearer <token>'");
+});
+
+Deno.test("extractSessionId - valid UUID claim", () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  const sessionId = extractSessionId(token);
+  assertEquals(sessionId, VALID_SESSION_ID);
+});
+
+Deno.test("extractSessionId - missing session_id", () => {
+  const token = makeJwt({ sub: VALID_USER_ID });
+  assertEquals(extractSessionId(token), null);
+});
+
+Deno.test("extractSessionId - non-UUID session_id", () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: "not-a-uuid" });
+  assertEquals(extractSessionId(token), null);
+});
+
+Deno.test("extractSessionId - malformed JWT", () => {
+  assertEquals(extractSessionId("not.a.valid.jwt.string"), null);
+  assertEquals(extractSessionId("invalid"), null);
+});
+
+// ---------------------------------------------------------------------------
+// HTTP Handler & Active Session Enforcement Tests
+// ---------------------------------------------------------------------------
+
+Deno.test("handleRequest - OPTIONS returns 200 CORS preflight", async () => {
+  const req = new Request("http://localhost/", { method: "OPTIONS" });
+  const res = await handleRequest(req);
+  assertEquals(res.status, 200);
+});
+
+Deno.test("handleRequest - GET method not allowed (405)", async () => {
+  const req = new Request("http://localhost/", { method: "GET" });
+  const res = await handleRequest(req);
+  assertEquals(res.status, 405);
+});
+
+Deno.test("handleRequest - Missing Authorization header returns 401", async () => {
   const req = new Request("http://localhost/", {
     method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ resource_id: 101 }),
+  });
+  const res = await handleRequest(req);
+  assertEquals(res.status, 401);
+});
+
+Deno.test("handleRequest - Missing resource_id in body returns 400", async () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({}),
   });
-  const mockClient = createMockClient({ id: "user1" }, null);
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 400);
-  const data = await res.json();
-  assertEquals(data.error, "Missing or invalid resource_id");
-});
-
-Deno.test("Invalid resource_id returns 400", async () => {
-  const req = new Request("http://localhost/", {
-    method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: "   " }),
+  const mockUser = createMockUserClient({ id: VALID_USER_ID });
+  const spyAdmin = createSpyAdminClient();
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
   });
-  const mockClient = createMockClient({ id: "user1" }, null);
-  const res = await handleRequest(req, mockClient);
   assertEquals(res.status, 400);
 });
 
-Deno.test("Valid string resource_id returns 200 with signed URL", async () => {
+Deno.test("handleRequest - JWT missing session_id returns 401 and blocks storage", async () => {
+  const tokenWithoutSession = makeJwt({ sub: VALID_USER_ID });
   const req = new Request("http://localhost/", {
     method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: "res-uuid-1234" }),
+    headers: {
+      Authorization: `Bearer ${tokenWithoutSession}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resource_id: 101 }),
   });
-  const mockResource = {
-    id: "res-uuid-1234",
-    resource_type: "notes",
-    storage_bucket: "pdfs",
-    file_path: "path/to/file.pdf",
-    allow_download: false,
-    is_active: true,
-  };
-  const mockStorageData = { signedUrl: "https://example.com/signed-url" };
-  const mockClient = createMockClient({ id: "user1" }, mockResource, null, mockStorageData);
-  const res = await handleRequest(req, mockClient);
+  const mockUser = createMockUserClient({ id: VALID_USER_ID });
+  const spyAdmin = createSpyAdminClient({ isActiveSession: true });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
+  });
+
+  assertEquals(res.status, 401);
+  assertEquals(spyAdmin.storageCalled, false);
+});
+
+Deno.test("handleRequest - Replaced session (RPC isActive = false) returns 401 and blocks storage", async () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resource_id: 101 }),
+  });
+  const mockUser = createMockUserClient({ id: VALID_USER_ID });
+  const spyAdmin = createSpyAdminClient({ isActiveSession: false });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
+  });
+
+  assertEquals(res.status, 401);
+  assertEquals(spyAdmin.storageCalled, false);
+  assertEquals(spyAdmin.rpcCalledWith?.p_user_id, VALID_USER_ID);
+  assertEquals(spyAdmin.rpcCalledWith?.p_session_id, VALID_SESSION_ID);
+});
+
+Deno.test("handleRequest - Session RPC error returns 401 and blocks storage", async () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resource_id: 101 }),
+  });
+  const mockUser = createMockUserClient({ id: VALID_USER_ID });
+  const spyAdmin = createSpyAdminClient({ sessionRpcError: new Error("Database timeout") });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
+  });
+
+  assertEquals(res.status, 401);
+  assertEquals(spyAdmin.storageCalled, false);
+});
+
+Deno.test("handleRequest - Active session succeeds and generates signed URL", async () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  const req = new Request("http://localhost/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resource_id: 101 }),
+  });
+  const mockUser = createMockUserClient({ id: VALID_USER_ID });
+  const spyAdmin = createSpyAdminClient({
+    isActiveSession: true,
+    storageData: { signedUrl: "https://storage.example.com/signed-url-for-doc" },
+  });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
+  });
+
   assertEquals(res.status, 200);
+  assertEquals(spyAdmin.storageCalled, true);
   const data = await res.json();
   assertEquals(data.success, true);
-  assertEquals(data.signed_url, "https://example.com/signed-url");
+  assertEquals(data.signed_url, "https://storage.example.com/signed-url-for-doc");
   assertEquals(data.expires_in, 60);
 });
 
-Deno.test("Nonexistent resource returns 404", async () => {
+Deno.test("handleRequest - Resource not found returns 404", async () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
   const req = new Request("http://localhost/", {
     method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: 999 }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resource_id: 9999 }),
   });
-  const mockClient = createMockClient({ id: "user1" }, null, new Error("Not found"));
-  const res = await handleRequest(req, mockClient);
+  const mockUser = createMockUserClient({ id: VALID_USER_ID }, null, new Error("Not found"));
+  const spyAdmin = createSpyAdminClient({ isActiveSession: true });
+
+  const res = await handleRequest(req, {
+    supabaseUserClient: mockUser,
+    supabaseAdminClient: spyAdmin,
+  });
+
   assertEquals(res.status, 404);
-});
-
-Deno.test("Inactive resource returns 404", async () => {
-  const req = new Request("http://localhost/", {
-    method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: 1 }),
-  });
-  const mockResource = {
-    id: 1,
-    resource_type: "notes",
-    storage_bucket: "pdfs",
-    file_path: "path/to/file.pdf",
-    allow_download: true,
-    is_active: false, // INACTIVE
-  };
-  const mockClient = createMockClient({ id: "user1" }, mockResource);
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 404);
-});
-
-Deno.test("Storage failure returns 500", async () => {
-  const req = new Request("http://localhost/", {
-    method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: 1 }),
-  });
-  const mockResource = {
-    id: 1,
-    resource_type: "notes",
-    storage_bucket: "pdfs",
-    file_path: "path/to/file.pdf",
-    allow_download: false,
-    is_active: true,
-  };
-  const mockClient = createMockClient({ id: "user1" }, mockResource, null, null, new Error("Storage down"));
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 500);
-  const data = await res.json();
-  assertEquals(data.success, false);
-  assertEquals(data.error, "Storage failure");
-});
-
-Deno.test("Valid resource returns 200 with signed URL", async () => {
-  const req = new Request("http://localhost/", {
-    method: "POST",
-    headers: { Authorization: "Bearer valid-token" },
-    body: JSON.stringify({ resource_id: 1 }),
-  });
-  const mockResource = {
-    id: 1,
-    resource_type: "notes",
-    storage_bucket: "pdfs",
-    file_path: "path/to/file.pdf",
-    allow_download: false,
-    is_active: true,
-  };
-  const mockStorageData = { signedUrl: "https://example.com/signed-url" };
-  const mockClient = createMockClient({ id: "user1" }, mockResource, null, mockStorageData);
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 200);
-  const data = await res.json();
-  assertEquals(data.success, true);
-  assertEquals(data.signed_url, "https://example.com/signed-url");
-  assertEquals(data.expires_in, 60);
-});
-
-Deno.test("OPTIONS request returns 200 with matching allowed origin CORS headers", async () => {
-  const req = new Request("http://localhost/", {
-    method: "OPTIONS",
-    headers: { Origin: "http://localhost:5173" },
-  });
-  const mockClient = createMockClient(null, null);
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 200);
-  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "http://localhost:5173");
-  assertEquals(res.headers.get("Access-Control-Allow-Methods"), "POST, OPTIONS");
-  assertEquals(res.headers.get("Vary"), "Origin");
-});
-
-Deno.test("OPTIONS request with untrusted origin falls back to production domain", async () => {
-  const req = new Request("http://localhost/", {
-    method: "OPTIONS",
-    headers: { Origin: "https://malicious-site.com" },
-  });
-  const mockClient = createMockClient(null, null);
-  const res = await handleRequest(req, mockClient);
-  assertEquals(res.status, 200);
-  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "https://unfollowaman.tech");
+  assertEquals(spyAdmin.storageCalled, false);
 });

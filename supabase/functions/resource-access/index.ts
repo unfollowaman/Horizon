@@ -35,16 +35,77 @@ export function getCorsHeaders(requestOrigin?: string | null): Record<string, st
 
 export const corsHeaders = getCorsHeaders();
 
-Deno.serve(async (req) => {
+export function extractBearerToken(authHeader: string | null): { token: string | null; error?: string } {
+  if (!authHeader || typeof authHeader !== "string") {
+    return { token: null, error: "Missing Authorization header" };
+  }
+
+  const trimmed = authHeader.trim();
+  if (!trimmed) {
+    return { token: null, error: "Empty Authorization header" };
+  }
+
+  const match = /^Bearer\s+(.+)$/i.exec(trimmed);
+  if (!match || !match[1] || !match[1].trim()) {
+    return { token: null, error: "Invalid Authorization header format. Must be 'Bearer <token>'" };
+  }
+
+  return { token: match[1].trim() };
+}
+
+/**
+ * Extracts the `session_id` UUID claim from a Supabase Auth JWT access token.
+ * Returns null if the token is malformed, the claim is absent, or the value
+ * is not a valid UUID string.
+ */
+export function extractSessionId(accessToken: string): string | null {
+  try {
+    const parts = accessToken.split(".");
+    if (parts.length !== 3) return null;
+
+    const base64Payload = parts[1]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const padded = base64Payload +
+      "=".repeat((4 - base64Payload.length % 4) % 4);
+
+    const decoded = atob(padded);
+    const claims = JSON.parse(decoded) as Record<string, unknown>;
+
+    if (typeof claims.session_id !== "string" || !claims.session_id) {
+      return null;
+    }
+
+    const uuidPattern =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidPattern.test(claims.session_id)) {
+      return null;
+    }
+
+    return claims.session_id;
+  } catch {
+    return null;
+  }
+}
+
+export interface HandlerDeps {
+  // Optional mock client injector for unit/integration tests
+  // deno-lint-ignore no-explicit-any
+  supabaseUserClient?: any;
+  // deno-lint-ignore no-explicit-any
+  supabaseAdminClient?: any;
+}
+
+export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<Response> {
   const requestOrigin = req.headers.get("origin") ?? req.headers.get("Origin");
   const requestCorsHeaders = getCorsHeaders(requestOrigin);
 
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: requestCorsHeaders });
+  // 1. Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: requestCorsHeaders });
   }
 
-  // Only accept POST requests
+  // 2. Only accept POST requests
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
       status: 405,
@@ -52,17 +113,20 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 1. Check for authorization header
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) {
-    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+  // 3. Extract Bearer token from Authorization header
+  const authHeader = req.headers.get("Authorization") ?? req.headers.get("authorization");
+  const bearerResult = extractBearerToken(authHeader);
+  if (!bearerResult.token) {
+    return new Response(JSON.stringify({ success: false, error: bearerResult.error || "Unauthorized" }), {
       status: 401,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     });
   }
 
-  // 1b. Parse Request Body
-  let body;
+  const accessToken = bearerResult.token;
+
+  // 4. Parse request body
+  let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch (_e) { // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -93,25 +157,22 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 2. Initialize Supabase client
-  // Get environment variables injected by Supabase Edge Runtime
+  // 5. Initialize Supabase clients
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  // Create a Supabase client configured to use the user's Authorization header
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
+  const supabase = deps?.supabaseUserClient ?? createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 
-  // Create an Admin client to bypass Storage RLS
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+  const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
 
-  // 3. Get user using the recommended getUser() method
+  // 6. Cryptographically validate user identity via Supabase Auth
   const {
     data: { user },
     error: authError,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser(accessToken);
 
   if (authError || !user) {
     console.error("Auth error:", authError);
@@ -121,14 +182,36 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Query the learning_resources table
+  // 7. Single active device session enforcement (Phase 1.2.3)
+  // Extract and validate the Auth-issued JWT session_id claim
+  const sessionId = extractSessionId(accessToken);
+  if (!sessionId) {
+    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // Verify session against authoritative registry via service-role parameterized RPC
+  const { data: isActive, error: sessionRpcError } = await supabaseAdmin.rpc("is_active_session", {
+    p_user_id: user.id,
+    p_session_id: sessionId,
+  });
+
+  if (sessionRpcError || isActive !== true) {
+    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // 8. Query learning_resources table using user-scoped client
   const { data: resource, error: resourceError } = await supabase
     .from("learning_resources")
     .select("id, resource_type, storage_bucket, file_path, allow_download, is_active")
     .eq("id", numericId)
     .single();
 
-  // 5. Verify the resource
   if (resourceError || !resource) {
     return new Response(JSON.stringify({ success: false, error: "Resource not found" }), {
       status: 404,
@@ -156,7 +239,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 6. Generate Signed URL (lifetime 60 seconds)
+  // 9. Generate Signed URL using service-role Storage client (lifetime 60 seconds)
   const { data: storageData, error: storageError } = await supabaseAdmin.storage
     .from(resource.storage_bucket)
     .createSignedUrl(resource.file_path, 60);
@@ -169,7 +252,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 7. Return signed URL only
+  // 10. Return signed URL only
   return new Response(
     JSON.stringify({
       success: true,
@@ -181,4 +264,6 @@ Deno.serve(async (req) => {
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
     }
   );
-});
+}
+
+Deno.serve((req) => handleRequest(req));

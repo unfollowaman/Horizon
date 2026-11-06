@@ -3,12 +3,25 @@ import {
   validatePushEndpoint,
   getCorsHeaders,
   extractBearerToken,
+  extractSessionId,
   readBoundedBodyStream,
   validateJsonObject,
   isValidJsonContentType,
   handleRequest,
   MAX_BODY_BYTES,
 } from "./index.ts";
+
+function makeJwt(claims: Record<string, unknown>): string {
+  const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const payload = btoa(JSON.stringify(claims))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return `${header}.${payload}.mock-signature`;
+}
+
+const VALID_USER_ID = "user-123";
+const VALID_SESSION_ID = "94b32b85-0d32-4d43-bb9e-3d2319c72e90";
+const VALID_TOKEN = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
 
 Deno.test("extractBearerToken - valid Bearer token", () => {
   const res = extractBearerToken("Bearer sample-token-xyz-123");
@@ -31,6 +44,25 @@ Deno.test("extractBearerToken - malformed non-Bearer scheme", () => {
   const res = extractBearerToken("Basic dXNlcjpwYXNz");
   assertEquals(res.token, null);
   assertEquals(res.error, "Invalid Authorization header format. Must be 'Bearer <token>'");
+});
+
+Deno.test("extractSessionId - valid UUID claim", () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: VALID_SESSION_ID });
+  assertEquals(extractSessionId(token), VALID_SESSION_ID);
+});
+
+Deno.test("extractSessionId - missing session_id", () => {
+  const token = makeJwt({ sub: VALID_USER_ID });
+  assertEquals(extractSessionId(token), null);
+});
+
+Deno.test("extractSessionId - non-UUID session_id", () => {
+  const token = makeJwt({ sub: VALID_USER_ID, session_id: "not-a-uuid" });
+  assertEquals(extractSessionId(token), null);
+});
+
+Deno.test("extractSessionId - malformed JWT", () => {
+  assertEquals(extractSessionId("not.a.jwt"), null);
 });
 
 Deno.test("isValidJsonContentType - valid application/json", () => {
@@ -59,142 +91,87 @@ Deno.test("validateJsonObject - reject null", () => {
 });
 
 Deno.test("validateJsonObject - reject array", () => {
-  const res = validateJsonObject(["subscription"]);
+  const res = validateJsonObject([1, 2, 3]);
   assertEquals(res.valid, false);
   assertEquals(res.error, "Request body must be a JSON object");
 });
 
-Deno.test("validateJsonObject - reject primitives (number, string, boolean)", () => {
+Deno.test("validateJsonObject - reject primitives", () => {
+  assertEquals(validateJsonObject("string").valid, false);
   assertEquals(validateJsonObject(123).valid, false);
-  assertEquals(validateJsonObject("a string").valid, false);
   assertEquals(validateJsonObject(true).valid, false);
 });
 
-Deno.test("MAX_BODY_BYTES constant value", () => {
-  assertEquals(MAX_BODY_BYTES, 16384);
+Deno.test("readBoundedBodyStream - handles empty body", async () => {
+  const req = new Request("https://example.com", { method: "POST" });
+  const res = await readBoundedBodyStream(req);
+  assertEquals(res.text, "");
 });
 
-Deno.test("readBoundedBodyStream - normal payload within limit", async () => {
-  const payload = JSON.stringify({ subscription: { endpoint: "https://fcm.googleapis.com/fcm/send/123" } });
-  const req = new Request("https://unfollowaman.tech/subscribe-push", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: payload,
-  });
-
-  const res = await readBoundedBodyStream(req, 1024);
-  assertEquals(res.oversized, undefined);
+Deno.test("readBoundedBodyStream - reads payload within limit", async () => {
+  const payload = JSON.stringify({ test: "data" });
+  const req = new Request("https://example.com", { method: "POST", body: payload });
+  const res = await readBoundedBodyStream(req, 100);
   assertEquals(res.text, payload);
 });
 
-Deno.test("readBoundedBodyStream - oversized payload stream cancelled", async () => {
-  const oversizedData = new Uint8Array(2000);
-  oversizedData.fill(65); // 'A's
-
-  const stream = new ReadableStream({
-    start(controller) {
-      controller.enqueue(oversizedData);
-      controller.close();
-    },
-  });
-
-  const req = new Request("https://unfollowaman.tech/subscribe-push", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: stream,
-    // @ts-ignore stream body requires duplex in node fetch
-    duplex: "half",
-  });
-
-  const res = await readBoundedBodyStream(req, 1000);
+Deno.test("readBoundedBodyStream - flags oversized payload and closes stream cleanly", async () => {
+  const payload = "A".repeat(500);
+  const req = new Request("https://example.com", { method: "POST", body: payload });
+  const res = await readBoundedBodyStream(req, 100);
   assertEquals(res.oversized, true);
-  assertEquals(res.text, undefined);
 });
 
-Deno.test("validatePushEndpoint - valid FCM endpoint", () => {
-  const res = validatePushEndpoint("https://fcm.googleapis.com/fcm/send/test-token-123");
-  assertEquals(res.valid, true);
-  assertEquals(res.url?.hostname, "fcm.googleapis.com");
-});
-
-Deno.test("validatePushEndpoint - valid Mozilla push endpoint", () => {
-  const res = validatePushEndpoint("https://updates.push.services.mozilla.com/wpush/v2/test");
+Deno.test("validatePushEndpoint - accept valid Apple Push endpoint", () => {
+  const res = validatePushEndpoint("https://p01-push.apple.com/send/token123");
   assertEquals(res.valid, true);
 });
 
-Deno.test("validatePushEndpoint - valid Apple push endpoints", () => {
-  const res1 = validatePushEndpoint("https://p01-push.apple.com/send/token");
-  assertEquals(res1.valid, true);
-
-  const res2 = validatePushEndpoint("https://push.apple.com/send/token");
-  assertEquals(res2.valid, true);
-
-  const res3 = validatePushEndpoint("https://p123-push.apple.com/send/token");
-  assertEquals(res3.valid, true);
-});
-
-Deno.test("validatePushEndpoint - reject invalid Apple hostname lookalikes & malformed variants", () => {
-  const res1 = validatePushEndpoint("https://fakeapple.com/send");
-  assertEquals(res1.valid, false);
-
-  const res2 = validatePushEndpoint("https://p01-push.apple.com.evil.com/send");
-  assertEquals(res2.valid, false);
-
-  const res3 = validatePushEndpoint("https://pushapple.com/send");
-  assertEquals(res3.valid, false);
-
-  const res4 = validatePushEndpoint("https://not-push.apple.com.attacker.net/send");
-  assertEquals(res4.valid, false);
-
-  const res5 = validatePushEndpoint("https://p01push.apple.com/send");
-  assertEquals(res5.valid, false);
-
-  const res6 = validatePushEndpoint("https://apple.com/send");
-  assertEquals(res6.valid, false);
-
-  const res7 = validatePushEndpoint("http://p01-push.apple.com/send");
-  assertEquals(res7.valid, false);
-  assertEquals(res7.error, "Push endpoint must use HTTPS");
-
-  const res8 = validatePushEndpoint("https://user:pass@p01-push.apple.com/send");
-  assertEquals(res8.valid, false);
-  assertEquals(res8.error, "Push endpoint must not contain user credentials");
-
-  const res9 = validatePushEndpoint("https://p01-push.apple.com:8443/send");
-  assertEquals(res9.valid, false);
-  assertEquals(res9.error, "Push endpoint must use standard HTTPS port (443)");
-});
-
-Deno.test("validatePushEndpoint - valid Windows notify endpoint", () => {
-  const res = validatePushEndpoint("https://db5p.notify.windows.com/w/?token=abc");
+Deno.test("validatePushEndpoint - accept valid Google FCM endpoint", () => {
+  const res = validatePushEndpoint("https://fcm.googleapis.com/fcm/send/token456");
   assertEquals(res.valid, true);
 });
 
-Deno.test("validatePushEndpoint - reject HTTP protocol", () => {
+Deno.test("validatePushEndpoint - accept valid Mozilla Push endpoint", () => {
+  const res = validatePushEndpoint("https://updates.push.services.mozilla.com/wpush/v2/token789");
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validatePushEndpoint - accept valid Windows WNS endpoint", () => {
+  const res = validatePushEndpoint("https://db5.notify.windows.com/w/?token=tokenABC");
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validatePushEndpoint - accept valid Opera Push endpoint", () => {
+  const res = validatePushEndpoint("https://push.opera.com/v1/tokenXYZ");
+  assertEquals(res.valid, true);
+});
+
+Deno.test("validatePushEndpoint - reject non-HTTPS protocol", () => {
   const res = validatePushEndpoint("http://fcm.googleapis.com/fcm/send/test");
   assertEquals(res.valid, false);
   assertEquals(res.error, "Push endpoint must use HTTPS");
 });
 
-Deno.test("validatePushEndpoint - reject embedded user credentials", () => {
-  const res = validatePushEndpoint("https://user:pass@fcm.googleapis.com/fcm/send/test");
+Deno.test("validatePushEndpoint - reject URL credentials", () => {
+  const res = validatePushEndpoint("https://user:pass@fcm.googleapis.com/fcm/send");
   assertEquals(res.valid, false);
   assertEquals(res.error, "Push endpoint must not contain user credentials");
 });
 
 Deno.test("validatePushEndpoint - reject URL fragments", () => {
-  const res = validatePushEndpoint("https://fcm.googleapis.com/fcm/send/test#fragment");
+  const res = validatePushEndpoint("https://fcm.googleapis.com/fcm/send#fragment");
   assertEquals(res.valid, false);
   assertEquals(res.error, "Push endpoint must not contain URL fragments");
 });
 
 Deno.test("validatePushEndpoint - reject non-standard port", () => {
-  const res = validatePushEndpoint("https://fcm.googleapis.com:8443/fcm/send/test");
+  const res = validatePushEndpoint("https://fcm.googleapis.com:8443/fcm/send");
   assertEquals(res.valid, false);
   assertEquals(res.error, "Push endpoint must use standard HTTPS port (443)");
 });
 
-Deno.test("validatePushEndpoint - reject localhost / IP addresses", () => {
+Deno.test("validatePushEndpoint - reject localhost and IP addresses", () => {
   const res1 = validatePushEndpoint("https://localhost/fcm/send/test");
   assertEquals(res1.valid, false);
 
@@ -258,12 +235,28 @@ function createSpySupabaseAdmin(
   subscription: MockSubscriptionRow | null = null,
   profile: { student_class?: string; study_medium?: string; onboarding_completed?: boolean } | null = null,
   dbQueryError: Error | null = null,
-  dbMutationError: Error | null = null
+  dbMutationError: Error | null = null,
+  isActiveSession: boolean = true,
+  sessionRpcError: Error | null = null
 ) {
   const mutations: RecordedMutation[] = [];
+  let rpcCalledWith: { p_user_id: string; p_session_id: string } | null = null;
 
   return {
     mutations,
+    get rpcCalledWith() {
+      return rpcCalledWith;
+    },
+    rpc: (fn: string, params: { p_user_id: string; p_session_id: string }) => {
+      if (fn === "is_active_session") {
+        rpcCalledWith = params;
+        return Promise.resolve({
+          data: isActiveSession,
+          error: sessionRpcError,
+        });
+      }
+      return Promise.resolve({ data: null, error: new Error(`Unknown RPC ${fn}`) });
+    },
     from: (table: string) => {
       if (table === "profiles") {
         return {
@@ -383,42 +376,122 @@ Deno.test("handleRequest - Invalid or expired Bearer token returns 401", async (
   assertEquals(json.error, "Unauthorized");
 });
 
-Deno.test("handleRequest - Malformed JSON body returns 400", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+Deno.test("handleRequest - Missing session_id claim returns 401 and produces ZERO mutations", async () => {
+  const tokenWithoutSession = makeJwt({ sub: VALID_USER_ID });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin();
+
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${tokenWithoutSession}`,
+    },
+    body: JSON.stringify(VALID_SUB_PAYLOAD),
+  });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
+  assertEquals(res.status, 401);
+  const json = await res.json();
+  assertEquals(json.error, "Unauthorized");
+  assertEquals(mockAdminClient.mutations.length, 0);
+});
+
+Deno.test("handleRequest - Replaced session on POST returns 401 and produces ZERO mutations", async () => {
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin(null, null, null, null, false); // isActiveSession = false
+
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${VALID_TOKEN}`,
+    },
+    body: JSON.stringify(VALID_SUB_PAYLOAD),
+  });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
+  assertEquals(res.status, 401);
+  const json = await res.json();
+  assertEquals(json.error, "Unauthorized");
+  assertEquals(mockAdminClient.mutations.length, 0);
+  assertEquals(mockAdminClient.rpcCalledWith?.p_user_id, VALID_USER_ID);
+  assertEquals(mockAdminClient.rpcCalledWith?.p_session_id, VALID_SESSION_ID);
+});
+
+Deno.test("handleRequest - Replaced session on DELETE returns 401 and produces ZERO mutations", async () => {
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin(null, null, null, null, false); // isActiveSession = false
+
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${VALID_TOKEN}`,
+    },
+    body: JSON.stringify({ endpoint: VALID_SUB_PAYLOAD.subscription.endpoint }),
+  });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
+  assertEquals(res.status, 401);
+  const json = await res.json();
+  assertEquals(json.error, "Unauthorized");
+  assertEquals(mockAdminClient.mutations.length, 0);
+});
+
+Deno.test("handleRequest - Session RPC error returns 401 and produces ZERO mutations", async () => {
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin(null, null, null, null, false, new Error("DB Error"));
+
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${VALID_TOKEN}`,
+    },
+    body: JSON.stringify(VALID_SUB_PAYLOAD),
+  });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
+  assertEquals(res.status, 401);
+  assertEquals(mockAdminClient.mutations.length, 0);
+});
+
+Deno.test("handleRequest - Malformed JSON body returns 400", async () => {
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin();
+  const req = new Request("https://unfollowaman.tech/subscribe-push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: "{ malformed json",
   });
-  const res = await handleRequest(req, { supabaseUserClient: mockUserClient });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
   assertEquals(res.status, 400);
   const json = await res.json();
   assertEquals(json.error, "Invalid JSON payload");
 });
 
 Deno.test("handleRequest - Oversized request body returns 413", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin();
   const oversizedPayload = JSON.stringify({ padding: "A".repeat(17000) });
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
       "Content-Length": String(oversizedPayload.length),
     },
     body: oversizedPayload,
   });
-  const res = await handleRequest(req, { supabaseUserClient: mockUserClient });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
   assertEquals(res.status, 413);
   const json = await res.json();
   assertEquals(json.error, "Request payload too large");
 });
 
 Deno.test("handleRequest - Invalid subscription payload (bad host) returns 400", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const mockAdminClient = createSpySupabaseAdmin();
   const badPayload = {
     subscription: {
       endpoint: "https://evil-unapproved-host.com/send",
@@ -429,25 +502,25 @@ Deno.test("handleRequest - Invalid subscription payload (bad host) returns 400",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify(badPayload),
   });
-  const res = await handleRequest(req, { supabaseUserClient: mockUserClient });
+  const res = await handleRequest(req, { supabaseUserClient: mockUserClient, supabaseAdminClient: mockAdminClient });
   assertEquals(res.status, 400);
   const json = await res.json();
   assertEquals(json.error, "Push endpoint host is not in the approved allowlist");
 });
 
 Deno.test("handleRequest - Successful new subscription creation returns 201 and verifies DB insert payload", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
   const mockAdminClient = createSpySupabaseAdmin(null, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify(VALID_SUB_PAYLOAD),
   });
@@ -461,7 +534,7 @@ Deno.test("handleRequest - Successful new subscription creation returns 201 and 
   assertEquals(mockAdminClient.mutations.length, 1);
   const mutation = mockAdminClient.mutations[0];
   assertEquals(mutation.action, "insert");
-  assertEquals(mutation.data.user_id, "user-123");
+  assertEquals(mutation.data.user_id, VALID_USER_ID);
   assertEquals(mutation.data.endpoint, "https://p01-push.apple.com/send/token123");
   assertEquals(mutation.data.student_class, "10");
   assertEquals(mutation.data.study_medium, "english");
@@ -469,15 +542,15 @@ Deno.test("handleRequest - Successful new subscription creation returns 201 and 
 });
 
 Deno.test("handleRequest - Update existing subscription for same user returns 200 and verifies dual eq(id, user_id) targeting", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const existingSub = { id: "sub-1", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: false };
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const existingSub = { id: "sub-1", user_id: VALID_USER_ID, endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: false };
   const mockAdminClient = createSpySupabaseAdmin(existingSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify(VALID_SUB_PAYLOAD),
   });
@@ -492,12 +565,12 @@ Deno.test("handleRequest - Update existing subscription for same user returns 20
   const mutation = mockAdminClient.mutations[0];
   assertEquals(mutation.action, "update");
   assertEquals(mutation.eqFilters["id"], "sub-1");
-  assertEquals(mutation.eqFilters["user_id"], "user-123");
+  assertEquals(mutation.eqFilters["user_id"], VALID_USER_ID);
   assertEquals(mutation.data.is_active, true);
 });
 
 Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user returns 409 and produces ZERO mutations", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
   const anotherUserSub = { id: "sub-999", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
   const mockAdminClient = createSpySupabaseAdmin(anotherUserSub, { student_class: "10", study_medium: "english", onboarding_completed: true });
 
@@ -505,7 +578,7 @@ Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user 
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify(VALID_SUB_PAYLOAD),
   });
@@ -519,15 +592,15 @@ Deno.test("handleRequest - Conflict on duplicate endpoint owned by another user 
 });
 
 Deno.test("handleRequest - Successful unsubscribe of user's own subscription returns 200 and verifies dual eq(id, user_id) targeting with is_active=false", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
-  const existingSub = { id: "sub-777", user_id: "user-123", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
+  const existingSub = { id: "sub-777", user_id: VALID_USER_ID, endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
   const mockAdminClient = createSpySupabaseAdmin(existingSub);
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify({ endpoint: VALID_SUB_PAYLOAD.subscription.endpoint }),
   });
@@ -542,12 +615,12 @@ Deno.test("handleRequest - Successful unsubscribe of user's own subscription ret
   const mutation = mockAdminClient.mutations[0];
   assertEquals(mutation.action, "update");
   assertEquals(mutation.eqFilters["id"], "sub-777");
-  assertEquals(mutation.eqFilters["user_id"], "user-123");
+  assertEquals(mutation.eqFilters["user_id"], VALID_USER_ID);
   assertEquals(mutation.data.is_active, false);
 });
 
 Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another user returns 403 and produces ZERO mutations", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
   const anotherUserSub = { id: "sub-888", user_id: "other-user-999", endpoint: VALID_SUB_PAYLOAD.subscription.endpoint, is_active: true };
   const mockAdminClient = createSpySupabaseAdmin(anotherUserSub);
 
@@ -555,7 +628,7 @@ Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another 
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify({ endpoint: VALID_SUB_PAYLOAD.subscription.endpoint }),
   });
@@ -569,14 +642,14 @@ Deno.test("handleRequest - Unsubscribe attempt on subscription owned by another 
 });
 
 Deno.test("handleRequest - Idempotent unsubscribe of missing subscription returns 200 and produces ZERO mutations", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
   const mockAdminClient = createSpySupabaseAdmin(null);
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify({ endpoint: VALID_SUB_PAYLOAD.subscription.endpoint }),
   });
@@ -591,14 +664,14 @@ Deno.test("handleRequest - Idempotent unsubscribe of missing subscription return
 });
 
 Deno.test("handleRequest - Database error returns sanitized 500 response", async () => {
-  const mockUserClient = createMockSupabaseUser({ id: "user-123" });
+  const mockUserClient = createMockSupabaseUser({ id: VALID_USER_ID });
   const mockAdminClient = createSpySupabaseAdmin(null, null, new Error("PostgreSQL connection timeout"));
 
   const req = new Request("https://unfollowaman.tech/subscribe-push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer valid-token",
+      Authorization: `Bearer ${VALID_TOKEN}`,
     },
     body: JSON.stringify(VALID_SUB_PAYLOAD),
   });

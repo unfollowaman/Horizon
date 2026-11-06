@@ -29,6 +29,15 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         const errorMessage = edgeError.message?.toLowerCase() || '';
         if (errorMessage.includes('401') || errorMessage.includes('unauthorized')) {
           setPdfError('401_UNAUTHORIZED');
+          try {
+            const { checkIsActiveSession, teardownSession } = await import('../../../../services/auth');
+            const check = await checkIsActiveSession();
+            if (check.isDefinitivelyInactive) {
+              await teardownSession();
+            }
+          } catch {
+            // Ignore
+          }
           return null;
         } else if (errorMessage.includes('404') || errorMessage.includes('not found')) {
           setPdfError('Resource not found');
@@ -42,6 +51,15 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         const dataError = edgeData?.error?.toLowerCase() || '';
         if (dataError.includes('unauthorized') || dataError.includes('401')) {
           setPdfError('401_UNAUTHORIZED');
+          try {
+            const { checkIsActiveSession, teardownSession } = await import('../../../../services/auth');
+            const check = await checkIsActiveSession();
+            if (check.isDefinitivelyInactive) {
+              await teardownSession();
+            }
+          } catch {
+            // Ignore
+          }
           return null;
         } else if (dataError.includes('not found') || dataError.includes('404')) {
           setPdfError('Resource not found');
@@ -81,6 +99,7 @@ export const usePdfData = ({ id, user, authLoading }: UsePdfDataProps) => {
         if (isProtected) {
           if (!user) {
             setPdfError('401_UNAUTHORIZED');
+            setSignedUrl(null);
             setMetaLoading(false);
             return;
           }

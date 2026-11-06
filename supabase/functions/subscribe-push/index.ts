@@ -53,6 +53,41 @@ export function extractBearerToken(authHeader: string | null): { token: string |
   return { token: match[1].trim() };
 }
 
+/**
+ * Extracts the `session_id` UUID claim from a Supabase Auth JWT access token.
+ * Returns null if the token is malformed, the claim is absent, or the value
+ * is not a valid UUID string.
+ */
+export function extractSessionId(accessToken: string): string | null {
+  try {
+    const parts = accessToken.split(".");
+    if (parts.length !== 3) return null;
+
+    const base64Payload = parts[1]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const padded = base64Payload +
+      "=".repeat((4 - base64Payload.length % 4) % 4);
+
+    const decoded = atob(padded);
+    const claims = JSON.parse(decoded) as Record<string, unknown>;
+
+    if (typeof claims.session_id !== "string" || !claims.session_id) {
+      return null;
+    }
+
+    const uuidPattern =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidPattern.test(claims.session_id)) {
+      return null;
+    }
+
+    return claims.session_id;
+  } catch {
+    return null;
+  }
+}
+
 export function isValidJsonContentType(contentType: string | null): boolean {
   if (!contentType || typeof contentType !== "string") {
     return false;
@@ -243,12 +278,35 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 
+  const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
+
   const {
     data: { user },
     error: authError,
   } = await supabaseUser.auth.getUser(accessToken);
 
   if (authError || !user) {
+    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // 4b. Single active device session enforcement (Phase 1.2.3)
+  const sessionId = extractSessionId(accessToken);
+  if (!sessionId) {
+    return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const { data: isActive, error: sessionRpcError } = await supabaseAdmin.rpc("is_active_session", {
+    p_user_id: user.id,
+    p_session_id: sessionId,
+  });
+
+  if (sessionRpcError || isActive !== true) {
     return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
       status: 401,
       headers: { ...requestCorsHeaders, "Content-Type": "application/json" },
@@ -316,7 +374,6 @@ export async function handleRequest(req: Request, deps?: HandlerDeps): Promise<R
   }
 
   const endpoint = endpointRaw as string;
-  const supabaseAdmin = deps?.supabaseAdminClient ?? createClient(supabaseUrl, supabaseServiceRoleKey);
 
   // -------------------------------------------------------------------
   // DELETE Operation: Unsubscribe / Deactivation
