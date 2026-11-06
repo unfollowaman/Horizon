@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
+import type { RealtimeChannel, Session, User } from '@supabase/supabase-js';
 import type { Profile } from '../types';
 
 export interface AuthContextType {
@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const teardownInProgressRef = useRef(false);
   const lastActiveCheckTimeRef = useRef(0);
   const activeSubscriptionKeyRef = useRef<string | null>(null);
-  const activeChannelRef = useRef<any>(null);
+  const activeChannelRef = useRef<RealtimeChannel | null>(null);
 
   const fetchProfile = useCallback(async (sessionUser: User, currentVersion: number) => {
     try {
