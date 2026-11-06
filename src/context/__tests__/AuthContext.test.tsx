@@ -40,6 +40,7 @@ vi.mock('../../services/supabase', () => ({
 
 vi.mock('../../services/auth', () => ({
   logout: (...args: any[]) => mockLogout(...args),
+  extractSessionId: () => 'mock-session-id',
 }));
 
 // Helper Consumer Component

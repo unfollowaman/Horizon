@@ -253,6 +253,17 @@ export const subscribeToPushNotifications = async (): Promise<PushResult<PushSub
       }
 
       if (!response.ok) {
+        if (response.status === 401) {
+          try {
+            const { checkIsActiveSession, teardownSession } = await import('./auth');
+            const check = await checkIsActiveSession();
+            if (check.isDefinitivelyInactive) {
+              await teardownSession();
+            }
+          } catch {
+            // Ignore
+          }
+        }
         return {
           success: false,
           error: {
@@ -347,6 +358,17 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
 
       // If backend fails with non-200 and non-403 (e.g. 500 server error, 401, 415), do NOT unsubscribe locally
       if (!response.ok && !isForbidden) {
+        if (response.status === 401) {
+          try {
+            const { checkIsActiveSession, teardownSession } = await import('./auth');
+            const check = await checkIsActiveSession();
+            if (check.isDefinitivelyInactive) {
+              await teardownSession();
+            }
+          } catch {
+            // Ignore
+          }
+        }
         return {
           success: false,
           error: {

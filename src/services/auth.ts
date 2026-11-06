@@ -317,3 +317,172 @@ export const getCurrentUser = async () => {
   }
   return null;
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Realtime Session Replacement & Frontend Teardown (Phase 1.2.5)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const SESSION_REPLACEMENT_MESSAGE =
+  "You've been logged out because your account was signed in on another device or browser.";
+
+export const SESSION_REPLACEMENT_STORAGE_KEY = 'horizon_session_replacement_message';
+
+/**
+ * Stores the session replacement message notice in sessionStorage for reliable
+ * retrieval across unmounting components and route redirects.
+ */
+export const setSessionReplacementNotice = (
+  message: string = SESSION_REPLACEMENT_MESSAGE
+): void => {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.setItem(SESSION_REPLACEMENT_STORAGE_KEY, message);
+    }
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+};
+
+/**
+ * Retrieves and clears the session replacement message notice from sessionStorage.
+ * Returns null if no notice was stored.
+ */
+export const consumeSessionReplacementNotice = (): string | null => {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const msg = window.sessionStorage.getItem(SESSION_REPLACEMENT_STORAGE_KEY);
+      if (msg) {
+        window.sessionStorage.removeItem(SESSION_REPLACEMENT_STORAGE_KEY);
+        return msg;
+      }
+    }
+  } catch {
+    // Ignore storage errors
+  }
+  return null;
+};
+
+export interface ActiveSessionCheckResult {
+  isActive: boolean;
+  isDefinitivelyInactive: boolean;
+  error?: unknown;
+}
+
+/**
+ * Authoritatively verifies whether the calling browser session is still active
+ * in the database registry using the public.is_active_session() parameterless RPC.
+ *
+ * Invariants:
+ * 1. Derives identity directly from current JWT claims on the server.
+ * 2. Returns isDefinitivelyInactive = true ONLY when the database RPC explicitly returns false.
+ * 3. Network or transport errors do NOT mark the session as inactive (prevents accidental logouts on transient offline).
+ */
+export const checkIsActiveSession = async (): Promise<ActiveSessionCheckResult> => {
+  try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.warn('checkIsActiveSession: Failed to obtain session:', sessionError);
+      return { isActive: false, isDefinitivelyInactive: false, error: sessionError };
+    }
+
+    const session = sessionData?.session;
+    if (!session || !session.access_token) {
+      return { isActive: false, isDefinitivelyInactive: true };
+    }
+
+    const sessionId = extractSessionId(session.access_token);
+    if (!sessionId) {
+      return { isActive: false, isDefinitivelyInactive: true, error: 'MISSING_SESSION_ID' };
+    }
+
+    const { data, error: rpcError } = await supabase.rpc('is_active_session');
+
+    if (rpcError) {
+      console.warn('checkIsActiveSession: RPC evaluation error:', rpcError);
+      return { isActive: true, isDefinitivelyInactive: false, error: rpcError };
+    }
+
+    if (data === false) {
+      // Authoritatively inactive (another device took over or session was deleted)
+      return { isActive: false, isDefinitivelyInactive: true };
+    }
+
+    return { isActive: data === true, isDefinitivelyInactive: false };
+  } catch (err) {
+    console.warn('checkIsActiveSession: Unexpected error:', err);
+    return { isActive: true, isDefinitivelyInactive: false, error: err };
+  }
+};
+
+let isTeardownInProgress = false;
+
+export interface TeardownResult {
+  completed: boolean;
+  message: string;
+}
+
+/**
+ * Performs local frontend session teardown when a session has been replaced.
+ *
+ * Steps:
+ * 1. Guard against duplicate or reentrant execution.
+ * 2. Save the replacement notice to sessionStorage.
+ * 3. Clear user-specific storage keys (while preserving unrelated application state).
+ * 4. Perform Supabase Auth local sign-out without attempting server deactivation
+ *    (the session in the registry already belongs to the replacement device).
+ * 5. Dispatch a custom window event for decoupled listeners.
+ */
+export const teardownSession = async (
+  options: { message?: string } = {}
+): Promise<TeardownResult> => {
+  const message = options.message || SESSION_REPLACEMENT_MESSAGE;
+
+  if (isTeardownInProgress) {
+    return { completed: false, message };
+  }
+
+  isTeardownInProgress = true;
+
+  try {
+    // 1. Persist message for retrieval after redirect/unmount
+    setSessionReplacementNotice(message);
+
+    // 2. Clear user-specific session storage keys (do not erase public app state like reload guards)
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        window.sessionStorage.removeItem('horizon_notif_card_dismissed');
+      }
+    } catch {
+      // Ignore storage errors
+    }
+
+    // 3. Clear local Supabase SDK auth session
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // Fallback: regular signOut
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('teardownSession: Error clearing SDK auth session:', err);
+      }
+    }
+
+    // 4. Dispatch browser event
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent('horizon:session_replaced', {
+          detail: { message },
+        })
+      );
+    }
+
+    return { completed: true, message };
+  } finally {
+    isTeardownInProgress = false;
+  }
+};
+
+export const resetTeardownGuardForTesting = (): void => {
+  isTeardownInProgress = false;
+};

@@ -514,6 +514,10 @@ export interface Database {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      is_active_session: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       resource_type: ResourceType
