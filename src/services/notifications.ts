@@ -24,11 +24,75 @@ export interface PushResult<T = unknown> {
   localOnly?: boolean;
 }
 
-const EDGE_FUNCTION_URL =
-  'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/subscribe-push';
+/**
+ * Resolves the sanitized base Supabase URL from environment variables.
+ * Handles trailing slashes and whitespace.
+ * Fails explicitly if VITE_SUPABASE_URL is missing, empty, or invalid,
+ * guaranteeing local and preview environments never silently contact production.
+ */
+export const getBaseSupabaseUrl = (): string => {
+  const envUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
+  if (!envUrl) {
+    throw new Error('Missing required VITE_SUPABASE_URL environment variable');
+  }
 
-const SEND_PUSH_EDGE_FUNCTION_URL =
-  'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/send-push-notification';
+  let parsed: URL;
+  try {
+    parsed = new URL(envUrl);
+  } catch {
+    throw new Error(`Invalid VITE_SUPABASE_URL environment variable: "${envUrl}" is not a valid URL`);
+  }
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error(
+      `Invalid VITE_SUPABASE_URL environment variable: protocol must be http: or https: (received ${parsed.protocol})`
+    );
+  }
+
+  if (!parsed.hostname) {
+    throw new Error('Invalid VITE_SUPABASE_URL environment variable: missing hostname');
+  }
+
+  if (parsed.username || parsed.password) {
+    throw new Error(
+      'Invalid VITE_SUPABASE_URL environment variable: URL must not contain username or password credentials'
+    );
+  }
+
+  if (parsed.search) {
+    throw new Error(
+      'Invalid VITE_SUPABASE_URL environment variable: URL must not contain query parameters'
+    );
+  }
+
+  if (parsed.hash) {
+    throw new Error(
+      'Invalid VITE_SUPABASE_URL environment variable: URL must not contain a fragment'
+    );
+  }
+
+  if (parsed.pathname.replace(/\/+$/, '') !== '') {
+    throw new Error(
+      `Invalid VITE_SUPABASE_URL environment variable: URL must not contain a non-root pathname (received ${parsed.pathname})`
+    );
+  }
+
+  return parsed.origin;
+};
+
+/**
+ * Returns the absolute URL for the subscribe-push Edge Function.
+ */
+export const getSubscribePushUrl = (): string => {
+  return `${getBaseSupabaseUrl()}/functions/v1/subscribe-push`;
+};
+
+/**
+ * Returns the absolute URL for the send-push-notification Edge Function.
+ */
+export const getSendPushUrl = (): string => {
+  return `${getBaseSupabaseUrl()}/functions/v1/send-push-notification`;
+};
 
 let subscribeInFlightPromise: Promise<PushResult<PushSubscriptionJSON>> | null = null;
 let unsubscribeInFlightPromise: Promise<PushResult<void>> | null = null;
@@ -212,7 +276,7 @@ export const subscribeToPushNotifications = async (): Promise<PushResult<PushSub
       let subscriptionJson = subscription.toJSON();
 
       // Send subscription payload to Edge Function
-      let response = await fetch(EDGE_FUNCTION_URL, {
+      let response = await fetch(getSubscribePushUrl(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +300,7 @@ export const subscribeToPushNotifications = async (): Promise<PushResult<PushSub
           });
           subscriptionJson = subscription.toJSON();
 
-          response = await fetch(EDGE_FUNCTION_URL, {
+          response = await fetch(getSubscribePushUrl(), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -247,7 +311,7 @@ export const subscribeToPushNotifications = async (): Promise<PushResult<PushSub
             }),
           });
           responseData = await response.json().catch(() => ({}));
-        } catch (_retryErr) {
+        } catch {
           // If auto-recovery fails, fall through to error handling
         }
       }
@@ -341,7 +405,7 @@ export const unsubscribeFromPushNotifications = async (): Promise<PushResult<voi
       const endpoint = subscription.endpoint;
 
       // Call DELETE endpoint on Edge Function
-      const response = await fetch(EDGE_FUNCTION_URL, {
+      const response = await fetch(getSubscribePushUrl(), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -452,7 +516,7 @@ export const sendPushNotification = async (
   const accessToken = sessionData.session.access_token;
 
   try {
-    const response = await fetch(SEND_PUSH_EDGE_FUNCTION_URL, {
+    const response = await fetch(getSendPushUrl(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

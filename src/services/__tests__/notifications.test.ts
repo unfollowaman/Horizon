@@ -6,6 +6,7 @@ import {
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
   getInAppNotifications,
+  getSubscribePushUrl,
 } from '../notifications';
 import { supabase } from '../supabase';
 
@@ -28,6 +29,7 @@ describe('notifications service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv('VITE_VAPID_PUBLIC_KEY', mockVapidKey);
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://mock-test.supabase.co');
   });
 
   afterEach(() => {
@@ -261,7 +263,7 @@ describe('notifications service', () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://rhzftlytulgnpodxqzqr.supabase.co/functions/v1/subscribe-push',
+        getSubscribePushUrl(),
         {
           method: 'POST',
           headers: {
