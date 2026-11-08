@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
       {/* Unified Neomorphic Profile Card - Spans full width above the grid */}
       <section
         aria-label="Student Profile"
-        className="neu-card rounded-2xl p-6 sm:p-8 flex flex-col gap-6 mb-8 w-full animate-fade-rise"
+        className={`neu-card rounded-2xl p-5 sm:p-7 md:p-8 flex flex-col gap-6 mb-8 w-full animate-fade-rise ${styles.profileCard}`}
       >
         {/* Section A — Profile Header */}
         <div className={styles.profileHeaderSection}>
@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
             />
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h4 className="text-h2 font-bold text-ink" title={displayName}>
+                <h4 className="text-h2 font-serif font-bold text-ink" title={displayName}>
                   {displayName}
                 </h4>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF0F6] text-[#E11584] border border-[#FCE7F3]">
@@ -81,13 +81,13 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Edit Profile Button */}
-          <div className="shrink-0 self-start sm:self-center mt-2 sm:mt-0">
+          <div className="w-full sm:w-auto shrink-0 self-start sm:self-center mt-2 sm:mt-0 flex">
             <button
               type="button"
               disabled
               title="Profile editing coming soon"
               aria-label="Edit Profile (Coming Soon)"
-              className="inline-flex items-center justify-center gap-2 px-5 h-10 text-caption font-bold rounded-full neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 h-10 text-caption font-bold rounded-full neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
             >
               <svg
                 className="w-4 h-4 text-muted-foreground"
@@ -134,10 +134,10 @@ const Dashboard: React.FC = () => {
             </h5>
           </div>
 
-          {/* 3 Summary Items (Horizontal layout inside each tile: [Icon] [Label + Value]) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+          {/* 3 Summary Items (Single column stack on mobile, 3 equal columns on desktop >=1024px) */}
+          <div className={styles.summaryGrid}>
             {/* 1. Class */}
-            <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 min-w-0 text-left">
+            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
               <div
                 className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
@@ -156,18 +156,21 @@ const Dashboard: React.FC = () => {
                   <path d="M6 12v5c3 3 9 3 12 0v-5" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
                   Class
                 </span>
-                <span className="text-base sm:text-lg font-bold text-ink block truncate">
+                <span
+                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  title={profile?.student_class || 'Not set'}
+                >
                   {profile?.student_class || 'Not set'}
                 </span>
               </div>
             </div>
 
-            {/* 2. Study Medium - Open Book SVG */}
-            <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 min-w-0 text-left">
+            {/* 2. Study Medium */}
+            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
               <div
                 className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
@@ -186,18 +189,21 @@ const Dashboard: React.FC = () => {
                   <path d="M6 2v20" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
                   Study Medium
                 </span>
-                <span className="text-base sm:text-lg font-bold text-ink block truncate">
+                <span
+                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  title={profile?.study_medium || 'Not set'}
+                >
                   {profile?.study_medium || 'Not set'}
                 </span>
               </div>
             </div>
 
             {/* 3. Member Since */}
-            <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 min-w-0 text-left">
+            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
               <div
                 className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
@@ -218,11 +224,14 @@ const Dashboard: React.FC = () => {
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
                   Member Since
                 </span>
-                <span className="text-base sm:text-lg font-bold text-ink block truncate">
+                <span
+                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  title={formatMemberSince(profile?.created_at)}
+                >
                   {formatMemberSince(profile?.created_at)}
                 </span>
               </div>
