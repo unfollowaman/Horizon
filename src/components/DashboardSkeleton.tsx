@@ -42,24 +42,24 @@ const DashboardSkeleton: React.FC = () => {
               <div className="w-6 h-6 rounded-lg bg-ink/5 shrink-0" />
               <div className="w-36 h-4 bg-ink/10 rounded" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
-              <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5">
+            <div className={styles.summaryGrid}>
+              <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 ${styles.summaryTile}`}>
                 <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-ink/5 shrink-0" />
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="w-12 h-2.5 bg-ink/10 rounded" />
                   <div className="w-20 h-4 bg-ink/10 rounded" />
                 </div>
               </div>
-              <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5">
+              <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 ${styles.summaryTile}`}>
                 <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-ink/5 shrink-0" />
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="w-16 h-2.5 bg-ink/10 rounded" />
                   <div className="w-16 h-4 bg-ink/10 rounded" />
                 </div>
               </div>
-              <div className="neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5">
+              <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 ${styles.summaryTile}`}>
                 <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-ink/5 shrink-0" />
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="w-16 h-2.5 bg-ink/10 rounded" />
                   <div className="w-24 h-4 bg-ink/10 rounded" />
                 </div>
