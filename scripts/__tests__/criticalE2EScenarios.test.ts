@@ -505,7 +505,7 @@ describe('Phase 1.2.6: Critical End-to-End Scenarios Security Verification', () 
     );
     const enforcementPath = path.resolve(
       process.cwd(),
-      'supabase/migrations/20260302000000_enforce_active_session_rls.sql'
+      'supabase/migrations/20261110191500_enforce_active_session_rls.sql'
     );
 
     it('confirms 20260301000000_single_device_session_foundation.sql schema invariants', () => {
@@ -528,16 +528,19 @@ describe('Phase 1.2.6: Critical End-to-End Scenarios Security Verification', () 
       expect(sql).toMatch(/REVOKE ALL ON security\.user_active_sessions FROM PUBLIC, anon, authenticated;/);
     });
 
-    it('confirms 20260302000000_enforce_active_session_rls.sql protected tables', () => {
+    it('confirms 20261110191500_enforce_active_session_rls.sql profiles security hardening', () => {
       const sql = fs.readFileSync(enforcementPath, 'utf8');
+      const activeSql = sql.replace(/--.*$/gm, '');
 
-      // Tables covered by active-session RLS
-      expect(sql).toMatch(/reading_progress/);
-      expect(sql).toMatch(/chapter_completion/);
+      // Table covered by active-session RLS
       expect(sql).toMatch(/profiles/);
 
       // Function is_active_session() usage
       expect(sql).toMatch(/public\.is_active_session\(\)/);
+
+      // Zero active references to abandoned tables
+      expect(activeSql).not.toMatch(/reading_progress/i);
+      expect(activeSql).not.toMatch(/chapter_completion/i);
 
       // Zero authenticated DELETE access granted
       expect(sql).not.toMatch(/CREATE POLICY .* FOR DELETE TO authenticated/);
