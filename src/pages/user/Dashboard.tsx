@@ -55,39 +55,45 @@ const Dashboard: React.FC = () => {
       {/* Unified Neomorphic Profile Card - Spans full width above the grid */}
       <section
         aria-label="Student Profile"
-        className={`neu-card rounded-2xl p-5 sm:p-7 md:p-8 flex flex-col gap-6 mb-8 w-full animate-fade-rise ${styles.profileCard}`}
+        className={`neu-card rounded-2xl p-[16px] sm:p-[20px] lg:p-[24px] flex flex-col gap-[14px] sm:gap-[16px] lg:gap-[18px] mb-8 w-full animate-fade-rise ${styles.profileCard}`}
       >
         {/* Section A — Profile Header */}
         <div className={styles.profileHeaderSection}>
-          <div className="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+          <div className="flex items-center gap-[12px] sm:gap-[16px] min-w-0 flex-1">
             <img
               src={profile?.avatar_url || defaultAvatarPath}
               alt={`${displayName}'s profile photo`}
               className={styles.avatar}
             />
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h4 className="text-h2 font-serif font-bold text-ink" title={displayName}>
+              <div className="flex items-center gap-[6px] sm:gap-[8px] flex-wrap">
+                <h4
+                  className="text-[23px] sm:text-[24px] lg:text-[26px] leading-[1.15] font-serif font-bold text-ink"
+                  title={displayName}
+                >
                   {displayName}
                 </h4>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF0F6] text-[#E11584] border border-[#FCE7F3]">
+                <span className="inline-flex items-center px-[8px] py-[3px] rounded-full text-[11px] sm:text-[12px] font-semibold bg-[#FFF0F6] text-[#E11584] border border-[#FCE7F3] leading-none">
                   Student
                 </span>
               </div>
-              <p className="text-caption text-muted-foreground break-all sm:break-normal mt-1" title={displayEmail}>
+              <p
+                className="text-[12px] sm:text-[13px] lg:text-[14px] leading-snug text-muted-foreground break-all sm:break-normal mt-0.5"
+                title={displayEmail}
+              >
                 {displayEmail}
               </p>
             </div>
           </div>
 
           {/* Edit Profile Button */}
-          <div className="w-full sm:w-auto shrink-0 self-start sm:self-center mt-2 sm:mt-0 flex">
+          <div className="w-full sm:w-auto shrink-0 flex justify-center sm:justify-end">
             <button
               type="button"
               disabled
               title="Profile editing coming soon"
               aria-label="Edit Profile (Coming Soon)"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 h-10 text-caption font-bold rounded-full neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
+              className="w-[164px] sm:w-auto inline-flex items-center justify-center gap-[8px] px-[16px] sm:px-[20px] h-[36px] sm:h-[38px] text-[14px] sm:text-[15px] font-bold rounded-full neu-raised neu-raised-hover opacity-80 cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
             >
               <svg
                 className="w-4 h-4 text-muted-foreground"
@@ -112,10 +118,10 @@ const Dashboard: React.FC = () => {
         <hr className="border-t border-black/[0.06] my-0" aria-hidden="true" />
 
         {/* Section B — Profile Summary */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-[10px] sm:gap-[12px]">
+          <div className="flex items-center gap-[8px]">
             <svg
-              className="w-5 h-5 text-[#E11584]"
+              className="w-[26px] h-[26px] sm:w-[28px] sm:h-[28px] text-[#E11584] shrink-0"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
@@ -129,7 +135,7 @@ const Dashboard: React.FC = () => {
               <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" />
               <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" />
             </svg>
-            <h5 className="text-body-base font-bold text-ink">
+            <h5 className="text-[17px] sm:text-[18px] lg:text-[19px] font-bold text-ink leading-tight">
               Profile Summary
             </h5>
           </div>
@@ -137,13 +143,13 @@ const Dashboard: React.FC = () => {
           {/* 3 Summary Items (Single column stack on mobile, 3 equal columns on desktop >=1024px) */}
           <div className={styles.summaryGrid}>
             {/* 1. Class */}
-            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
+            <div className={`neu-card rounded-2xl px-[12px] py-[10px] sm:px-[14px] sm:py-[11px] lg:px-[16px] lg:py-[12px] flex items-center gap-[10px] sm:gap-[12px] text-left ${styles.summaryTile}`}>
               <div
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
+                className="w-[40px] h-[40px] sm:w-[44px] sm:h-[44px] rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
               >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#E11584]"
+                  className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#E11584]"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -156,12 +162,12 @@ const Dashboard: React.FC = () => {
                   <path d="M6 12v5c3 3 9 3 12 0v-5" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
+              <div className="min-w-0 flex-1">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase leading-tight truncate">
                   Class
                 </span>
                 <span
-                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  className="block text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-ink leading-snug mt-0.5 truncate"
                   title={profile?.student_class || 'Not set'}
                 >
                   {profile?.student_class || 'Not set'}
@@ -170,13 +176,13 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* 2. Study Medium */}
-            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
+            <div className={`neu-card rounded-2xl px-[12px] py-[10px] sm:px-[14px] sm:py-[11px] lg:px-[16px] lg:py-[12px] flex items-center gap-[10px] sm:gap-[12px] text-left ${styles.summaryTile}`}>
               <div
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
+                className="w-[40px] h-[40px] sm:w-[44px] sm:h-[44px] rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
               >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#E11584]"
+                  className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#E11584]"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -189,12 +195,12 @@ const Dashboard: React.FC = () => {
                   <path d="M6 2v20" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
+              <div className="min-w-0 flex-1">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase leading-tight truncate">
                   Study Medium
                 </span>
                 <span
-                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  className="block text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-ink leading-snug mt-0.5 truncate"
                   title={profile?.study_medium || 'Not set'}
                 >
                   {profile?.study_medium || 'Not set'}
@@ -203,13 +209,13 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* 3. Member Since */}
-            <div className={`neu-card rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 text-left ${styles.summaryTile}`}>
+            <div className={`neu-card rounded-2xl px-[12px] py-[10px] sm:px-[14px] sm:py-[11px] lg:px-[16px] lg:py-[12px] flex items-center gap-[10px] sm:gap-[12px] text-left ${styles.summaryTile}`}>
               <div
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
+                className="w-[40px] h-[40px] sm:w-[44px] sm:h-[44px] rounded-full bg-[#FFF0F6] border border-[#FCE7F3] flex items-center justify-center shrink-0"
                 aria-hidden="true"
               >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#E11584]"
+                  className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#E11584]"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -224,12 +230,12 @@ const Dashboard: React.FC = () => {
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </div>
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase truncate">
+              <div className="min-w-0 flex-1">
+                <span className="block text-[11px] sm:text-[12px] font-bold tracking-wider text-muted-foreground uppercase leading-tight truncate">
                   Member Since
                 </span>
                 <span
-                  className="block text-body-base font-bold text-ink truncate mt-0.5"
+                  className="block text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-ink leading-snug mt-0.5"
                   title={formatMemberSince(profile?.created_at)}
                 >
                   {formatMemberSince(profile?.created_at)}
