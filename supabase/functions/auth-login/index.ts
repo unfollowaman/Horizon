@@ -23,7 +23,7 @@
  *   Because tokens are never returned on failure, no browser can use it.
  */
 
-import "@supabase/functions-js/edge-runtime.d.ts";
+import "jsr:@supabase/functions-js@^2/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 // ---------------------------------------------------------------------------
