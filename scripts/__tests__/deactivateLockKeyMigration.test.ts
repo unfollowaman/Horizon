@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-describe('Regression & Migration Verification: 20260303000000_fix_deactivate_active_session_lock_key.sql', () => {
+describe('Regression & Migration Verification: 20261108094059_fix_deactivate_active_session_lock_key.sql', () => {
   const migrationPath = path.resolve(
     process.cwd(),
-    'supabase/migrations/20260303000000_fix_deactivate_active_session_lock_key.sql'
+    'supabase/migrations/20261108094059_fix_deactivate_active_session_lock_key.sql'
   );
   const foundationMigrationPath = path.resolve(
     process.cwd(),
