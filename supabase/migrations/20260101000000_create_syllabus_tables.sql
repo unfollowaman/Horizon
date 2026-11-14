@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS public.syllabus_topics (
 CREATE TABLE IF NOT EXISTS public.syllabus_topic_resources (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     topic_id UUID NOT NULL REFERENCES public.syllabus_topics(id) ON DELETE CASCADE,
-    resource_id UUID NOT NULL REFERENCES public.learning_resources(id) ON DELETE CASCADE,
+    resource_id BIGINT NOT NULL REFERENCES public.learning_resources(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT syllabus_topic_resources_topic_resource_key UNIQUE (topic_id, resource_id)
 );
@@ -33,11 +33,13 @@ ALTER TABLE public.syllabus_topics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.syllabus_topic_resources ENABLE ROW LEVEL SECURITY;
 
 -- 5. Create RLS policies for public read access
+DROP POLICY IF EXISTS "Allow public read access on syllabus_topics" ON public.syllabus_topics;
 CREATE POLICY "Allow public read access on syllabus_topics"
     ON public.syllabus_topics
     FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Allow public read access on syllabus_topic_resources" ON public.syllabus_topic_resources;
 CREATE POLICY "Allow public read access on syllabus_topic_resources"
     ON public.syllabus_topic_resources
     FOR SELECT
