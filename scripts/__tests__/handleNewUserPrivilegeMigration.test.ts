@@ -144,56 +144,35 @@ describe('Handle New User Privilege Hardening Migration Safety Suite', () => {
     });
   });
 
-  describe('4. Privilege State and ACL Simulation', () => {
-    it('models PostgreSQL ACL transitions and verifies expected final privilege state', () => {
-      // PostgreSQL default ACL for functions is NULL (equivalent to {postgres=X/postgres,PUBLIC=X/postgres})
-      // Upon:
-      //   REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
-      //   REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon;
-      //   REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM authenticated;
-      //   GRANT EXECUTE ON FUNCTION public.handle_new_user() TO postgres;
-      // The resultant proacl in pg_proc is '{postgres=X/postgres}'.
-
-      interface RolePrivileges {
-        execute: boolean;
-      }
-
-      const privilegeTable: Record<string, RolePrivileges> = {
-        PUBLIC: { execute: false },
-        anon: { execute: false },
-        authenticated: { execute: false },
-        service_role: { execute: false },
-        postgres: { execute: false },
-      };
-
+  describe('4. Deterministic Migration Statement Verification', () => {
+    it('verifies the exact four expected statements in their intended sequential order (source-level verification, not live ACL simulation)', () => {
       const statements = getExecutableStatements();
-      for (const stmt of statements) {
-        const revokeMatch = stmt.match(/^REVOKE EXECUTE ON FUNCTION public\.handle_new_user\(\) FROM\s+([a-zA-Z_]+)$/i);
-        if (revokeMatch) {
-          const role = revokeMatch[1];
-          if (privilegeTable[role] !== undefined) {
-            privilegeTable[role].execute = false;
-          }
-        }
 
-        const grantMatch = stmt.match(/^GRANT EXECUTE ON FUNCTION public\.handle_new_user\(\) TO\s+([a-zA-Z_]+)$/i);
-        if (grantMatch) {
-          const role = grantMatch[1];
-          if (privilegeTable[role] !== undefined) {
-            privilegeTable[role].execute = true;
-          }
-        }
+      // Verify exact expected statements in exact intended sequence:
+      // 1. Revoke EXECUTE from PUBLIC
+      // 2. Revoke EXECUTE from anon
+      // 3. Revoke EXECUTE from authenticated
+      // 4. Grant EXECUTE to postgres
+      const expectedStatements = [
+        'REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC',
+        'REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon',
+        'REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM authenticated',
+        'GRANT EXECUTE ON FUNCTION public.handle_new_user() TO postgres',
+      ];
+
+      expect(statements).toEqual(expectedStatements);
+    });
+
+    it('verifies every executable statement targets exactly public.handle_new_user()', () => {
+      const statements = getExecutableStatements();
+      for (const statement of statements) {
+        expect(statement).toMatch(/^.+ ON FUNCTION public\.handle_new_user\(\) (FROM|TO) [a-zA-Z_]+$/i);
       }
+    });
 
-      expect(privilegeTable['PUBLIC'].execute).toBe(false);
-      expect(privilegeTable['anon'].execute).toBe(false);
-      expect(privilegeTable['authenticated'].execute).toBe(false);
-      expect(privilegeTable['service_role'].execute).toBe(false);
-      expect(privilegeTable['postgres'].execute).toBe(true);
-
-      // Expected ACL representation in PostgreSQL
-      const expectedAcl = '{postgres=X/postgres}';
-      expect(expectedAcl).toBe('{postgres=X/postgres}');
+    it('verifies no additional executable statements are present beyond the approved four', () => {
+      const statements = getExecutableStatements();
+      expect(statements).toHaveLength(4);
     });
   });
 
