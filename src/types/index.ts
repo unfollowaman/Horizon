@@ -518,6 +518,12 @@ export interface Database {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      register_confirmation_session: {
+        Args: {
+          p_device_info?: Json
+        }
+        Returns: Json
+      }
     }
     Enums: {
       resource_type: ResourceType
