@@ -147,10 +147,8 @@ BEGIN
 
     -- 2. Acquire deterministic per-user advisory transaction lock
     -- Identical lock key derivation as register_active_session and deactivate_active_session.
-    -- Uses parameterized dynamic SQL (USING v_user_id) consistent with register_active_session.
-    EXECUTE 'SELECT x''' || substr(md5($1::text), 1, 16) || '''::bit(64)::bigint'
-    INTO v_lock_key
-    USING v_user_id;
+    EXECUTE 'SELECT x''' || substr(md5(v_user_id::text), 1, 16) || '''::bit(64)::bigint'
+    INTO v_lock_key;
 
     PERFORM pg_advisory_xact_lock(v_lock_key);
 

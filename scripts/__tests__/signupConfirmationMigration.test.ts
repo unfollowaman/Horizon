@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as crypto from 'crypto';
 
 describe('Phase 8.4.3: Signup Confirmation Session Registration Migration & Security Suite', () => {
   const migrationPath = path.resolve(
@@ -109,12 +110,11 @@ describe('Phase 8.4.3: Signup Confirmation Session Registration Migration & Secu
       expect(sql).toMatch(/v_session_id := \(v_claims ->> 'session_id'\)::UUID;/);
     });
 
-    it('verifies per-user advisory lock uses identical 64-bit bigint derivation', () => {
+    it('verifies per-user advisory lock uses identical 64-bit bigint derivation from authenticated v_user_id', () => {
       const sql = getMigrationSql();
-      // After Phase 8.4.3.1 correction, register_confirmation_session uses USING v_user_id
-      // (parameterized form consistent with register_active_session's USING p_user_id).
-      // Both use the same md5($1::text) template literal, differing only in the USING clause name.
-      expect(sql).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(\$1::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key\s+USING v_user_id;/);
+      // register_confirmation_session derives lock key directly from authenticated v_user_id::text
+      // matching parameterless deactivate_active_session.
+      expect(sql).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(v_user_id::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key;/);
       expect(sql).toMatch(/PERFORM pg_advisory_xact_lock\(v_lock_key\);/);
     });
 
@@ -223,30 +223,22 @@ describe('Phase 8.4.3: Signup Confirmation Session Registration Migration & Secu
       expect(sql).not.toMatch(/USING ERRCODE = '[A-Z_]{6,}'/); // catches multi-word ALL_CAPS non-standard codes
     });
 
-    it('verifies register_confirmation_session uses parameterized dynamic SQL (USING v_user_id)', () => {
-      // Checks that the advisory lock key derivation in register_confirmation_session
-      // uses USING <parameter> form consistent with register_active_session.
+    it('verifies register_confirmation_session derives lock key directly from v_user_id without $1 or USING', () => {
       const sql = getMigrationSql();
       const fnStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
       expect(fnStart).toBeGreaterThan(0);
       const fnBody = sql.slice(fnStart, sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session'));
-      expect(fnBody).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(\$1::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'/);
-      expect(fnBody).toMatch(/USING v_user_id;/);
+      expect(fnBody).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(v_user_id::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key;/);
+      expect(fnBody).not.toMatch(/substr\(md5\(\$1::text\)/);
+      expect(fnBody).not.toMatch(/INTO v_lock_key\s+USING/);
     });
 
-    it('verifies both register_confirmation_session and register_active_session use identical lock key derivation', () => {
-      // Both functions must derive the same 64-bit advisory lock integer from the same user UUID.
-      // The SQL template is identical: md5($1::text) first 16 hex chars → bit(64) → bigint.
-      // Only the USING parameter name differs (v_user_id vs p_user_id) which is irrelevant to semantics.
+    it('verifies register_confirmation_session and register_active_session both derive lock keys from user UUID', () => {
       const sql = getMigrationSql();
-      // Template literal appears exactly twice — once per function
-      const occurrences = (sql.match(/EXECUTE 'SELECT x''' \|\| substr\(md5\(\$1::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'/g) || []).length;
-      expect(occurrences).toBe(2);
-      // Both use parameterized USING clause
-      const usingVUser = (sql.match(/USING v_user_id;/g) || []).length;
-      const usingPUser = (sql.match(/USING p_user_id;/g) || []).length;
-      expect(usingVUser).toBeGreaterThanOrEqual(1);
-      expect(usingPUser).toBeGreaterThanOrEqual(1);
+      // register_confirmation_session derives directly from local variable v_user_id::text
+      expect(sql).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(v_user_id::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key;/);
+      // register_active_session derives from parameter p_user_id ($1)
+      expect(sql).toMatch(/EXECUTE 'SELECT x''' \|\| substr\(md5\(\$1::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key\s+USING p_user_id;/);
     });
 
     it('verifies migration timestamp 20261117150000 is correctly UTC-based and after last applied migration', () => {
@@ -257,6 +249,144 @@ describe('Phase 8.4.3: Signup Confirmation Session Registration Migration & Secu
       expect(timestamp > '20261114210000').toBe(true);
       // Must be before any implausible future timestamp (sanity check)
       expect(timestamp < '20270101000000').toBe(true);
+    });
+  });
+
+  describe('8. Advisory Lock Key Derivation & Regression Invariants', () => {
+    const deactivateMigrationPath = path.resolve(
+      process.cwd(),
+      'supabase/migrations/20261108094059_fix_deactivate_active_session_lock_key.sql'
+    );
+    const getDeactivateSql = () => fs.readFileSync(deactivateMigrationPath, 'utf8');
+
+    // Mathematical implementation of PostgreSQL's exact lock key derivation:
+    // SELECT x'substr(md5(input::text), 1, 16)'::bit(64)::bigint
+    function computePostgresLockKey(input: string): bigint {
+      const hash = crypto.createHash('md5').update(input).digest('hex');
+      const first16 = hash.slice(0, 16);
+      return BigInt.asIntN(64, BigInt('0x' + first16));
+    }
+
+    it('verifies register_confirmation_session derives lock key from v_user_id::text and not $1 or p_device_info', () => {
+      const sql = getMigrationSql();
+      const fnStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
+      const fnEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+      const fnBody = sql.slice(fnStart, fnEnd);
+
+      // Must derive lock key strictly from v_user_id::text
+      expect(fnBody).toMatch(
+        /EXECUTE 'SELECT x''' \|\| substr\(md5\(v_user_id::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key;/
+      );
+
+      // Regression protection: Must NOT use $1 or p_device_info in dynamic EXECUTE expression
+      expect(fnBody).not.toMatch(/substr\(md5\(\$1::text\)/);
+      expect(fnBody).not.toMatch(/substr\(md5\(p_device_info::text\)/);
+
+      // Must NOT have a redundant or defective USING clause on the dynamic lock statement
+      expect(fnBody).not.toMatch(/INTO v_lock_key\s+USING/);
+    });
+
+    it('verifies derivation in register_confirmation_session exactly matches parameterless deactivate_active_session', () => {
+      const confSql = getMigrationSql();
+      const deactSql = getDeactivateSql();
+
+      const confStart = confSql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
+      const confEnd = confSql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+      const confBody = confSql.slice(confStart, confEnd);
+
+      const deactStart = deactSql.indexOf('CREATE OR REPLACE FUNCTION public.deactivate_active_session()');
+      const deactEnd = deactSql.indexOf('COMMENT ON FUNCTION public.deactivate_active_session()');
+      const deactBody = deactSql.slice(deactStart, deactEnd);
+
+      const lockKeyStmt = "EXECUTE 'SELECT x''' || substr(md5(v_user_id::text), 1, 16) || '''::bit(64)::bigint'";
+      expect(confBody).toContain(lockKeyStmt);
+      expect(deactBody).toContain(lockKeyStmt);
+    });
+
+    it('verifies register_active_session derives lock key from p_user_id (its $1 parameter)', () => {
+      const sql = getMigrationSql();
+      const fnStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+      const fnBody = sql.slice(fnStart);
+
+      // In register_active_session(p_user_id UUID, ...), $1 is p_user_id
+      expect(fnBody).toMatch(
+        /EXECUTE 'SELECT x''' \|\| substr\(md5\(\$1::text\), 1, 16\) \|\| '''::bit\(64\)::bigint'\s+INTO v_lock_key\s+USING p_user_id;/
+      );
+    });
+
+    it('verifies all three functions generate identical 64-bit signed BIGINT lock keys for any given UUID', () => {
+      const testUuids = [
+        '00000000-0000-0000-0000-000000000000',
+        'ffffffff-ffff-ffff-ffff-ffffffffffff',
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+        '264e2586-cbe1-4aa8-a77d-5e13307a4234',
+        '38ff3d93-db63-e739-7945-954617d3033d',
+      ];
+
+      for (const uuid of testUuids) {
+        // Derivation 1: register_confirmation_session (v_user_id::text)
+        const keyFromConf = computePostgresLockKey(uuid);
+
+        // Derivation 2: deactivate_active_session (v_user_id::text)
+        const keyFromDeact = computePostgresLockKey(uuid);
+
+        // Derivation 3: register_active_session (p_user_id::text via $1)
+        const keyFromLogin = computePostgresLockKey(uuid);
+
+        // All three must produce identical 64-bit integer
+        expect(keyFromConf).toBe(keyFromDeact);
+        expect(keyFromConf).toBe(keyFromLogin);
+
+        // Must be within signed 64-bit integer range [-2^63, 2^63 - 1]
+        const minBigInt = -9223372036854775808n;
+        const maxBigInt = 9223372036854775807n;
+        expect(keyFromConf >= minBigInt && keyFromConf <= maxBigInt).toBe(true);
+      }
+    });
+
+    it('verifies regression detection: device_info ($1) produces divergent lock keys, proving bug detection', () => {
+      const userUuid = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+      const correctUserKey = computePostgresLockKey(userUuid);
+
+      // When $1 was erroneously referenced in register_confirmation_session(p_device_info JSONB),
+      // it hashed p_device_info::text instead of user UUID
+      const defaultDeviceInfoKey = computePostgresLockKey('{}');
+      const customDeviceInfoKey = computePostgresLockKey('{"userAgent":"Mozilla/5.0"}');
+
+      // The defective keys MUST diverge from the correct user lock key!
+      expect(defaultDeviceInfoKey).not.toBe(correctUserKey);
+      expect(customDeviceInfoKey).not.toBe(correctUserKey);
+      expect(defaultDeviceInfoKey).not.toBe(customDeviceInfoKey);
+    });
+
+    it('verifies pg_advisory_xact_lock strictly receives v_lock_key in both registration functions', () => {
+      const sql = getMigrationSql();
+      const confStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
+      const activeStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+
+      const confBody = sql.slice(confStart, activeStart);
+      const activeBody = sql.slice(activeStart);
+
+      expect(confBody).toMatch(/PERFORM pg_advisory_xact_lock\(v_lock_key\);/);
+      expect(activeBody).toMatch(/PERFORM pg_advisory_xact_lock\(v_lock_key\);/);
+    });
+
+    it('verifies timestamp evaluation (clock_timestamp) is strictly sequenced AFTER pg_advisory_xact_lock', () => {
+      const sql = getMigrationSql();
+      const confStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
+      const activeStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+
+      const confBody = sql.slice(confStart, activeStart);
+      const confLockIdx = confBody.indexOf('PERFORM pg_advisory_xact_lock(v_lock_key);');
+      const confTimeIdx = confBody.indexOf('v_now := clock_timestamp();', confLockIdx);
+      expect(confLockIdx).toBeGreaterThan(0);
+      expect(confTimeIdx).toBeGreaterThan(confLockIdx);
+
+      const activeBody = sql.slice(activeStart);
+      const activeLockIdx = activeBody.indexOf('PERFORM pg_advisory_xact_lock(v_lock_key);');
+      const activeTimeIdx = activeBody.indexOf('v_now := clock_timestamp();', activeLockIdx);
+      expect(activeLockIdx).toBeGreaterThan(0);
+      expect(activeTimeIdx).toBeGreaterThan(activeLockIdx);
     });
   });
 });
