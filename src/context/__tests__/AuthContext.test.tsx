@@ -41,6 +41,11 @@ vi.mock('../../services/supabase', () => ({
 vi.mock('../../services/auth', () => ({
   logout: (...args: any[]) => mockLogout(...args),
   extractSessionId: () => 'mock-session-id',
+  checkIsActiveSession: vi.fn().mockResolvedValue({ isActive: true, isDefinitivelyInactive: false }),
+  registerConfirmationSession: vi.fn().mockResolvedValue({ success: true }),
+  setSessionReplacementNotice: vi.fn(),
+  teardownSession: vi.fn().mockResolvedValue({ completed: true }),
+  SESSION_REPLACEMENT_MESSAGE: 'Session replaced',
 }));
 
 // Helper Consumer Component

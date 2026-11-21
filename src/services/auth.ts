@@ -1,3 +1,4 @@
+import type { Json } from '../types';
 import { supabase } from './supabase';
 
 /**
@@ -485,4 +486,252 @@ export const teardownSession = async (
 
 export const resetTeardownGuardForTesting = (): void => {
   isTeardownInProgress = false;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Signup Confirmation Session Registration (Phase 8.4.3)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ConfirmationRegistrationErrorCode =
+  | 'UNAUTHENTICATED'
+  | 'INVALID_JWT_CLAIMS'
+  | 'MALFORMED_SESSION_CLAIMS'
+  | 'MISSING_SESSION_CLAIMS'
+  | 'CLAIM_ALREADY_CONSUMED'
+  | 'CLAIM_ALREADY_CONSUMED_INACTIVE_SESSION'
+  | 'ACTIVE_SESSION_CONFLICT'
+  | 'USER_NOT_FOUND'
+  | 'EMAIL_NOT_CONFIRMED'
+  | 'CONFIRMATION_WINDOW_EXPIRED'
+  | 'SESSION_NOT_FOUND'
+  | 'SESSION_CONFIRMATION_MISALIGNED'
+  | 'CONCURRENT_CLAIM_CONFLICT'
+  | 'DATABASE_ERROR'
+  | 'RPC_UNAVAILABLE'
+  | 'NETWORK_ERROR'
+  | 'UNKNOWN_ERROR';
+
+export interface ConfirmationRegistrationResult {
+  success: boolean;
+  isIdempotent?: boolean;
+  sessionId?: string;
+  sessionEpoch?: number;
+  errorCode?: ConfirmationRegistrationErrorCode;
+  error?: string;
+}
+
+/**
+ * Builds minimal client device info for confirmation session audit.
+ */
+export const buildClientDeviceInfo = (): Record<string, Json> => {
+  if (typeof navigator === 'undefined') return {};
+  return {
+    ua: (navigator.userAgent || '').slice(0, 512),
+  };
+};
+
+/**
+ * Maps registration error codes to safe, user-friendly messages.
+ * Prevents internal database details from leaking to users.
+ */
+export const mapConfirmationErrorCodeToMessage = (
+  code?: string
+): string => {
+  switch (code) {
+    case 'CLAIM_ALREADY_CONSUMED':
+    case 'CLAIM_ALREADY_CONSUMED_INACTIVE_SESSION':
+      return 'This confirmation link has already been used. Please log in with your password.';
+    case 'ACTIVE_SESSION_CONFLICT':
+      return 'Another session is currently active. Please log in to continue.';
+    case 'CONFIRMATION_WINDOW_EXPIRED':
+      return 'The confirmation link has expired. Please sign in or request a new link.';
+    case 'SESSION_CONFIRMATION_MISALIGNED':
+      return 'Confirmation session could not be verified. Please log in with your email and password.';
+    case 'EMAIL_NOT_CONFIRMED':
+      return 'Please confirm your email address before continuing.';
+    case 'UNAUTHENTICATED':
+    case 'INVALID_JWT_CLAIMS':
+    case 'MALFORMED_SESSION_CLAIMS':
+    case 'MISSING_SESSION_CLAIMS':
+      return 'Authentication error. Please log in again.';
+    case 'CONCURRENT_CLAIM_CONFLICT':
+      return 'A conflict occurred while registering your session. Please try again in a moment.';
+    case 'RPC_UNAVAILABLE':
+    case 'NETWORK_ERROR':
+      return 'Unable to reach the server. Please check your connection and try again.';
+    default:
+      return 'Registration service encountered an error. Please log in.';
+  }
+};
+
+// Session-keyed in-flight cache: keyed by exact session ID string.
+// A different session's callers must never share another session's in-flight registration.
+// Cleanup removes only the entry for the specific session that placed it once settled.
+// NOTE: We deliberately do NOT cache successful registrations in a local Set or Map.
+// The database RPC remains the sole authority on current active status, displacement, and eligibility.
+const confirmationRegistrationCache = new Map<string, Promise<ConfirmationRegistrationResult>>();
+
+/**
+ * Registers an eligible initial signup confirmation session via public.register_confirmation_session.
+ *
+ * Requirements & Invariants:
+ * 1. Must be executed while the confirmation session JWT is valid in the browser SDK.
+ * 2. Identity and session UUID are derived strictly from JWT claims on the server.
+ * 3. Re-renders and concurrent caller deduplication via session-keyed in-flight cache.
+ *    Each key is the exact session ID, so Session B never receives Session A's result.
+ * 4. Cache cleanup removes only the entry keyed to the completing session once settled.
+ *    Subsequent calls after settlement always consult the database RPC.
+ * 5. Strict response validation: result.session_id must be a non-empty string matching
+ *    the local session ID. The local session ID is NEVER substituted for a missing server ID.
+ * 6. Optional expectedSessionId enforces caller session-binding to prevent session drift.
+ * 7. Tokens are never logged.
+ */
+export const registerConfirmationSession = async (
+  deviceInfo?: Record<string, Json>,
+  expectedSessionId?: string
+): Promise<ConfirmationRegistrationResult> => {
+  try {
+    // 1. Capture current session from SDK
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !sessionData?.session || !sessionData.session.access_token) {
+      return {
+        success: false,
+        errorCode: 'UNAUTHENTICATED',
+        error: 'No active session found to register.',
+      };
+    }
+
+    const session = sessionData.session;
+    const sessionId = extractSessionId(session.access_token);
+    if (!sessionId) {
+      return {
+        success: false,
+        errorCode: 'MISSING_SESSION_CLAIMS',
+        error: 'JWT does not contain a valid session_id claim.',
+      };
+    }
+
+    // Verify session binding if caller provided expectedSessionId
+    if (expectedSessionId && sessionId !== expectedSessionId) {
+      return {
+        success: false,
+        errorCode: 'SESSION_CONFIRMATION_MISALIGNED',
+        error: 'Session mismatch: active session changed before registration.',
+      };
+    }
+
+    // 2. Session-keyed deduplication: return existing in-flight promise for the same session.
+    // Different sessions (different keys) always get independent promises.
+    // Once settled, subsequent calls consult the database RPC again.
+    const existing = confirmationRegistrationCache.get(sessionId);
+    if (existing) {
+      return await existing;
+    }
+
+    // 3. Launch new registration for this specific session.
+    // Capture sessionId in the closure so cleanup targets the correct key.
+    const registrationPromise = (async (): Promise<ConfirmationRegistrationResult> => {
+      try {
+        const payloadDeviceInfo = deviceInfo || buildClientDeviceInfo();
+
+        const { data, error: rpcError } = await supabase.rpc('register_confirmation_session', {
+          p_device_info: payloadDeviceInfo,
+        });
+
+        if (rpcError) {
+          console.warn('registerConfirmationSession: RPC evaluation error:', rpcError);
+          return {
+            success: false,
+            errorCode: 'RPC_UNAVAILABLE',
+            error: 'Unable to reach the registration service. Please try again.',
+          };
+        }
+
+        if (!data || typeof data !== 'object' || Array.isArray(data)) {
+          return {
+            success: false,
+            errorCode: 'DATABASE_ERROR',
+            error: 'Unexpected response from registration service.',
+          };
+        }
+
+        const result = data as {
+          success?: boolean;
+          is_idempotent?: boolean;
+          session_id?: string;
+          session_epoch?: number;
+          error_code?: ConfirmationRegistrationErrorCode;
+        };
+
+        if (result.success === true) {
+          // Strict RPC response validation:
+          // 1. Require result.session_id to be a non-empty string.
+          // 2. Require result.session_id === sessionId (the local session ID used for RPC).
+          // 3. Never substitute the locally extracted ID for a missing or mismatched server ID.
+          if (
+            typeof result.session_id !== 'string' ||
+            result.session_id.trim() === '' ||
+            result.session_id !== sessionId
+          ) {
+            console.warn(
+              'registerConfirmationSession: RPC returned invalid or mismatched session_id.',
+              'Expected:', sessionId,
+              'Got:', result.session_id
+            );
+            return {
+              success: false,
+              errorCode: 'SESSION_CONFIRMATION_MISALIGNED',
+              error: 'Confirmation session could not be verified. Please log in with your email and password.',
+            };
+          }
+
+          if (expectedSessionId && result.session_id !== expectedSessionId) {
+            return {
+              success: false,
+              errorCode: 'SESSION_CONFIRMATION_MISALIGNED',
+              error: 'Session mismatch: registration resolved for unexpected session.',
+            };
+          }
+
+          return {
+            success: true,
+            isIdempotent: result.is_idempotent,
+            sessionId: result.session_id,
+            sessionEpoch: result.session_epoch,
+          };
+        }
+
+        return {
+          success: false,
+          errorCode: result.error_code || 'UNKNOWN_ERROR',
+          error: mapConfirmationErrorCodeToMessage(result.error_code),
+        };
+      } catch (err) {
+        console.warn('registerConfirmationSession: Unexpected network error:', err);
+        return {
+          success: false,
+          errorCode: 'NETWORK_ERROR',
+          error: 'Unable to complete registration due to a network error. Please try again.',
+        };
+      } finally {
+        // Remove the cache entry for this specific session ID once settled.
+        // A settled promise is never retained to shortcut future active status checks.
+        confirmationRegistrationCache.delete(sessionId);
+      }
+    })();
+
+    confirmationRegistrationCache.set(sessionId, registrationPromise);
+    return await registrationPromise;
+  } catch (err) {
+    console.error('registerConfirmationSession: Unexpected exception:', err);
+    return {
+      success: false,
+      errorCode: 'UNKNOWN_ERROR',
+      error: 'An unexpected error occurred during confirmation registration.',
+    };
+  }
+};
+
+export const resetConfirmationGuardForTesting = (): void => {
+  confirmationRegistrationCache.clear();
 };

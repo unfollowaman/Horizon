@@ -3,6 +3,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import Onboarding from '../Onboarding';
+import type { Profile } from '../../../types';
 import { supabase } from '../../../services/supabase';
 import * as notificationsService from '../../../services/notifications';
 
@@ -10,7 +11,11 @@ import * as notificationsService from '../../../services/notifications';
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 const mockNavigate = vi.fn();
-const mockRefreshProfile = vi.fn();
+let mockRefreshProfile = vi.fn();
+
+let mockAuthUser: { id: string } | null = { id: 'test-user-id' };
+let mockAuthProfile: Profile | null = null;
+let mockAuthLoading = false;
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -22,6 +27,9 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('../../../context/AuthContext', () => ({
   useAuth: () => ({
+    user: mockAuthUser,
+    profile: mockAuthProfile,
+    loading: mockAuthLoading,
     refreshProfile: mockRefreshProfile,
   }),
 }));
@@ -44,6 +52,16 @@ describe('Onboarding Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAuthUser = { id: 'test-user-id' };
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: null,
+      study_medium: null,
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+    mockAuthLoading = false;
+    mockRefreshProfile = vi.fn();
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -63,29 +81,13 @@ describe('Onboarding Component', () => {
   });
 
   it('renders step 4 profile photo upload input with proper aria-label', async () => {
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: {
-        session: {
-          user: { id: 'test-user-id' },
-        },
-      },
-      error: null,
-    } as never);
-
-    vi.mocked(supabase.from).mockReturnValueOnce({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValueOnce({
-        data: {
-          id: 'test-user-id',
-          student_class: 'Class 10',
-          study_medium: 'English',
-          avatar_url: null,
-          onboarding_completed: false,
-        },
-        error: null,
-      }),
-    } as never);
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
 
     await act(async () => {
       root?.render(
@@ -101,30 +103,6 @@ describe('Onboarding Component', () => {
   });
 
   it('renders step progress bar with WAI-ARIA progressbar attributes', async () => {
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: {
-        session: {
-          user: { id: 'test-user-id' },
-        },
-      },
-      error: null,
-    } as never);
-
-    vi.mocked(supabase.from).mockReturnValueOnce({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValueOnce({
-        data: {
-          id: 'test-user-id',
-          student_class: null,
-          study_medium: null,
-          avatar_url: null,
-          onboarding_completed: false,
-        },
-        error: null,
-      }),
-    } as never);
-
     await act(async () => {
       root?.render(
         <MemoryRouter>
@@ -370,6 +348,14 @@ describe('Onboarding Component', () => {
   });
 
   it('stays on Step 3 and displays error message when medium selection update fails', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: null,
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -432,6 +418,14 @@ describe('Onboarding Component', () => {
   });
 
   it('advances immediately on medium selection and handles back button navigation', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: null,
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -522,6 +516,14 @@ describe('Onboarding Component', () => {
   });
 
   it('renders Step 5 optional notification opt-in step and advances on Skip for Now without blocking onboarding', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -592,6 +594,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles successful subscription with success feedback and progression to Step 6', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.useFakeTimers();
 
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
@@ -669,6 +679,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles permission denied returned by subscribeToPushNotifications without blocking onboarding', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -750,6 +768,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles UNSUPPORTED_BROWSER returned by subscribeToPushNotifications gracefully', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -825,6 +851,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles generic returned failure without displaying success banner', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -892,6 +926,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles thrown error during subscribeToPushNotifications gracefully without blocking onboarding', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -965,6 +1007,14 @@ describe('Onboarding Component', () => {
   });
 
   it('suppresses duplicate click while subscription is pending using in-flight guard', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -1041,6 +1091,14 @@ describe('Onboarding Component', () => {
   });
 
   it('displays role="alert" message and permits successful retry when handleFinish fails then succeeds', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -1130,6 +1188,14 @@ describe('Onboarding Component', () => {
   });
 
   it('handles avatar storage upload error and profile URL update error without marking avatar saved', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -1201,6 +1267,14 @@ describe('Onboarding Component', () => {
   });
 
   it('resets file input value after upload attempt allowing user to retry selecting the same file', async () => {
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: 'Class 10',
+      study_medium: 'English',
+      avatar_url: null,
+      onboarding_completed: false,
+    };
+
     vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
       data: {
         session: {
@@ -1282,28 +1356,16 @@ describe('Onboarding Component', () => {
     expect(container?.querySelector('img[alt="Profile"]')).not.toBeNull();
   });
 
-  it('renders initialization error screen when fetchUserAndProfile fails and permits successful retry', async () => {
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: {
-        session: {
-          user: { id: 'test-user-id' },
-        },
-      },
-      error: null,
-    } as never);
-
-    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValueOnce({
-            data: null,
-            error: new Error('Failed to fetch profile'),
-          }),
-        } as never;
-      }
-      return {} as never;
+  it('renders initialization error screen when profile is missing and permits successful retry', async () => {
+    mockAuthProfile = null;
+    mockRefreshProfile.mockImplementation(async () => {
+      mockAuthProfile = {
+        id: 'test-user-id',
+        student_class: null,
+        study_medium: null,
+        avatar_url: null,
+        onboarding_completed: false,
+      };
     });
 
     await act(async () => {
@@ -1323,49 +1385,19 @@ describe('Onboarding Component', () => {
     );
     expect(retryBtn).not.toBeUndefined();
 
-    // Setup successful response for retry
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: {
-        session: {
-          user: { id: 'test-user-id' },
-        },
-      },
-      error: null,
-    } as never);
-
-    vi.mocked(supabase.from).mockImplementationOnce((table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValueOnce({
-            data: {
-              id: 'test-user-id',
-              student_class: null,
-              study_medium: null,
-              avatar_url: null,
-              onboarding_completed: false,
-            },
-            error: null,
-          }),
-        } as never;
-      }
-      return {} as never;
-    });
-
     await act(async () => {
       retryBtn?.click();
     });
+
+    expect(mockRefreshProfile).toHaveBeenCalledTimes(1);
 
     // Verify onboarding loads step 1 on successful retry
     expect(container?.querySelector('h1')?.textContent).toBe('Welcome to Horizon');
   });
 
   it('redirects unauthenticated user to /login', async () => {
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: { session: null },
-      error: null,
-    } as never);
+    mockAuthUser = null;
+    mockAuthProfile = null;
 
     await act(async () => {
       root?.render(
@@ -1379,29 +1411,13 @@ describe('Onboarding Component', () => {
   });
 
   it('redirects user with completed onboarding to /', async () => {
-    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
-      data: {
-        session: { user: { id: 'test-user-id' } },
-      },
-      error: null,
-    } as never);
-
-    vi.mocked(supabase.from).mockImplementation((table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({
-            data: {
-              id: 'test-user-id',
-              onboarding_completed: true,
-            },
-            error: null,
-          }),
-        } as never;
-      }
-      return {} as never;
-    });
+    mockAuthProfile = {
+      id: 'test-user-id',
+      student_class: null,
+      study_medium: null,
+      avatar_url: null,
+      onboarding_completed: true,
+    };
 
     await act(async () => {
       root?.render(

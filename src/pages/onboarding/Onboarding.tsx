@@ -18,7 +18,7 @@ const AVATAR_OPTIONS = [
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
-  const { refreshProfile } = useAuth();
+  const { user: authUser, profile: authProfile, loading: authLoading, refreshProfile } = useAuth();
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -48,62 +48,69 @@ const Onboarding: React.FC = () => {
     };
   }, []);
 
-  const fetchUserAndProfile = async () => {
+  const handleRetryProfile = async () => {
     if (isMountedRef.current) {
       setLoading(true);
       setInitError(null);
     }
     try {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !sessionData?.session) {
-        if (isMountedRef.current) navigate('/login');
-        return;
-      }
-
-      const session = sessionData.session;
-      if (isMountedRef.current) setUserId(session.user.id);
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, student_class, study_medium, avatar_url, onboarding_completed, name, created_at')
-        .eq('id', session.user.id)
-        .single();
-
-      if (!isMountedRef.current) return;
-
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        setInitError('Failed to load your profile. Please refresh or try again.');
-        return;
-      }
-
-      if (profile) {
-        if (profile.onboarding_completed) {
-          navigate('/');
-          return;
-        }
-
-        if (profile.student_class) setStudentClass(profile.student_class);
-        if (profile.study_medium) setStudyMedium(profile.study_medium);
-        if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
-
-        if (!profile.student_class) setStep(1);
-        else if (!profile.study_medium) setStep(3);
-        else if (!profile.avatar_url) setStep(4);
-      }
-    } catch (err: unknown) {
-      console.error('Unexpected exception during profile initialization:', err);
+      await refreshProfile();
+    } catch (err) {
+      console.error('Error refreshing profile in Onboarding:', err);
       if (isMountedRef.current) {
         setInitError('Failed to load your profile. Please refresh or try again.');
       }
     } finally {
-      if (isMountedRef.current) setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
+  // Consumes AuthContext state exclusively (Phase 8.4.5 / 8.4.5.2),
+  // eliminating autonomous profile SELECT requests and preventing race conditions
+  // during confirmation registration.
   useEffect(() => {
-    fetchUserAndProfile();
-  }, [navigate]);
+    if (authLoading) {
+      if (isMountedRef.current) setLoading(true);
+      return;
+    }
+
+    if (!authUser) {
+      if (isMountedRef.current) navigate('/login');
+      return;
+    }
+
+    if (isMountedRef.current) {
+      setUserId(authUser.id);
+    }
+
+    if (authProfile) {
+      if (authProfile.onboarding_completed) {
+        navigate('/');
+        return;
+      }
+
+      if (isMountedRef.current) {
+        if (authProfile.student_class) setStudentClass(authProfile.student_class);
+        if (authProfile.study_medium) setStudyMedium(authProfile.study_medium);
+        if (authProfile.avatar_url) setAvatarUrl(authProfile.avatar_url);
+
+        if (!authProfile.student_class) setStep(1);
+        else if (!authProfile.study_medium) setStep(3);
+        else if (!authProfile.avatar_url) setStep(4);
+
+        setInitError(null);
+        setLoading(false);
+      }
+    } else {
+      // Missing profile or profile fetch failure
+      if (isMountedRef.current) {
+        setInitError('Failed to load your profile. Please refresh or try again.');
+        setLoading(false);
+      }
+    }
+  }, [authLoading, authUser, authProfile, navigate]);
 
   const updateProfile = async (updates: Partial<Profile>): Promise<{ success: boolean; error?: unknown }> => {
     if (!userId) return { success: false, error: 'User ID missing' };
@@ -221,7 +228,7 @@ const Onboarding: React.FC = () => {
           text: 'Unable to enable notifications right now. You can manage alerts anytime in Settings.',
         });
       }
-    } catch (_err) {
+    } catch {
       subscribingRef.current = false;
       if (isMountedRef.current) {
         setSubscribing(false);
@@ -253,7 +260,7 @@ const Onboarding: React.FC = () => {
       if (isMountedRef.current) {
         navigate('/');
       }
-    } catch (_err) {
+    } catch {
       if (isMountedRef.current) {
         setFinishError('Unable to save profile setup. Please try again.');
       }
@@ -322,7 +329,7 @@ const Onboarding: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={fetchUserAndProfile}
+            onClick={handleRetryProfile}
             className="w-full py-2.5 px-4 text-white bg-[#E91E8C] hover:bg-[#D81B7D] rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E8C]"
           >
             Retry Loading Profile
