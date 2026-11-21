@@ -249,6 +249,13 @@ BEGIN
         RETURN jsonb_build_object('success', false, 'error_code', 'SESSION_NOT_FOUND');
     END IF;
 
+    IF v_session.created_at IS NULL THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'error_code', 'SESSION_TIMESTAMP_MISSING'
+        );
+    END IF;
+
     -- 5c. Session creation alignment tolerance (60 seconds with confirmed_at)
     v_sess_conf_diff_seconds := ABS(EXTRACT(EPOCH FROM (v_session.created_at - v_user.confirmed_at)));
     IF v_sess_conf_diff_seconds > 60 THEN

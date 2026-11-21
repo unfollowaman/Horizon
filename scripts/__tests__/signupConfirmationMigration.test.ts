@@ -878,4 +878,184 @@ describe('Phase 8.4.3: Signup Confirmation Session Registration Migration & Secu
       });
     });
   });
+
+  // =========================================================================
+  // Section 9 — Fail-Closed Session Timestamp Validation & Alignment Security
+  // (Phase 3.2 Audit Security Correction)
+  // =========================================================================
+
+  describe('9. Fail-Closed Session Timestamp Validation & Alignment Security', () => {
+    function extractConfirmationFnBody(): string {
+      const sql = getMigrationSql();
+      const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_confirmation_session');
+      const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.register_active_session');
+      if (start < 0 || end < 0 || end <= start) {
+        throw new Error('Could not locate register_confirmation_session body');
+      }
+      return sql.slice(start, end);
+    }
+
+    /**
+     * Pure validator that asserts fail-closed session timestamp validation
+     * and strictly ordered control flow in register_confirmation_session.
+     */
+    function validateSessionTimestampValidation(sql: string): void {
+      // 1. Explicit NULL created_at guard with exact error code
+      expect(sql).toMatch(
+        /IF\s+v_session\.created_at\s+IS\s+NULL\s+THEN[\s\S]+?'error_code',\s*'SESSION_TIMESTAMP_MISSING'[\s\S]+?END\s+IF;/
+      );
+
+      // 2. Control flow ordering assertions:
+      // a. Advisory lock must be acquired first
+      const lockIdx = sql.indexOf('PERFORM pg_advisory_xact_lock(v_lock_key);');
+      expect(lockIdx).toBeGreaterThan(0);
+
+      // b. User confirmation check (CONFIRMATION_WINDOW_EXPIRED)
+      const userConfWindowIdx = sql.indexOf("'error_code', 'CONFIRMATION_WINDOW_EXPIRED'");
+      expect(userConfWindowIdx).toBeGreaterThan(lockIdx);
+
+      // c. Session existence check (SESSION_NOT_FOUND)
+      const sessionNotFoundIdx = sql.indexOf("'error_code', 'SESSION_NOT_FOUND'");
+      expect(sessionNotFoundIdx).toBeGreaterThan(userConfWindowIdx);
+
+      // d. NULL timestamp guard (SESSION_TIMESTAMP_MISSING) must precede arithmetic
+      const nullGuardIdx = sql.indexOf("'error_code', 'SESSION_TIMESTAMP_MISSING'");
+      expect(nullGuardIdx).toBeGreaterThan(sessionNotFoundIdx);
+
+      // e. Timestamp arithmetic
+      const arithmeticIdx = sql.indexOf(
+        'v_sess_conf_diff_seconds := ABS(EXTRACT(EPOCH FROM (v_session.created_at - v_user.confirmed_at)));'
+      );
+      expect(arithmeticIdx).toBeGreaterThan(nullGuardIdx);
+
+      // f. 60-second misalignment rejection (SESSION_CONFIRMATION_MISALIGNED)
+      const misalignedIdx = sql.indexOf("'error_code', 'SESSION_CONFIRMATION_MISALIGNED'");
+      expect(misalignedIdx).toBeGreaterThan(arithmeticIdx);
+
+      // g. Claim ledger insertion occurs only AFTER all guards have passed
+      const insertClaimIdx = sql.indexOf('INSERT INTO security.signup_session_claims');
+      expect(insertClaimIdx).toBeGreaterThan(misalignedIdx);
+
+      // 3. User confirmation window (300s window and -10s clock drift)
+      expect(sql).toMatch(/v_conf_diff_seconds > 300 OR v_conf_diff_seconds < -10/);
+
+      // 4. 60s alignment tolerance condition
+      expect(sql).toMatch(/v_sess_conf_diff_seconds > 60/);
+    }
+
+    it('verifies register_confirmation_session passes validateSessionTimestampValidation without error', () => {
+      const body = extractConfirmationFnBody();
+      expect(() => validateSessionTimestampValidation(body)).not.toThrow();
+    });
+
+    it('verifies explicit rejection of NULL created_at with exact error code SESSION_TIMESTAMP_MISSING', () => {
+      const body = extractConfirmationFnBody();
+      expect(body).toMatch(/IF v_session\.created_at IS NULL THEN/);
+      expect(body).toMatch(/'error_code', 'SESSION_TIMESTAMP_MISSING'/);
+    });
+
+    it('verifies the NULL guard executes strictly BEFORE timestamp arithmetic', () => {
+      const body = extractConfirmationFnBody();
+      const nullGuardIdx = body.indexOf("'error_code', 'SESSION_TIMESTAMP_MISSING'");
+      const arithmeticIdx = body.indexOf('v_sess_conf_diff_seconds := ABS(EXTRACT(EPOCH FROM (v_session.created_at - v_user.confirmed_at)));');
+      expect(nullGuardIdx).toBeGreaterThan(0);
+      expect(arithmeticIdx).toBeGreaterThan(nullGuardIdx);
+    });
+
+    it('verifies the existing 60-second misalignment rejection remains intact', () => {
+      const body = extractConfirmationFnBody();
+      expect(body).toMatch(/v_sess_conf_diff_seconds > 60/);
+      expect(body).toMatch(/'error_code', 'SESSION_CONFIRMATION_MISALIGNED'/);
+      expect(body).toMatch(/'alignment_diff_seconds', v_sess_conf_diff_seconds/);
+    });
+
+    it('[static mathematical simulation] verifies alignment tolerance boundaries (<= 60s accepted, > 60s rejected, NULL intercepted)', () => {
+      // NOTE: Static simulation of SQL logic — NOT PostgreSQL runtime execution.
+      function evaluateAlignment(sessionCreatedAt: Date | null, userConfirmedAt: Date): { success: boolean; errorCode?: string } {
+        if (sessionCreatedAt === null) {
+          return { success: false, errorCode: 'SESSION_TIMESTAMP_MISSING' };
+        }
+        const diffSeconds = Math.abs((sessionCreatedAt.getTime() - userConfirmedAt.getTime()) / 1000);
+        if (diffSeconds > 60) {
+          return { success: false, errorCode: 'SESSION_CONFIRMATION_MISALIGNED' };
+        }
+        return { success: true };
+      }
+
+      const confirmedAt = new Date('2026-11-21T12:00:00.000Z');
+
+      // Valid cases within 60s tolerance
+      expect(evaluateAlignment(new Date('2026-11-21T12:00:00.000Z'), confirmedAt).success).toBe(true);
+      expect(evaluateAlignment(new Date('2026-11-21T12:00:30.000Z'), confirmedAt).success).toBe(true);
+      expect(evaluateAlignment(new Date('2026-11-21T11:59:30.000Z'), confirmedAt).success).toBe(true);
+      expect(evaluateAlignment(new Date('2026-11-21T12:01:00.000Z'), confirmedAt).success).toBe(true); // exactly 60s
+      expect(evaluateAlignment(new Date('2026-11-21T11:59:00.000Z'), confirmedAt).success).toBe(true); // exactly -60s
+
+      // Misaligned cases (> 60s)
+      const after61s = evaluateAlignment(new Date('2026-11-21T12:01:01.000Z'), confirmedAt);
+      expect(after61s.success).toBe(false);
+      expect(after61s.errorCode).toBe('SESSION_CONFIRMATION_MISALIGNED');
+
+      const before61s = evaluateAlignment(new Date('2026-11-21T11:58:59.000Z'), confirmedAt);
+      expect(before61s.success).toBe(false);
+      expect(before61s.errorCode).toBe('SESSION_CONFIRMATION_MISALIGNED');
+
+      // NULL case: explicitly intercepted as SESSION_TIMESTAMP_MISSING (not misaligned or accepted)
+      const nullCase = evaluateAlignment(null, confirmedAt);
+      expect(nullCase.success).toBe(false);
+      expect(nullCase.errorCode).toBe('SESSION_TIMESTAMP_MISSING');
+    });
+
+    it('verifies 300-second confirmation eligibility boundary and -10-second drift tolerance remain unchanged', () => {
+      const body = extractConfirmationFnBody();
+      expect(body).toMatch(/v_conf_diff_seconds > 300 OR v_conf_diff_seconds < -10/);
+      expect(body).toMatch(/'error_code', 'CONFIRMATION_WINDOW_EXPIRED'/);
+      expect(body).toMatch(/'elapsed_seconds', v_conf_diff_seconds/);
+    });
+
+    it('verifies advisory-lock and session-identity validations remain intact prior to session timestamp check', () => {
+      const body = extractConfirmationFnBody();
+      const lockIdx = body.indexOf('PERFORM pg_advisory_xact_lock(v_lock_key);');
+      const sessionQueryIdx = body.indexOf('SELECT id, user_id, created_at');
+      const sessionNotFoundIdx = body.indexOf("'error_code', 'SESSION_NOT_FOUND'");
+      const nullGuardIdx = body.indexOf("'error_code', 'SESSION_TIMESTAMP_MISSING'");
+
+      expect(lockIdx).toBeGreaterThan(0);
+      expect(sessionQueryIdx).toBeGreaterThan(lockIdx);
+      expect(sessionNotFoundIdx).toBeGreaterThan(sessionQueryIdx);
+      expect(nullGuardIdx).toBeGreaterThan(sessionNotFoundIdx);
+    });
+
+    it('mutation 7: removing the NULL created_at guard is detected and rejected by validator', () => {
+      const original = extractConfirmationFnBody();
+      // Simulate the previous vulnerable state by removing the NULL guard
+      const mutated = original.replace(
+        /IF v_session\.created_at IS NULL THEN[\s\S]+?END IF;\s+/,
+        ''
+      );
+      expect(mutated).not.toBe(original);
+      expect(() => validateSessionTimestampValidation(mutated)).toThrow();
+      expect(() => validateSessionTimestampValidation(original)).not.toThrow();
+    });
+
+    it('mutation 8: placing timestamp arithmetic BEFORE the NULL guard is detected and rejected by validator', () => {
+      const original = extractConfirmationFnBody();
+      // Mutate by moving the arithmetic before the NULL guard (vulnerable to NULL arithmetic)
+      const arithmeticStr = 'v_sess_conf_diff_seconds := ABS(EXTRACT(EPOCH FROM (v_session.created_at - v_user.confirmed_at)));\n';
+      const nullGuardPattern = /(IF v_session\.created_at IS NULL THEN[\s\S]+?END IF;\s+)/;
+      const mutated = original.replace(arithmeticStr, '').replace(nullGuardPattern, arithmeticStr + '$1');
+      expect(mutated).not.toBe(original);
+      expect(() => validateSessionTimestampValidation(mutated)).toThrow();
+      expect(() => validateSessionTimestampValidation(original)).not.toThrow();
+    });
+
+    it('mutation 9: altered error code is detected and rejected by validator', () => {
+      const original = extractConfirmationFnBody();
+      // Mutate the error code
+      const mutated = original.replace("'SESSION_TIMESTAMP_MISSING'", "'INVALID_TIMESTAMP'");
+      expect(mutated).not.toBe(original);
+      expect(() => validateSessionTimestampValidation(mutated)).toThrow();
+      expect(() => validateSessionTimestampValidation(original)).not.toThrow();
+    });
+  });
 });
